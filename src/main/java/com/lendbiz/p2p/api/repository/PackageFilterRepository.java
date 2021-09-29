@@ -11,6 +11,10 @@ import javax.persistence.ParameterMode;
 import javax.persistence.Persistence;
 import javax.persistence.StoredProcedureQuery;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lendbiz.p2p.api.constans.ErrorCode;
 import com.lendbiz.p2p.api.entity.AuthProfileEntity;
 import com.lendbiz.p2p.api.entity.CustomEntity;
 import com.lendbiz.p2p.api.exception.BusinessException;
@@ -18,8 +22,10 @@ import com.lendbiz.p2p.api.request.AddGroupRequest;
 import com.lendbiz.p2p.api.request.AddUserRequest;
 import com.lendbiz.p2p.api.request.DeleteUserRequest;
 import com.lendbiz.p2p.api.request.InsertLogRequest;
+import com.lendbiz.p2p.api.request.ReqJoinRequest;
 import com.lendbiz.p2p.api.request.UpdateGroupRequest;
 import com.lendbiz.p2p.api.request.UpdateUserRequest;
+import com.lendbiz.p2p.api.utils.JsonMapper;
 import com.lendbiz.p2p.api.utils.StringUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -372,6 +378,109 @@ public class PackageFilterRepository {
 		cEntity.setResult(entry.getValue());
 
 		return cEntity;
+	}
+
+	public CustomEntity reqJoin(ReqJoinRequest reqJoinRequest) {
+
+		CustomEntity result = new CustomEntity();
+
+		SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_CF")
+				.withProcedureName("REQJOIN").declareParameters(new SqlParameter("pv_Type", Types.VARCHAR))
+				.declareParameters(new SqlParameter("pv_Fullname", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_Sex", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_DOB", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_Place", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_IDCode", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_IDDate", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_IDPlace", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_OrgAddress", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_Address", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_IDWard", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_IDDistrict", Types.INTEGER))
+				.declareParameters(new SqlParameter("Pv_Phone", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_Mobile", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_Email", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_BankAccount", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_Bank", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_Address", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_TaxNo", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_Online", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_ProductInfo", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_ConsultalInfo", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_Position", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_Job", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_exFullname", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_exPosition", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_exJob", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_exMobile", Types.VARCHAR))
+				.declareParameters(new SqlParameter("Pv_ExEmail", Types.VARCHAR))
+				.declareParameters(new SqlParameter("pv_ExAddress", Types.VARCHAR))
+				.declareParameters(new SqlParameter("pv_ExBank", Types.VARCHAR))
+				.declareParameters(new SqlParameter("pv_ExSTK", Types.VARCHAR))
+				.declareParameters(new SqlParameter("pv_password", Types.VARCHAR))
+				.declareParameters(new SqlOutParameter("PV_REFCURSOR", Types.REF_CURSOR));
+
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("pv_Type", reqJoinRequest.getType());
+		params.addValue("pv_Fullname", reqJoinRequest.getFullName());
+		params.addValue("Pv_Sex", reqJoinRequest.getSex());
+		params.addValue("Pv_DOB", reqJoinRequest.getDob());
+		params.addValue("Pv_Place", reqJoinRequest.getPlace());
+		params.addValue("Pv_IDCode", reqJoinRequest.getIdCode());
+		params.addValue("Pv_IDDate", reqJoinRequest.getIdDate());
+		params.addValue("Pv_IDPlace", reqJoinRequest.getIdPlace());
+		params.addValue("Pv_OrgAddress", reqJoinRequest.getOrgAddress());
+		params.addValue("Pv_Address", reqJoinRequest.getAddress());
+		params.addValue("Pv_IDWard", reqJoinRequest.getIdWard());
+		params.addValue("Pv_IDDistrict", reqJoinRequest.getIdDistrict());
+		params.addValue("Pv_Phone", reqJoinRequest.getPhone());
+		params.addValue("Pv_Mobile", reqJoinRequest.getMobile());
+		params.addValue("Pv_Email", reqJoinRequest.getEmail());
+		params.addValue("Pv_BankAccount", reqJoinRequest.getBankAccount());
+		params.addValue("Pv_Bank", reqJoinRequest.getBank());
+		params.addValue("Pv_TaxNo", reqJoinRequest.getTaxNo());
+		params.addValue("Pv_Online", reqJoinRequest.getOnline());
+		params.addValue("Pv_MatchOrdSMS", reqJoinRequest.getMatchOrdSms());
+		params.addValue("Pv_ProductInfo", reqJoinRequest.getProductInfo());
+		params.addValue("Pv_ConsultalInfo", reqJoinRequest.getConsultalInfo());
+		params.addValue("Pv_OfficeName", reqJoinRequest.getOfficeName());
+		params.addValue("Pv_Position", reqJoinRequest.getPosition());
+		params.addValue("Pv_Job", reqJoinRequest.getJob());
+		params.addValue("Pv_exFullname", reqJoinRequest.getExFullName());
+		params.addValue("Pv_exPosition", reqJoinRequest.getExPosition());
+		params.addValue("Pv_exJob", reqJoinRequest.getExJob());
+		params.addValue("Pv_exMobile", reqJoinRequest.getExMobile());
+		params.addValue("Pv_ExEmail", reqJoinRequest.getExEmail());
+		params.addValue("pv_ExAddress", reqJoinRequest.getExAddress());
+		params.addValue("pv_ExBank", reqJoinRequest.getExBank());
+		params.addValue("pv_ExSTK", reqJoinRequest.getExStk());
+		params.addValue("pv_password", reqJoinRequest.getPassword());
+
+		Map<String, Object> map = jdbcCall.execute(params);
+		Map.Entry<String, Object> entry = map.entrySet().iterator().next();
+
+		System.out.println(JsonMapper.writeValueAsString(entry.getValue()));
+
+		String body = JsonMapper.writeValueAsString(entry.getValue());
+
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode root;
+		try {
+			root = mapper.readTree(body);
+			if (root.get(0) != null && root.get(0).get("0") != null) {
+				result.setErrorCode("00");
+				result.setResult(root.get(0).get(":B1").toString().replaceAll("\"", ""));
+			} else {
+				result.setErrorCode("300");
+				result.setErrorMessage(root.get(0).get("ERRMSG").toString().replaceAll("\"", ""));
+				result.setResult(root.get(0).toString());
+			}
+
+		} catch (JsonProcessingException e) {
+			throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
+		}
+
+		return result;
 	}
 
 }
