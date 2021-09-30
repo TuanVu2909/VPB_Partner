@@ -15,12 +15,11 @@
  */
 package com.lendbiz.p2p.api.service.impl;
 
-import com.lendbiz.p2p.api.constans.Constans;
-import com.lendbiz.p2p.api.entity.AuthProfileEntity;
 import com.lendbiz.p2p.api.entity.CustomEntity;
 import com.lendbiz.p2p.api.repository.AuthRepository;
 import com.lendbiz.p2p.api.repository.PackageFilterRepository;
 import com.lendbiz.p2p.api.request.LoginRequest;
+import com.lendbiz.p2p.api.request.ReqJoinRequest;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.service.UserService;
 
@@ -49,10 +48,19 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 	@Override
 	public ResponseEntity<?> login(LoginRequest loginRequest) {
 
-		CustomEntity response = pkgFilterRepo.login(loginRequest.getUsername(), loginRequest.getPassword(), loginRequest.getDeviceId());
+		CustomEntity response = pkgFilterRepo.login(loginRequest.getUsername(), loginRequest.getPassword(),
+				loginRequest.getDeviceId());
 
-		// return response(toErrorResult(Constans.FAIL, Constans.MESSAGE_FAIL, null, null));
+		// return response(toErrorResult(Constans.FAIL, Constans.MESSAGE_FAIL, null,
+		// null));
 
+		return response(toResult(response));
+	}
+
+	@Override
+	public ResponseEntity<?> register(ReqJoinRequest reqJoinRequest) {
+
+		CustomEntity response = pkgFilterRepo.reqJoin(reqJoinRequest);
 		return response(toResult(response));
 	}
 

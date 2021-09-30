@@ -1,4 +1,4 @@
-package com.lendbiz.p2p.api.constans;
+package com.lendbiz.p2p.api.constants;
 
 public class ErrorCode {
     

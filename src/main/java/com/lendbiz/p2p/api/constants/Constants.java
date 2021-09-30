@@ -1,4 +1,4 @@
-package com.lendbiz.p2p.api.constans;
+package com.lendbiz.p2p.api.constants;
 
 /***********************************************************************  
  *  
@@ -9,7 +9,7 @@ package com.lendbiz.p2p.api.constans;
  *   @create-time   Apr 9, 2021   10:57:18 AM   
  *
  ***********************************************************************/
-public class Constans {
+public class Constants {
 	
 	public static final String SUCCESS = "00";
 	public static final String FAIL = "01";

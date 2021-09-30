@@ -2,19 +2,13 @@ package com.lendbiz.p2p.api.repository;
 
 import java.math.BigDecimal;
 import java.sql.Types;
-import java.util.List;
 import java.util.Map;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.ParameterMode;
-import javax.persistence.Persistence;
-import javax.persistence.StoredProcedureQuery;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lendbiz.p2p.api.constans.ErrorCode;
+import com.lendbiz.p2p.api.constants.Constants;
+import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.AuthProfileEntity;
 import com.lendbiz.p2p.api.entity.CustomEntity;
 import com.lendbiz.p2p.api.exception.BusinessException;
@@ -474,6 +468,7 @@ public class PackageFilterRepository {
 				result.setErrorCode("300");
 				result.setErrorMessage(root.get(0).get("ERRMSG").toString().replaceAll("\"", ""));
 				result.setResult(root.get(0).toString());
+				throw new BusinessException(Constants.FAIL, root.get(0).get("ERRMSG").toString().replaceAll("\"", ""));
 			}
 
 		} catch (JsonProcessingException e) {

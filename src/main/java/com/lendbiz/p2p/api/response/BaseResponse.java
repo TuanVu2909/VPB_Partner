@@ -4,7 +4,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-import com.lendbiz.p2p.api.constans.Constans;
+import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.exception.NotFoundException;
 import com.lendbiz.p2p.api.utils.StringUtil;
 
@@ -34,7 +34,7 @@ public abstract class BaseResponse<S> {
 		}
 
 		if (StringUtil.isEmty(response.getStatus())) {
-			response.setStatus(Constans.SUCCESS);
+			response.setStatus(Constants.SUCCESS);
 		}
 		return new ResponseEntity<ApiResponse<T>>(response, HttpStatus.OK);
 	}
@@ -57,8 +57,8 @@ public abstract class BaseResponse<S> {
 
 	protected <T> ApiResponse<T> toResult(T t) {
 		ApiResponse<T> response = new ApiResponse<T>();
-		response.setStatus(Constans.SUCCESS);
-		response.setMessage(Constans.MESSAGE_SUCCESS);
+		response.setStatus(Constants.SUCCESS);
+		response.setMessage(Constants.MESSAGE_SUCCESS);
 		response.setData(t);
 		return response;
 	}

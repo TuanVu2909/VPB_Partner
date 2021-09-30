@@ -2,7 +2,7 @@ package com.lendbiz.p2p.api.exception;
 
 import java.nio.file.AccessDeniedException;
 
-import com.lendbiz.p2p.api.constans.Constans;
+import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.response.ErrorInfo;
 
 import org.springframework.beans.ConversionNotSupportedException;
@@ -48,9 +48,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 					((ServletWebRequest) request).getRequest().getRequestURL().toString());
 			return new ResponseEntity<Object>(errorInfo, status);
 		} catch (BusinessException e) {
-			ErrorInfo errorInfo = new ErrorInfo(Constans.FAIL, status.getReasonPhrase(), e.getStatus(), e.getMessage(),
+			ErrorInfo errorInfo = new ErrorInfo(Constants.FAIL, "97", e.getStatus(), e.getMessage(),
 					((ServletWebRequest) request).getRequest().getRequestURL().toString());
-			return new ResponseEntity<Object>(errorInfo, status);
+			return new ResponseEntity<Object>(errorInfo, HttpStatus.OK);
 		} catch (Exception e) {// Do nothing
 
 		}

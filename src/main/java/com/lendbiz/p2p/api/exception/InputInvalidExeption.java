@@ -1,6 +1,6 @@
 package com.lendbiz.p2p.api.exception;
 
-import com.lendbiz.p2p.api.constans.ErrorCode;
+import com.lendbiz.p2p.api.constants.ErrorCode;
 
 /***********************************************************************  
  *  
