@@ -73,10 +73,8 @@ public abstract class BaseResponse<S> {
 
 	protected <T> ApiResponse<T> toErrorResult(String status, String message, String errorCode, String errorDetail) {
 		ApiResponse<T> response = new ApiResponse<T>();
-		ErrorInfo errorInfo = new ErrorInfo(errorCode, errorDetail);
 		response.setStatus(status);
 		response.setMessage(message);
-		response.setErrorInfo(errorInfo);
 		return response;
 	}
 

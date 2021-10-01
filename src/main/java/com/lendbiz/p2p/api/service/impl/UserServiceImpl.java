@@ -15,6 +15,9 @@
  */
 package com.lendbiz.p2p.api.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.lendbiz.p2p.api.entity.CustomEntity;
 import com.lendbiz.p2p.api.repository.AuthRepository;
 import com.lendbiz.p2p.api.repository.PackageFilterRepository;
@@ -48,20 +51,20 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 	@Override
 	public ResponseEntity<?> login(LoginRequest loginRequest) {
 
-		CustomEntity response = pkgFilterRepo.login(loginRequest.getUsername(), loginRequest.getPassword(),
+		List<Object> response = (ArrayList) pkgFilterRepo.login(loginRequest.getUsername(), loginRequest.getPassword(),
 				loginRequest.getDeviceId());
 
 		// return response(toErrorResult(Constans.FAIL, Constans.MESSAGE_FAIL, null,
 		// null));
 
-		return response(toResult(response));
+		return response(toResult(response.get(0)));
 	}
 
 	@Override
 	public ResponseEntity<?> register(ReqJoinRequest reqJoinRequest) {
 
-		CustomEntity response = pkgFilterRepo.reqJoin(reqJoinRequest);
-		return response(toResult(response));
+		String responseId = pkgFilterRepo.reqJoin(reqJoinRequest);
+		return response(toResult(responseId));
 	}
 
 }

@@ -2,6 +2,7 @@ package com.lendbiz.p2p.api.repository;
 
 import java.math.BigDecimal;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -38,7 +39,7 @@ public class PackageFilterRepository {
 
 	@Autowired
 	private AuthRepository authRepository;
-	
+
 	public CustomEntity getQuery(String query) {
 
 		SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PKG_LB_AUTHENTICATION")
@@ -164,7 +165,7 @@ public class PackageFilterRepository {
 
 		if (res == 0) {
 			throw new BusinessException("15", "Delete fail!");
-			
+
 		}
 
 		return res;
@@ -243,7 +244,7 @@ public class PackageFilterRepository {
 	}
 
 	private UpdateUserRequest newProfileBuilder(UpdateUserRequest updateRequest) {
-		
+
 		AuthProfileEntity newProfile = authRepository.getByTLId(updateRequest.getTlId());
 
 		if (newProfile != null) {
@@ -317,8 +318,7 @@ public class PackageFilterRepository {
 	public int insertLogs(InsertLogRequest insertLogRequest) {
 
 		SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PKG_LB_AUTHENTICATION")
-				.withFunctionName("fn_insert_logs")
-				.declareParameters(new SqlParameter("p_requestId", Types.VARCHAR))
+				.withFunctionName("fn_insert_logs").declareParameters(new SqlParameter("p_requestId", Types.VARCHAR))
 				.declareParameters(new SqlParameter("p_messageType", Types.VARCHAR))
 				.declareParameters(new SqlParameter("p_status", Types.INTEGER))
 				.declareParameters(new SqlParameter("p_bodyDetail", Types.VARCHAR))
@@ -352,8 +352,7 @@ public class PackageFilterRepository {
 		return res;
 	}
 
-	public CustomEntity login(String username, String password, String deviceId) {
-
+	public Object login(String username, String password, String deviceId) {
 		SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PKG_API_AUTHENTICATION")
 				.withProcedureName("LOGIN").declareParameters(new SqlParameter("pv_Username", Types.VARCHAR))
 				.declareParameters(new SqlParameter("pv_Password", Types.VARCHAR))
@@ -368,15 +367,25 @@ public class PackageFilterRepository {
 		Map<String, Object> map = jdbcCall.execute(params);
 		Map.Entry<String, Object> entry = map.entrySet().iterator().next();
 
-		CustomEntity cEntity = new CustomEntity();
-		cEntity.setResult(entry.getValue());
+		String body = JsonMapper.writeValueAsString(entry.getValue());
 
-		return cEntity;
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode root;
+		try {
+			root = mapper.readTree(body);
+			if (root.get(0) != null && root.get(0).get("ERRORCODE").asInt() == 99) {
+				throw new BusinessException(Constants.FAIL, root.get(0).get("STATUS").textValue());
+			}
+		} catch (JsonProcessingException e) {
+			throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
+		}
+
+		return entry.getValue();
 	}
 
-	public CustomEntity reqJoin(ReqJoinRequest reqJoinRequest) {
+	public String reqJoin(ReqJoinRequest reqJoinRequest) {
 
-		CustomEntity result = new CustomEntity();
+		String responseId = "";
 
 		SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_CF")
 				.withProcedureName("REQJOIN").declareParameters(new SqlParameter("pv_Type", Types.VARCHAR))
@@ -462,20 +471,16 @@ public class PackageFilterRepository {
 		try {
 			root = mapper.readTree(body);
 			if (root.get(0) != null && root.get(0).get("0") != null) {
-				result.setErrorCode("00");
-				result.setResult(root.get(0).get(":B1").toString().replaceAll("\"", ""));
+				responseId = root.get(0).get(":B1").textValue();
 			} else {
-				result.setErrorCode("300");
-				result.setErrorMessage(root.get(0).get("ERRMSG").toString().replaceAll("\"", ""));
-				result.setResult(root.get(0).toString());
-				throw new BusinessException(Constants.FAIL, root.get(0).get("ERRMSG").toString().replaceAll("\"", ""));
+				throw new BusinessException(Constants.FAIL, root.get(0).get("ERRMSG").textValue());
 			}
 
 		} catch (JsonProcessingException e) {
 			throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
 		}
 
-		return result;
+		return responseId;
 	}
 
 }
