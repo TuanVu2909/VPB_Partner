@@ -503,3 +503,264 @@ You may wish to exclude one of them to ensure predictable runtime behavior
 2021-10-01 11:00:58.613  INFO 16348 --- [http-nio-9012-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
 2021-10-01 11:00:58.616  INFO 16348 --- [http-nio-9012-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
 2021-10-01 11:00:59.916  INFO 16348 --- [http-nio-9012-exec-2] c.l.p.a.service.impl.LoggingServiceImpl  : [Unknown]REQUEST method=[POST] path=[/lendbiz/login] headers=[{content-length=79, postman-token=40496e62-1050-4741-a542-14c54e1bfee7, host=localhost:9012, content-type=application/json, connection=keep-alive, accept-encoding=gzip, deflate, br, user-agent=PostmanRuntime/7.28.4, accept=*/*}]body=[LoginRequest(username=012187, password=12, deviceId=pc)]
+2021-10-01 11:01:53.188  INFO 1256 --- [main] com.lendbiz.p2p.api.ApiApplication       : Starting ApiApplication using Java 11.0.2 on DESKTOP-73I72RE with PID 1256 (D:\tuht_works\Projects\LENBIZ\api_mobile\bin\main started by thanh in D:\tuht_works\Projects\LENBIZ\api_mobile)
+2021-10-01 11:01:53.191  INFO 1256 --- [main] com.lendbiz.p2p.api.ApiApplication       : The following profiles are active: lendbiz-dev
+2021-10-01 11:01:54.619  INFO 1256 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2021-10-01 11:01:54.755  INFO 1256 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 121 ms. Found 8 JPA repository interfaces.
+2021-10-01 11:01:55.932  INFO 1256 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9012 (http)
+2021-10-01 11:01:55.947  INFO 1256 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-10-01 11:01:55.948  INFO 1256 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.53]
+2021-10-01 11:01:56.149  INFO 1256 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2021-10-01 11:01:56.150  INFO 1256 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2845 ms
+2021-10-01 11:01:56.551  INFO 1256 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-10-01 11:01:57.346  INFO 1256 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2021-10-01 11:01:57.434  INFO 1256 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2021-10-01 11:01:57.519  INFO 1256 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.32.Final
+2021-10-01 11:01:57.735  INFO 1256 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2021-10-01 11:01:57.927  INFO 1256 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.Oracle10gDialect
+2021-10-01 11:02:01.823  INFO 1256 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2021-10-01 11:02:01.836  INFO 1256 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2021-10-01 11:02:02.454  WARN 1256 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2021-10-01 11:02:03.329  INFO 1256 --- [main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
+2021-10-01 11:02:03.400  INFO 1256 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure Ant [pattern='/api/**'] with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@88fe9a8, org.springframework.security.web.context.SecurityContextPersistenceFilter@6cbb79c3, org.springframework.security.web.header.HeaderWriterFilter@61868687, org.springframework.web.filter.CorsFilter@17d606c9, org.springframework.security.web.authentication.logout.LogoutFilter@6421d85c, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@69bdcfbc, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@409b1740, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@33a0b857, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@6f45a2fd, org.springframework.security.web.session.SessionManagementFilter@42af2977, org.springframework.security.web.access.ExceptionTranslationFilter@6ad2cb6d, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@5d28e108]
+2021-10-01 11:02:04.018  INFO 1256 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9012 (http) with context path ''
+2021-10-01 11:02:04.020  INFO 1256 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2021-10-01 11:02:04.053  INFO 1256 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2021-10-01 11:02:04.093  INFO 1256 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2021-10-01 11:02:04.372  INFO 1256 --- [main] com.lendbiz.p2p.api.ApiApplication       : Started ApiApplication in 11.856 seconds (JVM running for 12.663)
+2021-10-01 11:02:06.388  INFO 1256 --- [http-nio-9012-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-10-01 11:02:06.389  INFO 1256 --- [http-nio-9012-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2021-10-01 11:02:06.392  INFO 1256 --- [http-nio-9012-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2021-10-01 11:02:07.315  INFO 1256 --- [http-nio-9012-exec-1] c.l.p.a.service.impl.LoggingServiceImpl  : [Unknown]REQUEST method=[POST] path=[/lendbiz/login] headers=[{content-length=79, postman-token=ca678c8a-15b4-4de5-9ca0-8d88308b814c, host=localhost:9012, content-type=application/json, connection=keep-alive, accept-encoding=gzip, deflate, br, user-agent=PostmanRuntime/7.28.4, accept=*/*}]body=[LoginRequest(username=012187, password=12, deviceId=pc)]
+2021-10-01 11:02:08.638  INFO 1256 --- [http-nio-9012-exec-1] c.l.p.a.service.impl.LoggingServiceImpl  : [Unknown]RESPONSE method=[POST] path=[/lendbiz/login] responseHeaders=[{Vary=Origin}]responseBody=[ErrorInfo(status=01, error=97, errorDesc=T?i kho?n qu? kh?ch b? t?m kh?a do nh?p sai m?t kh?u qu? 5 l?n, qu? kh?ch vui l?ng li?n h? s? di?n tho?i c?a Lendbiz (024)3 2011.856 d? du?c tr? gi?p., path=http://localhost:9012/lendbiz/login)] 
+2021-10-01 11:03:43.245  INFO 1256 --- [http-nio-9012-exec-5] c.l.p.a.service.impl.LoggingServiceImpl  : [test]REQUEST method=[POST] path=[/lendbiz/register] headers=[{content-length=160, session=UQYBIFPRWSGCWULITGBXRICWEBABDA, requestid=test, postman-token=3a5d5167-350c-42be-8e56-dd6a9f17095a, host=localhost:9012, content-type=application/json, connection=keep-alive, accept-encoding=gzip, deflate, br, user-agent=PostmanRuntime/7.28.4, accept=*/*}]body=[ReqJoinRequest(type=I, fullName=Hoang Thanh Tu, sex=null, dob=null, place=null, idCode=null, idDate=null, idPlace=null, orgAddress=null, address=null, idWard=null, idDistrict=null, phone=null, mobile=42141412416, email=fasfas3258@gmail.com, bankAccount=null, bank=null, taxNo=null, online=null, matchOrdSms=null, productInfo=null, consultalInfo=null, officeName=null, position=null, job=null, exFullName=Hoang Thanh Tu, exPosition=null, exJob=null, exMobile=null, exEmail=null, exAddress=null, exBank=null, exStk=null, password=123453)]
+2021-10-01 11:03:43.247  INFO 1256 --- [http-nio-9012-exec-5] c.l.p2p.api.controller.UserController    : [test] << register >>
+2021-10-01 11:03:45.265  INFO 1256 --- [http-nio-9012-exec-5] c.l.p.a.service.impl.LoggingServiceImpl  : [test]RESPONSE method=[POST] path=[/lendbiz/register] responseHeaders=[{Vary=Origin}]responseBody=[ErrorInfo(status=01, error=97, errorDesc=Thông tin của bạn đã tồn tại trên hệ thống của Lendbiz. Vui lòng liên hệ tổng đài 024.3201.1856 để biết thêm thông tin., path=http://localhost:9012/lendbiz/register)] 
+2021-10-01 11:05:42.907  WARN 7248 --- [Test worker] ory$DuplicateJsonObjectContextCustomizer : 
+
+Found multiple occurrences of org.json.JSONObject on the class path:
+
+	jar:file:/C:/Users/thanh/.gradle/caches/modules-2/files-2.1/org.json/json/20210307/528c8df3757e8bcf151817b1d7b9b434f6aa08d5/json-20210307.jar!/org/json/JSONObject.class
+	jar:file:/C:/Users/thanh/.gradle/caches/modules-2/files-2.1/com.vaadin.external.google/android-json/0.0.20131108.vaadin1/fa26d351fe62a6a17f5cda1287c1c6110dec413f/android-json-0.0.20131108.vaadin1.jar!/org/json/JSONObject.class
+
+You may wish to exclude one of them to ensure predictable runtime behavior
+
+2021-10-01 11:05:42.929  INFO 7248 --- [Test worker] com.lendbiz.p2p.api.ApiApplicationTests  : Starting ApiApplicationTests using Java 11.0.2 on DESKTOP-73I72RE with PID 7248 (started by thanh in D:\tuht_works\Projects\LENBIZ\api_mobile)
+2021-10-01 11:05:42.929  INFO 7248 --- [Test worker] com.lendbiz.p2p.api.ApiApplicationTests  : The following profiles are active: lendbiz-dev
+2021-10-01 11:05:44.367  INFO 7248 --- [Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2021-10-01 11:05:44.491  INFO 7248 --- [Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 110 ms. Found 8 JPA repository interfaces.
+2021-10-01 11:05:45.503  INFO 7248 --- [Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-10-01 11:05:46.053  INFO 7248 --- [Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2021-10-01 11:05:46.149  INFO 7248 --- [Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2021-10-01 11:05:46.236  INFO 7248 --- [Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.32.Final
+2021-10-01 11:05:46.497  INFO 7248 --- [Test worker] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2021-10-01 11:05:46.715  INFO 7248 --- [Test worker] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.Oracle10gDialect
+2021-10-01 11:05:50.477  INFO 7248 --- [Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2021-10-01 11:05:50.487  INFO 7248 --- [Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2021-10-01 11:05:51.072  WARN 7248 --- [Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2021-10-01 11:05:52.353  INFO 7248 --- [Test worker] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
+2021-10-01 11:05:52.597  INFO 7248 --- [Test worker] o.s.s.web.DefaultSecurityFilterChain     : Will secure Ant [pattern='/api/**'] with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@6223dbed, org.springframework.security.web.context.SecurityContextPersistenceFilter@70199db0, org.springframework.security.web.header.HeaderWriterFilter@21e32876, org.springframework.web.filter.CorsFilter@5713e35f, org.springframework.security.web.authentication.logout.LogoutFilter@7959fbe3, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@49a0fe14, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@149fab7f, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@64455184, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1f40bb80, org.springframework.security.web.session.SessionManagementFilter@39d4f046, org.springframework.security.web.access.ExceptionTranslationFilter@18ada4e1, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@c53dfb2]
+2021-10-01 11:05:53.581  INFO 7248 --- [Test worker] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2021-10-01 11:05:53.610  INFO 7248 --- [Test worker] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2021-10-01 11:05:53.654  INFO 7248 --- [Test worker] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2021-10-01 11:05:53.888  INFO 7248 --- [Test worker] com.lendbiz.p2p.api.ApiApplicationTests  : Started ApiApplicationTests in 11.376 seconds (JVM running for 13.134)
+2021-10-01 11:05:54.100  INFO 7248 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2021-10-01 11:05:54.103  INFO 7248 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2021-10-01 11:05:54.387  INFO 7248 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2021-10-01 11:14:57.418  WARN 11160 --- [Test worker] ory$DuplicateJsonObjectContextCustomizer : 
+
+Found multiple occurrences of org.json.JSONObject on the class path:
+
+	jar:file:/C:/Users/thanh/.gradle/caches/modules-2/files-2.1/org.json/json/20210307/528c8df3757e8bcf151817b1d7b9b434f6aa08d5/json-20210307.jar!/org/json/JSONObject.class
+	jar:file:/C:/Users/thanh/.gradle/caches/modules-2/files-2.1/com.vaadin.external.google/android-json/0.0.20131108.vaadin1/fa26d351fe62a6a17f5cda1287c1c6110dec413f/android-json-0.0.20131108.vaadin1.jar!/org/json/JSONObject.class
+
+You may wish to exclude one of them to ensure predictable runtime behavior
+
+2021-10-01 11:14:57.440  INFO 11160 --- [Test worker] com.lendbiz.p2p.api.ApiApplicationTests  : Starting ApiApplicationTests using Java 11.0.2 on DESKTOP-73I72RE with PID 11160 (started by thanh in D:\tuht_works\Projects\LENBIZ\api_mobile)
+2021-10-01 11:14:57.440  INFO 11160 --- [Test worker] com.lendbiz.p2p.api.ApiApplicationTests  : The following profiles are active: lendbiz-dev
+2021-10-01 11:14:58.797  INFO 11160 --- [Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2021-10-01 11:14:58.903  INFO 11160 --- [Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 97 ms. Found 8 JPA repository interfaces.
+2021-10-01 11:14:59.887  INFO 11160 --- [Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-10-01 11:15:00.455  INFO 11160 --- [Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2021-10-01 11:15:00.552  INFO 11160 --- [Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2021-10-01 11:15:00.633  INFO 11160 --- [Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.32.Final
+2021-10-01 11:15:00.848  INFO 11160 --- [Test worker] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2021-10-01 11:15:01.056  INFO 11160 --- [Test worker] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.Oracle10gDialect
+2021-10-01 11:15:04.663  INFO 11160 --- [Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2021-10-01 11:15:04.674  INFO 11160 --- [Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2021-10-01 11:15:05.231  WARN 11160 --- [Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2021-10-01 11:15:06.496  INFO 11160 --- [Test worker] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
+2021-10-01 11:15:06.729  INFO 11160 --- [Test worker] o.s.s.web.DefaultSecurityFilterChain     : Will secure Ant [pattern='/api/**'] with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@5713e35f, org.springframework.security.web.context.SecurityContextPersistenceFilter@274b0c2a, org.springframework.security.web.header.HeaderWriterFilter@a642c54, org.springframework.web.filter.CorsFilter@1f40bb80, org.springframework.security.web.authentication.logout.LogoutFilter@75c0e6be, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@11eb8842, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@28d74041, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@6f749a1f, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@c42ee90, org.springframework.security.web.session.SessionManagementFilter@5f910283, org.springframework.security.web.access.ExceptionTranslationFilter@10cf3e4f, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@3f16a823]
+2021-10-01 11:15:07.712  INFO 11160 --- [Test worker] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2021-10-01 11:15:07.739  INFO 11160 --- [Test worker] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2021-10-01 11:15:07.784  INFO 11160 --- [Test worker] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2021-10-01 11:15:08.009  INFO 11160 --- [Test worker] com.lendbiz.p2p.api.ApiApplicationTests  : Started ApiApplicationTests in 10.983 seconds (JVM running for 12.714)
+2021-10-01 11:15:08.225  INFO 11160 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2021-10-01 11:15:08.228  INFO 11160 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2021-10-01 11:15:08.505  INFO 11160 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2021-10-01 11:25:05.704  WARN 26576 --- [Test worker] ory$DuplicateJsonObjectContextCustomizer : 
+
+Found multiple occurrences of org.json.JSONObject on the class path:
+
+	jar:file:/C:/Users/thanh/.gradle/caches/modules-2/files-2.1/org.json/json/20210307/528c8df3757e8bcf151817b1d7b9b434f6aa08d5/json-20210307.jar!/org/json/JSONObject.class
+	jar:file:/C:/Users/thanh/.gradle/caches/modules-2/files-2.1/com.vaadin.external.google/android-json/0.0.20131108.vaadin1/fa26d351fe62a6a17f5cda1287c1c6110dec413f/android-json-0.0.20131108.vaadin1.jar!/org/json/JSONObject.class
+
+You may wish to exclude one of them to ensure predictable runtime behavior
+
+2021-10-01 11:25:05.727  INFO 26576 --- [Test worker] com.lendbiz.p2p.api.ApiApplicationTests  : Starting ApiApplicationTests using Java 11.0.2 on DESKTOP-73I72RE with PID 26576 (started by thanh in D:\tuht_works\Projects\LENBIZ\api_mobile)
+2021-10-01 11:25:05.728  INFO 26576 --- [Test worker] com.lendbiz.p2p.api.ApiApplicationTests  : The following profiles are active: lendbiz-dev
+2021-10-01 11:25:07.096  INFO 26576 --- [Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2021-10-01 11:25:07.220  INFO 26576 --- [Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 112 ms. Found 8 JPA repository interfaces.
+2021-10-01 11:25:08.231  INFO 26576 --- [Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-10-01 11:25:08.790  INFO 26576 --- [Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2021-10-01 11:25:08.892  INFO 26576 --- [Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2021-10-01 11:25:08.981  INFO 26576 --- [Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.32.Final
+2021-10-01 11:25:09.240  INFO 26576 --- [Test worker] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2021-10-01 11:25:09.451  INFO 26576 --- [Test worker] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.Oracle10gDialect
+2021-10-01 11:25:13.330  INFO 26576 --- [Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2021-10-01 11:25:13.341  INFO 26576 --- [Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2021-10-01 11:25:13.957  WARN 26576 --- [Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2021-10-01 11:25:15.257  INFO 26576 --- [Test worker] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
+2021-10-01 11:25:15.487  INFO 26576 --- [Test worker] o.s.s.web.DefaultSecurityFilterChain     : Will secure Ant [pattern='/api/**'] with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@c42ee90, org.springframework.security.web.context.SecurityContextPersistenceFilter@149fab7f, org.springframework.security.web.header.HeaderWriterFilter@4b59a1c1, org.springframework.web.filter.CorsFilter@70c2a046, org.springframework.security.web.authentication.logout.LogoutFilter@42516ce2, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@7018636a, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@5cbf9aee, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@ba90170, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@3803bc1a, org.springframework.security.web.session.SessionManagementFilter@6e5106fc, org.springframework.security.web.access.ExceptionTranslationFilter@242a3997, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@77954f77]
+2021-10-01 11:25:16.498  INFO 26576 --- [Test worker] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2021-10-01 11:25:16.526  INFO 26576 --- [Test worker] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2021-10-01 11:25:16.561  INFO 26576 --- [Test worker] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2021-10-01 11:25:16.774  INFO 26576 --- [Test worker] com.lendbiz.p2p.api.ApiApplicationTests  : Started ApiApplicationTests in 11.447 seconds (JVM running for 13.027)
+2021-10-01 11:25:17.006  INFO 26576 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2021-10-01 11:25:17.009  INFO 26576 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2021-10-01 11:25:17.274  INFO 26576 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2021-10-01 11:33:53.830  WARN 24312 --- [Test worker] ory$DuplicateJsonObjectContextCustomizer : 
+
+Found multiple occurrences of org.json.JSONObject on the class path:
+
+	jar:file:/C:/Users/thanh/.gradle/caches/modules-2/files-2.1/org.json/json/20210307/528c8df3757e8bcf151817b1d7b9b434f6aa08d5/json-20210307.jar!/org/json/JSONObject.class
+	jar:file:/C:/Users/thanh/.gradle/caches/modules-2/files-2.1/com.vaadin.external.google/android-json/0.0.20131108.vaadin1/fa26d351fe62a6a17f5cda1287c1c6110dec413f/android-json-0.0.20131108.vaadin1.jar!/org/json/JSONObject.class
+
+You may wish to exclude one of them to ensure predictable runtime behavior
+
+2021-10-01 11:33:53.848  INFO 24312 --- [Test worker] com.lendbiz.p2p.api.ApiApplicationTests  : Starting ApiApplicationTests using Java 11.0.2 on DESKTOP-73I72RE with PID 24312 (started by thanh in D:\tuht_works\Projects\LENBIZ\api_mobile)
+2021-10-01 11:33:53.849  INFO 24312 --- [Test worker] com.lendbiz.p2p.api.ApiApplicationTests  : The following profiles are active: lendbiz-dev
+2021-10-01 11:33:55.195  INFO 24312 --- [Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2021-10-01 11:33:55.318  INFO 24312 --- [Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 113 ms. Found 8 JPA repository interfaces.
+2021-10-01 11:33:56.296  INFO 24312 --- [Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-10-01 11:33:56.912  INFO 24312 --- [Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2021-10-01 11:33:57.012  INFO 24312 --- [Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2021-10-01 11:33:57.103  INFO 24312 --- [Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.32.Final
+2021-10-01 11:33:57.364  INFO 24312 --- [Test worker] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2021-10-01 11:33:57.588  INFO 24312 --- [Test worker] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.Oracle10gDialect
+2021-10-01 11:34:02.031  INFO 24312 --- [Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2021-10-01 11:34:02.042  INFO 24312 --- [Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2021-10-01 11:34:02.658  WARN 24312 --- [Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2021-10-01 11:34:04.102  INFO 24312 --- [Test worker] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
+2021-10-01 11:34:04.325  INFO 24312 --- [Test worker] o.s.s.web.DefaultSecurityFilterChain     : Will secure Ant [pattern='/api/**'] with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@6223dbed, org.springframework.security.web.context.SecurityContextPersistenceFilter@70199db0, org.springframework.security.web.header.HeaderWriterFilter@21e32876, org.springframework.web.filter.CorsFilter@5713e35f, org.springframework.security.web.authentication.logout.LogoutFilter@7959fbe3, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@49a0fe14, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@149fab7f, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@64455184, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1f40bb80, org.springframework.security.web.session.SessionManagementFilter@39d4f046, org.springframework.security.web.access.ExceptionTranslationFilter@18ada4e1, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@c53dfb2]
+2021-10-01 11:34:05.344  INFO 24312 --- [Test worker] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2021-10-01 11:34:05.375  INFO 24312 --- [Test worker] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2021-10-01 11:34:05.413  INFO 24312 --- [Test worker] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2021-10-01 11:34:05.619  INFO 24312 --- [Test worker] com.lendbiz.p2p.api.ApiApplicationTests  : Started ApiApplicationTests in 12.169 seconds (JVM running for 13.762)
+2021-10-01 11:34:05.820  INFO 24312 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2021-10-01 11:34:05.824  INFO 24312 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2021-10-01 11:34:06.128  INFO 24312 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2021-10-01 13:07:25.033  INFO 23524 --- [main] com.lendbiz.p2p.api.ApiApplication       : Starting ApiApplication using Java 11.0.2 on DESKTOP-73I72RE with PID 23524 (D:\tuht_works\Projects\LENBIZ\api_mobile\bin\main started by thanh in d:\tuht_works\Projects\LENBIZ\api_mobile)
+2021-10-01 13:07:25.036  INFO 23524 --- [main] com.lendbiz.p2p.api.ApiApplication       : The following profiles are active: lendbiz-dev
+2021-10-01 13:07:26.471  INFO 23524 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2021-10-01 13:07:26.597  INFO 23524 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 113 ms. Found 8 JPA repository interfaces.
+2021-10-01 13:07:27.552  INFO 23524 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9012 (http)
+2021-10-01 13:07:27.567  INFO 23524 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-10-01 13:07:27.568  INFO 23524 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.53]
+2021-10-01 13:07:27.802  INFO 23524 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2021-10-01 13:07:27.802  INFO 23524 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2688 ms
+2021-10-01 13:07:28.137  INFO 23524 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-10-01 13:07:28.759  INFO 23524 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2021-10-01 13:07:28.842  INFO 23524 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2021-10-01 13:07:28.958  INFO 23524 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.32.Final
+2021-10-01 13:07:29.286  INFO 23524 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2021-10-01 13:07:29.484  INFO 23524 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.Oracle10gDialect
+2021-10-01 13:07:33.349  INFO 23524 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2021-10-01 13:07:33.363  INFO 23524 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2021-10-01 13:07:33.906  WARN 23524 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2021-10-01 13:07:34.777  INFO 23524 --- [main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
+2021-10-01 13:07:34.830  INFO 23524 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure Ant [pattern='/api/**'] with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@8c54f48, org.springframework.security.web.context.SecurityContextPersistenceFilter@1e1f467f, org.springframework.security.web.header.HeaderWriterFilter@3ce2c454, org.springframework.web.filter.CorsFilter@119f02d2, org.springframework.security.web.authentication.logout.LogoutFilter@5eba0cc5, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@2cf6dd4d, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3d268a2c, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@6a28d987, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@48c584c, org.springframework.security.web.session.SessionManagementFilter@6f2e0945, org.springframework.security.web.access.ExceptionTranslationFilter@4c020e58, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@28c38eeb]
+2021-10-01 13:07:35.511  INFO 23524 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9012 (http) with context path ''
+2021-10-01 13:07:35.512  INFO 23524 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2021-10-01 13:07:35.580  INFO 23524 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2021-10-01 13:07:35.629  INFO 23524 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2021-10-01 13:07:35.952  INFO 23524 --- [main] com.lendbiz.p2p.api.ApiApplication       : Started ApiApplication in 11.519 seconds (JVM running for 13.0)
+2021-10-01 13:07:36.153  INFO 23524 --- [http-nio-9012-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-10-01 13:07:36.154  INFO 23524 --- [http-nio-9012-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2021-10-01 13:07:36.156  INFO 23524 --- [http-nio-9012-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2021-10-01 13:07:37.225  INFO 23524 --- [http-nio-9012-exec-1] c.l.p.a.service.impl.LoggingServiceImpl  : [321321]REQUEST method=[POST] path=[/lendbiz/login] headers=[{content-length=78, requestid=321321, postman-token=7ee0281a-13b0-4645-a2a4-8af185a49fb6, host=localhost:9012, content-type=application/json, connection=keep-alive, accept-encoding=gzip, deflate, br, user-agent=PostmanRuntime/7.28.4, accept=*/*}]body=[LoginRequest(username=012187, password=1, deviceId=pc)]
+2021-10-01 13:07:37.230  INFO 23524 --- [http-nio-9012-exec-1] c.l.p2p.api.controller.UserController    : [321321] << login >>
+2021-10-01 13:07:38.565  INFO 23524 --- [http-nio-9012-exec-1] c.l.p.a.service.impl.LoggingServiceImpl  : [321321]RESPONSE method=[POST] path=[/lendbiz/login] responseHeaders=[{Vary=Origin}]responseBody=[ErrorInfo(status=500, error=Internal Server Error, errorDesc=null, path=http://localhost:9012/lendbiz/login)] 
+2021-10-01 13:07:44.913  INFO 23524 --- [http-nio-9012-exec-4] c.l.p.a.service.impl.LoggingServiceImpl  : [321321]REQUEST method=[POST] path=[/lendbiz/login] headers=[{content-length=78, requestid=321321, postman-token=d476b04e-a307-4955-aadb-ac5708556ac4, host=localhost:9012, content-type=application/json, connection=keep-alive, accept-encoding=gzip, deflate, br, user-agent=PostmanRuntime/7.28.4, accept=*/*}]body=[LoginRequest(username=012187, password=1, deviceId=pc)]
+2021-10-01 13:07:44.913  INFO 23524 --- [http-nio-9012-exec-4] c.l.p2p.api.controller.UserController    : [321321] << login >>
+2021-10-01 13:07:46.263  INFO 23524 --- [http-nio-9012-exec-4] c.l.p.a.service.impl.LoggingServiceImpl  : [321321]RESPONSE method=[POST] path=[/lendbiz/login] responseHeaders=[{Vary=Origin}]responseBody=[ErrorInfo(status=500, error=Internal Server Error, errorDesc=null, path=http://localhost:9012/lendbiz/login)] 
+2021-10-01 13:07:53.076  INFO 23524 --- [http-nio-9012-exec-6] c.l.p.a.service.impl.LoggingServiceImpl  : [321321]REQUEST method=[POST] path=[/lendbiz/login] headers=[{content-length=78, requestid=321321, postman-token=7dd2424a-7349-4d0a-a13b-78048b902161, host=localhost:9012, content-type=application/json, connection=keep-alive, accept-encoding=gzip, deflate, br, user-agent=PostmanRuntime/7.28.4, accept=*/*}]body=[LoginRequest(username=012187, password=1, deviceId=pc)]
+2021-10-01 13:07:53.076  INFO 23524 --- [http-nio-9012-exec-6] c.l.p2p.api.controller.UserController    : [321321] << login >>
+2021-10-01 13:07:54.369  INFO 23524 --- [http-nio-9012-exec-6] c.l.p.a.service.impl.LoggingServiceImpl  : [321321]RESPONSE method=[POST] path=[/lendbiz/login] responseHeaders=[{Vary=Origin}]responseBody=[ErrorInfo(status=500, error=Internal Server Error, errorDesc=null, path=http://localhost:9012/lendbiz/login)] 
+2021-10-01 13:08:03.195  INFO 23524 --- [http-nio-9012-exec-8] c.l.p.a.service.impl.LoggingServiceImpl  : [321321]REQUEST method=[POST] path=[/lendbiz/login] headers=[{content-length=78, requestid=321321, postman-token=6baa58c8-7893-4767-b89e-b5277659e552, host=localhost:9012, content-type=application/json, connection=keep-alive, accept-encoding=gzip, deflate, br, user-agent=PostmanRuntime/7.28.4, accept=*/*}]body=[LoginRequest(username=012187, password=1, deviceId=pc)]
+2021-10-01 13:08:03.195  INFO 23524 --- [http-nio-9012-exec-8] c.l.p2p.api.controller.UserController    : [321321] << login >>
+2021-10-01 13:10:14.866  INFO 4436 --- [main] com.lendbiz.p2p.api.ApiApplication       : Starting ApiApplication using Java 11.0.2 on DESKTOP-73I72RE with PID 4436 (D:\tuht_works\Projects\LENBIZ\api_mobile\bin\main started by thanh in d:\tuht_works\Projects\LENBIZ\api_mobile)
+2021-10-01 13:10:14.869  INFO 4436 --- [main] com.lendbiz.p2p.api.ApiApplication       : The following profiles are active: lendbiz-dev
+2021-10-01 13:10:16.203  INFO 4436 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2021-10-01 13:10:16.333  INFO 4436 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 118 ms. Found 8 JPA repository interfaces.
+2021-10-01 13:10:17.398  INFO 4436 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9012 (http)
+2021-10-01 13:10:17.414  INFO 4436 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-10-01 13:10:17.416  INFO 4436 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.53]
+2021-10-01 13:10:17.626  INFO 4436 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2021-10-01 13:10:17.627  INFO 4436 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2697 ms
+2021-10-01 13:10:17.908  INFO 4436 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-10-01 13:10:18.624  INFO 4436 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2021-10-01 13:10:18.701  INFO 4436 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2021-10-01 13:10:18.793  INFO 4436 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.32.Final
+2021-10-01 13:10:19.031  INFO 4436 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2021-10-01 13:10:19.243  INFO 4436 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.Oracle10gDialect
+2021-10-01 13:10:23.557  INFO 4436 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2021-10-01 13:10:23.568  INFO 4436 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2021-10-01 13:10:24.085  WARN 4436 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2021-10-01 13:10:24.882  INFO 4436 --- [main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
+2021-10-01 13:10:24.948  INFO 4436 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure Ant [pattern='/api/**'] with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@3feeab43, org.springframework.security.web.context.SecurityContextPersistenceFilter@329b4b8b, org.springframework.security.web.header.HeaderWriterFilter@759862a2, org.springframework.web.filter.CorsFilter@6178ac9d, org.springframework.security.web.authentication.logout.LogoutFilter@7a8dbbf1, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@7a925ac4, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@77a13162, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@712eb075, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7413c41, org.springframework.security.web.session.SessionManagementFilter@699fe19f, org.springframework.security.web.access.ExceptionTranslationFilter@14f11a56, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@13e12ab6]
+2021-10-01 13:10:25.670  INFO 4436 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9012 (http) with context path ''
+2021-10-01 13:10:25.672  INFO 4436 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2021-10-01 13:10:25.701  INFO 4436 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2021-10-01 13:10:25.750  INFO 4436 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2021-10-01 13:10:26.015  INFO 4436 --- [main] com.lendbiz.p2p.api.ApiApplication       : Started ApiApplication in 11.767 seconds (JVM running for 12.931)
+2021-10-01 13:10:27.525  INFO 4436 --- [http-nio-9012-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-10-01 13:10:27.526  INFO 4436 --- [http-nio-9012-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2021-10-01 13:10:27.528  INFO 4436 --- [http-nio-9012-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2021-10-01 13:10:28.714  INFO 4436 --- [http-nio-9012-exec-1] c.l.p.a.service.impl.LoggingServiceImpl  : [321321]REQUEST method=[POST] path=[/lendbiz/login] headers=[{content-length=78, requestid=321321, postman-token=c5366e7b-d826-456b-8434-9283cab79dd8, host=localhost:9012, content-type=application/json, connection=keep-alive, accept-encoding=gzip, deflate, br, user-agent=PostmanRuntime/7.28.4, accept=*/*}]body=[LoginRequest(username=012187, password=1, deviceId=pc)]
+2021-10-01 13:10:28.720  INFO 4436 --- [http-nio-9012-exec-1] c.l.p2p.api.controller.UserController    : [321321] << login >>
+2021-10-01 13:10:30.265  INFO 4436 --- [http-nio-9012-exec-1] c.l.p.a.service.impl.LoggingServiceImpl  : [321321]RESPONSE method=[POST] path=[/lendbiz/login] responseHeaders=[{Vary=Origin}]responseBody=[ApiResponse(status=00, message=SUCCESSFUL!, errorInfo=null, data={SESSIONID=HNBBMGFBKADUDHJAXVIJBHOIGGAAYL, CFTYPE=I, FULLNAME=HOANG THANH TU, CUSTID=012187, DATEOFBIRTH=01/01/1900, SEX=---, IDCODE=999999999, IDDATE=01/01/1900, IDPLACE=------, PHONE=0329374777, ADDRESS=1d, WARD=Hưng Chiến, DISTRICT=Thị xã Bình Long, PROVINCE=Bình Phước, HOUSEHOLDADDRESS= , HOUSEHOLDWARD= , HOUSEHOLDDISTRICT= , HOUSEHOLDPROVINCE= , CURRENTJOB=Làm việc nhận lương, COMPANY= , POSITION= , CAREER= , EMAIL=thanhtu.dz6@gmail.com, CONTACTADDRESS=1d, CUSTCLASS=DIAMOND, CAREBY=cskh@lendbiz.vn, CAREBYPHONE=02432011856, STATUS=A, MSGSTATUST=Quý khách chỉ được xem đầy đủ thông tin sau khi đã hoàn tất thủ tục đăng ký mở tài khoản. Để được hướng dẫn, xin liên hệ với chúng tôi qua Tổng đài: 024.3201.1856 hoặc Email: cskh@lendbiz.vn, BANKACCT= , BANKACCTNAME= , BANKNAME= , WID=25320, DID=690, PID=70, HWID=0, HDID=0, HPID=0, JOBID=2, CITYBANK= })] 
+2021-10-01 13:10:41.440  INFO 4436 --- [http-nio-9012-exec-3] c.l.p.a.service.impl.LoggingServiceImpl  : [321321]REQUEST method=[POST] path=[/lendbiz/login] headers=[{content-length=78, requestid=321321, postman-token=f0b7b95f-781f-4def-90d5-1634906850fc, host=localhost:9012, content-type=application/json, connection=keep-alive, accept-encoding=gzip, deflate, br, user-agent=PostmanRuntime/7.28.4, accept=*/*}]body=[LoginRequest(username=012187, password=2, deviceId=pc)]
+2021-10-01 13:10:41.440  INFO 4436 --- [http-nio-9012-exec-3] c.l.p2p.api.controller.UserController    : [321321] << login >>
+2021-10-01 13:10:42.942  INFO 4436 --- [http-nio-9012-exec-3] c.l.p.a.service.impl.LoggingServiceImpl  : [321321]RESPONSE method=[POST] path=[/lendbiz/login] responseHeaders=[{Vary=Origin}]responseBody=[ErrorInfo(status=01, error=97, errorDesc=Tên truy cập hoặc mật khẩu không chính xác. Quý khách lưu ý, dịch vụ bị tạm khóa nếu Quý khách nhập sai mật khẩu quá 5 lần., path=http://localhost:9012/lendbiz/login)] 
+2021-10-01 13:11:04.532  WARN 24852 --- [Test worker] ory$DuplicateJsonObjectContextCustomizer : 
+
+Found multiple occurrences of org.json.JSONObject on the class path:
+
+	jar:file:/C:/Users/thanh/.gradle/caches/modules-2/files-2.1/org.json/json/20210307/528c8df3757e8bcf151817b1d7b9b434f6aa08d5/json-20210307.jar!/org/json/JSONObject.class
+	jar:file:/C:/Users/thanh/.gradle/caches/modules-2/files-2.1/com.vaadin.external.google/android-json/0.0.20131108.vaadin1/fa26d351fe62a6a17f5cda1287c1c6110dec413f/android-json-0.0.20131108.vaadin1.jar!/org/json/JSONObject.class
+
+You may wish to exclude one of them to ensure predictable runtime behavior
+
+2021-10-01 13:11:04.554  INFO 24852 --- [Test worker] com.lendbiz.p2p.api.ApiApplicationTests  : Starting ApiApplicationTests using Java 11.0.2 on DESKTOP-73I72RE with PID 24852 (started by thanh in D:\tuht_works\Projects\LENBIZ\api_mobile)
+2021-10-01 13:11:04.555  INFO 24852 --- [Test worker] com.lendbiz.p2p.api.ApiApplicationTests  : The following profiles are active: lendbiz-dev
+2021-10-01 13:11:05.862  INFO 24852 --- [Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2021-10-01 13:11:05.970  INFO 24852 --- [Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 100 ms. Found 8 JPA repository interfaces.
+2021-10-01 13:11:06.934  INFO 24852 --- [Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-10-01 13:11:07.536  INFO 24852 --- [Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2021-10-01 13:11:07.626  INFO 24852 --- [Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2021-10-01 13:11:07.713  INFO 24852 --- [Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.32.Final
+2021-10-01 13:11:07.951  INFO 24852 --- [Test worker] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2021-10-01 13:11:08.197  INFO 24852 --- [Test worker] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.Oracle10gDialect
+2021-10-01 13:11:12.663  INFO 24852 --- [Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2021-10-01 13:11:12.673  INFO 24852 --- [Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2021-10-01 13:11:13.237  WARN 24852 --- [Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2021-10-01 13:11:14.501  INFO 24852 --- [Test worker] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
+2021-10-01 13:11:14.720  INFO 24852 --- [Test worker] o.s.s.web.DefaultSecurityFilterChain     : Will secure Ant [pattern='/api/**'] with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@794b139b, org.springframework.security.web.context.SecurityContextPersistenceFilter@6108c962, org.springframework.security.web.header.HeaderWriterFilter@13ac1657, org.springframework.web.filter.CorsFilter@77217c17, org.springframework.security.web.authentication.logout.LogoutFilter@7eb006bd, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@5c168f98, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@6f749a1f, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@30be6a05, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@87276c4, org.springframework.security.web.session.SessionManagementFilter@5702232d, org.springframework.security.web.access.ExceptionTranslationFilter@4bf6bc2d, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@44046b0d]
+2021-10-01 13:11:15.680  INFO 24852 --- [Test worker] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2021-10-01 13:11:15.707  INFO 24852 --- [Test worker] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2021-10-01 13:11:15.748  INFO 24852 --- [Test worker] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2021-10-01 13:11:15.955  INFO 24852 --- [Test worker] com.lendbiz.p2p.api.ApiApplicationTests  : Started ApiApplicationTests in 11.835 seconds (JVM running for 14.017)
+2021-10-01 13:11:16.174  INFO 24852 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2021-10-01 13:11:16.177  INFO 24852 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2021-10-01 13:11:16.475  INFO 24852 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

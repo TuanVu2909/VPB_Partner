@@ -373,7 +373,8 @@ public class PackageFilterRepository {
 		JsonNode root;
 		try {
 			root = mapper.readTree(body);
-			if (root.get(0) != null && root.get(0).get("ERRORCODE").asInt() == 99) {
+			if (root.get(0) != null && root.get(0).get("ERRORCODE") != null) {
+				if(root.get(0).get("ERRORCODE").asInt() == 99)
 				throw new BusinessException(Constants.FAIL, root.get(0).get("STATUS").textValue());
 			}
 		} catch (JsonProcessingException e) {

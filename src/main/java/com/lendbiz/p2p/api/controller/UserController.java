@@ -35,8 +35,8 @@ public class UserController {
 	UserService userService;
 
 	@PostMapping("/login")
-	public ResponseEntity<?> login(HttpServletRequest httpServletRequest, @RequestBody LoginRequest loginRequest) {
-		// String requestId = httpServletRequest.getHeader("request_id");
+	public ResponseEntity<?> login(HttpServletRequest httpServletRequest, @RequestHeader("requestId") String requestId, @RequestBody LoginRequest loginRequest) {
+		log.info("[" + requestId + "] << login >>");
 
 		return userService.login(loginRequest);
 	}
