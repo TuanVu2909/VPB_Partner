@@ -1,5 +1,6 @@
 package com.lendbiz.p2p.api.service;
 
+import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.request.LoginRequest;
 import com.lendbiz.p2p.api.request.ReqJoinRequest;
 
@@ -20,5 +21,8 @@ public interface UserService {
 
 	// ReqJoin
 	public ResponseEntity<?> register(ReqJoinRequest reqJoinRequest);
+
+
+	public ResponseEntity<?> verifyAcc(VerifyAccountInput input);
 
 }

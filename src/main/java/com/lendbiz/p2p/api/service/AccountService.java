@@ -6,5 +6,5 @@ import org.springframework.http.ResponseEntity;
 
 public interface AccountService {
 
-    public ResponseEntity<?> verifyAcc(VerifyAccountInput input);
+
 }

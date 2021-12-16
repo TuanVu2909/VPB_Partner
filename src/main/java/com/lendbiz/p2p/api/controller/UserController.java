@@ -35,8 +35,6 @@ public class UserController {
 
     @Autowired
     UserService userService;
-    @Autowired
-    AccountService accountService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(HttpServletRequest httpServletRequest, @RequestHeader("requestId") String requestId, @RequestBody LoginRequest loginRequest) {
@@ -59,7 +57,7 @@ public class UserController {
                                            @RequestHeader("requestId") String requestId, @RequestBody VerifyAccountInput verifyAccountInput)
             throws BusinessException {
         log.info("[" + requestId + "] << verify account >>");
-        return accountService.verifyAcc(verifyAccountInput);
+        return userService.verifyAcc(verifyAccountInput);
     }
 
 }
