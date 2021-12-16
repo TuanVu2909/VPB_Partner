@@ -54,7 +54,7 @@ public class UserController {
 
     }
 
-    @PostMapping("/verify-acc")
+    @PostMapping("/verify-account")
     public ResponseEntity<?> verifyAccount(HttpServletRequest httpServletRequest,
                                            @RequestHeader("requestId") String requestId, @RequestBody VerifyAccountInput verifyAccountInput)
             throws BusinessException {
