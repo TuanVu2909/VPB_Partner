@@ -1,14 +1,7 @@
 package com.lendbiz.p2p.api.service;
 
-import com.lendbiz.p2p.api.request.AddGroupRequest;
-import com.lendbiz.p2p.api.request.AddUserRequest;
-import com.lendbiz.p2p.api.request.DeleteUserRequest;
-import com.lendbiz.p2p.api.request.GetConfigDataRequest;
 import com.lendbiz.p2p.api.request.LoginRequest;
 import com.lendbiz.p2p.api.request.ReqJoinRequest;
-import com.lendbiz.p2p.api.request.SearchCmdRequest;
-import com.lendbiz.p2p.api.request.UpdateGroupRequest;
-import com.lendbiz.p2p.api.request.UpdateUserRequest;
 
 import org.springframework.http.ResponseEntity;
 
