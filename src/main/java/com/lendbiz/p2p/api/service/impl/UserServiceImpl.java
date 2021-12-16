@@ -63,8 +63,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 	@Override
 	public ResponseEntity<?> register(ReqJoinRequest reqJoinRequest) {
 
-		String responseId = pkgFilterRepo.reqJoin(reqJoinRequest);
-		return response(toResult(responseId));
+		List<Object> response = (ArrayList) pkgFilterRepo.reqJoin(reqJoinRequest);
+		return response(toResult(response.get(0)));
 	}
 
 }
