@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.lendbiz.p2p.api.entity.CustomEntity;
+import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.repository.AuthRepository;
 import com.lendbiz.p2p.api.repository.PackageFilterRepository;
 import com.lendbiz.p2p.api.request.LoginRequest;
@@ -65,6 +66,14 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
 		List<Object> response = (ArrayList) pkgFilterRepo.reqJoin(reqJoinRequest);
 		return response(toResult(response.get(0)));
+	}
+	@Override
+	public ResponseEntity<?> verifyAcc(VerifyAccountInput input) {
+		try {
+			return response(toResult(pkgFilterRepo.verifyAcc(input)));
+		}catch (Exception e){
+			return response(toResult("201",e.getMessage(),input));
+		}
 	}
 
 }

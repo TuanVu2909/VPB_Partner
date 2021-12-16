@@ -8,17 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-@Service
-public class AccountServiceImpl extends BaseResponse<AccountService> implements AccountService {
-    @Autowired
-    PackageFilterRepository pfr;
 
-    @Override
-    public ResponseEntity<?> verifyAcc(VerifyAccountInput input) {
-        try {
-            return response(toResult(pfr.verifyAcc(input)));
-        }catch (Exception e){
-            return response(toResult("201",e.getMessage(),input));
-        }
-    }
+public class AccountServiceImpl {
+
 }
