@@ -6,7 +6,6 @@ import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.request.LoginRequest;
 import com.lendbiz.p2p.api.request.ReqJoinRequest;
-import com.lendbiz.p2p.api.service.AccountService;
 import com.lendbiz.p2p.api.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
