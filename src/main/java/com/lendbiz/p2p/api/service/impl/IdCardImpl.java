@@ -1,9 +1,9 @@
-package com.lendbiz.api.service.impl;
+package com.lendbiz.p2p.api.service.impl;
 
 import com.google.common.base.Optional;
-import com.lendbiz.api.entity.CfRelation;
-import com.lendbiz.api.entity.IdCard;
-import com.lendbiz.api.repository.IdCardRepository;
+import com.lendbiz.p2p.api.entity.CfRelation;
+import com.lendbiz.p2p.api.entity.IdCard;
+import com.lendbiz.p2p.api.repository.IdCardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

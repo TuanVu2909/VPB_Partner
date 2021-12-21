@@ -13,6 +13,7 @@ import java.util.Optional;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.constants.JsonMapper;
@@ -22,6 +23,7 @@ import com.lendbiz.p2p.api.request.SavisVerifyOtpRequest;
 import com.lendbiz.p2p.api.request.SignContractRequest;
 import com.lendbiz.p2p.api.request.SignContractRequestV2;
 import com.lendbiz.p2p.api.response.AccesToken;
+import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.response.InfoIdentity;
 import com.lendbiz.p2p.api.response.OtpResponse;
 import com.lendbiz.p2p.api.response.OtpResponseNew;
@@ -33,6 +35,7 @@ import com.lendbiz.p2p.api.utils.StringUtil;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ByteArrayResource;
@@ -50,7 +53,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
-public class SavisServiceImpl extends BaseService implements SavisService {
+public class SavisServiceImpl extends BaseResponse<SavisService> implements SavisService {
 
     @Autowired
     private RestTemplate restTemplate;
@@ -59,13 +62,11 @@ public class SavisServiceImpl extends BaseService implements SavisService {
 
     private final String isSelfie = "TRUE";
 
-    public SavisServiceImpl(Environment env) {
-        super(env);
-    }
-
     @Override
-    public Optional<InfoIdentity> callPredict(MultipartFile file, InfoIdentity identity, String type) {
+    public ResponseEntity<?> callPredict(MultipartFile file, InfoIdentity identity, String type) {
         logger.info("---------Start call predict---------------");
+        JSONObject sObj;
+        Object temp;
         final String uri = Constants.ESIGN_PREDICT;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -80,93 +81,15 @@ public class SavisServiceImpl extends BaseService implements SavisService {
 
         // mapping response
         if (responseEntityStr.getStatusCodeValue() == 200) {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode root;
-            logger.info("[Call perdict] response : {}", responseEntityStr.getBody());
-            if (Constants.TYPE_FRONT_IDENTITY.equalsIgnoreCase(type)) {
-                try {
-                    root = mapper.readTree(responseEntityStr.getBody());
-                    String bd = root.get("output").get(0).get("ngay_sinh").get("value").asText();
-
-                    DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-
-                    Date birthDay = null;
-
-                    try {
-                        birthDay = df.parse(bd);
-
-                    } catch (ParseException e) {
-
-                        birthDay = new Date();
-                    }
-
-                    // mặt trước
-                    identity.setFullName(root.get("output").get(0).get("ho_ten").get("value").asText());
-                    identity.setAddress(root.get("output").get(0).get("ho_khau_thuong_tru").get("value").asText());
-                    identity.setNgaysinh(birthDay);
-                    identity.setDomicile(root.get("output").get(0).get("nguyen_quan").get("value").asText());
-                    identity.setType(root.get("output").get(0).get("class_name").get("value").asText());
-                    identity.setIdentityId(root.get("output").get(0).get("id").get("value").asText());
-                    identity.setBirthday(root.get("output").get(0).get("ngay_sinh").get("normalized")
-                            .get("value_unidecode").asText());
-                    identity.setAddress(root.get("output").get(0).get("nguyen_quan").get("value_unidecode").asText());
-                    IdCard idCard = new IdCard();
-                    idCard.setAddress(identity.getAddress());
-                    idCard.setBirthDay(identity.getNgaysinh());
-                    idCard.setFullName(identity.getFullName());
-                    idCard.setDomicile(identity.getDomicile());
-                    idCard.setIdentity(identity.getIdentityId());
-                    idCard.setType(identity.getType());
-                    String id = String.valueOf((int) Math.floor(Math.random() * 100000));
-                    idCard.setId(id);
-                    idCard.setCustID(identity.getCustId());
-                    idCard = idCardImpl.create(idCard);
-
-                } catch (JsonProcessingException e) {
-                    throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
-                }
-            } else if (Constants.TYPE_BACK_IDENTITY.equalsIgnoreCase(type)) {
-                try {
-
-                    root = mapper.readTree(responseEntityStr.getBody());
-                    Date dateR = null;
-                    DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-                    String dr = root.get("output").get(0).get("ngay_cap").get("normalized")
-                            .get("value_unidecode").asText();
-                    try {
-                        dateR = df.parse(dr);
-
-                    } catch (ParseException e) {
-
-                        dateR = new Date();
-                    }
-                    identity.setIssuedBy(root.get("output").get(0).get("noi_cap").get("value")
-                            .asText());
-                    identity.setType("CĂN CƯỚC CÔNG DÂN - MẶT SAU");
-                    identity.setDateRange(dateR);
-                    identity.setDateIssued(root.get("output").get(0).get("ngay_cap").get("normalized")
-                            .get("value_unidecode").asText());
-
-                    IdCard idCardBack = new IdCard();
-                    idCardBack.setDateRange(identity.getDateRange());
-                    idCardBack.setIssuedBy(identity.getIssuedBy());
-                    idCardBack.setType(identity.getType());
-                    idCardBack.setCustID(identity.getCustId());
-                    String id2 = String.valueOf((int) Math.floor(Math.random() * 100000));
-                    idCardBack.setId(id2);
-
-                    idCardBack = idCardImpl.create(idCardBack);
-                } catch (JsonProcessingException e) {
-                    throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
-                }
-            }
+            sObj = new JSONObject(responseEntityStr.getBody());
+            temp = new Gson().fromJson(sObj.toString(), Object.class);
 
         } else {
             throw new BusinessException(ErrorCode.FAILED_TO_EXECUTE, ErrorCode.FAILED_TO_EXECUTE_DESCRIPTION);
         }
         logger.info("[Call perdict] infoIdentity result : {}", JsonMapper.writeValueAsString(identity));
 
-        return Optional.of(identity);
+        return response(toResult(temp));
     }
 
     private ByteArrayResource convertFile(MultipartFile sourceImage) {

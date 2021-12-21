@@ -1,11 +1,15 @@
 package com.lendbiz.p2p.api.controller;
 
+import java.util.Optional;
+
 import javax.servlet.http.HttpServletRequest;
 
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.request.LoginRequest;
 import com.lendbiz.p2p.api.request.ReqJoinRequest;
+import com.lendbiz.p2p.api.response.InfoIdentity;
+import com.lendbiz.p2p.api.service.SavisService;
 import com.lendbiz.p2p.api.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +18,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -34,6 +40,9 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    SavisService savisService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(HttpServletRequest httpServletRequest, @RequestHeader("requestId") String requestId, @RequestBody LoginRequest loginRequest) {
@@ -58,5 +67,15 @@ public class UserController {
         log.info("[" + requestId + "] << verify account >>");
         return userService.verifyAcc(verifyAccountInput);
     }
+
+    @PostMapping("/verify-identity")
+	public ResponseEntity<?> verifyIdeEntity(HttpServletRequest httpServletRequest,
+			@RequestHeader("requestId") String requestId, @RequestHeader("session") String session,
+			@RequestParam("id_file") MultipartFile idFile, @RequestParam("id_type") String idType) throws BusinessException {
+		log.info("[" + requestId + "] << verifyIdeEntity >>");
+		// String custId = userService.checkSession(session);
+        InfoIdentity identity = new InfoIdentity();
+        return savisService.callPredict(idFile, identity, idType);
+	}
 
 }

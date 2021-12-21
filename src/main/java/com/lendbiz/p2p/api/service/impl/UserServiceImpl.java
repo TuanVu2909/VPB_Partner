@@ -17,17 +17,21 @@ package com.lendbiz.p2p.api.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.lendbiz.p2p.api.constants.Constants;
-import com.lendbiz.p2p.api.entity.CustomEntity;
+import com.lendbiz.p2p.api.entity.UserOnline;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.model.exception.InputInvalidExeption;
 import com.lendbiz.p2p.api.repository.AuthRepository;
 import com.lendbiz.p2p.api.repository.PackageFilterRepository;
+import com.lendbiz.p2p.api.repository.UserOnlineRepository;
 import com.lendbiz.p2p.api.request.LoginRequest;
 import com.lendbiz.p2p.api.request.ReqJoinRequest;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.service.UserService;
+import com.lendbiz.p2p.api.utils.StringUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +54,9 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
 	@Autowired
 	PackageFilterRepository pkgFilterRepo;
+
+	@Autowired
+	UserOnlineRepository userOnlineRepo;
 
 	@Override
 	public ResponseEntity<?> login(LoginRequest loginRequest) {
@@ -77,6 +84,19 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 		} catch (Exception e) {
 			throw new BusinessException(Constants.FAIL, e.getMessage());
 		}
+	}
+
+	@Override
+	public String checkSession(String session) {
+		logger.info("[" + session + "] << checkSession >>");
+		if (StringUtil.isEmty(session))
+			throw new InputInvalidExeption("user or pass invalid");
+
+		Optional<UserOnline> userOnline = userOnlineRepo.findBySession(session);
+		if (!userOnline.isPresent())
+			throw new InputInvalidExeption("Session is invalid or time out");
+
+		return userOnline.get().getCustId();
 	}
 
 }

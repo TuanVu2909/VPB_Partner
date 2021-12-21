@@ -25,4 +25,6 @@ public interface UserService {
 
 	public ResponseEntity<?> verifyAcc(VerifyAccountInput input);
 
+	String checkSession(String session);
+
 }
