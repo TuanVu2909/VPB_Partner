@@ -48,7 +48,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 					((ServletWebRequest) request).getRequest().getRequestURL().toString());
 			return new ResponseEntity<Object>(errorInfo, status);
 		} catch (BusinessException e) {
-			ErrorInfo errorInfo = new ErrorInfo(Constants.FAIL, "97", e.getStatus(), e.getMessage(),
+			ErrorInfo errorInfo = new ErrorInfo(Constants.FAIL, e.status, e.getStatus(), e.getMessage(),
 					((ServletWebRequest) request).getRequest().getRequestURL().toString());
 			return new ResponseEntity<Object>(errorInfo, HttpStatus.OK);
 		} catch (Exception e) {// Do nothing

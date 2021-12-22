@@ -15,17 +15,15 @@ import lombok.ToString;
 @ToString
 public class InfoIdentity {
 
-	private String identityId;
-	private String birthday;
-	private Date ngaysinh;
-	private String address;
+	private String idNo;
 	private String dateIssued;
-	private String fullName;
-	private String domicile;
-    private String type;
-    private Date dateRange;
-    private Date expirationDate;
 	private String issuedBy;
-	private String custId;
+	private String fullName;
+	private String birthDay;
+	private String sex;
+	private String nation;
+	private String address;
+	private String expirationDate;
+	private int type;
 
 }

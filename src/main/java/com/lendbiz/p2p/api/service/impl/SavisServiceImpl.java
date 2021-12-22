@@ -3,22 +3,17 @@ package com.lendbiz.p2p.api.service.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Optional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.constants.JsonMapper;
-import com.lendbiz.p2p.api.entity.IdCard;
-import com.lendbiz.p2p.api.model.exception.BusinessException;
+import com.lendbiz.p2p.api.model.SavisResponse.IdentityFromSavisResponse;
+import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.request.SavisVerifyOtpRequest;
 import com.lendbiz.p2p.api.request.SignContractRequest;
 import com.lendbiz.p2p.api.request.SignContractRequestV2;
@@ -30,14 +25,11 @@ import com.lendbiz.p2p.api.response.OtpResponseNew;
 import com.lendbiz.p2p.api.response.SignPdfResponse;
 import com.lendbiz.p2p.api.response.UserRegisterResponse;
 import com.lendbiz.p2p.api.service.SavisService;
-import com.lendbiz.p2p.api.service.base.BaseService;
 import com.lendbiz.p2p.api.utils.StringUtil;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -52,7 +44,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Service
+@Service("SavisSerivce")
 public class SavisServiceImpl extends BaseResponse<SavisService> implements SavisService {
 
     @Autowired
@@ -63,10 +55,11 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
     private final String isSelfie = "TRUE";
 
     @Override
-    public ResponseEntity<?> callPredict(MultipartFile file, InfoIdentity identity, String type) {
+    public ResponseEntity<?> callPredict(MultipartFile file, InfoIdentity identity, int type) {
         logger.info("---------Start call predict---------------");
-        JSONObject sObj;
-        Object temp;
+        // JSONObject sObj;
+        // Object temp;
+        IdentityFromSavisResponse savisResponse = new IdentityFromSavisResponse();
         final String uri = Constants.ESIGN_PREDICT;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -81,15 +74,176 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
 
         // mapping response
         if (responseEntityStr.getStatusCodeValue() == 200) {
-            sObj = new JSONObject(responseEntityStr.getBody());
-            temp = new Gson().fromJson(sObj.toString(), Object.class);
 
-        } else {
-            throw new BusinessException(ErrorCode.FAILED_TO_EXECUTE, ErrorCode.FAILED_TO_EXECUTE_DESCRIPTION);
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root;
+            logger.info("[Call perdict] response : {}", responseEntityStr.getBody());
+
+            try {
+                root = mapper.readTree(responseEntityStr.getBody());
+
+                int sideType = root.get("output").get(0).get("class_name").get("normalized").get("value").asInt();
+
+                String isReal = root.get("output").get(0).get("id") != null
+                        ? root.get("output").get(0).get("id").get("validate").get("id_check").asText()
+                        : "BACKNOCHECK";
+
+                if (!isReal.equals("REAL") && !isReal.equals("BACKNOCHECK")) {
+                    throw new BusinessException(ErrorCode.ID_FAKE, ErrorCode.ID_FAKE_DESCRIPTION);
+                }
+
+                validateIdentityCard(type, sideType);
+
+                // mặt trước
+                identity.setFullName(root.get("output").get(0).get("ho_ten") != null
+                        ? root.get("output").get(0).get("ho_ten").get("value").asText()
+                        : null);
+                identity.setAddress(root.get("output").get(0).get("ho_khau_thuong_tru") != null
+                        ? root.get("output").get(0).get("ho_khau_thuong_tru").get("value").asText()
+                        : null);
+                identity.setBirthDay(root.get("output").get(0).get("ngay_sinh") != null
+                        ? root.get("output").get(0).get("ngay_sinh").get("value").asText()
+                        : null);
+                identity.setSex(root.get("output").get(0).get("gioi_tinh") != null
+                        ? root.get("output").get(0).get("gioi_tinh").get("value").asText()
+                        : null);
+                identity.setNation(root.get("output").get(0).get("quoc_tich") != null
+                        ? root.get("output").get(0).get("quoc_tich").get("value").asText()
+                        : null);
+                identity.setExpirationDate(root.get("output").get(0).get("ngay_het_han") != null
+                        ? root.get("output").get(0).get("ngay_het_han").get("value").asText()
+                        : null);
+                identity.setType(root.get("output").get(0).get("class_name") != null
+                        ? root.get("output").get(0).get("class_name").get("normalized").get("value").asInt()
+                        : 9999);
+                identity.setIdNo(root.get("output").get(0).get("id") != null
+                        ? root.get("output").get(0).get("id").get("value").asText()
+                        : null);
+                identity.setDateIssued(root.get("output").get(0).get("ngay_cap") != null
+                        ? root.get("output").get(0).get("ngay_cap").get("value").asText()
+                        : null);
+                identity.setIssuedBy(root.get("output").get(0).get("noi_cap") != null
+                        ? root.get("output").get(0).get("noi_cap").get("value").asText()
+                        : null);
+
+                // identity.setBirthday(root.get("output").get(0).get("ngay_sinh").get("normalized")
+                // .get("value_unidecode").asText());
+                // identity.setAddress(root.get("output").get(0).get("nguyen_quan").get("value_unidecode").asText());
+
+            } catch (JsonProcessingException e) {
+                throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
+            }
+
         }
-        logger.info("[Call perdict] infoIdentity result : {}", JsonMapper.writeValueAsString(identity));
 
-        return response(toResult(temp));
+        return response(toResult(identity));
+    }
+
+    private void validateIdentityCard(int inputType, int responseType) {
+
+        if (inputType == 0 || inputType == 1) {
+            if (responseType != inputType) {
+                throw new BusinessException(ErrorCode.NOT_MATCHING_TYPE,
+                        ErrorCode.NOT_MATCHING_CMND_DESCRIPTION);
+
+            }
+
+            if (inputType == 0) {
+                if (responseType != inputType) {
+                    throw new BusinessException(ErrorCode.NOT_MATCHING_SIDE,
+                            ErrorCode.NOT_MATCHING_FRONT_CMND_DESCRIPTION);
+
+                }
+            } else {
+                if (responseType != inputType) {
+                    throw new BusinessException(ErrorCode.NOT_MATCHING_SIDE,
+                            ErrorCode.NOT_MATCHING_BACK_CMND_DESCRIPTION);
+                }
+            }
+
+        }
+
+        if (inputType == 2 || inputType == 3) {
+            if (responseType != inputType) {
+                throw new BusinessException(ErrorCode.NOT_MATCHING_TYPE,
+                        ErrorCode.NOT_MATCHING_CCCD_DESCRIPTION);
+
+            }
+
+            if (inputType == 2) {
+                if (responseType != inputType) {
+                    throw new BusinessException(ErrorCode.NOT_MATCHING_SIDE,
+                            ErrorCode.NOT_MATCHING_FRONT_CCCD_DESCRIPTION);
+
+                }
+            } else {
+                if (responseType != inputType) {
+                    throw new BusinessException(ErrorCode.NOT_MATCHING_SIDE,
+                            ErrorCode.NOT_MATCHING_BACK_CCCD_DESCRIPTION);
+                }
+            }
+
+        }
+
+        if (inputType == 5) {
+            if (responseType != inputType) {
+                throw new BusinessException(ErrorCode.NOT_MATCHING_TYPE,
+                        ErrorCode.NOT_MATCHING_HC_DESCRIPTION);
+
+            }
+
+            if (inputType == 5) {
+                if (responseType != inputType) {
+                    throw new BusinessException(ErrorCode.NOT_MATCHING_SIDE,
+                            ErrorCode.NOT_MATCHING_SIDE_HC_DESCRIPTION);
+
+                }
+            }
+
+        }
+
+        if (inputType == 6 || inputType == 52) {
+            if (responseType != inputType) {
+                throw new BusinessException(ErrorCode.NOT_MATCHING_TYPE,
+                        ErrorCode.NOT_MATCHING_CMNDQD_DESCRIPTION);
+
+            }
+
+            if (inputType == 6) {
+                if (responseType != inputType) {
+                    throw new BusinessException(ErrorCode.NOT_MATCHING_SIDE,
+                            ErrorCode.NOT_MATCHING_FRONT_CMNDQD_DESCRIPTION);
+
+                }
+            } else {
+                if (responseType != inputType) {
+                    throw new BusinessException(ErrorCode.NOT_MATCHING_SIDE,
+                            ErrorCode.NOT_MATCHING_BACK_CMNDQD_DESCRIPTION);
+                }
+            }
+        }
+
+        if (inputType == 7 || inputType == 53) {
+            if (responseType != inputType) {
+                throw new BusinessException(ErrorCode.NOT_MATCHING_TYPE,
+                        ErrorCode.NOT_MATCHING_CMCAND_DESCRIPTION);
+
+            }
+
+            if (inputType == 7) {
+                if (responseType != inputType) {
+                    throw new BusinessException(ErrorCode.NOT_MATCHING_SIDE,
+                            ErrorCode.NOT_MATCHING_FRONT_CMCAND_DESCRIPTION);
+
+                }
+            } else {
+                if (responseType != inputType) {
+                    throw new BusinessException(ErrorCode.NOT_MATCHING_SIDE,
+                            ErrorCode.NOT_MATCHING_BACK_CMCAND_DESCRIPTION);
+                }
+            }
+        }
+
     }
 
     private ByteArrayResource convertFile(MultipartFile sourceImage) {

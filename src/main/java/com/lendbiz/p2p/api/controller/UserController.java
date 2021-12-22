@@ -71,7 +71,7 @@ public class UserController {
     @PostMapping("/verify-identity")
 	public ResponseEntity<?> verifyIdeEntity(HttpServletRequest httpServletRequest,
 			@RequestHeader("requestId") String requestId, @RequestHeader("session") String session,
-			@RequestParam("id_file") MultipartFile idFile, @RequestParam("id_type") String idType) throws BusinessException {
+			@RequestParam("id_file") MultipartFile idFile, @RequestParam("id_type") int idType) throws BusinessException {
 		log.info("[" + requestId + "] << verifyIdeEntity >>");
 		// String custId = userService.checkSession(session);
         InfoIdentity identity = new InfoIdentity();
