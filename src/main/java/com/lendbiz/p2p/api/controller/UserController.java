@@ -45,7 +45,8 @@ public class UserController {
     SavisService savisService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(HttpServletRequest httpServletRequest, @RequestHeader("requestId") String requestId, @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(HttpServletRequest httpServletRequest, @RequestHeader("requestId") String requestId,
+            @RequestBody LoginRequest loginRequest) {
         log.info("[" + requestId + "] << login >>");
 
         return userService.login(loginRequest);
@@ -53,7 +54,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(HttpServletRequest httpServletRequest,
-                                      @RequestHeader("requestId") String requestId, @RequestBody ReqJoinRequest reqJoinRequest)
+            @RequestHeader("requestId") String requestId, @RequestBody ReqJoinRequest reqJoinRequest)
             throws BusinessException {
         log.info("[" + requestId + "] << register >>");
         return userService.register(reqJoinRequest);
@@ -62,20 +63,22 @@ public class UserController {
 
     @PostMapping("/verify-account")
     public ResponseEntity<?> verifyAccount(HttpServletRequest httpServletRequest,
-                                           @RequestHeader("requestId") String requestId, @RequestBody VerifyAccountInput verifyAccountInput)
+            @RequestHeader("requestId") String requestId, @RequestBody VerifyAccountInput verifyAccountInput)
             throws BusinessException {
         log.info("[" + requestId + "] << verify account >>");
         return userService.verifyAcc(verifyAccountInput);
     }
 
     @PostMapping("/verify-identity")
-	public ResponseEntity<?> verifyIdeEntity(HttpServletRequest httpServletRequest,
-			@RequestHeader("requestId") String requestId, @RequestHeader("session") String session,
-			@RequestParam("id_file") MultipartFile idFile, @RequestParam("id_type") int idType) throws BusinessException {
-		log.info("[" + requestId + "] << verifyIdeEntity >>");
-		// String custId = userService.checkSession(session);
+    public ResponseEntity<?> verifyIdeEntity(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId, @RequestHeader("session") String session,
+            @RequestParam("id_file") MultipartFile idFile, @RequestParam("id_type") int idType)
+            throws BusinessException {
+        log.info("[" + requestId + "] << verifyIdeEntity >>");
+        log.info("[" + idType + "] << verifyIdeEntity >>");
+        // String custId = userService.checkSession(session);
         InfoIdentity identity = new InfoIdentity();
         return savisService.callPredict(idFile, identity, idType);
-	}
+    }
 
 }

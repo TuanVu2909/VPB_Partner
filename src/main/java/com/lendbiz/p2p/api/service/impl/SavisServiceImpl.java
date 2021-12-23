@@ -59,7 +59,6 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
         logger.info("---------Start call predict---------------");
         // JSONObject sObj;
         // Object temp;
-        IdentityFromSavisResponse savisResponse = new IdentityFromSavisResponse();
         final String uri = Constants.ESIGN_PREDICT;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -84,13 +83,13 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
 
                 int sideType = root.get("output").get(0).get("class_name").get("normalized").get("value").asInt();
 
-                String isReal = root.get("output").get(0).get("id") != null
-                        ? root.get("output").get(0).get("id").get("validate").get("id_check").asText()
-                        : "BACKNOCHECK";
+                // String isReal = root.get("output").get(0).get("id") != null
+                //         ? root.get("output").get(0).get("id").get("validate").get("id_check").asText()
+                //         : "BACKNOCHECK";
 
-                if (!isReal.equals("REAL") && !isReal.equals("BACKNOCHECK")) {
-                    throw new BusinessException(ErrorCode.ID_FAKE, ErrorCode.ID_FAKE_DESCRIPTION);
-                }
+                // if (!isReal.equals("REAL") && !isReal.equals("BACKNOCHECK")) {
+                //     throw new BusinessException(ErrorCode.ID_FAKE, ErrorCode.ID_FAKE_DESCRIPTION);
+                // }
 
                 validateIdentityCard(type, sideType);
 
