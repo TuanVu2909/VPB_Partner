@@ -27,10 +27,10 @@ public class ErrorCode {
     public static final String INVALID_SESSION_DESCRIPTION = "Invalid Session!";
 
     public static final String FAILED_TO_EXECUTE = "08";
-    public static final String FAILED_TO_EXECUTE_DESCRIPTION = "Co loi xay ra khi ket noi toi may chu fpt";
+    public static final String FAILED_TO_EXECUTE_DESCRIPTION = "Đã có lỗi xảy ra khi kết nối tới máy chủ. Quý Khách vui lòng liên hệ tổng đài 0123456 để được hỗ trợ!";
 
     public static final String FAILED_TO_JSON = "09";
-    public static final String FAILED_TO_JSON_DESCRIPTION = "Can not convert from Json to Object";
+    public static final String FAILED_TO_JSON_DESCRIPTION = "Đã có lỗi xảy ra khi kết nối tới máy chủ. Quý Khách vui lòng liên hệ tổng đài 0123456 để được hỗ trợ!";
 
     public static final String FAILED_TO_FILE = "10";
     public static final String FAILED_TO_FILE_DESCRIPTION = "Can not convert file !";
@@ -69,4 +69,7 @@ public class ErrorCode {
 
     public static final String ID_FAKE = "16";
     public static final String ID_FAKE_DESCRIPTION = "Giấy tờ tuỳ thân của Quý Khách không hợp lệ. Vui lòng kiểm tra và thử lại!";
+
+    public static final String FACE_NOT_MATCHING = "17";
+    public static final String FACE_NOT_MATCHING_DESCRIPTION = "Khuông mặt của bạn không khớp với giấy tờ tuỳ thân! Bạn thử chụp lại nhé!";
 }

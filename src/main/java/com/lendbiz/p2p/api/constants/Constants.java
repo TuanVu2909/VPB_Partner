@@ -93,4 +93,6 @@ public class Constants {
 	public static final String METADATA = "{\"source\":\"24a00f5d-e625-4bc4-8384-c906848c03f3\"}";
 
 	public static final String SIGN_IMAGE_DEFAULT = "default_docs\\success.png";
+
+	public static final String THRESHOLD = "0.65";
 }

@@ -13,6 +13,7 @@ import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.constants.JsonMapper;
 import com.lendbiz.p2p.api.model.SavisResponse.IdentityFromSavisResponse;
+import com.lendbiz.p2p.api.repository.CfMastRepository;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.request.SavisVerifyOtpRequest;
 import com.lendbiz.p2p.api.request.SignContractRequest;
@@ -54,6 +55,9 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
 
     private final String isSelfie = "TRUE";
 
+    @Autowired
+    CfMastRepository cfMastRepo;
+
     @Override
     public ResponseEntity<?> callPredict(MultipartFile file, InfoIdentity identity, int type) {
         logger.info("---------Start call predict---------------");
@@ -84,11 +88,13 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
                 int sideType = root.get("output").get(0).get("class_name").get("normalized").get("value").asInt();
 
                 // String isReal = root.get("output").get(0).get("id") != null
-                //         ? root.get("output").get(0).get("id").get("validate").get("id_check").asText()
-                //         : "BACKNOCHECK";
+                // ?
+                // root.get("output").get(0).get("id").get("validate").get("id_check").asText()
+                // : "BACKNOCHECK";
 
                 // if (!isReal.equals("REAL") && !isReal.equals("BACKNOCHECK")) {
-                //     throw new BusinessException(ErrorCode.ID_FAKE, ErrorCode.ID_FAKE_DESCRIPTION);
+                // throw new BusinessException(ErrorCode.ID_FAKE,
+                // ErrorCode.ID_FAKE_DESCRIPTION);
                 // }
 
                 validateIdentityCard(type, sideType);
@@ -262,9 +268,10 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
     }
 
     @Override
-    public Boolean callCheckSelfie(MultipartFile frontId, MultipartFile selfie, String threshold) {
+    public ResponseEntity<?> callCheckSelfie(MultipartFile frontId, MultipartFile selfie, String custId) {
         logger.info("---------Start call face_general---------------");
         final String uri = Constants.ESIGN_FACE_GENERAL;
+        boolean isMatching = false;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         headers.set(Constants.ESIGN_API_KEY, Constants.ESIGN_VALUE_HEADER);
@@ -274,7 +281,7 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
         multiValueMap.add("image_card", imageCard);
         ByteArrayResource imageGeneral = convertFile(selfie);
         multiValueMap.add("image_general", imageGeneral);
-        multiValueMap.add("threshold", threshold);
+        multiValueMap.add("threshold", Constants.THRESHOLD);
 
         HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(multiValueMap, headers);
 
@@ -288,9 +295,10 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
             try {
                 root = mapper.readTree(responseEntityStr.getBody());
                 if (root.get("output").get("is_matched").get("value").asText().equalsIgnoreCase(isSelfie)) {
-                    return true;
+                    cfMastRepo.activeAccount(custId);
+                    isMatching = true;
                 } else {
-                    return false;
+                    throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
                 }
             } catch (JsonProcessingException e) {
                 throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
@@ -299,6 +307,7 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
         } else {
             throw new BusinessException(ErrorCode.FAILED_TO_EXECUTE, ErrorCode.FAILED_TO_EXECUTE_DESCRIPTION);
         }
+        return response(toResult(isMatching));
     }
 
     @Override

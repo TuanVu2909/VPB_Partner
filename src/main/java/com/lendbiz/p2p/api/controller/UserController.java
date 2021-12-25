@@ -81,4 +81,14 @@ public class UserController {
         return savisService.callPredict(idFile, identity, idType);
     }
 
+    @PostMapping("/verify-face")
+    public ResponseEntity<?> verifyFace(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId, @RequestHeader("session") String session,
+            @RequestParam("front_file") MultipartFile frontFile, @RequestParam("selfie_file") MultipartFile selfieFile)
+            throws BusinessException {
+        log.info("[" + requestId + "] << verifyIdeEntity >>");
+        String custId = userService.checkSession(session);
+        return savisService.callCheckSelfie(frontFile, selfieFile, custId);
+    }
+
 }

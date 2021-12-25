@@ -19,14 +19,14 @@ public interface SavisService {
 
 	public ResponseEntity<?> callPredict(MultipartFile file, InfoIdentity identity, int type);
 
-	Boolean callCheckSelfie(MultipartFile frontId, MultipartFile selfie, String threshold);
-	
+	ResponseEntity<?> callCheckSelfie(MultipartFile frontId, MultipartFile selfie, String custId);
+
 	Optional<UserRegisterResponse> callRegisterKyc(MultipartFile frontId);
 
 	Optional<OtpResponse> getOtp();
 
 	Boolean validateOtp(String otp);
-	
+
 	Optional<SignPdfResponse> signPdf(MultipartFile contract, SignContractRequest request);
 
 	Optional<SignPdfResponse> signContract(MultipartFile contract, SignContractRequestV2 request);
