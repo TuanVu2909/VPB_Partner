@@ -99,7 +99,6 @@ public class PackageFilterRepository {
     }
 
     public Object reqJoin(ReqJoinRequest reqJoinRequest) {
-        Map.Entry<String, Object> entry = null;
 
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PKG_API_AUTHENTICATION")
                 .withProcedureName("REQJOIN").declareParameters(new SqlParameter("pv_Type", Types.VARCHAR))
@@ -173,31 +172,26 @@ public class PackageFilterRepository {
         params.addValue("pv_ExSTK", reqJoinRequest.getExStk());
         params.addValue("pv_password", reqJoinRequest.getPassword());
 
+        Map<String, Object> map = jdbcCall.execute(params);
+        Map.Entry<String, Object> entry = map.entrySet().iterator().next();
+
+        String body = JsonMapper.writeValueAsString(entry.getValue());
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root;
         try {
-            Map<String, Object> map = jdbcCall.execute(params);
-            entry = map.entrySet().iterator().next();
+            root = mapper.readTree(body);
+            if (root.get(0) != null && root.get(0).get(":B1") != null && root.get(0).get(":B2") != null) {
+                // responseId = root.get(0).get(":B1").textValue();
+            } else {
+                throw new BusinessException(Constants.FAIL,
+                        root.get(0).get("ERRMSG").textValue());
+            }
 
-        } catch (Exception e) {
-            throw new BusinessException(Constants.FAIL, e.getMessage());
+        } catch (JsonProcessingException e) {
+            throw new BusinessException(ErrorCode.FAILED_TO_JSON,
+                    ErrorCode.FAILED_TO_JSON_DESCRIPTION);
         }
-
-        // String body = JsonMapper.writeValueAsString(entry.getValue());
-
-        // ObjectMapper mapper = new ObjectMapper();
-        // JsonNode root;
-        // try {
-        // root = mapper.readTree(body);
-        // if (root.get(0) != null && root.get(0).get("0") != null) {
-        // // responseId = root.get(0).get(":B1").textValue();
-        // } else {
-        // throw new BusinessException(Constants.FAIL,
-        // root.get(0).get("ERRMSG").textValue());
-        // }
-
-        // } catch (JsonProcessingException e) {
-        // throw new BusinessException(ErrorCode.FAILED_TO_JSON,
-        // ErrorCode.FAILED_TO_JSON_DESCRIPTION);
-        // }
 
         return entry.getValue();
     }
