@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
+import com.lendbiz.p2p.api.entity.AccountInput;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.request.InsertLogRequest;
@@ -213,5 +214,57 @@ public class PackageFilterRepository {
         params.addValue("pv_verifycode", verifyAccountInput.getVerifyCode());
         jdbcCall.execute(params);
         return "success";
+    }
+
+    public Object getAccountAsset(String custId) {
+        Map.Entry<String, Object> entry ;
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
+                .withProcedureName("getAccountAsset").declareParameters(new SqlParameter("pv_custId", Types.VARCHAR))
+                .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
+        ;
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("pv_custId", custId);
+        Map<String, Object> map = jdbcCall.execute(params);
+        entry = map.entrySet().iterator().next();
+        return entry.getValue();
+    }
+
+
+    public Object getAccountInvest(String custId) {
+        Map.Entry<String, Object> entry ;
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
+                .withProcedureName("getAccountInvest").declareParameters(new SqlParameter("pv_custId", Types.VARCHAR))
+                .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
+        ;
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("pv_custId", custId);
+        Map<String, Object> map = jdbcCall.execute(params);
+        entry = map.entrySet().iterator().next();
+        return entry.getValue();
+    }
+    public Object getProduct( ) {
+        Map.Entry<String, Object> entry ;
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
+                .withProcedureName("getproduct")
+                .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
+        ;
+        Map<String, Object> map = jdbcCall.execute();
+        entry = map.entrySet().iterator().next();
+        return entry.getValue();
+    }
+    public Object getAccountInvestByProduct(AccountInput accountInput) {
+        Map.Entry<String, Object> entry ;
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
+                .withProcedureName("getAccountInvestByProduct")
+                .declareParameters(new SqlParameter("pv_custId", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_pid", Types.NUMERIC))
+                .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
+        ;
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("pv_custId", accountInput.getCustId());
+        params.addValue("pv_pid", Integer.parseInt(accountInput.getProductId()));
+        Map<String, Object> map = jdbcCall.execute(params);
+        entry = map.entrySet().iterator().next();
+        return entry.getValue();
     }
 }

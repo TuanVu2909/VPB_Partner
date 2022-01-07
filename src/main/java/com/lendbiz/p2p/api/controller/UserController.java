@@ -2,6 +2,7 @@ package com.lendbiz.p2p.api.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.lendbiz.p2p.api.entity.AccountInput;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.request.LoginRequest;
@@ -11,11 +12,7 @@ import com.lendbiz.p2p.api.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -59,5 +56,36 @@ public class UserController {
         log.info("[" + requestId + "] << verify account >>");
         return userService.verifyAcc(verifyAccountInput);
     }
+    @GetMapping("/get-account-asset")
+    public ResponseEntity<?> getAccountAsset(HttpServletRequest httpServletRequest,
+                                           @RequestHeader("requestId") String requestId, @RequestParam String cif)
+            throws BusinessException {
+        log.info("[" + requestId + "] << getAccountAsset >>");
+        return userService.getAccountAsset(cif);
+    }
+    @GetMapping("/get-account-invest")
+    public ResponseEntity<?> getAccountInvest(HttpServletRequest httpServletRequest,
+                                             @RequestHeader("requestId") String requestId, @RequestParam String cif)
+            throws BusinessException {
+        log.info("[" + requestId + "] << getAccountInvest >>");
+        return userService.getAccountInvest(cif);
+    }
+    @GetMapping("/get-product")
+    public ResponseEntity<?> getProduct(HttpServletRequest httpServletRequest,
+                                             @RequestHeader("requestId") String requestId)
+            throws BusinessException {
+        log.info("[" + requestId + "] << getProduct >>");
+        return userService.getProduct();
+    }
+    @GetMapping("/get-account-invest-by-product")
+    public ResponseEntity<?> getAccountInvestByProduct(HttpServletRequest httpServletRequest,
+                                             @RequestHeader("requestId") String requestId, @RequestParam("cif") String cif, @RequestParam("pid") String pId)
+            throws BusinessException {
+        AccountInput accountInput = new AccountInput(cif,pId);
+        log.info("[" + requestId + "] << getAccountInvestByProduct >>");
+        return userService.getAccountInvestByProduct(accountInput);
+    }
+
+
 
 }
