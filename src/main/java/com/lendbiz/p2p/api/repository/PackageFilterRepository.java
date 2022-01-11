@@ -268,7 +268,7 @@ public class PackageFilterRepository {
                 .declareParameters(new SqlParameter("pv_custId", Types.VARCHAR))
                 .declareParameters(new SqlParameter("pv_pid", Types.NUMERIC))
                 .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
-        ;
+
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("pv_custId", accountInput.getCustId());
         params.addValue("pv_pid", Integer.parseInt(accountInput.getProductId()));
