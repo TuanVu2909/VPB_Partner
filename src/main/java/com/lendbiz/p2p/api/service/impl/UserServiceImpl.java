@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.lendbiz.p2p.api.constants.Constants;
+import com.lendbiz.p2p.api.entity.AccountInput;
 import com.lendbiz.p2p.api.entity.UserOnline;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
@@ -85,6 +86,42 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 			throw new BusinessException(Constants.FAIL, e.getMessage());
 		}
 	}
+	@Override
+	public ResponseEntity<?> getAccountAsset(String custId) {
+		try {
+			return response(toResult(pkgFilterRepo.getAccountAsset(custId)));
+		} catch (Exception e) {
+			throw new BusinessException(Constants.FAIL, e.getMessage());
+		}
+	}
+
+	@Override
+	public ResponseEntity<?> getAccountInvest(String custId) {
+		try {
+			return response(toResult(pkgFilterRepo.getAccountInvest(custId)));
+		} catch (Exception e) {
+			throw new BusinessException(Constants.FAIL, e.getMessage());
+		}
+	}
+
+	@Override
+	public ResponseEntity<?> getProduct() {
+		try {
+			return response(toResult(pkgFilterRepo.getProduct()));
+		} catch (Exception e) {
+			throw new BusinessException(Constants.FAIL, e.getMessage());
+		}
+	}
+
+	@Override
+	public ResponseEntity<?> getAccountInvestByProduct(AccountInput accountInput) {
+		try {
+			return response(toResult(pkgFilterRepo.getAccountInvestByProduct(accountInput)));
+		} catch (Exception e) {
+			throw new BusinessException(Constants.FAIL, e.getMessage());
+		}
+	}
+
 
 	@Override
 	public String checkSession(String session) {
