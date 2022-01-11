@@ -1,541 +1,100 @@
-2021-12-25 11:49:16.854  INFO 59450 --- [main] com.lendbiz.p2p.api.ApiApplication       : Starting ApiApplication using Java 11.0.12 on TuHoangs-MacBook-Pro.local with PID 59450 (/Users/tuht/Projects/api_mobile/bin/main started by tuht in /Users/tuht/Projects/api_mobile)
-2021-12-25 11:49:16.866  INFO 59450 --- [main] com.lendbiz.p2p.api.ApiApplication       : The following profiles are active: lendbiz-dev
-2021-12-25 11:49:18.780  INFO 59450 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2021-12-25 11:49:19.059  INFO 59450 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 267 ms. Found 11 JPA repository interfaces.
-2021-12-25 11:49:20.331  INFO 59450 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9012 (http)
-2021-12-25 11:49:20.341  INFO 59450 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2021-12-25 11:49:20.342  INFO 59450 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.53]
-2021-12-25 11:49:20.506  INFO 59450 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2021-12-25 11:49:20.507  INFO 59450 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3509 ms
-2021-12-25 11:49:20.822  INFO 59450 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2021-12-25 11:49:21.626  INFO 59450 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2021-12-25 11:49:21.776  INFO 59450 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2021-12-25 11:49:21.829  INFO 59450 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.32.Final
-2021-12-25 11:49:22.044  INFO 59450 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
-2021-12-25 11:49:22.226  INFO 59450 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.Oracle10gDialect
-2021-12-25 11:49:28.387  INFO 59450 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
-2021-12-25 11:49:28.487  INFO 59450 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2021-12-25 11:49:28.744  WARN 59450 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2021-12-25 11:49:30.169  INFO 59450 --- [main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
-2021-12-25 11:49:30.220  INFO 59450 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure Ant [pattern='/api/**'] with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@5f1d270a, org.springframework.security.web.context.SecurityContextPersistenceFilter@1fbd0850, org.springframework.security.web.header.HeaderWriterFilter@2aec09a3, org.springframework.web.filter.CorsFilter@7d14efc, org.springframework.security.web.authentication.logout.LogoutFilter@466c39de, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@93cc5eb, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3f808ad9, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2cee1bcf, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5180f430, org.springframework.security.web.session.SessionManagementFilter@358bbbe2, org.springframework.security.web.access.ExceptionTranslationFilter@504216ff, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@32eca9f4]
-2021-12-25 11:49:30.919  INFO 59450 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9012 (http) with context path ''
-2021-12-25 11:49:30.921  INFO 59450 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
-2021-12-25 11:49:30.936  INFO 59450 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
-2021-12-25 11:49:30.956  INFO 59450 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
-2021-12-25 11:49:31.243  INFO 59450 --- [main] com.lendbiz.p2p.api.ApiApplication       : Started ApiApplication in 15.06 seconds (JVM running for 16.876)
-2021-12-25 11:49:45.998  INFO 59450 --- [http-nio-9012-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2021-12-25 11:49:46.004  INFO 59450 --- [http-nio-9012-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2021-12-25 11:49:46.028  INFO 59450 --- [http-nio-9012-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 23 ms
-2021-12-25 11:49:49.094  INFO 59450 --- [http-nio-9012-exec-1] c.l.p.a.service.impl.LoggingServiceImpl  : [1231231]REQUEST method=[POST] path=[/lendbiz/register] headers=[{content-length=139, session=UQYBIFPRWSGCWULITGBXRICWEBABDA, requestid=1231231, postman-token=b3b3984a-9c67-4b7c-bdd9-a06f5be2790e, host=localhost:9012, content-type=application/json, connection=keep-alive, cache-control=no-cache, accept-encoding=gzip, deflate, br, user-agent=PostmanRuntime/7.28.4, accept=*/*}]body=[ReqJoinRequest(type=I, fullName=Hoang Thanh Tu, sex=null, dob=null, place=null, idCode=null, idDate=null, idPlace=null, orgAddress=null, address=null, idWard=null, idDistrict=null, phone=null, mobile=0387126666, email=, bankAccount=null, bank=null, taxNo=null, online=null, matchOrdSms=null, productInfo=null, consultalInfo=null, officeName=null, position=null, job=null, exFullName=Hoang Thanh Tu, exPosition=null, exJob=null, exMobile=null, exEmail=null, exAddress=null, exBank=null, exStk=null, password=123453)]
-2021-12-25 11:49:49.106  INFO 59450 --- [http-nio-9012-exec-1] c.l.p2p.api.controller.UserController    : [1231231] << register >>
-2021-12-25 11:50:22.967  INFO 59450 --- [http-nio-9012-exec-1] c.l.p.a.service.impl.LoggingServiceImpl  : [1231231]RESPONSE method=[POST] path=[/lendbiz/register] responseHeaders=[{Vary=Origin}]responseBody=[ErrorInfo(status=500, error=Internal Server Error, errorDesc=null, path=http://localhost:9012/lendbiz/register)] 
-2021-12-25 11:50:41.247  INFO 59450 --- [http-nio-9012-exec-3] c.l.p.a.service.impl.LoggingServiceImpl  : [1231231]REQUEST method=[POST] path=[/lendbiz/register] headers=[{content-length=139, session=UQYBIFPRWSGCWULITGBXRICWEBABDA, requestid=1231231, postman-token=829e9c2f-0708-4e20-a1d6-a123d6879a51, host=localhost:9012, content-type=application/json, connection=keep-alive, cache-control=no-cache, accept-encoding=gzip, deflate, br, user-agent=PostmanRuntime/7.28.4, accept=*/*}]body=[ReqJoinRequest(type=I, fullName=Hoang Thanh Tu, sex=null, dob=null, place=null, idCode=null, idDate=null, idPlace=null, orgAddress=null, address=null, idWard=null, idDistrict=null, phone=null, mobile=0387126665, email=, bankAccount=null, bank=null, taxNo=null, online=null, matchOrdSms=null, productInfo=null, consultalInfo=null, officeName=null, position=null, job=null, exFullName=Hoang Thanh Tu, exPosition=null, exJob=null, exMobile=null, exEmail=null, exAddress=null, exBank=null, exStk=null, password=123453)]
-2021-12-25 11:50:41.255  INFO 59450 --- [http-nio-9012-exec-3] c.l.p2p.api.controller.UserController    : [1231231] << register >>
-2021-12-25 11:51:29.851  INFO 59450 --- [http-nio-9012-exec-3] c.l.p.a.service.impl.LoggingServiceImpl  : [1231231]RESPONSE method=[POST] path=[/lendbiz/register] responseHeaders=[{Vary=Origin}]responseBody=[ErrorInfo(status=500, error=Internal Server Error, errorDesc=null, path=http://localhost:9012/lendbiz/register)] 
-2021-12-25 11:53:21.948  INFO 59450 --- [http-nio-9012-exec-6] c.l.p.a.service.impl.LoggingServiceImpl  : [1231231]REQUEST method=[POST] path=[/lendbiz/register] headers=[{content-length=139, session=UQYBIFPRWSGCWULITGBXRICWEBABDA, requestid=1231231, postman-token=bf6f2455-3efb-4cb9-b774-750829938682, host=localhost:9012, content-type=application/json, connection=keep-alive, cache-control=no-cache, accept-encoding=gzip, deflate, br, user-agent=PostmanRuntime/7.28.4, accept=*/*}]body=[ReqJoinRequest(type=I, fullName=Hoang Thanh Tu, sex=null, dob=null, place=null, idCode=null, idDate=null, idPlace=null, orgAddress=null, address=null, idWard=null, idDistrict=null, phone=null, mobile=0387126615, email=, bankAccount=null, bank=null, taxNo=null, online=null, matchOrdSms=null, productInfo=null, consultalInfo=null, officeName=null, position=null, job=null, exFullName=Hoang Thanh Tu, exPosition=null, exJob=null, exMobile=null, exEmail=null, exAddress=null, exBank=null, exStk=null, password=123453)]
-2021-12-25 11:53:21.957  INFO 59450 --- [http-nio-9012-exec-6] c.l.p2p.api.controller.UserController    : [1231231] << register >>
-2021-12-25 11:55:29.214  WARN 59450 --- [http-nio-9012-exec-6] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@36f6d25c (IO Error: Invalid Operation, NOT Connected). Possibly consider using a shorter maxLifetime value.
-2021-12-25 11:55:34.639  WARN 59450 --- [http-nio-9012-exec-6] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@77068b4 (IO Error: Invalid Operation, NOT Connected). Possibly consider using a shorter maxLifetime value.
-2021-12-25 11:55:39.660  WARN 59450 --- [http-nio-9012-exec-6] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@b96cf27 (IO Error: Invalid Operation, NOT Connected). Possibly consider using a shorter maxLifetime value.
-2021-12-25 11:55:44.685  WARN 59450 --- [http-nio-9012-exec-6] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@56cf2952 (IO Error: Invalid Operation, NOT Connected). Possibly consider using a shorter maxLifetime value.
-2021-12-25 11:55:49.697  WARN 59450 --- [http-nio-9012-exec-6] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@1092c44c (IO Error: Invalid Operation, NOT Connected). Possibly consider using a shorter maxLifetime value.
-2021-12-25 11:55:54.714  WARN 59450 --- [http-nio-9012-exec-6] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@d06efad (IO Error: Invalid Operation, NOT Connected). Possibly consider using a shorter maxLifetime value.
-2021-12-25 11:55:54.764  WARN 59450 --- [http-nio-9012-exec-6] .m.m.a.ExceptionHandlerExceptionResolver : Failure in @ExceptionHandler com.lendbiz.p2p.api.exception.RestExceptionHandler#handleAllException(Exception, WebRequest)
+2022-01-10 02:00:55.077  INFO 1 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2022-01-10 02:00:55.260  INFO 1 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2022-01-10 02:00:55.294  INFO 1 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2022-01-10 02:02:12.613  INFO 1 --- [main] com.lendbiz.p2p.api.ApiApplication       : Starting ApiApplication using Java 11.0.11 on 484fd7dd2e4c with PID 1 (/gaumat.jar started by root in /)
+2022-01-10 02:02:12.617  INFO 1 --- [main] com.lendbiz.p2p.api.ApiApplication       : The following profiles are active: lendbiz-dev
+2022-01-10 02:02:13.326  INFO 1 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2022-01-10 02:02:13.401  INFO 1 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 63 ms. Found 11 JPA repository interfaces.
+2022-01-10 02:02:13.896  INFO 1 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2022-01-10 02:02:13.905  INFO 1 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2022-01-10 02:02:13.907  INFO 1 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.53]
+2022-01-10 02:02:13.946  INFO 1 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2022-01-10 02:02:13.949  INFO 1 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1277 ms
+2022-01-10 02:02:14.121  INFO 1 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2022-01-10 02:02:14.408  INFO 1 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2022-01-10 02:02:14.449  INFO 1 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2022-01-10 02:02:14.497  INFO 1 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.32.Final
+2022-01-10 02:02:14.623  INFO 1 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2022-01-10 02:02:14.815  INFO 1 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.Oracle10gDialect
+2022-01-10 02:02:16.732  INFO 1 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-01-10 02:02:16.805  INFO 1 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2022-01-10 02:02:17.116  WARN 1 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2022-01-10 02:02:17.426  INFO 1 --- [main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
+2022-01-10 02:02:17.437  INFO 1 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure Ant [pattern='/api/**'] with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@9263c54, org.springframework.security.web.context.SecurityContextPersistenceFilter@21f9c6ea, org.springframework.security.web.header.HeaderWriterFilter@4c7d7430, org.springframework.web.filter.CorsFilter@28daf506, org.springframework.security.web.authentication.logout.LogoutFilter@4c24f3a2, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@6aff97d6, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3dfd7eaa, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@7cfb8e98, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@4662752a, org.springframework.security.web.session.SessionManagementFilter@5fe46d52, org.springframework.security.web.access.ExceptionTranslationFilter@3111631d, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@1cde374]
+2022-01-10 02:02:17.727  INFO 1 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2022-01-10 02:02:17.729  INFO 1 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2022-01-10 02:02:17.745  INFO 1 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2022-01-10 02:02:17.790  INFO 1 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2022-01-10 02:02:17.917  INFO 1 --- [main] com.lendbiz.p2p.api.ApiApplication       : Started ApiApplication in 5.74 seconds (JVM running for 6.124)
+2022-01-10 02:02:53.568  INFO 1 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2022-01-10 02:02:53.577  INFO 1 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2022-01-10 02:02:53.725  INFO 1 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2022-01-10 03:56:31.287  INFO 1 --- [main] com.lendbiz.p2p.api.ApiApplication       : Starting ApiApplication using Java 11.0.11 on 47d0b8c48e09 with PID 1 (/gaumat.jar started by root in /)
+2022-01-10 03:56:31.291  INFO 1 --- [main] com.lendbiz.p2p.api.ApiApplication       : The following profiles are active: lendbiz-dev
+2022-01-10 03:56:32.002  INFO 1 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2022-01-10 03:56:32.081  INFO 1 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 70 ms. Found 11 JPA repository interfaces.
+2022-01-10 03:56:32.648  INFO 1 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9012 (http)
+2022-01-10 03:56:32.662  INFO 1 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2022-01-10 03:56:32.665  INFO 1 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.53]
+2022-01-10 03:56:32.720  INFO 1 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2022-01-10 03:56:32.723  INFO 1 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1381 ms
+2022-01-10 03:56:33.055  INFO 1 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2022-01-10 03:56:33.405  INFO 1 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2022-01-10 03:56:33.449  INFO 1 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2022-01-10 03:56:33.497  INFO 1 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.32.Final
+2022-01-10 03:56:33.691  INFO 1 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2022-01-10 03:56:33.838  INFO 1 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.Oracle10gDialect
+2022-01-10 03:56:36.042  INFO 1 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-01-10 03:56:36.169  INFO 1 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2022-01-10 03:56:36.531  WARN 1 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2022-01-10 03:56:36.890  INFO 1 --- [main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
+2022-01-10 03:56:36.903  INFO 1 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure Ant [pattern='/api/**'] with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@159ac15f, org.springframework.security.web.context.SecurityContextPersistenceFilter@28f154cc, org.springframework.security.web.header.HeaderWriterFilter@7c9beb51, org.springframework.web.filter.CorsFilter@7ac48f05, org.springframework.security.web.authentication.logout.LogoutFilter@4975dda1, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@69d103f0, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@6af78a48, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2ec85a25, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7af1d072, org.springframework.security.web.session.SessionManagementFilter@1ec88aa1, org.springframework.security.web.access.ExceptionTranslationFilter@418f0534, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@799f354a]
+2022-01-10 03:56:37.188  INFO 1 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9012 (http) with context path ''
+2022-01-10 03:56:37.190  INFO 1 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2022-01-10 03:56:37.206  INFO 1 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2022-01-10 03:56:37.225  INFO 1 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2022-01-10 03:56:37.334  INFO 1 --- [main] com.lendbiz.p2p.api.ApiApplication       : Started ApiApplication in 6.454 seconds (JVM running for 7.0)
+2022-01-10 04:19:44.113  INFO 1 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2022-01-10 04:19:44.163  INFO 1 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2022-01-10 04:19:44.193  INFO 1 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2022-01-10 15:23:32.522  INFO 40467 --- [main] com.lendbiz.p2p.api.ApiApplication       : Starting ApiApplication using Java 11.0.12 on TuHoangs-MacBook-Pro.local with PID 40467 (/Users/tuht/Projects/api_mobile/bin/main started by tuht in /Users/tuht/Projects/api_mobile)
+2022-01-10 15:23:32.526  INFO 40467 --- [main] com.lendbiz.p2p.api.ApiApplication       : The following profiles are active: lendbiz-dev
+2022-01-10 15:23:34.703  INFO 40467 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2022-01-10 15:23:34.921  INFO 40467 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 198 ms. Found 11 JPA repository interfaces.
+2022-01-10 15:23:36.153  INFO 40467 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9012 (http)
+2022-01-10 15:23:36.163  INFO 40467 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2022-01-10 15:23:36.163  INFO 40467 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.53]
+2022-01-10 15:23:36.343  INFO 40467 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2022-01-10 15:23:36.343  INFO 40467 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3722 ms
+2022-01-10 15:23:36.659  INFO 40467 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2022-01-10 15:23:37.260  INFO 40467 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2022-01-10 15:23:37.418  INFO 40467 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2022-01-10 15:23:37.476  INFO 40467 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.32.Final
+2022-01-10 15:23:37.638  INFO 40467 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2022-01-10 15:23:37.746  INFO 40467 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.Oracle10gDialect
+2022-01-10 15:23:40.916  INFO 40467 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-01-10 15:23:41.040  INFO 40467 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2022-01-10 15:23:41.288  WARN 40467 --- [main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'kafkaTopicConfig': Injection of autowired dependencies failed; nested exception is java.lang.IllegalArgumentException: Could not resolve placeholder 'kafka.bootstrapAddress' in value "${kafka.bootstrapAddress}"
+2022-01-10 15:23:41.289  INFO 40467 --- [main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2022-01-10 15:23:41.293  INFO 40467 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2022-01-10 15:23:41.438  INFO 40467 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2022-01-10 15:23:41.441  INFO 40467 --- [main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2022-01-10 15:23:41.472  INFO 40467 --- [main] ConditionEvaluationReportLoggingListener : 
 
-org.springframework.dao.DataAccessResourceFailureException: Error retrieving database meta-data; nested exception is org.springframework.jdbc.support.MetaDataAccessException: Could not get Connection for extracting meta-data; nested exception is org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection; nested exception is java.sql.SQLTransientConnectionException: HikariPool-1 - Connection is not available, request timed out after 30690ms.
-	at org.springframework.jdbc.core.metadata.CallMetaDataProviderFactory.createMetaDataProvider(CallMetaDataProviderFactory.java:144) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.core.metadata.CallMetaDataContext.initializeMetaData(CallMetaDataContext.java:254) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.core.simple.AbstractJdbcCall.compileInternal(AbstractJdbcCall.java:315) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.core.simple.AbstractJdbcCall.compile(AbstractJdbcCall.java:298) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.core.simple.AbstractJdbcCall.checkCompiled(AbstractJdbcCall.java:355) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.core.simple.AbstractJdbcCall.doExecute(AbstractJdbcCall.java:370) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.core.simple.SimpleJdbcCall.executeFunction(SimpleJdbcCall.java:165) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at com.lendbiz.p2p.api.repository.PackageFilterRepository.insertLogs(PackageFilterRepository.java:60) ~[main/:na]
-	at com.lendbiz.p2p.api.service.impl.LoggingServiceImpl.logResponse(LoggingServiceImpl.java:102) ~[main/:na]
-	at com.lendbiz.p2p.api.configs.CustomResponseBodyAdviceAdapter.beforeBodyWrite(CustomResponseBodyAdviceAdapter.java:31) ~[main/:na]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyAdviceChain.processBody(RequestResponseBodyAdviceChain.java:141) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyAdviceChain.beforeBodyWrite(RequestResponseBodyAdviceChain.java:116) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodProcessor.writeWithMessageConverters(AbstractMessageConverterMethodProcessor.java:281) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.mvc.method.annotation.HttpEntityMethodProcessor.handleReturnValue(HttpEntityMethodProcessor.java:219) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.method.support.HandlerMethodReturnValueHandlerComposite.handleReturnValue(HandlerMethodReturnValueHandlerComposite.java:78) ~[spring-web-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:135) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver.doResolveHandlerMethodException(ExceptionHandlerExceptionResolver.java:428) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.handler.AbstractHandlerMethodExceptionResolver.doResolveException(AbstractHandlerMethodExceptionResolver.java:75) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.handler.AbstractHandlerExceptionResolver.resolveException(AbstractHandlerExceptionResolver.java:141) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.handler.HandlerExceptionResolverComposite.resolveException(HandlerExceptionResolverComposite.java:80) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.DispatcherServlet.processHandlerException(DispatcherServlet.java:1327) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.DispatcherServlet.processDispatchResult(DispatcherServlet.java:1138) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1084) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:909) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at javax.servlet.http.HttpServlet.service(HttpServlet.java:681) ~[tomcat-embed-core-9.0.53.jar:4.0.FR]
-	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at javax.servlet.http.HttpServlet.service(HttpServlet.java:764) ~[tomcat-embed-core-9.0.53.jar:4.0.FR]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:204) ~[spring-security-web-5.5.2.jar:5.5.2]
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:183) ~[spring-security-web-5.5.2.jar:5.5.2]
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:358) ~[spring-web-5.3.10.jar:5.3.10]
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:271) ~[spring-web-5.3.10.jar:5.3.10]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-5.3.10.jar:5.3.10]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119) ~[spring-web-5.3.10.jar:5.3.10]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:540) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:357) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:382) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:893) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1726) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at java.base/java.lang.Thread.run(Thread.java:834) ~[na:na]
-Caused by: org.springframework.jdbc.support.MetaDataAccessException: Could not get Connection for extracting meta-data; nested exception is org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection; nested exception is java.sql.SQLTransientConnectionException: HikariPool-1 - Connection is not available, request timed out after 30690ms.
-	at org.springframework.jdbc.support.JdbcUtils.extractDatabaseMetaData(JdbcUtils.java:363) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.core.metadata.CallMetaDataProviderFactory.createMetaDataProvider(CallMetaDataProviderFactory.java:78) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	... 59 common frames omitted
-Caused by: org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection; nested exception is java.sql.SQLTransientConnectionException: HikariPool-1 - Connection is not available, request timed out after 30690ms.
-	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:82) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.support.JdbcUtils.extractDatabaseMetaData(JdbcUtils.java:337) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	... 60 common frames omitted
-Caused by: java.sql.SQLTransientConnectionException: HikariPool-1 - Connection is not available, request timed out after 30690ms.
-	at com.zaxxer.hikari.pool.HikariPool.createTimeoutException(HikariPool.java:696) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:197) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:162) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:128) ~[HikariCP-4.0.3.jar:na]
-	at org.springframework.jdbc.datasource.DataSourceUtils.fetchConnection(DataSourceUtils.java:158) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.datasource.DataSourceUtils.doGetConnection(DataSourceUtils.java:116) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:79) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	... 61 common frames omitted
-Caused by: java.sql.SQLRecoverableException: IO Error: Invalid Operation, NOT Connected
-	at oracle.jdbc.driver.T4CConnection.doSetNetworkTimeout(T4CConnection.java:8887) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.PhysicalConnection.setNetworkTimeout(PhysicalConnection.java:10054) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at com.zaxxer.hikari.pool.PoolBase.setNetworkTimeout(PoolBase.java:566) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.PoolBase.isConnectionAlive(PoolBase.java:173) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:186) ~[HikariCP-4.0.3.jar:na]
-	... 66 common frames omitted
-Caused by: oracle.net.ns.NetException: Invalid Operation, NOT Connected
-	at oracle.net.nt.TcpNTAdapter.setOption(TcpNTAdapter.java:746) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.ns.NSProtocol.setOption(NSProtocol.java:740) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.ns.NSProtocol.setSocketReadTimeout(NSProtocol.java:1044) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.doSetNetworkTimeout(T4CConnection.java:8884) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 70 common frames omitted
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2022-01-10 15:23:41.491 ERROR 40467 --- [main] o.s.boot.SpringApplication               : Application run failed
 
-2021-12-25 11:55:54.785 ERROR 59450 --- [http-nio-9012-exec-6] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is java.lang.NullPointerException] with root cause
-
-java.lang.NullPointerException: null
-	at com.lendbiz.p2p.api.repository.PackageFilterRepository.reqJoin(PackageFilterRepository.java:188) ~[main/:na]
-	at com.lendbiz.p2p.api.service.impl.UserServiceImpl.register(UserServiceImpl.java:76) ~[main/:na]
-	at com.lendbiz.p2p.api.controller.UserController.register(UserController.java:60) ~[main/:na]
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:na]
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
-	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-5.3.10.jar:5.3.10]
-	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:909) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at javax.servlet.http.HttpServlet.service(HttpServlet.java:681) ~[tomcat-embed-core-9.0.53.jar:4.0.FR]
-	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at javax.servlet.http.HttpServlet.service(HttpServlet.java:764) ~[tomcat-embed-core-9.0.53.jar:4.0.FR]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:204) ~[spring-security-web-5.5.2.jar:5.5.2]
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:183) ~[spring-security-web-5.5.2.jar:5.5.2]
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:358) ~[spring-web-5.3.10.jar:5.3.10]
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:271) ~[spring-web-5.3.10.jar:5.3.10]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-5.3.10.jar:5.3.10]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119) ~[spring-web-5.3.10.jar:5.3.10]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:540) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:357) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:382) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:893) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1726) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at java.base/java.lang.Thread.run(Thread.java:834) ~[na:na]
-
-2021-12-25 11:55:59.892  WARN 59450 --- [http-nio-9012-exec-6] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@20128e6c (IO Error: Invalid Operation, NOT Connected). Possibly consider using a shorter maxLifetime value.
-2021-12-25 11:56:04.903  WARN 59450 --- [http-nio-9012-exec-6] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@5e83a100 (IO Error: Invalid Operation, NOT Connected). Possibly consider using a shorter maxLifetime value.
-2021-12-25 11:56:09.915  WARN 59450 --- [http-nio-9012-exec-6] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@5d734c83 (IO Error: Invalid Operation, NOT Connected). Possibly consider using a shorter maxLifetime value.
-2021-12-25 11:56:14.927  WARN 59450 --- [http-nio-9012-exec-6] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@451ee12b (IO Error: Invalid Operation, NOT Connected). Possibly consider using a shorter maxLifetime value.
-2021-12-25 11:56:54.949  WARN 59450 --- [http-nio-9012-exec-6] .m.m.a.ExceptionHandlerExceptionResolver : Failure in @ExceptionHandler com.lendbiz.p2p.api.exception.RestExceptionHandler#handleAllException(Exception, WebRequest)
-
-org.springframework.dao.DataAccessResourceFailureException: Error retrieving database meta-data; nested exception is org.springframework.jdbc.support.MetaDataAccessException: Could not get Connection for extracting meta-data; nested exception is org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection; nested exception is java.sql.SQLTransientConnectionException: HikariPool-1 - Connection is not available, request timed out after 30007ms.
-	at org.springframework.jdbc.core.metadata.CallMetaDataProviderFactory.createMetaDataProvider(CallMetaDataProviderFactory.java:144) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.core.metadata.CallMetaDataContext.initializeMetaData(CallMetaDataContext.java:254) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.core.simple.AbstractJdbcCall.compileInternal(AbstractJdbcCall.java:315) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.core.simple.AbstractJdbcCall.compile(AbstractJdbcCall.java:298) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.core.simple.AbstractJdbcCall.checkCompiled(AbstractJdbcCall.java:355) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.core.simple.AbstractJdbcCall.doExecute(AbstractJdbcCall.java:370) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.core.simple.SimpleJdbcCall.executeFunction(SimpleJdbcCall.java:165) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at com.lendbiz.p2p.api.repository.PackageFilterRepository.insertLogs(PackageFilterRepository.java:60) ~[main/:na]
-	at com.lendbiz.p2p.api.service.impl.LoggingServiceImpl.logResponse(LoggingServiceImpl.java:102) ~[main/:na]
-	at com.lendbiz.p2p.api.configs.CustomResponseBodyAdviceAdapter.beforeBodyWrite(CustomResponseBodyAdviceAdapter.java:31) ~[main/:na]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyAdviceChain.processBody(RequestResponseBodyAdviceChain.java:141) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyAdviceChain.beforeBodyWrite(RequestResponseBodyAdviceChain.java:116) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodProcessor.writeWithMessageConverters(AbstractMessageConverterMethodProcessor.java:281) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.mvc.method.annotation.HttpEntityMethodProcessor.handleReturnValue(HttpEntityMethodProcessor.java:219) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.method.support.HandlerMethodReturnValueHandlerComposite.handleReturnValue(HandlerMethodReturnValueHandlerComposite.java:78) ~[spring-web-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:135) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver.doResolveHandlerMethodException(ExceptionHandlerExceptionResolver.java:428) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.handler.AbstractHandlerMethodExceptionResolver.doResolveException(AbstractHandlerMethodExceptionResolver.java:75) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.handler.AbstractHandlerExceptionResolver.resolveException(AbstractHandlerExceptionResolver.java:141) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.handler.HandlerExceptionResolverComposite.resolveException(HandlerExceptionResolverComposite.java:80) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.DispatcherServlet.processHandlerException(DispatcherServlet.java:1327) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.DispatcherServlet.processDispatchResult(DispatcherServlet.java:1138) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1084) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:909) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at javax.servlet.http.HttpServlet.service(HttpServlet.java:681) ~[tomcat-embed-core-9.0.53.jar:4.0.FR]
-	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at javax.servlet.http.HttpServlet.service(HttpServlet.java:764) ~[tomcat-embed-core-9.0.53.jar:4.0.FR]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:204) ~[spring-security-web-5.5.2.jar:5.5.2]
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:183) ~[spring-security-web-5.5.2.jar:5.5.2]
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:358) ~[spring-web-5.3.10.jar:5.3.10]
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:271) ~[spring-web-5.3.10.jar:5.3.10]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:103) ~[spring-web-5.3.10.jar:5.3.10]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationDispatcher.invoke(ApplicationDispatcher.java:711) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationDispatcher.processRequest(ApplicationDispatcher.java:461) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationDispatcher.doForward(ApplicationDispatcher.java:385) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationDispatcher.forward(ApplicationDispatcher.java:313) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.StandardHostValve.custom(StandardHostValve.java:403) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.StandardHostValve.status(StandardHostValve.java:249) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.StandardHostValve.throwable(StandardHostValve.java:344) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:169) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:357) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:382) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:893) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1726) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at java.base/java.lang.Thread.run(Thread.java:834) ~[na:na]
-Caused by: org.springframework.jdbc.support.MetaDataAccessException: Could not get Connection for extracting meta-data; nested exception is org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection; nested exception is java.sql.SQLTransientConnectionException: HikariPool-1 - Connection is not available, request timed out after 30007ms.
-	at org.springframework.jdbc.support.JdbcUtils.extractDatabaseMetaData(JdbcUtils.java:363) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.core.metadata.CallMetaDataProviderFactory.createMetaDataProvider(CallMetaDataProviderFactory.java:78) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	... 59 common frames omitted
-Caused by: org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection; nested exception is java.sql.SQLTransientConnectionException: HikariPool-1 - Connection is not available, request timed out after 30007ms.
-	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:82) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.support.JdbcUtils.extractDatabaseMetaData(JdbcUtils.java:337) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	... 60 common frames omitted
-Caused by: java.sql.SQLTransientConnectionException: HikariPool-1 - Connection is not available, request timed out after 30007ms.
-	at com.zaxxer.hikari.pool.HikariPool.createTimeoutException(HikariPool.java:696) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:197) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:162) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:128) ~[HikariCP-4.0.3.jar:na]
-	at org.springframework.jdbc.datasource.DataSourceUtils.fetchConnection(DataSourceUtils.java:158) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.datasource.DataSourceUtils.doGetConnection(DataSourceUtils.java:116) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:79) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	... 61 common frames omitted
-Caused by: java.sql.SQLRecoverableException: IO Error: The Network Adapter could not establish the connection (CONNECTION_ID=TDjRZvnrSAapbBWqupAS9w==)
-	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:870) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:675) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1032) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:90) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:681) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:602) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:138) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:364) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:206) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:476) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.access$100(HikariPool.java:71) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:726) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:712) ~[HikariCP-4.0.3.jar:na]
-	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128) ~[na:na]
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628) ~[na:na]
-	... 1 common frames omitted
-Caused by: oracle.net.ns.NetException: The Network Adapter could not establish the connection (CONNECTION_ID=TDjRZvnrSAapbBWqupAS9w==)
-	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:594) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:565) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:937) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:346) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.connect(T4CConnection.java:1967) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:640) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 15 common frames omitted
-Caused by: java.io.IOException: Network is unreachable, socket connect lapse 0 ms. 103.159.50.216 1521  30000 (1/1) true
-	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:421) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.doLocalDNSLookupConnect(TcpNTAdapter.java:303) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:265) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnOption.connect(ConnOption.java:229) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:814) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:555) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 20 common frames omitted
-Caused by: java.net.SocketException: Network is unreachable
-	at java.base/sun.nio.ch.Net.connect0(Native Method) ~[na:na]
-	at java.base/sun.nio.ch.Net.connect(Net.java:476) ~[na:na]
-	at java.base/sun.nio.ch.Net.connect(Net.java:468) ~[na:na]
-	at java.base/sun.nio.ch.SocketChannelImpl.connect(SocketChannelImpl.java:694) ~[na:na]
-	at java.base/java.nio.channels.SocketChannel.open(SocketChannel.java:194) ~[na:na]
-	at oracle.net.nt.TimeoutSocketChannel.connect(TimeoutSocketChannel.java:184) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TimeoutSocketChannel.<init>(TimeoutSocketChannel.java:158) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:380) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 25 common frames omitted
-
-2021-12-25 11:56:54.981 ERROR 59450 --- [http-nio-9012-exec-6] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] threw exception
-
-java.net.SocketException: Network is unreachable
-	at java.base/sun.nio.ch.Net.connect0(Native Method) ~[na:na]
-	at java.base/sun.nio.ch.Net.connect(Net.java:476) ~[na:na]
-	at java.base/sun.nio.ch.Net.connect(Net.java:468) ~[na:na]
-	at java.base/sun.nio.ch.SocketChannelImpl.connect(SocketChannelImpl.java:694) ~[na:na]
-	at java.base/java.nio.channels.SocketChannel.open(SocketChannel.java:194) ~[na:na]
-	at oracle.net.nt.TimeoutSocketChannel.connect(TimeoutSocketChannel.java:184) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TimeoutSocketChannel.<init>(TimeoutSocketChannel.java:158) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:380) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.doLocalDNSLookupConnect(TcpNTAdapter.java:303) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:265) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnOption.connect(ConnOption.java:229) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:814) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:555) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:565) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:937) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:346) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.connect(T4CConnection.java:1967) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:640) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1032) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:90) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:681) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:602) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:138) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:364) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:206) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:476) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.access$100(HikariPool.java:71) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:726) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:712) ~[HikariCP-4.0.3.jar:na]
-	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128) ~[na:na]
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628) ~[na:na]
-	at java.base/java.lang.Thread.run(Thread.java:834) ~[na:na]
-
-2021-12-25 11:56:55.007 ERROR 59450 --- [http-nio-9012-exec-6] o.a.c.c.C.[Tomcat].[localhost]           : Exception Processing ErrorPage[errorCode=0, location=/error]
-
-org.springframework.web.util.NestedServletException: Request processing failed; nested exception is org.springframework.dao.DataAccessResourceFailureException: Error retrieving database meta-data; nested exception is org.springframework.jdbc.support.MetaDataAccessException: Could not get Connection for extracting meta-data; nested exception is org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection; nested exception is java.sql.SQLTransientConnectionException: HikariPool-1 - Connection is not available, request timed out after 30011ms.
-	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:909) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at javax.servlet.http.HttpServlet.service(HttpServlet.java:681) ~[tomcat-embed-core-9.0.53.jar:4.0.FR]
-	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at javax.servlet.http.HttpServlet.service(HttpServlet.java:764) ~[tomcat-embed-core-9.0.53.jar:4.0.FR]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:204) ~[spring-security-web-5.5.2.jar:5.5.2]
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:183) ~[spring-security-web-5.5.2.jar:5.5.2]
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:358) ~[spring-web-5.3.10.jar:5.3.10]
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:271) ~[spring-web-5.3.10.jar:5.3.10]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:103) ~[spring-web-5.3.10.jar:5.3.10]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationDispatcher.invoke(ApplicationDispatcher.java:711) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationDispatcher.processRequest(ApplicationDispatcher.java:461) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationDispatcher.doForward(ApplicationDispatcher.java:385) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.ApplicationDispatcher.forward(ApplicationDispatcher.java:313) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.StandardHostValve.custom(StandardHostValve.java:403) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.StandardHostValve.status(StandardHostValve.java:249) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.StandardHostValve.throwable(StandardHostValve.java:344) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:169) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:357) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:382) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:893) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1726) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.53.jar:9.0.53]
-	at java.base/java.lang.Thread.run(Thread.java:834) ~[na:na]
-Caused by: org.springframework.dao.DataAccessResourceFailureException: Error retrieving database meta-data; nested exception is org.springframework.jdbc.support.MetaDataAccessException: Could not get Connection for extracting meta-data; nested exception is org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection; nested exception is java.sql.SQLTransientConnectionException: HikariPool-1 - Connection is not available, request timed out after 30011ms.
-	at org.springframework.jdbc.core.metadata.CallMetaDataProviderFactory.createMetaDataProvider(CallMetaDataProviderFactory.java:144) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.core.metadata.CallMetaDataContext.initializeMetaData(CallMetaDataContext.java:254) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.core.simple.AbstractJdbcCall.compileInternal(AbstractJdbcCall.java:315) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.core.simple.AbstractJdbcCall.compile(AbstractJdbcCall.java:298) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.core.simple.AbstractJdbcCall.checkCompiled(AbstractJdbcCall.java:355) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.core.simple.AbstractJdbcCall.doExecute(AbstractJdbcCall.java:370) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.core.simple.SimpleJdbcCall.executeFunction(SimpleJdbcCall.java:165) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at com.lendbiz.p2p.api.repository.PackageFilterRepository.insertLogs(PackageFilterRepository.java:60) ~[main/:na]
-	at com.lendbiz.p2p.api.service.impl.LoggingServiceImpl.logResponse(LoggingServiceImpl.java:102) ~[main/:na]
-	at com.lendbiz.p2p.api.configs.CustomResponseBodyAdviceAdapter.beforeBodyWrite(CustomResponseBodyAdviceAdapter.java:31) ~[main/:na]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyAdviceChain.processBody(RequestResponseBodyAdviceChain.java:141) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyAdviceChain.beforeBodyWrite(RequestResponseBodyAdviceChain.java:116) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodProcessor.writeWithMessageConverters(AbstractMessageConverterMethodProcessor.java:281) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.mvc.method.annotation.HttpEntityMethodProcessor.handleReturnValue(HttpEntityMethodProcessor.java:219) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.method.support.HandlerMethodReturnValueHandlerComposite.handleReturnValue(HandlerMethodReturnValueHandlerComposite.java:78) ~[spring-web-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:135) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006) ~[spring-webmvc-5.3.10.jar:5.3.10]
-	... 35 common frames omitted
-Caused by: org.springframework.jdbc.support.MetaDataAccessException: Could not get Connection for extracting meta-data; nested exception is org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection; nested exception is java.sql.SQLTransientConnectionException: HikariPool-1 - Connection is not available, request timed out after 30011ms.
-	at org.springframework.jdbc.support.JdbcUtils.extractDatabaseMetaData(JdbcUtils.java:363) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.core.metadata.CallMetaDataProviderFactory.createMetaDataProvider(CallMetaDataProviderFactory.java:78) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	... 56 common frames omitted
-Caused by: org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection; nested exception is java.sql.SQLTransientConnectionException: HikariPool-1 - Connection is not available, request timed out after 30011ms.
-	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:82) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.support.JdbcUtils.extractDatabaseMetaData(JdbcUtils.java:337) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	... 57 common frames omitted
-Caused by: java.sql.SQLTransientConnectionException: HikariPool-1 - Connection is not available, request timed out after 30011ms.
-	at com.zaxxer.hikari.pool.HikariPool.createTimeoutException(HikariPool.java:696) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:197) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:162) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:128) ~[HikariCP-4.0.3.jar:na]
-	at org.springframework.jdbc.datasource.DataSourceUtils.fetchConnection(DataSourceUtils.java:158) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.datasource.DataSourceUtils.doGetConnection(DataSourceUtils.java:116) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:79) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	... 58 common frames omitted
-Caused by: java.sql.SQLRecoverableException: IO Error: The Network Adapter could not establish the connection (CONNECTION_ID=zi49SxzETIuKjk934es9nQ==)
-	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:870) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:675) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1032) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:90) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:681) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:602) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:138) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:364) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:206) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:476) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.access$100(HikariPool.java:71) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:726) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:712) ~[HikariCP-4.0.3.jar:na]
-	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128) ~[na:na]
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628) ~[na:na]
-	... 1 common frames omitted
-Caused by: oracle.net.ns.NetException: The Network Adapter could not establish the connection (CONNECTION_ID=zi49SxzETIuKjk934es9nQ==)
-	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:594) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:565) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:937) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:346) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.connect(T4CConnection.java:1967) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:640) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 15 common frames omitted
-Caused by: java.io.IOException: Network is unreachable, socket connect lapse 0 ms. 103.159.50.216 1521  30000 (1/1) true
-	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:421) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.doLocalDNSLookupConnect(TcpNTAdapter.java:303) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:265) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnOption.connect(ConnOption.java:229) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:814) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:555) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 20 common frames omitted
-Caused by: java.net.SocketException: Network is unreachable
-	at java.base/sun.nio.ch.Net.connect0(Native Method) ~[na:na]
-	at java.base/sun.nio.ch.Net.connect(Net.java:476) ~[na:na]
-	at java.base/sun.nio.ch.Net.connect(Net.java:468) ~[na:na]
-	at java.base/sun.nio.ch.SocketChannelImpl.connect(SocketChannelImpl.java:694) ~[na:na]
-	at java.base/java.nio.channels.SocketChannel.open(SocketChannel.java:194) ~[na:na]
-	at oracle.net.nt.TimeoutSocketChannel.connect(TimeoutSocketChannel.java:184) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TimeoutSocketChannel.<init>(TimeoutSocketChannel.java:158) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:380) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 25 common frames omitted
-
-2021-12-25 12:45:54.335  INFO 67363 --- [main] com.lendbiz.p2p.api.ApiApplication       : Starting ApiApplication using Java 11.0.12 on TuHoangs-MacBook-Pro.local with PID 67363 (/Users/tuht/Projects/api_mobile/bin/main started by tuht in /Users/tuht/Projects/api_mobile)
-2021-12-25 12:45:54.339  INFO 67363 --- [main] com.lendbiz.p2p.api.ApiApplication       : The following profiles are active: lendbiz-dev
-2021-12-25 12:45:56.272  INFO 67363 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2021-12-25 12:45:56.557  INFO 67363 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 269 ms. Found 11 JPA repository interfaces.
-2021-12-25 12:45:57.777  INFO 67363 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9012 (http)
-2021-12-25 12:45:57.791  INFO 67363 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2021-12-25 12:45:57.791  INFO 67363 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.53]
-2021-12-25 12:45:57.970  INFO 67363 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2021-12-25 12:45:57.971  INFO 67363 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3456 ms
-2021-12-25 12:45:58.358  INFO 67363 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2021-12-25 12:45:59.608 ERROR 67363 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Exception during pool initialization.
-
-java.sql.SQLRecoverableException: IO Error: The Network Adapter could not establish the connection (CONNECTION_ID=G3qGkyUzRdO/71WsnQ8Esw==)
-	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:870) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:675) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1032) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:90) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:681) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:602) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:138) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:364) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:206) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:476) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:561) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:115) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:112) ~[HikariCP-4.0.3.jar:na]
-	at org.springframework.jdbc.datasource.DataSourceUtils.fetchConnection(DataSourceUtils.java:158) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.datasource.DataSourceUtils.doGetConnection(DataSourceUtils.java:116) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:79) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:330) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.boot.jdbc.EmbeddedDatabaseConnection.isEmbedded(EmbeddedDatabaseConnection.java:184) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.autoconfigure.orm.jpa.HibernateDefaultDdlAutoProvider.getDefaultDdlAuto(HibernateDefaultDdlAutoProvider.java:42) ~[spring-boot-autoconfigure-2.5.5.jar:2.5.5]
-	at org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaConfiguration.lambda$getVendorProperties$1(HibernateJpaConfiguration.java:130) ~[spring-boot-autoconfigure-2.5.5.jar:2.5.5]
-	at org.springframework.boot.autoconfigure.orm.jpa.HibernateSettings.getDdlAuto(HibernateSettings.java:41) ~[spring-boot-autoconfigure-2.5.5.jar:2.5.5]
-	at org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties.determineDdlAuto(HibernateProperties.java:143) ~[spring-boot-autoconfigure-2.5.5.jar:2.5.5]
-	at org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties.getAdditionalProperties(HibernateProperties.java:103) ~[spring-boot-autoconfigure-2.5.5.jar:2.5.5]
-	at org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties.determineHibernateProperties(HibernateProperties.java:95) ~[spring-boot-autoconfigure-2.5.5.jar:2.5.5]
-	at org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaConfiguration.getVendorProperties(HibernateJpaConfiguration.java:132) ~[spring-boot-autoconfigure-2.5.5.jar:2.5.5]
-	at org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration.entityManagerFactory(JpaBaseConfiguration.java:132) ~[spring-boot-autoconfigure-2.5.5.jar:2.5.5]
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:na]
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
-	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:154) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:638) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1352) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1195) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:582) ~[spring-beans-5.3.10.jar:5.3.10]
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'kafkaTopicConfig': Injection of autowired dependencies failed; nested exception is java.lang.IllegalArgumentException: Could not resolve placeholder 'kafka.bootstrapAddress' in value "${kafka.bootstrapAddress}"
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:405) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1431) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:619) ~[spring-beans-5.3.10.jar:5.3.10]
 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.10.jar:5.3.10]
 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.10.jar:5.3.10]
 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.10.jar:5.3.10]
 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.10.jar:5.3.10]
 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1154) ~[spring-context-5.3.10.jar:5.3.10]
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:908) ~[spring-context-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:944) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:918) ~[spring-context-5.3.10.jar:5.3.10]
 	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583) ~[spring-context-5.3.10.jar:5.3.10]
 	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:145) ~[spring-boot-2.5.5.jar:2.5.5]
 	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754) ~[spring-boot-2.5.5.jar:2.5.5]
@@ -544,490 +103,465 @@ java.sql.SQLRecoverableException: IO Error: The Network Adapter could not establ
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1343) ~[spring-boot-2.5.5.jar:2.5.5]
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1332) ~[spring-boot-2.5.5.jar:2.5.5]
 	at com.lendbiz.p2p.api.ApiApplication.main(ApiApplication.java:10) ~[main/:na]
-Caused by: oracle.net.ns.NetException: The Network Adapter could not establish the connection (CONNECTION_ID=G3qGkyUzRdO/71WsnQ8Esw==)
-	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:594) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:565) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:937) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:346) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.connect(T4CConnection.java:1967) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:640) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 49 common frames omitted
-Caused by: java.io.IOException: Network is unreachable, socket connect lapse 11 ms. 103.159.50.216 1521  30000 (1/1) true
-	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:421) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.doLocalDNSLookupConnect(TcpNTAdapter.java:303) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:265) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnOption.connect(ConnOption.java:229) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:814) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:555) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 54 common frames omitted
-Caused by: java.net.SocketException: Network is unreachable
-	at java.base/sun.nio.ch.Net.connect0(Native Method) ~[na:na]
-	at java.base/sun.nio.ch.Net.connect(Net.java:476) ~[na:na]
-	at java.base/sun.nio.ch.Net.connect(Net.java:468) ~[na:na]
-	at java.base/sun.nio.ch.SocketChannelImpl.connect(SocketChannelImpl.java:694) ~[na:na]
-	at java.base/java.nio.channels.SocketChannel.open(SocketChannel.java:194) ~[na:na]
-	at oracle.net.nt.TimeoutSocketChannel.connect(TimeoutSocketChannel.java:184) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TimeoutSocketChannel.<init>(TimeoutSocketChannel.java:158) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:380) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 59 common frames omitted
+Caused by: java.lang.IllegalArgumentException: Could not resolve placeholder 'kafka.bootstrapAddress' in value "${kafka.bootstrapAddress}"
+	at org.springframework.util.PropertyPlaceholderHelper.parseStringValue(PropertyPlaceholderHelper.java:180) ~[spring-core-5.3.10.jar:5.3.10]
+	at org.springframework.util.PropertyPlaceholderHelper.replacePlaceholders(PropertyPlaceholderHelper.java:126) ~[spring-core-5.3.10.jar:5.3.10]
+	at org.springframework.core.env.AbstractPropertyResolver.doResolvePlaceholders(AbstractPropertyResolver.java:239) ~[spring-core-5.3.10.jar:5.3.10]
+	at org.springframework.core.env.AbstractPropertyResolver.resolveRequiredPlaceholders(AbstractPropertyResolver.java:210) ~[spring-core-5.3.10.jar:5.3.10]
+	at org.springframework.context.support.PropertySourcesPlaceholderConfigurer.lambda$processProperties$0(PropertySourcesPlaceholderConfigurer.java:175) ~[spring-context-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.resolveEmbeddedValue(AbstractBeanFactory.java:936) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1321) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1300) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:657) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:640) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:119) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:399) ~[spring-beans-5.3.10.jar:5.3.10]
+	... 17 common frames omitted
 
-2021-12-25 12:45:59.700  INFO 67363 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2021-12-25 12:45:59.766  INFO 67363 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.32.Final
-2021-12-25 12:45:59.919  INFO 67363 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
-2021-12-25 12:46:00.025  INFO 67363 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2021-12-25 12:46:01.045 ERROR 67363 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Exception during pool initialization.
+2022-01-10 15:24:29.794  INFO 40975 --- [main] com.lendbiz.p2p.api.ApiApplication       : Starting ApiApplication using Java 11.0.12 on TuHoangs-MacBook-Pro.local with PID 40975 (/Users/tuht/Projects/api_mobile/bin/main started by tuht in /Users/tuht/Projects/api_mobile)
+2022-01-10 15:24:29.797  INFO 40975 --- [main] com.lendbiz.p2p.api.ApiApplication       : The following profiles are active: lendbiz-dev
+2022-01-10 15:24:31.604  INFO 40975 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2022-01-10 15:24:31.777  INFO 40975 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 165 ms. Found 11 JPA repository interfaces.
+2022-01-10 15:24:32.957  INFO 40975 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9012 (http)
+2022-01-10 15:24:32.967  INFO 40975 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2022-01-10 15:24:32.967  INFO 40975 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.53]
+2022-01-10 15:24:33.135  INFO 40975 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2022-01-10 15:24:33.135  INFO 40975 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3241 ms
+2022-01-10 15:24:33.413  INFO 40975 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2022-01-10 15:24:33.856  INFO 40975 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2022-01-10 15:24:34.037  INFO 40975 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2022-01-10 15:24:34.121  INFO 40975 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.32.Final
+2022-01-10 15:24:34.287  INFO 40975 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2022-01-10 15:24:34.393  INFO 40975 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.Oracle10gDialect
+2022-01-10 15:24:37.276  INFO 40975 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-01-10 15:24:37.442  INFO 40975 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2022-01-10 15:24:37.682  WARN 40975 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2022-01-10 15:24:39.313  INFO 40975 --- [main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
+2022-01-10 15:24:39.362  INFO 40975 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure Ant [pattern='/api/**'] with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@4821e1a3, org.springframework.security.web.context.SecurityContextPersistenceFilter@9a932a4, org.springframework.security.web.header.HeaderWriterFilter@97842a0, org.springframework.web.filter.CorsFilter@5ba4735c, org.springframework.security.web.authentication.logout.LogoutFilter@17eb5661, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@41a18b54, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@343b3399, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@45382749, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@70b437bb, org.springframework.security.web.session.SessionManagementFilter@74307afd, org.springframework.security.web.access.ExceptionTranslationFilter@2e587292, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@58885a2e]
+2022-01-10 15:24:40.151  INFO 40975 --- [main] o.a.k.clients.consumer.ConsumerConfig    : ConsumerConfig values: 
+	allow.auto.create.topics = true
+	auto.commit.interval.ms = 100
+	auto.offset.reset = earliest
+	bootstrap.servers = [localhost:9092]
+	check.crcs = true
+	client.dns.lookup = use_all_dns_ips
+	client.id = consumer-spring-kafka-1
+	client.rack = 
+	connections.max.idle.ms = 540000
+	default.api.timeout.ms = 60000
+	enable.auto.commit = false
+	exclude.internal.topics = true
+	fetch.max.bytes = 52428800
+	fetch.max.wait.ms = 500
+	fetch.min.bytes = 1
+	group.id = spring-kafka
+	group.instance.id = null
+	heartbeat.interval.ms = 3000
+	interceptor.classes = []
+	internal.leave.group.on.close = true
+	internal.throw.on.fetch.stable.offset.unsupported = false
+	isolation.level = read_uncommitted
+	key.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+	max.partition.fetch.bytes = 1048576
+	max.poll.interval.ms = 300000
+	max.poll.records = 500
+	metadata.max.age.ms = 300000
+	metric.reporters = []
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor]
+	receive.buffer.bytes = 65536
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.mechanism = GSSAPI
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	session.timeout.ms = 15000
+	socket.connection.setup.timeout.max.ms = 127000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	value.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
 
-java.sql.SQLRecoverableException: IO Error: The Network Adapter could not establish the connection (CONNECTION_ID=BL7uqAT4RiO3LfwjA9av2g==)
-	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:870) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:675) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1032) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:90) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:681) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:602) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:138) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:364) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:206) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:476) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:561) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:115) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:112) ~[HikariCP-4.0.3.jar:na]
-	at org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.getConnection(DatasourceConnectionProviderImpl.java:122) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess.obtainConnection(JdbcEnvironmentInitiator.java:180) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:68) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:35) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:101) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:263) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:237) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:214) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.id.factory.internal.DefaultIdentifierGeneratorFactory.injectServices(DefaultIdentifierGeneratorFactory.java:152) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.injectDependencies(AbstractServiceRegistryImpl.java:286) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:243) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:214) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.<init>(InFlightMetadataCollectorImpl.java:176) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:127) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:1224) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1255) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:58) ~[spring-orm-5.3.10.jar:5.3.10]
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:365) ~[spring-orm-5.3.10.jar:5.3.10]
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:409) ~[spring-orm-5.3.10.jar:5.3.10]
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396) ~[spring-orm-5.3.10.jar:5.3.10]
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:341) ~[spring-orm-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1863) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1800) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:620) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1154) ~[spring-context-5.3.10.jar:5.3.10]
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:908) ~[spring-context-5.3.10.jar:5.3.10]
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583) ~[spring-context-5.3.10.jar:5.3.10]
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:145) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:434) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:338) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1343) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1332) ~[spring-boot-2.5.5.jar:2.5.5]
-	at com.lendbiz.p2p.api.ApiApplication.main(ApiApplication.java:10) ~[main/:na]
-Caused by: oracle.net.ns.NetException: The Network Adapter could not establish the connection (CONNECTION_ID=BL7uqAT4RiO3LfwjA9av2g==)
-	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:594) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:565) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:937) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:346) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.connect(T4CConnection.java:1967) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:640) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 50 common frames omitted
-Caused by: java.io.IOException: Network is unreachable, socket connect lapse 1 ms. 103.159.50.216 1521  30000 (1/1) true
-	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:421) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.doLocalDNSLookupConnect(TcpNTAdapter.java:303) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:265) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnOption.connect(ConnOption.java:229) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:814) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:555) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 55 common frames omitted
-Caused by: java.net.SocketException: Network is unreachable
-	at java.base/sun.nio.ch.Net.connect0(Native Method) ~[na:na]
-	at java.base/sun.nio.ch.Net.connect(Net.java:476) ~[na:na]
-	at java.base/sun.nio.ch.Net.connect(Net.java:468) ~[na:na]
-	at java.base/sun.nio.ch.SocketChannelImpl.connect(SocketChannelImpl.java:694) ~[na:na]
-	at java.base/java.nio.channels.SocketChannel.open(SocketChannel.java:194) ~[na:na]
-	at oracle.net.nt.TimeoutSocketChannel.connect(TimeoutSocketChannel.java:184) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TimeoutSocketChannel.<init>(TimeoutSocketChannel.java:158) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:380) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 60 common frames omitted
+2022-01-10 15:24:40.234  INFO 40975 --- [main] o.a.kafka.common.utils.AppInfoParser     : Kafka version: 2.7.1
+2022-01-10 15:24:40.234  INFO 40975 --- [main] o.a.kafka.common.utils.AppInfoParser     : Kafka commitId: 61dbce85d0d41457
+2022-01-10 15:24:40.234  INFO 40975 --- [main] o.a.kafka.common.utils.AppInfoParser     : Kafka startTimeMs: 1641803080232
+2022-01-10 15:24:40.240  INFO 40975 --- [main] o.a.k.clients.consumer.KafkaConsumer     : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Subscribed to topic(s): demo
+2022-01-10 15:24:40.277  INFO 40975 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9012 (http) with context path ''
+2022-01-10 15:24:40.280  INFO 40975 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2022-01-10 15:24:40.298  INFO 40975 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2022-01-10 15:24:40.326  INFO 40975 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2022-01-10 15:24:40.660  INFO 40975 --- [main] com.lendbiz.p2p.api.ApiApplication       : Started ApiApplication in 11.542 seconds (JVM running for 12.645)
+2022-01-10 15:24:40.672  INFO 40975 --- [main] o.a.k.clients.producer.ProducerConfig    : ProducerConfig values: 
+	acks = 1
+	batch.size = 16384
+	bootstrap.servers = [localhost:9092]
+	buffer.memory = 33554432
+	client.dns.lookup = use_all_dns_ips
+	client.id = producer-1
+	compression.type = none
+	connections.max.idle.ms = 540000
+	delivery.timeout.ms = 120000
+	enable.idempotence = false
+	interceptor.classes = []
+	internal.auto.downgrade.txn.commit = false
+	key.serializer = class org.apache.kafka.common.serialization.StringSerializer
+	linger.ms = 0
+	max.block.ms = 60000
+	max.in.flight.requests.per.connection = 5
+	max.request.size = 1048576
+	metadata.max.age.ms = 300000
+	metadata.max.idle.ms = 300000
+	metric.reporters = []
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partitioner.class = class org.apache.kafka.clients.producer.internals.DefaultPartitioner
+	receive.buffer.bytes = 32768
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retries = 2147483647
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.mechanism = GSSAPI
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	socket.connection.setup.timeout.max.ms = 127000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	transaction.timeout.ms = 60000
+	transactional.id = null
+	value.serializer = class org.apache.kafka.common.serialization.StringSerializer
 
-2021-12-25 12:46:01.062  WARN 67363 --- [main] o.h.e.j.e.i.JdbcEnvironmentInitiator     : HHH000342: Could not obtain connection to query metadata
+2022-01-10 15:24:40.699  INFO 40975 --- [main] o.a.kafka.common.utils.AppInfoParser     : Kafka version: 2.7.1
+2022-01-10 15:24:40.700  INFO 40975 --- [main] o.a.kafka.common.utils.AppInfoParser     : Kafka commitId: 61dbce85d0d41457
+2022-01-10 15:24:40.700  INFO 40975 --- [main] o.a.kafka.common.utils.AppInfoParser     : Kafka startTimeMs: 1641803080699
+2022-01-10 15:24:40.975  WARN 40975 --- [kafka-producer-network-thread | producer-1] org.apache.kafka.clients.NetworkClient   : [Producer clientId=producer-1] Error while fetching metadata with correlation id 1 : {test=LEADER_NOT_AVAILABLE}
+2022-01-10 15:24:40.975  WARN 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] org.apache.kafka.clients.NetworkClient   : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Error while fetching metadata with correlation id 2 : {demo=LEADER_NOT_AVAILABLE}
+2022-01-10 15:24:40.984  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] org.apache.kafka.clients.Metadata        : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Cluster ID: LUsLWGJJS7OPGZwY6xASyA
+2022-01-10 15:24:40.984  INFO 40975 --- [kafka-producer-network-thread | producer-1] org.apache.kafka.clients.Metadata        : [Producer clientId=producer-1] Cluster ID: LUsLWGJJS7OPGZwY6xASyA
+2022-01-10 15:24:40.988  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Discovered group coordinator 192.168.100.86:9092 (id: 2147483647 rack: null)
+2022-01-10 15:24:40.992  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] (Re-)joining group
+2022-01-10 15:24:41.503  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] (Re-)joining group
+2022-01-10 15:24:41.536  WARN 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] org.apache.kafka.clients.NetworkClient   : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Error while fetching metadata with correlation id 6 : {demo=LEADER_NOT_AVAILABLE}
+2022-01-10 15:24:41.536  WARN 40975 --- [kafka-producer-network-thread | producer-1] org.apache.kafka.clients.NetworkClient   : [Producer clientId=producer-1] Error while fetching metadata with correlation id 3 : {test=LEADER_NOT_AVAILABLE}
+2022-01-10 15:24:41.541  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Successfully joined group with generation Generation{generationId=1, memberId='consumer-spring-kafka-1-6bf39047-c7fa-4c4f-afb0-9753b0064727', protocol='range'}
+2022-01-10 15:24:41.663  WARN 40975 --- [kafka-producer-network-thread | producer-1] org.apache.kafka.clients.NetworkClient   : [Producer clientId=producer-1] Error while fetching metadata with correlation id 4 : {test=LEADER_NOT_AVAILABLE}
+2022-01-10 15:24:41.663  WARN 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] org.apache.kafka.clients.NetworkClient   : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Error while fetching metadata with correlation id 8 : {demo=LEADER_NOT_AVAILABLE}
+2022-01-10 15:24:41.669  WARN 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] The following subscribed topics are not assigned to any members: [demo] 
+2022-01-10 15:24:41.669  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Finished assignment for group at generation 1: {consumer-spring-kafka-1-6bf39047-c7fa-4c4f-afb0-9753b0064727=Assignment(partitions=[])}
+2022-01-10 15:24:41.694  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Successfully synced group in generation Generation{generationId=1, memberId='consumer-spring-kafka-1-6bf39047-c7fa-4c4f-afb0-9753b0064727', protocol='range'}
+2022-01-10 15:24:41.695  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Notifying assignor about the new Assignment(partitions=[])
+2022-01-10 15:24:41.695  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Adding newly assigned partitions: 
+2022-01-10 15:24:41.696  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : spring-kafka: partitions assigned: []
+2022-01-10 15:24:41.769  WARN 40975 --- [kafka-producer-network-thread | producer-1] org.apache.kafka.clients.NetworkClient   : [Producer clientId=producer-1] Error while fetching metadata with correlation id 5 : {test=LEADER_NOT_AVAILABLE}
+2022-01-10 15:24:41.769  WARN 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] org.apache.kafka.clients.NetworkClient   : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Error while fetching metadata with correlation id 10 : {demo=LEADER_NOT_AVAILABLE}
+2022-01-10 15:24:41.881  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Requesting to re-join the group and trigger rebalance since the assignment metadata has changed from (version4: {}) to (version6: {demo=1})
+2022-01-10 15:24:41.881  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Requesting to re-join the group and trigger rebalance since the assignment metadata has changed from (version4: {}) to (version6: {demo=1})
+2022-01-10 15:24:41.882  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Revoke previously assigned partitions 
+2022-01-10 15:24:41.884  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : spring-kafka: partitions revoked: []
+2022-01-10 15:24:41.891  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] (Re-)joining group
+2022-01-10 15:24:41.899  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Successfully joined group with generation Generation{generationId=2, memberId='consumer-spring-kafka-1-6bf39047-c7fa-4c4f-afb0-9753b0064727', protocol='range'}
+2022-01-10 15:24:41.900  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Finished assignment for group at generation 2: {consumer-spring-kafka-1-6bf39047-c7fa-4c4f-afb0-9753b0064727=Assignment(partitions=[demo-0])}
+2022-01-10 15:24:41.906  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Successfully synced group in generation Generation{generationId=2, memberId='consumer-spring-kafka-1-6bf39047-c7fa-4c4f-afb0-9753b0064727', protocol='range'}
+2022-01-10 15:24:41.911  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Notifying assignor about the new Assignment(partitions=[demo-0])
+2022-01-10 15:24:41.914  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Adding newly assigned partitions: demo-0
+2022-01-10 15:24:41.924  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Found no committed offset for partition demo-0
+2022-01-10 15:24:41.941  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.SubscriptionState    : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Resetting offset for partition demo-0 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[192.168.100.86:9092 (id: 0 rack: null)], epoch=0}}.
+2022-01-10 15:24:41.946  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : spring-kafka: partitions assigned: [demo-0]
+2022-01-10 16:08:56.670  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Revoke previously assigned partitions demo-0
+2022-01-10 16:08:56.680  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : spring-kafka: partitions revoked: [demo-0]
+2022-01-10 16:08:56.681  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Member consumer-spring-kafka-1-6bf39047-c7fa-4c4f-afb0-9753b0064727 sending LeaveGroup request to coordinator 192.168.100.86:9092 (id: 2147483647 rack: null) due to the consumer unsubscribed from all topics
+2022-01-10 16:08:56.685  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.clients.consumer.KafkaConsumer     : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Unsubscribed all topics or patterns and assigned partitions
+2022-01-10 16:08:56.833  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] org.apache.kafka.common.metrics.Metrics  : Metrics scheduler closed
+2022-01-10 16:08:56.834  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] org.apache.kafka.common.metrics.Metrics  : Closing reporter org.apache.kafka.common.metrics.JmxReporter
+2022-01-10 16:08:56.835  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] org.apache.kafka.common.metrics.Metrics  : Metrics reporters closed
+2022-01-10 16:08:56.870  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.kafka.common.utils.AppInfoParser     : App info kafka.consumer for consumer-spring-kafka-1 unregistered
+2022-01-10 16:08:56.872  INFO 40975 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : spring-kafka: Consumer stopped
+2022-01-10 16:08:56.910  INFO 40975 --- [SpringApplicationShutdownHook] o.a.k.clients.producer.KafkaProducer     : [Producer clientId=producer-1] Closing the Kafka producer with timeoutMillis = 30000 ms.
+2022-01-10 16:08:56.916  INFO 40975 --- [SpringApplicationShutdownHook] org.apache.kafka.common.metrics.Metrics  : Metrics scheduler closed
+2022-01-10 16:08:56.916  INFO 40975 --- [SpringApplicationShutdownHook] org.apache.kafka.common.metrics.Metrics  : Closing reporter org.apache.kafka.common.metrics.JmxReporter
+2022-01-10 16:08:56.916  INFO 40975 --- [SpringApplicationShutdownHook] org.apache.kafka.common.metrics.Metrics  : Metrics reporters closed
+2022-01-10 16:08:56.918  INFO 40975 --- [SpringApplicationShutdownHook] o.a.kafka.common.utils.AppInfoParser     : App info kafka.producer for producer-1 unregistered
+2022-01-10 16:08:56.921  INFO 40975 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2022-01-10 16:08:56.965  INFO 40975 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2022-01-10 16:08:57.220  INFO 40975 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2022-01-10 16:09:39.657  INFO 63411 --- [main] com.lendbiz.p2p.api.ApiApplication       : Starting ApiApplication using Java 11.0.12 on TuHoangs-MacBook-Pro.local with PID 63411 (/Users/tuht/Projects/api_mobile/bin/main started by tuht in /Users/tuht/Projects/api_mobile)
+2022-01-10 16:09:39.663  INFO 63411 --- [main] com.lendbiz.p2p.api.ApiApplication       : The following profiles are active: lendbiz-dev
+2022-01-10 16:09:41.471  INFO 63411 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2022-01-10 16:09:41.662  INFO 63411 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 180 ms. Found 11 JPA repository interfaces.
+2022-01-10 16:09:42.911  INFO 63411 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9012 (http)
+2022-01-10 16:09:42.921  INFO 63411 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2022-01-10 16:09:42.921  INFO 63411 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.53]
+2022-01-10 16:09:43.077  INFO 63411 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2022-01-10 16:09:43.078  INFO 63411 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3295 ms
+2022-01-10 16:09:43.335  INFO 63411 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2022-01-10 16:09:43.776  INFO 63411 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2022-01-10 16:09:43.930  INFO 63411 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2022-01-10 16:09:44.015  INFO 63411 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.32.Final
+2022-01-10 16:09:44.176  INFO 63411 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2022-01-10 16:09:44.282  INFO 63411 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.Oracle10gDialect
+2022-01-10 16:09:47.155  INFO 63411 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-01-10 16:09:47.307  INFO 63411 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2022-01-10 16:09:47.584  WARN 63411 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2022-01-10 16:09:49.084  INFO 63411 --- [main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
+2022-01-10 16:09:49.132  INFO 63411 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure Ant [pattern='/api/**'] with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@4821e1a3, org.springframework.security.web.context.SecurityContextPersistenceFilter@9a932a4, org.springframework.security.web.header.HeaderWriterFilter@97842a0, org.springframework.web.filter.CorsFilter@5ba4735c, org.springframework.security.web.authentication.logout.LogoutFilter@17eb5661, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@41a18b54, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@343b3399, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@45382749, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@70b437bb, org.springframework.security.web.session.SessionManagementFilter@74307afd, org.springframework.security.web.access.ExceptionTranslationFilter@2e587292, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@58885a2e]
+2022-01-10 16:09:49.861  INFO 63411 --- [main] o.a.k.clients.consumer.ConsumerConfig    : ConsumerConfig values: 
+	allow.auto.create.topics = true
+	auto.commit.interval.ms = 100
+	auto.offset.reset = earliest
+	bootstrap.servers = [localhost:9092]
+	check.crcs = true
+	client.dns.lookup = use_all_dns_ips
+	client.id = consumer-spring-kafka-1
+	client.rack = 
+	connections.max.idle.ms = 540000
+	default.api.timeout.ms = 60000
+	enable.auto.commit = false
+	exclude.internal.topics = true
+	fetch.max.bytes = 52428800
+	fetch.max.wait.ms = 500
+	fetch.min.bytes = 1
+	group.id = spring-kafka
+	group.instance.id = null
+	heartbeat.interval.ms = 3000
+	interceptor.classes = []
+	internal.leave.group.on.close = true
+	internal.throw.on.fetch.stable.offset.unsupported = false
+	isolation.level = read_uncommitted
+	key.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+	max.partition.fetch.bytes = 1048576
+	max.poll.interval.ms = 300000
+	max.poll.records = 500
+	metadata.max.age.ms = 300000
+	metric.reporters = []
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor]
+	receive.buffer.bytes = 65536
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.mechanism = GSSAPI
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	session.timeout.ms = 15000
+	socket.connection.setup.timeout.max.ms = 127000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	value.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
 
-java.sql.SQLRecoverableException: IO Error: The Network Adapter could not establish the connection (CONNECTION_ID=BL7uqAT4RiO3LfwjA9av2g==)
-	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:870) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:675) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1032) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:90) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:681) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:602) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:138) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:364) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:206) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:476) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:561) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:115) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:112) ~[HikariCP-4.0.3.jar:na]
-	at org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.getConnection(DatasourceConnectionProviderImpl.java:122) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess.obtainConnection(JdbcEnvironmentInitiator.java:180) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:68) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:35) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:101) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:263) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:237) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:214) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.id.factory.internal.DefaultIdentifierGeneratorFactory.injectServices(DefaultIdentifierGeneratorFactory.java:152) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.injectDependencies(AbstractServiceRegistryImpl.java:286) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:243) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:214) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.<init>(InFlightMetadataCollectorImpl.java:176) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:127) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:1224) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1255) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:58) ~[spring-orm-5.3.10.jar:5.3.10]
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:365) ~[spring-orm-5.3.10.jar:5.3.10]
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:409) ~[spring-orm-5.3.10.jar:5.3.10]
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396) ~[spring-orm-5.3.10.jar:5.3.10]
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:341) ~[spring-orm-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1863) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1800) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:620) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1154) ~[spring-context-5.3.10.jar:5.3.10]
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:908) ~[spring-context-5.3.10.jar:5.3.10]
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583) ~[spring-context-5.3.10.jar:5.3.10]
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:145) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:434) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:338) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1343) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1332) ~[spring-boot-2.5.5.jar:2.5.5]
-	at com.lendbiz.p2p.api.ApiApplication.main(ApiApplication.java:10) ~[main/:na]
-Caused by: oracle.net.ns.NetException: The Network Adapter could not establish the connection (CONNECTION_ID=BL7uqAT4RiO3LfwjA9av2g==)
-	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:594) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:565) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:937) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:346) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.connect(T4CConnection.java:1967) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:640) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 50 common frames omitted
-Caused by: java.io.IOException: Network is unreachable, socket connect lapse 1 ms. 103.159.50.216 1521  30000 (1/1) true
-	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:421) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.doLocalDNSLookupConnect(TcpNTAdapter.java:303) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:265) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnOption.connect(ConnOption.java:229) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:814) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:555) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 55 common frames omitted
-Caused by: java.net.SocketException: Network is unreachable
-	at java.base/sun.nio.ch.Net.connect0(Native Method) ~[na:na]
-	at java.base/sun.nio.ch.Net.connect(Net.java:476) ~[na:na]
-	at java.base/sun.nio.ch.Net.connect(Net.java:468) ~[na:na]
-	at java.base/sun.nio.ch.SocketChannelImpl.connect(SocketChannelImpl.java:694) ~[na:na]
-	at java.base/java.nio.channels.SocketChannel.open(SocketChannel.java:194) ~[na:na]
-	at oracle.net.nt.TimeoutSocketChannel.connect(TimeoutSocketChannel.java:184) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TimeoutSocketChannel.<init>(TimeoutSocketChannel.java:158) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:380) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 60 common frames omitted
+2022-01-10 16:09:49.940  INFO 63411 --- [main] o.a.kafka.common.utils.AppInfoParser     : Kafka version: 2.7.1
+2022-01-10 16:09:49.940  INFO 63411 --- [main] o.a.kafka.common.utils.AppInfoParser     : Kafka commitId: 61dbce85d0d41457
+2022-01-10 16:09:49.940  INFO 63411 --- [main] o.a.kafka.common.utils.AppInfoParser     : Kafka startTimeMs: 1641805789937
+2022-01-10 16:09:49.946  INFO 63411 --- [main] o.a.k.clients.consumer.KafkaConsumer     : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Subscribed to topic(s): demo
+2022-01-10 16:09:49.977  INFO 63411 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9012 (http) with context path ''
+2022-01-10 16:09:49.981  INFO 63411 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2022-01-10 16:09:49.996  INFO 63411 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2022-01-10 16:09:50.026  INFO 63411 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2022-01-10 16:09:50.316  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] org.apache.kafka.clients.Metadata        : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Cluster ID: LUsLWGJJS7OPGZwY6xASyA
+2022-01-10 16:09:50.329  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Discovered group coordinator 192.168.100.86:9092 (id: 2147483647 rack: null)
+2022-01-10 16:09:50.337  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] (Re-)joining group
+2022-01-10 16:09:50.390  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] (Re-)joining group
+2022-01-10 16:09:50.413  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Successfully joined group with generation Generation{generationId=4, memberId='consumer-spring-kafka-1-6f13ca7f-b8ea-472c-9fdc-798da0f75b5f', protocol='range'}
+2022-01-10 16:09:50.416  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Finished assignment for group at generation 4: {consumer-spring-kafka-1-6f13ca7f-b8ea-472c-9fdc-798da0f75b5f=Assignment(partitions=[demo-0])}
+2022-01-10 16:09:50.417  INFO 63411 --- [main] com.lendbiz.p2p.api.ApiApplication       : Started ApiApplication in 11.379 seconds (JVM running for 12.444)
+2022-01-10 16:09:50.431  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Successfully synced group in generation Generation{generationId=4, memberId='consumer-spring-kafka-1-6f13ca7f-b8ea-472c-9fdc-798da0f75b5f', protocol='range'}
+2022-01-10 16:09:50.435  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Notifying assignor about the new Assignment(partitions=[demo-0])
+2022-01-10 16:09:50.438  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Adding newly assigned partitions: demo-0
+2022-01-10 16:09:50.454  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Setting offset for partition demo-0 to the committed offset FetchPosition{offset=4, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[192.168.100.86:9092 (id: 0 rack: null)], epoch=0}}
+2022-01-10 16:09:50.458  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : spring-kafka: partitions assigned: [demo-0]
+2022-01-10 16:10:22.524  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.clients.producer.ProducerConfig    : ProducerConfig values: 
+	acks = 1
+	batch.size = 16384
+	bootstrap.servers = [localhost:9092]
+	buffer.memory = 33554432
+	client.dns.lookup = use_all_dns_ips
+	client.id = producer-1
+	compression.type = none
+	connections.max.idle.ms = 540000
+	delivery.timeout.ms = 120000
+	enable.idempotence = false
+	interceptor.classes = []
+	internal.auto.downgrade.txn.commit = false
+	key.serializer = class org.apache.kafka.common.serialization.StringSerializer
+	linger.ms = 0
+	max.block.ms = 60000
+	max.in.flight.requests.per.connection = 5
+	max.request.size = 1048576
+	metadata.max.age.ms = 300000
+	metadata.max.idle.ms = 300000
+	metric.reporters = []
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partitioner.class = class org.apache.kafka.clients.producer.internals.DefaultPartitioner
+	receive.buffer.bytes = 32768
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retries = 2147483647
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.mechanism = GSSAPI
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	socket.connection.setup.timeout.max.ms = 127000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	transaction.timeout.ms = 60000
+	transactional.id = null
+	value.serializer = class org.apache.kafka.common.serialization.StringSerializer
 
-2021-12-25 12:46:01.087  INFO 67363 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.Oracle10gDialect
-2021-12-25 12:46:02.294  INFO 67363 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
-2021-12-25 12:46:02.470  INFO 67363 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2021-12-25 12:46:02.719  WARN 67363 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2021-12-25 12:46:04.073  INFO 67363 --- [main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
-2021-12-25 12:46:04.131  INFO 67363 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure Ant [pattern='/api/**'] with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@45b37003, org.springframework.security.web.context.SecurityContextPersistenceFilter@1c3eeda4, org.springframework.security.web.header.HeaderWriterFilter@32a541a8, org.springframework.web.filter.CorsFilter@3e60be48, org.springframework.security.web.authentication.logout.LogoutFilter@5529fd4e, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@13231e7b, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@6cb1da13, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@9214725, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@20a533b, org.springframework.security.web.session.SessionManagementFilter@3eb6d7a9, org.springframework.security.web.access.ExceptionTranslationFilter@7c59f315, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@77e42cbf]
-2021-12-25 12:46:04.847  INFO 67363 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9012 (http) with context path ''
-2021-12-25 12:46:04.851  INFO 67363 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
-2021-12-25 12:46:04.875  INFO 67363 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
-2021-12-25 12:46:04.915  INFO 67363 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
-2021-12-25 12:46:05.285  INFO 67363 --- [main] com.lendbiz.p2p.api.ApiApplication       : Started ApiApplication in 11.972 seconds (JVM running for 13.413)
-2021-12-25 12:46:35.832  INFO 67501 --- [main] com.lendbiz.p2p.api.ApiApplication       : Starting ApiApplication using Java 11.0.12 on TuHoangs-MacBook-Pro.local with PID 67501 (/Users/tuht/Projects/api_mobile/bin/main started by tuht in /Users/tuht/Projects/api_mobile)
-2021-12-25 12:46:35.836  INFO 67501 --- [main] com.lendbiz.p2p.api.ApiApplication       : The following profiles are active: lendbiz-dev
-2021-12-25 12:46:37.999  INFO 67501 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2021-12-25 12:46:38.191  INFO 67501 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 179 ms. Found 11 JPA repository interfaces.
-2021-12-25 12:46:39.432  INFO 67501 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9012 (http)
-2021-12-25 12:46:39.450  INFO 67501 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2021-12-25 12:46:39.451  INFO 67501 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.53]
-2021-12-25 12:46:39.654  INFO 67501 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2021-12-25 12:46:39.654  INFO 67501 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3654 ms
-2021-12-25 12:46:40.081  INFO 67501 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2021-12-25 12:46:41.288 ERROR 67501 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Exception during pool initialization.
-
-java.sql.SQLRecoverableException: IO Error: The Network Adapter could not establish the connection (CONNECTION_ID=WWpESqDlSCm/sr/9NPz2lA==)
-	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:870) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:675) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1032) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:90) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:681) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:602) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:138) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:364) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:206) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:476) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:561) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:115) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:112) ~[HikariCP-4.0.3.jar:na]
-	at org.springframework.jdbc.datasource.DataSourceUtils.fetchConnection(DataSourceUtils.java:158) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.datasource.DataSourceUtils.doGetConnection(DataSourceUtils.java:116) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:79) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:330) ~[spring-jdbc-5.3.10.jar:5.3.10]
-	at org.springframework.boot.jdbc.EmbeddedDatabaseConnection.isEmbedded(EmbeddedDatabaseConnection.java:184) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.autoconfigure.orm.jpa.HibernateDefaultDdlAutoProvider.getDefaultDdlAuto(HibernateDefaultDdlAutoProvider.java:42) ~[spring-boot-autoconfigure-2.5.5.jar:2.5.5]
-	at org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaConfiguration.lambda$getVendorProperties$1(HibernateJpaConfiguration.java:130) ~[spring-boot-autoconfigure-2.5.5.jar:2.5.5]
-	at org.springframework.boot.autoconfigure.orm.jpa.HibernateSettings.getDdlAuto(HibernateSettings.java:41) ~[spring-boot-autoconfigure-2.5.5.jar:2.5.5]
-	at org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties.determineDdlAuto(HibernateProperties.java:143) ~[spring-boot-autoconfigure-2.5.5.jar:2.5.5]
-	at org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties.getAdditionalProperties(HibernateProperties.java:103) ~[spring-boot-autoconfigure-2.5.5.jar:2.5.5]
-	at org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties.determineHibernateProperties(HibernateProperties.java:95) ~[spring-boot-autoconfigure-2.5.5.jar:2.5.5]
-	at org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaConfiguration.getVendorProperties(HibernateJpaConfiguration.java:132) ~[spring-boot-autoconfigure-2.5.5.jar:2.5.5]
-	at org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration.entityManagerFactory(JpaBaseConfiguration.java:132) ~[spring-boot-autoconfigure-2.5.5.jar:2.5.5]
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:na]
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
-	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:154) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:638) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1352) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1195) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:582) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1154) ~[spring-context-5.3.10.jar:5.3.10]
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:908) ~[spring-context-5.3.10.jar:5.3.10]
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583) ~[spring-context-5.3.10.jar:5.3.10]
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:145) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:434) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:338) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1343) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1332) ~[spring-boot-2.5.5.jar:2.5.5]
-	at com.lendbiz.p2p.api.ApiApplication.main(ApiApplication.java:10) ~[main/:na]
-Caused by: oracle.net.ns.NetException: The Network Adapter could not establish the connection (CONNECTION_ID=WWpESqDlSCm/sr/9NPz2lA==)
-	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:594) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:565) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:937) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:346) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.connect(T4CConnection.java:1967) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:640) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 49 common frames omitted
-Caused by: java.io.IOException: Network is unreachable, socket connect lapse 8 ms. 103.159.50.216 1521  30000 (1/1) true
-	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:421) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.doLocalDNSLookupConnect(TcpNTAdapter.java:303) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:265) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnOption.connect(ConnOption.java:229) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:814) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:555) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 54 common frames omitted
-Caused by: java.net.SocketException: Network is unreachable
-	at java.base/sun.nio.ch.Net.connect0(Native Method) ~[na:na]
-	at java.base/sun.nio.ch.Net.connect(Net.java:476) ~[na:na]
-	at java.base/sun.nio.ch.Net.connect(Net.java:468) ~[na:na]
-	at java.base/sun.nio.ch.SocketChannelImpl.connect(SocketChannelImpl.java:694) ~[na:na]
-	at java.base/java.nio.channels.SocketChannel.open(SocketChannel.java:194) ~[na:na]
-	at oracle.net.nt.TimeoutSocketChannel.connect(TimeoutSocketChannel.java:184) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TimeoutSocketChannel.<init>(TimeoutSocketChannel.java:158) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:380) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 59 common frames omitted
-
-2021-12-25 12:46:41.373  INFO 67501 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2021-12-25 12:46:41.418  INFO 67501 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.32.Final
-2021-12-25 12:46:41.544  INFO 67501 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
-2021-12-25 12:46:41.632  INFO 67501 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2021-12-25 12:46:42.653 ERROR 67501 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Exception during pool initialization.
-
-java.sql.SQLRecoverableException: IO Error: The Network Adapter could not establish the connection (CONNECTION_ID=T49WY6dnTzS5rxdu5kGNfA==)
-	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:870) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:675) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1032) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:90) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:681) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:602) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:138) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:364) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:206) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:476) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:561) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:115) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:112) ~[HikariCP-4.0.3.jar:na]
-	at org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.getConnection(DatasourceConnectionProviderImpl.java:122) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess.obtainConnection(JdbcEnvironmentInitiator.java:180) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:68) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:35) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:101) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:263) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:237) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:214) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.id.factory.internal.DefaultIdentifierGeneratorFactory.injectServices(DefaultIdentifierGeneratorFactory.java:152) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.injectDependencies(AbstractServiceRegistryImpl.java:286) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:243) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:214) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.<init>(InFlightMetadataCollectorImpl.java:176) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:127) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:1224) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1255) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:58) ~[spring-orm-5.3.10.jar:5.3.10]
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:365) ~[spring-orm-5.3.10.jar:5.3.10]
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:409) ~[spring-orm-5.3.10.jar:5.3.10]
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396) ~[spring-orm-5.3.10.jar:5.3.10]
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:341) ~[spring-orm-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1863) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1800) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:620) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1154) ~[spring-context-5.3.10.jar:5.3.10]
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:908) ~[spring-context-5.3.10.jar:5.3.10]
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583) ~[spring-context-5.3.10.jar:5.3.10]
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:145) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:434) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:338) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1343) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1332) ~[spring-boot-2.5.5.jar:2.5.5]
-	at com.lendbiz.p2p.api.ApiApplication.main(ApiApplication.java:10) ~[main/:na]
-Caused by: oracle.net.ns.NetException: The Network Adapter could not establish the connection (CONNECTION_ID=T49WY6dnTzS5rxdu5kGNfA==)
-	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:594) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:565) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:937) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:346) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.connect(T4CConnection.java:1967) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:640) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 50 common frames omitted
-Caused by: java.io.IOException: Network is unreachable, socket connect lapse 1 ms. 103.159.50.216 1521  30000 (1/1) true
-	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:421) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.doLocalDNSLookupConnect(TcpNTAdapter.java:303) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:265) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnOption.connect(ConnOption.java:229) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:814) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:555) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 55 common frames omitted
-Caused by: java.net.SocketException: Network is unreachable
-	at java.base/sun.nio.ch.Net.connect0(Native Method) ~[na:na]
-	at java.base/sun.nio.ch.Net.connect(Net.java:476) ~[na:na]
-	at java.base/sun.nio.ch.Net.connect(Net.java:468) ~[na:na]
-	at java.base/sun.nio.ch.SocketChannelImpl.connect(SocketChannelImpl.java:694) ~[na:na]
-	at java.base/java.nio.channels.SocketChannel.open(SocketChannel.java:194) ~[na:na]
-	at oracle.net.nt.TimeoutSocketChannel.connect(TimeoutSocketChannel.java:184) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TimeoutSocketChannel.<init>(TimeoutSocketChannel.java:158) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:380) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 60 common frames omitted
-
-2021-12-25 12:46:42.685  WARN 67501 --- [main] o.h.e.j.e.i.JdbcEnvironmentInitiator     : HHH000342: Could not obtain connection to query metadata
-
-java.sql.SQLRecoverableException: IO Error: The Network Adapter could not establish the connection (CONNECTION_ID=T49WY6dnTzS5rxdu5kGNfA==)
-	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:870) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:675) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1032) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:90) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:681) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:602) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:138) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:364) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:206) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:476) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:561) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:115) ~[HikariCP-4.0.3.jar:na]
-	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:112) ~[HikariCP-4.0.3.jar:na]
-	at org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.getConnection(DatasourceConnectionProviderImpl.java:122) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess.obtainConnection(JdbcEnvironmentInitiator.java:180) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:68) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:35) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:101) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:263) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:237) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:214) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.id.factory.internal.DefaultIdentifierGeneratorFactory.injectServices(DefaultIdentifierGeneratorFactory.java:152) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.injectDependencies(AbstractServiceRegistryImpl.java:286) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:243) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:214) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.<init>(InFlightMetadataCollectorImpl.java:176) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:127) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:1224) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1255) ~[hibernate-core-5.4.32.Final.jar:5.4.32.Final]
-	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:58) ~[spring-orm-5.3.10.jar:5.3.10]
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:365) ~[spring-orm-5.3.10.jar:5.3.10]
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:409) ~[spring-orm-5.3.10.jar:5.3.10]
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396) ~[spring-orm-5.3.10.jar:5.3.10]
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:341) ~[spring-orm-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1863) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1800) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:620) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.10.jar:5.3.10]
-	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1154) ~[spring-context-5.3.10.jar:5.3.10]
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:908) ~[spring-context-5.3.10.jar:5.3.10]
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583) ~[spring-context-5.3.10.jar:5.3.10]
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:145) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:434) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:338) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1343) ~[spring-boot-2.5.5.jar:2.5.5]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1332) ~[spring-boot-2.5.5.jar:2.5.5]
-	at com.lendbiz.p2p.api.ApiApplication.main(ApiApplication.java:10) ~[main/:na]
-Caused by: oracle.net.ns.NetException: The Network Adapter could not establish the connection (CONNECTION_ID=T49WY6dnTzS5rxdu5kGNfA==)
-	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:594) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:565) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:937) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:346) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.connect(T4CConnection.java:1967) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:640) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 50 common frames omitted
-Caused by: java.io.IOException: Network is unreachable, socket connect lapse 1 ms. 103.159.50.216 1521  30000 (1/1) true
-	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:421) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.doLocalDNSLookupConnect(TcpNTAdapter.java:303) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:265) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnOption.connect(ConnOption.java:229) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:814) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:555) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 55 common frames omitted
-Caused by: java.net.SocketException: Network is unreachable
-	at java.base/sun.nio.ch.Net.connect0(Native Method) ~[na:na]
-	at java.base/sun.nio.ch.Net.connect(Net.java:476) ~[na:na]
-	at java.base/sun.nio.ch.Net.connect(Net.java:468) ~[na:na]
-	at java.base/sun.nio.ch.SocketChannelImpl.connect(SocketChannelImpl.java:694) ~[na:na]
-	at java.base/java.nio.channels.SocketChannel.open(SocketChannel.java:194) ~[na:na]
-	at oracle.net.nt.TimeoutSocketChannel.connect(TimeoutSocketChannel.java:184) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TimeoutSocketChannel.<init>(TimeoutSocketChannel.java:158) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:380) ~[ojdbc8-21.1.0.0.jar:21.1.0.0.0]
-	... 60 common frames omitted
-
-2021-12-25 12:46:42.729  INFO 67501 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.Oracle10gDialect
-2021-12-25 12:46:43.945  INFO 67501 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
-2021-12-25 12:46:44.144  INFO 67501 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2021-12-25 12:46:44.332  WARN 67501 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2021-12-25 12:46:46.218  INFO 67501 --- [main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
-2021-12-25 12:46:46.291  INFO 67501 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure Ant [pattern='/api/**'] with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@189c6683, org.springframework.security.web.context.SecurityContextPersistenceFilter@683218c8, org.springframework.security.web.header.HeaderWriterFilter@383d2e2d, org.springframework.web.filter.CorsFilter@2972b493, org.springframework.security.web.authentication.logout.LogoutFilter@4848681d, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@542759f, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@345f4e0d, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@79bb14d8, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@58e0f079, org.springframework.security.web.session.SessionManagementFilter@72cf159f, org.springframework.security.web.access.ExceptionTranslationFilter@4a9b4d4e, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@31e5d408]
-2021-12-25 12:46:46.979  INFO 67501 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9012 (http) with context path ''
-2021-12-25 12:46:46.982  INFO 67501 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
-2021-12-25 12:46:46.998  INFO 67501 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
-2021-12-25 12:46:47.028  INFO 67501 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
-2021-12-25 12:46:47.390  INFO 67501 --- [main] com.lendbiz.p2p.api.ApiApplication       : Started ApiApplication in 12.397 seconds (JVM running for 13.187)
-2021-12-25 12:48:29.018  INFO 67501 --- [http-nio-9012-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2021-12-25 12:48:29.028  INFO 67501 --- [http-nio-9012-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2021-12-25 12:48:29.051  INFO 67501 --- [http-nio-9012-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 22 ms
-2021-12-25 12:48:29.267  INFO 67501 --- [http-nio-9012-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2021-12-25 12:48:29.649  INFO 67501 --- [http-nio-9012-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2021-12-25 12:48:31.898  INFO 67501 --- [http-nio-9012-exec-1] c.l.p.a.service.impl.LoggingServiceImpl  : [1231231]REQUEST method=[POST] path=[/lendbiz/register] headers=[{content-length=139, session=UQYBIFPRWSGCWULITGBXRICWEBABDA, requestid=1231231, postman-token=f90b7630-7582-49a3-ae59-6e733171f56f, host=localhost:9012, content-type=application/json, connection=keep-alive, cache-control=no-cache, accept-encoding=gzip, deflate, br, user-agent=PostmanRuntime/7.28.4, accept=*/*}]body=[ReqJoinRequest(type=I, fullName=Hoang Thanh Tu, sex=null, dob=null, place=null, idCode=null, idDate=null, idPlace=null, orgAddress=null, address=null, idWard=null, idDistrict=null, phone=null, mobile=0387126612, email=, bankAccount=null, bank=null, taxNo=null, online=null, matchOrdSms=null, productInfo=null, consultalInfo=null, officeName=null, position=null, job=null, exFullName=Hoang Thanh Tu, exPosition=null, exJob=null, exMobile=null, exEmail=null, exAddress=null, exBank=null, exStk=null, password=123453)]
-2021-12-25 12:48:31.909  INFO 67501 --- [http-nio-9012-exec-1] c.l.p2p.api.controller.UserController    : [1231231] << register >>
-2021-12-25 12:48:37.252  INFO 67501 --- [http-nio-9012-exec-1] c.l.p.a.service.impl.LoggingServiceImpl  : [1231231]RESPONSE method=[POST] path=[/lendbiz/register] responseHeaders=[{Vary=Origin}]responseBody=[ApiResponse(status=00, message=SUCCESSFUL!, errorInfo=null, data={:B2=012384, :B1=637028})] 
-2021-12-25 12:48:59.167  INFO 67501 --- [http-nio-9012-exec-3] c.l.p.a.service.impl.LoggingServiceImpl  : [1231231]REQUEST method=[POST] path=[/lendbiz/register] headers=[{content-length=139, session=UQYBIFPRWSGCWULITGBXRICWEBABDA, requestid=1231231, postman-token=bccd954d-551d-42bd-917b-45475b257916, host=localhost:9012, content-type=application/json, connection=keep-alive, cache-control=no-cache, accept-encoding=gzip, deflate, br, user-agent=PostmanRuntime/7.28.4, accept=*/*}]body=[ReqJoinRequest(type=I, fullName=Hoang Thanh Tu, sex=null, dob=null, place=null, idCode=null, idDate=null, idPlace=null, orgAddress=null, address=null, idWard=null, idDistrict=null, phone=null, mobile=0387126612, email=, bankAccount=null, bank=null, taxNo=null, online=null, matchOrdSms=null, productInfo=null, consultalInfo=null, officeName=null, position=null, job=null, exFullName=Hoang Thanh Tu, exPosition=null, exJob=null, exMobile=null, exEmail=null, exAddress=null, exBank=null, exStk=null, password=123453)]
-2021-12-25 12:48:59.175  INFO 67501 --- [http-nio-9012-exec-3] c.l.p2p.api.controller.UserController    : [1231231] << register >>
-2021-12-25 12:49:02.722  INFO 67501 --- [http-nio-9012-exec-3] c.l.p.a.service.impl.LoggingServiceImpl  : [1231231]RESPONSE method=[POST] path=[/lendbiz/register] responseHeaders=[{Vary=Origin}]responseBody=[ErrorInfo(status=01, error=01, errorDesc=Thông tin của bạn đã tồn tại trên hệ thống của Lendbiz. Vui lòng liên hệ tổng đài 024.3201.1856 để biết thêm thông tin., path=http://localhost:9012/lendbiz/register)] 
+2022-01-10 16:10:22.628  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.kafka.common.utils.AppInfoParser     : Kafka version: 2.7.1
+2022-01-10 16:10:22.629  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.kafka.common.utils.AppInfoParser     : Kafka commitId: 61dbce85d0d41457
+2022-01-10 16:10:22.629  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.kafka.common.utils.AppInfoParser     : Kafka startTimeMs: 1641805822628
+2022-01-10 16:10:22.647  INFO 63411 --- [kafka-producer-network-thread | producer-1] org.apache.kafka.clients.Metadata        : [Producer clientId=producer-1] Cluster ID: LUsLWGJJS7OPGZwY6xASyA
+2022-01-10 16:18:42.088  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Revoke previously assigned partitions demo-0
+2022-01-10 16:18:42.094  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : spring-kafka: partitions revoked: [demo-0]
+2022-01-10 16:18:42.096  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Member consumer-spring-kafka-1-6f13ca7f-b8ea-472c-9fdc-798da0f75b5f sending LeaveGroup request to coordinator 192.168.100.86:9092 (id: 2147483647 rack: null) due to the consumer unsubscribed from all topics
+2022-01-10 16:18:42.100  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.clients.consumer.KafkaConsumer     : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Unsubscribed all topics or patterns and assigned partitions
+2022-01-10 16:18:42.179  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] org.apache.kafka.common.metrics.Metrics  : Metrics scheduler closed
+2022-01-10 16:18:42.180  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] org.apache.kafka.common.metrics.Metrics  : Closing reporter org.apache.kafka.common.metrics.JmxReporter
+2022-01-10 16:18:42.181  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] org.apache.kafka.common.metrics.Metrics  : Metrics reporters closed
+2022-01-10 16:18:42.212  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.kafka.common.utils.AppInfoParser     : App info kafka.consumer for consumer-spring-kafka-1 unregistered
+2022-01-10 16:18:42.214  INFO 63411 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : spring-kafka: Consumer stopped
+2022-01-10 16:18:42.255  INFO 63411 --- [SpringApplicationShutdownHook] o.a.k.clients.producer.KafkaProducer     : [Producer clientId=producer-1] Closing the Kafka producer with timeoutMillis = 30000 ms.
+2022-01-10 16:18:42.262  INFO 63411 --- [SpringApplicationShutdownHook] org.apache.kafka.common.metrics.Metrics  : Metrics scheduler closed
+2022-01-10 16:18:42.263  INFO 63411 --- [SpringApplicationShutdownHook] org.apache.kafka.common.metrics.Metrics  : Closing reporter org.apache.kafka.common.metrics.JmxReporter
+2022-01-10 16:18:42.263  INFO 63411 --- [SpringApplicationShutdownHook] org.apache.kafka.common.metrics.Metrics  : Metrics reporters closed
+2022-01-10 16:18:42.266  INFO 63411 --- [SpringApplicationShutdownHook] o.a.kafka.common.utils.AppInfoParser     : App info kafka.producer for producer-1 unregistered
+2022-01-10 16:18:42.269  INFO 63411 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2022-01-10 16:18:42.294  INFO 63411 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2022-01-10 16:18:42.507  INFO 63411 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

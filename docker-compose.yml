@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  application:
+    image: b803ba7c6dc2
+    volumes:
+      - ./logs:/logs
+    ports:
+      - "127.0.0.1:8092:8092"
+
+ 
