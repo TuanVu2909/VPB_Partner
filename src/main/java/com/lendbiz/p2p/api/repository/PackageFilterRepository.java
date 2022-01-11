@@ -2,6 +2,7 @@ package com.lendbiz.p2p.api.repository;
 
 import java.math.BigDecimal;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -215,45 +216,53 @@ public class PackageFilterRepository {
         jdbcCall.execute(params);
         return "success";
     }
-
     public Object getAccountAsset(String custId) {
         Map.Entry<String, Object> entry ;
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
                 .withProcedureName("getAccountAsset").declareParameters(new SqlParameter("pv_custId", Types.VARCHAR))
                 .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
-        ;
+
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("pv_custId", custId);
         Map<String, Object> map = jdbcCall.execute(params);
-        entry = map.entrySet().iterator().next();
-        return entry.getValue();
+        ArrayList <Object> arrayList  = (ArrayList<Object>) map.get("pv_refcursor");
+        if (arrayList.size()==0){
+            throw new BusinessException("01", "No data");
+        }
+        return arrayList;
     }
 
 
     public Object getAccountInvest(String custId) {
-        Map.Entry<String, Object> entry ;
+
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
                 .withProcedureName("getAccountInvest").declareParameters(new SqlParameter("pv_custId", Types.VARCHAR))
                 .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
-        ;
+
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("pv_custId", custId);
         Map<String, Object> map = jdbcCall.execute(params);
-        entry = map.entrySet().iterator().next();
-        return entry.getValue();
+        ArrayList <Object> arrayList  = (ArrayList<Object>) map.get("pv_refcursor");
+        if (arrayList.size()==0){
+            throw new BusinessException("01", "No data");
+        }
+        return arrayList;
     }
     public Object getProduct( ) {
-        Map.Entry<String, Object> entry ;
+
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
                 .withProcedureName("getproduct")
                 .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
         ;
         Map<String, Object> map = jdbcCall.execute();
-        entry = map.entrySet().iterator().next();
-        return entry.getValue();
+        ArrayList <Object> arrayList  = (ArrayList<Object>) map.get("pv_refcursor");
+        if (arrayList.size()==0){
+            throw new BusinessException("01", "No data");
+        }
+        return arrayList;
     }
     public Object getAccountInvestByProduct(AccountInput accountInput) {
-        Map.Entry<String, Object> entry ;
+
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
                 .withProcedureName("getAccountInvestByProduct")
                 .declareParameters(new SqlParameter("pv_custId", Types.VARCHAR))
@@ -264,7 +273,12 @@ public class PackageFilterRepository {
         params.addValue("pv_custId", accountInput.getCustId());
         params.addValue("pv_pid", Integer.parseInt(accountInput.getProductId()));
         Map<String, Object> map = jdbcCall.execute(params);
-        entry = map.entrySet().iterator().next();
-        return entry.getValue();
+        System.out.println(map.get("pv_refcursor"));
+        ArrayList <Object> arrayList  = (ArrayList<Object>) map.get("pv_refcursor");
+        if (arrayList.size()==0){
+            throw new BusinessException("01", "No data");
+        }
+        return arrayList;
     }
+
 }
