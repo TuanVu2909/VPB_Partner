@@ -71,5 +71,9 @@ public class ErrorCode {
     public static final String ID_FAKE_DESCRIPTION = "Giấy tờ tuỳ thân của Quý Khách không hợp lệ. Vui lòng kiểm tra và thử lại!";
 
     public static final String FACE_NOT_MATCHING = "17";
-    public static final String FACE_NOT_MATCHING_DESCRIPTION = "Khuông mặt của bạn không khớp với giấy tờ tuỳ thân! Bạn thử chụp lại nhé!";
+    public static final String FACE_NOT_MATCHING_DESCRIPTION = "Khuôn mặt của bạn không khớp với giấy tờ tuỳ thân! Bạn thử chụp lại nhé!";
+
+
+    public static final String NO_DATA = "18";
+    public static final String NO_DATA_DESCRIPTION = "Không có dữ liệu";
 }

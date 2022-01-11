@@ -221,7 +221,7 @@ public class PackageFilterRepository {
         Map<String, Object> map = jdbcCall.execute(params);
         ArrayList <Object> arrayList  = (ArrayList<Object>) map.get("pv_refcursor");
         if (arrayList.size()==0){
-            throw new BusinessException("01", "No data");
+            throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
         }
         return arrayList;
     }
@@ -236,7 +236,7 @@ public class PackageFilterRepository {
         Map<String, Object> map = jdbcCall.execute(params);
         ArrayList <Object> arrayList  = (ArrayList<Object>) map.get("pv_refcursor");
         if (arrayList.size()==0){
-            throw new BusinessException("01", "No data");
+            throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
         }
         return arrayList;
     }
@@ -249,7 +249,7 @@ public class PackageFilterRepository {
         Map<String, Object> map = jdbcCall.execute();
         ArrayList <Object> arrayList  = (ArrayList<Object>) map.get("pv_refcursor");
         if (arrayList.size()==0){
-            throw new BusinessException("01", "No data");
+            throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
         }
         return arrayList;
     }
@@ -268,7 +268,7 @@ public class PackageFilterRepository {
         System.out.println(map.get("pv_refcursor"));
         ArrayList <Object> arrayList  = (ArrayList<Object>) map.get("pv_refcursor");
         if (arrayList.size()==0){
-            throw new BusinessException("01", "No data");
+            throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
         }
         return arrayList;
     }
