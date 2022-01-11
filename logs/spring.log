@@ -565,3 +565,422 @@ Caused by: java.lang.IllegalArgumentException: Could not resolve placeholder 'ka
 2022-01-10 16:18:42.269  INFO 63411 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
 2022-01-10 16:18:42.294  INFO 63411 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2022-01-10 16:18:42.507  INFO 63411 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2022-01-11 10:49:53.988  INFO 38516 --- [main] com.lendbiz.p2p.api.ApiApplication       : Starting ApiApplication using Java 11.0.12 on TuHoangs-MacBook-Pro.local with PID 38516 (/Users/tuht/Projects/api_mobile/bin/main started by tuht in /Users/tuht/Projects/api_mobile)
+2022-01-11 10:49:53.993  INFO 38516 --- [main] com.lendbiz.p2p.api.ApiApplication       : The following profiles are active: lendbiz-dev
+2022-01-11 10:49:56.061  INFO 38516 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2022-01-11 10:49:56.239  INFO 38516 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 169 ms. Found 11 JPA repository interfaces.
+2022-01-11 10:49:57.572  INFO 38516 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9012 (http)
+2022-01-11 10:49:57.588  INFO 38516 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2022-01-11 10:49:57.588  INFO 38516 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.53]
+2022-01-11 10:49:57.760  INFO 38516 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2022-01-11 10:49:57.760  INFO 38516 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3639 ms
+2022-01-11 10:49:58.071  INFO 38516 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2022-01-11 10:49:58.792  INFO 38516 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2022-01-11 10:49:58.991  INFO 38516 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2022-01-11 10:49:59.053  INFO 38516 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.32.Final
+2022-01-11 10:49:59.277  INFO 38516 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2022-01-11 10:49:59.510  INFO 38516 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.Oracle10gDialect
+2022-01-11 10:50:02.752  INFO 38516 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-01-11 10:50:02.901  INFO 38516 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2022-01-11 10:50:03.075  WARN 38516 --- [main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'customRequestBodyAdviceAdapter': Unsatisfied dependency expressed through field 'loggingService'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'defaultKafkaStreamsBuilder' defined in class path resource [org/springframework/kafka/annotation/KafkaStreamsDefaultConfiguration.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.springframework.kafka.config.StreamsBuilderFactoryBean]: Factory method 'defaultKafkaStreamsBuilder' threw exception; nested exception is java.lang.NoClassDefFoundError: org/apache/kafka/streams/KafkaClientSupplier
+2022-01-11 10:50:03.075  INFO 38516 --- [main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2022-01-11 10:50:03.079  INFO 38516 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2022-01-11 10:50:03.664  INFO 38516 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2022-01-11 10:50:03.681  INFO 38516 --- [main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2022-01-11 10:50:03.731  INFO 38516 --- [main] ConditionEvaluationReportLoggingListener : 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2022-01-11 10:50:03.754 ERROR 38516 --- [main] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'customRequestBodyAdviceAdapter': Unsatisfied dependency expressed through field 'loggingService'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'defaultKafkaStreamsBuilder' defined in class path resource [org/springframework/kafka/annotation/KafkaStreamsDefaultConfiguration.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.springframework.kafka.config.StreamsBuilderFactoryBean]: Factory method 'defaultKafkaStreamsBuilder' threw exception; nested exception is java.lang.NoClassDefFoundError: org/apache/kafka/streams/KafkaClientSupplier
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:660) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:640) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:119) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:399) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1431) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:619) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:944) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:918) ~[spring-context-5.3.10.jar:5.3.10]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583) ~[spring-context-5.3.10.jar:5.3.10]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:145) ~[spring-boot-2.5.5.jar:2.5.5]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754) ~[spring-boot-2.5.5.jar:2.5.5]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:434) ~[spring-boot-2.5.5.jar:2.5.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:338) ~[spring-boot-2.5.5.jar:2.5.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1343) ~[spring-boot-2.5.5.jar:2.5.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1332) ~[spring-boot-2.5.5.jar:2.5.5]
+	at com.lendbiz.p2p.api.ApiApplication.main(ApiApplication.java:10) ~[main/:na]
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'defaultKafkaStreamsBuilder' defined in class path resource [org/springframework/kafka/annotation/KafkaStreamsDefaultConfiguration.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.springframework.kafka.config.StreamsBuilderFactoryBean]: Factory method 'defaultKafkaStreamsBuilder' threw exception; nested exception is java.lang.NoClassDefFoundError: org/apache/kafka/streams/KafkaClientSupplier
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:658) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:638) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1352) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1195) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.getSingletonFactoryBeanForTypeCheck(AbstractAutowireCapableBeanFactory.java:1027) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.getTypeForFactoryBean(AbstractAutowireCapableBeanFactory.java:907) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.isTypeMatch(AbstractBeanFactory.java:637) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doGetBeanNamesForType(DefaultListableBeanFactory.java:583) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.getBeanNamesForType(DefaultListableBeanFactory.java:550) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.BeanFactoryUtils.beanNamesForTypeIncludingAncestors(BeanFactoryUtils.java:265) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.findAutowireCandidates(DefaultListableBeanFactory.java:1546) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1343) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1300) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:657) ~[spring-beans-5.3.10.jar:5.3.10]
+	... 20 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.springframework.kafka.config.StreamsBuilderFactoryBean]: Factory method 'defaultKafkaStreamsBuilder' threw exception; nested exception is java.lang.NoClassDefFoundError: org/apache/kafka/streams/KafkaClientSupplier
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:185) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653) ~[spring-beans-5.3.10.jar:5.3.10]
+	... 33 common frames omitted
+Caused by: java.lang.NoClassDefFoundError: org/apache/kafka/streams/KafkaClientSupplier
+	at org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration.defaultKafkaStreamsBuilder(KafkaStreamsDefaultConfiguration.java:74) ~[spring-kafka-2.8.1.jar:2.8.1]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:154) ~[spring-beans-5.3.10.jar:5.3.10]
+	... 34 common frames omitted
+Caused by: java.lang.ClassNotFoundException: org.apache.kafka.streams.KafkaClientSupplier
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:581) ~[na:na]
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:178) ~[na:na]
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:521) ~[na:na]
+	... 40 common frames omitted
+
+2022-01-11 11:07:14.570  INFO 46719 --- [main] com.lendbiz.p2p.api.ApiApplication       : Starting ApiApplication using Java 11.0.12 on TuHoangs-MacBook-Pro.local with PID 46719 (/Users/tuht/Projects/api_mobile/bin/main started by tuht in /Users/tuht/Projects/api_mobile)
+2022-01-11 11:07:14.574  INFO 46719 --- [main] com.lendbiz.p2p.api.ApiApplication       : The following profiles are active: lendbiz-dev
+2022-01-11 11:07:16.325  INFO 46719 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2022-01-11 11:07:16.493  INFO 46719 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 159 ms. Found 11 JPA repository interfaces.
+2022-01-11 11:07:17.705  INFO 46719 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9012 (http)
+2022-01-11 11:07:17.715  INFO 46719 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2022-01-11 11:07:17.715  INFO 46719 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.53]
+2022-01-11 11:07:17.871  INFO 46719 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2022-01-11 11:07:17.871  INFO 46719 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3198 ms
+2022-01-11 11:07:18.149  INFO 46719 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2022-01-11 11:07:18.606  INFO 46719 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2022-01-11 11:07:18.752  INFO 46719 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2022-01-11 11:07:18.806  INFO 46719 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.32.Final
+2022-01-11 11:07:19.006  INFO 46719 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2022-01-11 11:07:19.112  INFO 46719 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.Oracle10gDialect
+2022-01-11 11:07:23.074  INFO 46719 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-01-11 11:07:23.219  INFO 46719 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2022-01-11 11:07:23.336  WARN 46719 --- [main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'customRequestBodyAdviceAdapter': Unsatisfied dependency expressed through field 'loggingService'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'defaultKafkaStreamsBuilder' defined in class path resource [org/springframework/kafka/annotation/KafkaStreamsDefaultConfiguration.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.springframework.kafka.config.StreamsBuilderFactoryBean]: Factory method 'defaultKafkaStreamsBuilder' threw exception; nested exception is java.lang.NoClassDefFoundError: org/apache/kafka/streams/KafkaClientSupplier
+2022-01-11 11:07:23.336  INFO 46719 --- [main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2022-01-11 11:07:23.340  INFO 46719 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2022-01-11 11:07:25.010  INFO 46719 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2022-01-11 11:07:25.019  INFO 46719 --- [main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2022-01-11 11:07:25.070  INFO 46719 --- [main] ConditionEvaluationReportLoggingListener : 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2022-01-11 11:07:25.100 ERROR 46719 --- [main] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'customRequestBodyAdviceAdapter': Unsatisfied dependency expressed through field 'loggingService'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'defaultKafkaStreamsBuilder' defined in class path resource [org/springframework/kafka/annotation/KafkaStreamsDefaultConfiguration.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.springframework.kafka.config.StreamsBuilderFactoryBean]: Factory method 'defaultKafkaStreamsBuilder' threw exception; nested exception is java.lang.NoClassDefFoundError: org/apache/kafka/streams/KafkaClientSupplier
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:660) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:640) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:119) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:399) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1431) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:619) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:944) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:918) ~[spring-context-5.3.10.jar:5.3.10]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583) ~[spring-context-5.3.10.jar:5.3.10]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:145) ~[spring-boot-2.5.5.jar:2.5.5]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754) ~[spring-boot-2.5.5.jar:2.5.5]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:434) ~[spring-boot-2.5.5.jar:2.5.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:338) ~[spring-boot-2.5.5.jar:2.5.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1343) ~[spring-boot-2.5.5.jar:2.5.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1332) ~[spring-boot-2.5.5.jar:2.5.5]
+	at com.lendbiz.p2p.api.ApiApplication.main(ApiApplication.java:10) ~[main/:na]
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'defaultKafkaStreamsBuilder' defined in class path resource [org/springframework/kafka/annotation/KafkaStreamsDefaultConfiguration.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.springframework.kafka.config.StreamsBuilderFactoryBean]: Factory method 'defaultKafkaStreamsBuilder' threw exception; nested exception is java.lang.NoClassDefFoundError: org/apache/kafka/streams/KafkaClientSupplier
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:658) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:638) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1352) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1195) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.getSingletonFactoryBeanForTypeCheck(AbstractAutowireCapableBeanFactory.java:1027) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.getTypeForFactoryBean(AbstractAutowireCapableBeanFactory.java:907) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.isTypeMatch(AbstractBeanFactory.java:637) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doGetBeanNamesForType(DefaultListableBeanFactory.java:583) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.getBeanNamesForType(DefaultListableBeanFactory.java:550) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.BeanFactoryUtils.beanNamesForTypeIncludingAncestors(BeanFactoryUtils.java:265) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.findAutowireCandidates(DefaultListableBeanFactory.java:1546) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1343) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1300) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:657) ~[spring-beans-5.3.10.jar:5.3.10]
+	... 20 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.springframework.kafka.config.StreamsBuilderFactoryBean]: Factory method 'defaultKafkaStreamsBuilder' threw exception; nested exception is java.lang.NoClassDefFoundError: org/apache/kafka/streams/KafkaClientSupplier
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:185) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653) ~[spring-beans-5.3.10.jar:5.3.10]
+	... 33 common frames omitted
+Caused by: java.lang.NoClassDefFoundError: org/apache/kafka/streams/KafkaClientSupplier
+	at org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration.defaultKafkaStreamsBuilder(KafkaStreamsDefaultConfiguration.java:74) ~[spring-kafka-2.8.1.jar:2.8.1]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:154) ~[spring-beans-5.3.10.jar:5.3.10]
+	... 34 common frames omitted
+Caused by: java.lang.ClassNotFoundException: org.apache.kafka.streams.KafkaClientSupplier
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:581) ~[na:na]
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:178) ~[na:na]
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:521) ~[na:na]
+	... 40 common frames omitted
+
+2022-01-11 11:15:39.770  INFO 53859 --- [main] com.lendbiz.p2p.api.ApiApplication       : Starting ApiApplication using Java 11.0.12 on TuHoangs-MacBook-Pro.local with PID 53859 (/Users/tuht/Projects/api_mobile/bin/main started by tuht in /Users/tuht/Projects/api_mobile)
+2022-01-11 11:15:39.774  INFO 53859 --- [main] com.lendbiz.p2p.api.ApiApplication       : The following profiles are active: lendbiz-dev
+2022-01-11 11:15:41.561  INFO 53859 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2022-01-11 11:15:41.741  INFO 53859 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 171 ms. Found 11 JPA repository interfaces.
+2022-01-11 11:15:42.984  INFO 53859 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9012 (http)
+2022-01-11 11:15:42.994  INFO 53859 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2022-01-11 11:15:42.994  INFO 53859 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.53]
+2022-01-11 11:15:43.154  INFO 53859 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2022-01-11 11:15:43.155  INFO 53859 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3296 ms
+2022-01-11 11:15:43.443  INFO 53859 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2022-01-11 11:15:44.000  INFO 53859 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2022-01-11 11:15:44.137  INFO 53859 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2022-01-11 11:15:44.189  INFO 53859 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.32.Final
+2022-01-11 11:15:44.385  INFO 53859 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2022-01-11 11:15:44.525  INFO 53859 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.Oracle10gDialect
+2022-01-11 11:15:48.455  INFO 53859 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-01-11 11:15:48.580  INFO 53859 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2022-01-11 11:15:48.734  WARN 53859 --- [main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'customRequestBodyAdviceAdapter': Unsatisfied dependency expressed through field 'loggingService'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'defaultKafkaStreamsBuilder' defined in class path resource [org/springframework/kafka/annotation/KafkaStreamsDefaultConfiguration.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.springframework.kafka.config.StreamsBuilderFactoryBean]: Factory method 'defaultKafkaStreamsBuilder' threw exception; nested exception is java.lang.NoClassDefFoundError: org/apache/kafka/streams/KafkaClientSupplier
+2022-01-11 11:15:48.735  INFO 53859 --- [main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2022-01-11 11:15:48.738  INFO 53859 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2022-01-11 11:15:49.032  INFO 53859 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2022-01-11 11:15:49.035  INFO 53859 --- [main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2022-01-11 11:15:49.065  INFO 53859 --- [main] ConditionEvaluationReportLoggingListener : 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2022-01-11 11:15:49.086 ERROR 53859 --- [main] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'customRequestBodyAdviceAdapter': Unsatisfied dependency expressed through field 'loggingService'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'defaultKafkaStreamsBuilder' defined in class path resource [org/springframework/kafka/annotation/KafkaStreamsDefaultConfiguration.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.springframework.kafka.config.StreamsBuilderFactoryBean]: Factory method 'defaultKafkaStreamsBuilder' threw exception; nested exception is java.lang.NoClassDefFoundError: org/apache/kafka/streams/KafkaClientSupplier
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:660) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:640) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:119) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:399) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1431) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:619) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:944) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:918) ~[spring-context-5.3.10.jar:5.3.10]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583) ~[spring-context-5.3.10.jar:5.3.10]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:145) ~[spring-boot-2.5.5.jar:2.5.5]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754) ~[spring-boot-2.5.5.jar:2.5.5]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:434) ~[spring-boot-2.5.5.jar:2.5.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:338) ~[spring-boot-2.5.5.jar:2.5.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1343) ~[spring-boot-2.5.5.jar:2.5.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1332) ~[spring-boot-2.5.5.jar:2.5.5]
+	at com.lendbiz.p2p.api.ApiApplication.main(ApiApplication.java:10) ~[main/:na]
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'defaultKafkaStreamsBuilder' defined in class path resource [org/springframework/kafka/annotation/KafkaStreamsDefaultConfiguration.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.springframework.kafka.config.StreamsBuilderFactoryBean]: Factory method 'defaultKafkaStreamsBuilder' threw exception; nested exception is java.lang.NoClassDefFoundError: org/apache/kafka/streams/KafkaClientSupplier
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:658) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:638) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1352) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1195) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.getSingletonFactoryBeanForTypeCheck(AbstractAutowireCapableBeanFactory.java:1027) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.getTypeForFactoryBean(AbstractAutowireCapableBeanFactory.java:907) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.isTypeMatch(AbstractBeanFactory.java:637) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doGetBeanNamesForType(DefaultListableBeanFactory.java:583) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.getBeanNamesForType(DefaultListableBeanFactory.java:550) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.BeanFactoryUtils.beanNamesForTypeIncludingAncestors(BeanFactoryUtils.java:265) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.findAutowireCandidates(DefaultListableBeanFactory.java:1546) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1343) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1300) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:657) ~[spring-beans-5.3.10.jar:5.3.10]
+	... 20 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.springframework.kafka.config.StreamsBuilderFactoryBean]: Factory method 'defaultKafkaStreamsBuilder' threw exception; nested exception is java.lang.NoClassDefFoundError: org/apache/kafka/streams/KafkaClientSupplier
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:185) ~[spring-beans-5.3.10.jar:5.3.10]
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653) ~[spring-beans-5.3.10.jar:5.3.10]
+	... 33 common frames omitted
+Caused by: java.lang.NoClassDefFoundError: org/apache/kafka/streams/KafkaClientSupplier
+	at org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration.defaultKafkaStreamsBuilder(KafkaStreamsDefaultConfiguration.java:74) ~[spring-kafka-2.8.1.jar:2.8.1]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:154) ~[spring-beans-5.3.10.jar:5.3.10]
+	... 34 common frames omitted
+Caused by: java.lang.ClassNotFoundException: org.apache.kafka.streams.KafkaClientSupplier
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:581) ~[na:na]
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:178) ~[na:na]
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:521) ~[na:na]
+	... 40 common frames omitted
+
+2022-01-11 11:20:52.494  INFO 56883 --- [main] com.lendbiz.p2p.api.ApiApplication       : Starting ApiApplication using Java 11.0.12 on TuHoangs-MacBook-Pro.local with PID 56883 (/Users/tuht/Projects/api_mobile/bin/main started by tuht in /Users/tuht/Projects/api_mobile)
+2022-01-11 11:20:52.496  INFO 56883 --- [main] com.lendbiz.p2p.api.ApiApplication       : The following profiles are active: lendbiz-dev
+2022-01-11 11:20:54.319  INFO 56883 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2022-01-11 11:20:54.499  INFO 56883 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 170 ms. Found 11 JPA repository interfaces.
+2022-01-11 11:20:55.775  INFO 56883 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9012 (http)
+2022-01-11 11:20:55.785  INFO 56883 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2022-01-11 11:20:55.785  INFO 56883 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.53]
+2022-01-11 11:20:55.942  INFO 56883 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2022-01-11 11:20:55.942  INFO 56883 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3351 ms
+2022-01-11 11:20:56.221  INFO 56883 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2022-01-11 11:20:56.774  INFO 56883 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2022-01-11 11:20:56.945  INFO 56883 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2022-01-11 11:20:57.038  INFO 56883 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.32.Final
+2022-01-11 11:20:57.187  INFO 56883 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2022-01-11 11:20:57.291  INFO 56883 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.Oracle10gDialect
+2022-01-11 11:21:00.079  INFO 56883 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-01-11 11:21:00.234  INFO 56883 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2022-01-11 11:21:00.505  WARN 56883 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2022-01-11 11:21:02.004  INFO 56883 --- [main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
+2022-01-11 11:21:02.063  INFO 56883 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure Ant [pattern='/api/**'] with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@5fd0235c, org.springframework.security.web.context.SecurityContextPersistenceFilter@140449d9, org.springframework.security.web.header.HeaderWriterFilter@241861bc, org.springframework.web.filter.CorsFilter@6e1d939e, org.springframework.security.web.authentication.logout.LogoutFilter@39352f6b, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@7882379b, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@140e003e, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@6c418f0b, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@56929ce, org.springframework.security.web.session.SessionManagementFilter@5b076d23, org.springframework.security.web.access.ExceptionTranslationFilter@74ee07e, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@598f065f]
+2022-01-11 11:21:02.790  INFO 56883 --- [main] o.a.k.clients.consumer.ConsumerConfig    : ConsumerConfig values: 
+	allow.auto.create.topics = true
+	auto.commit.interval.ms = 100
+	auto.offset.reset = earliest
+	bootstrap.servers = [localhost:9092]
+	check.crcs = true
+	client.dns.lookup = use_all_dns_ips
+	client.id = consumer-spring-kafka-1
+	client.rack = 
+	connections.max.idle.ms = 540000
+	default.api.timeout.ms = 60000
+	enable.auto.commit = false
+	exclude.internal.topics = true
+	fetch.max.bytes = 52428800
+	fetch.max.wait.ms = 500
+	fetch.min.bytes = 1
+	group.id = spring-kafka
+	group.instance.id = null
+	heartbeat.interval.ms = 3000
+	interceptor.classes = []
+	internal.leave.group.on.close = true
+	internal.throw.on.fetch.stable.offset.unsupported = false
+	isolation.level = read_uncommitted
+	key.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+	max.partition.fetch.bytes = 1048576
+	max.poll.interval.ms = 300000
+	max.poll.records = 500
+	metadata.max.age.ms = 300000
+	metric.reporters = []
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor]
+	receive.buffer.bytes = 65536
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.mechanism = GSSAPI
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	session.timeout.ms = 15000
+	socket.connection.setup.timeout.max.ms = 127000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	value.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+
+2022-01-11 11:21:02.873  INFO 56883 --- [main] o.a.kafka.common.utils.AppInfoParser     : Kafka version: 2.7.1
+2022-01-11 11:21:02.873  INFO 56883 --- [main] o.a.kafka.common.utils.AppInfoParser     : Kafka commitId: 61dbce85d0d41457
+2022-01-11 11:21:02.873  INFO 56883 --- [main] o.a.kafka.common.utils.AppInfoParser     : Kafka startTimeMs: 1641874862870
+2022-01-11 11:21:02.878  INFO 56883 --- [main] o.a.k.clients.consumer.KafkaConsumer     : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Subscribed to topic(s): demo
+2022-01-11 11:21:02.902  INFO 56883 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9012 (http) with context path ''
+2022-01-11 11:21:02.906  INFO 56883 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2022-01-11 11:21:02.921  INFO 56883 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2022-01-11 11:21:02.963  INFO 56883 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2022-01-11 11:21:03.340  INFO 56883 --- [main] com.lendbiz.p2p.api.ApiApplication       : Started ApiApplication in 11.496 seconds (JVM running for 12.632)
+2022-01-11 11:21:03.423  WARN 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] org.apache.kafka.clients.NetworkClient   : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Error while fetching metadata with correlation id 2 : {demo=LEADER_NOT_AVAILABLE}
+2022-01-11 11:21:03.428  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] org.apache.kafka.clients.Metadata        : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Cluster ID: hUjAgHksT9Chx2Y7NgXCVQ
+2022-01-11 11:21:03.430  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Discovered group coordinator 192.168.100.86:9092 (id: 2147483647 rack: null)
+2022-01-11 11:21:03.434  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] (Re-)joining group
+2022-01-11 11:21:03.453  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] (Re-)joining group
+2022-01-11 11:21:03.465  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Successfully joined group with generation Generation{generationId=1, memberId='consumer-spring-kafka-1-62bd28c6-5c8a-49d5-bcb0-9cb02fce7a8d', protocol='range'}
+2022-01-11 11:21:03.534  WARN 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] org.apache.kafka.clients.NetworkClient   : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Error while fetching metadata with correlation id 7 : {demo=LEADER_NOT_AVAILABLE}
+2022-01-11 11:21:03.537  WARN 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] The following subscribed topics are not assigned to any members: [demo] 
+2022-01-11 11:21:03.538  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Finished assignment for group at generation 1: {consumer-spring-kafka-1-62bd28c6-5c8a-49d5-bcb0-9cb02fce7a8d=Assignment(partitions=[])}
+2022-01-11 11:21:03.549  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Successfully synced group in generation Generation{generationId=1, memberId='consumer-spring-kafka-1-62bd28c6-5c8a-49d5-bcb0-9cb02fce7a8d', protocol='range'}
+2022-01-11 11:21:03.550  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Notifying assignor about the new Assignment(partitions=[])
+2022-01-11 11:21:03.550  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Adding newly assigned partitions: 
+2022-01-11 11:21:03.551  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : spring-kafka: partitions assigned: []
+2022-01-11 11:21:03.639  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Requesting to re-join the group and trigger rebalance since the assignment metadata has changed from (version3: {}) to (version4: {demo=1})
+2022-01-11 11:21:03.639  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Requesting to re-join the group and trigger rebalance since the assignment metadata has changed from (version3: {}) to (version4: {demo=1})
+2022-01-11 11:21:03.639  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Revoke previously assigned partitions 
+2022-01-11 11:21:03.640  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : spring-kafka: partitions revoked: []
+2022-01-11 11:21:03.640  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] (Re-)joining group
+2022-01-11 11:21:03.643  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Successfully joined group with generation Generation{generationId=2, memberId='consumer-spring-kafka-1-62bd28c6-5c8a-49d5-bcb0-9cb02fce7a8d', protocol='range'}
+2022-01-11 11:21:03.643  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Finished assignment for group at generation 2: {consumer-spring-kafka-1-62bd28c6-5c8a-49d5-bcb0-9cb02fce7a8d=Assignment(partitions=[demo-0])}
+2022-01-11 11:21:03.647  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Successfully synced group in generation Generation{generationId=2, memberId='consumer-spring-kafka-1-62bd28c6-5c8a-49d5-bcb0-9cb02fce7a8d', protocol='range'}
+2022-01-11 11:21:03.648  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Notifying assignor about the new Assignment(partitions=[demo-0])
+2022-01-11 11:21:03.650  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Adding newly assigned partitions: demo-0
+2022-01-11 11:21:03.656  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Found no committed offset for partition demo-0
+2022-01-11 11:21:03.663  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.SubscriptionState    : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Resetting offset for partition demo-0 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[192.168.100.86:9092 (id: 0 rack: null)], epoch=0}}.
+2022-01-11 11:21:03.666  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : spring-kafka: partitions assigned: [demo-0]
+2022-01-11 11:21:10.888  INFO 56883 --- [http-nio-9012-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2022-01-11 11:21:10.888  INFO 56883 --- [http-nio-9012-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2022-01-11 11:21:10.894  INFO 56883 --- [http-nio-9012-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 6 ms
+2022-01-11 11:21:10.977  INFO 56883 --- [http-nio-9012-exec-2] c.l.p2p.api.controller.UserController    : [1234567] << getAccountAsset >>
+2022-01-11 11:21:15.439  INFO 56883 --- [http-nio-9012-exec-2] c.l.p.a.service.impl.LoggingServiceImpl  : [1234567]RESPONSE method=[GET] path=[/lendbiz/get-account-asset] responseHeaders=[{Vary=Origin}]responseBody=[ApiResponse(status=00, message=SUCCESSFUL!, errorInfo=null, data=[{BALANCE=50657366, TOTALAMOUNT=50657366}])] 
+2022-01-11 11:21:48.132  INFO 56883 --- [http-nio-9012-exec-3] c.l.p2p.api.controller.UserController    : [1234567] << getAccountAsset >>
+2022-01-11 11:21:51.307  INFO 56883 --- [http-nio-9012-exec-3] c.l.p.a.service.impl.LoggingServiceImpl  : [1234567]RESPONSE method=[GET] path=[/lendbiz/get-account-asset] responseHeaders=[{Vary=Origin}]responseBody=[ApiResponse(status=00, message=SUCCESSFUL!, errorInfo=null, data=[])] 
+2022-01-11 11:25:08.679  INFO 56883 --- [http-nio-9012-exec-6] c.l.p2p.api.controller.UserController    : [1111111] << getProduct >>
+2022-01-11 11:25:12.103  INFO 56883 --- [http-nio-9012-exec-6] c.l.p.a.service.impl.LoggingServiceImpl  : [1111111]RESPONSE method=[GET] path=[/lendbiz/get-product] responseHeaders=[{Vary=Origin}]responseBody=[ApiResponse(status=00, message=SUCCESSFUL!, errorInfo=null, data=[{ID=13, PCODE=GM-PT, PNAME=Gấu Mật - có bảo lãnh, DESCRIPTION=null, MAX_VAL=null, CUSTTYPE=GM , SHORTNAME=GẤU MẬT BL}, {ID=14, PCODE=GM-KH, PNAME=Gấu Mật - có kỳ hạn, DESCRIPTION=null, MAX_VAL=null, CUSTTYPE=GM , SHORTNAME=GẤU MẬT KH}, {ID=15, PCODE=GM-KKH, PNAME=Gấu Mật - không kỳ hạn, DESCRIPTION=null, MAX_VAL=null, CUSTTYPE=GM , SHORTNAME=GẤU MẬT KKH}])] 
+2022-01-11 11:25:30.921  INFO 56883 --- [http-nio-9012-exec-7] c.l.p2p.api.controller.UserController    : [123456] << getAccountInvestByProduct >>
+2022-01-11 11:25:34.237  INFO 56883 --- [http-nio-9012-exec-7] c.l.p.a.service.impl.LoggingServiceImpl  : [123456]RESPONSE method=[GET] path=[/lendbiz/get-account-invest-by-product] responseHeaders=[{Vary=Origin}]responseBody=[ApiResponse(status=00, message=SUCCESSFUL!, errorInfo=null, data=[])] 
+2022-01-11 11:26:02.577  INFO 56883 --- [http-nio-9012-exec-8] c.l.p2p.api.controller.UserController    : [1234567] << getAccountInvest >>
+2022-01-11 11:26:05.871  INFO 56883 --- [http-nio-9012-exec-8] c.l.p.a.service.impl.LoggingServiceImpl  : [1234567]RESPONSE method=[GET] path=[/lendbiz/get-account-invest] responseHeaders=[{Vary=Origin}]responseBody=[ApiResponse(status=00, message=SUCCESSFUL!, errorInfo=null, data=[{0=0, 'KHÔNGCÓDỮLIỆU'=Không có dữ liệu}])] 
+2022-01-11 12:14:27.823  INFO 56883 --- [kafka-coordinator-heartbeat-thread | spring-kafka] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Group coordinator 192.168.100.86:9092 (id: 2147483647 rack: null) is unavailable or invalid due to cause: session timed out without receiving a heartbeat response.isDisconnected: false. Rediscovery will be attempted.
+2022-01-11 12:14:27.992  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Discovered group coordinator 192.168.100.86:9092 (id: 2147483647 rack: null)
+2022-01-11 12:14:28.016  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Discovered group coordinator 192.168.100.86:9092 (id: 2147483647 rack: null)
+2022-01-11 12:21:01.138  INFO 56883 --- [kafka-coordinator-heartbeat-thread | spring-kafka] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Group coordinator 192.168.100.86:9092 (id: 2147483647 rack: null) is unavailable or invalid due to cause: session timed out without receiving a heartbeat response.isDisconnected: false. Rediscovery will be attempted.
+2022-01-11 12:21:01.310  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Discovered group coordinator 192.168.100.86:9092 (id: 2147483647 rack: null)
+2022-01-11 12:21:01.315  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Discovered group coordinator 192.168.100.86:9092 (id: 2147483647 rack: null)
+2022-01-11 12:21:02.199  WARN 56883 --- [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=23m35s30ms).
+2022-01-11 13:44:35.897  INFO 56883 --- [kafka-coordinator-heartbeat-thread | spring-kafka] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Group coordinator 192.168.100.86:9092 (id: 2147483647 rack: null) is unavailable or invalid due to cause: session timed out without receiving a heartbeat response.isDisconnected: false. Rediscovery will be attempted.
+2022-01-11 13:44:36.518  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Discovered group coordinator 192.168.100.86:9092 (id: 2147483647 rack: null)
+2022-01-11 13:44:36.529  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Discovered group coordinator 192.168.100.86:9092 (id: 2147483647 rack: null)
+2022-01-11 13:44:55.875  WARN 56883 --- [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=12m43s810ms).
+2022-01-11 13:54:30.221  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.ConsumerCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Revoke previously assigned partitions demo-0
+2022-01-11 13:54:30.223  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : spring-kafka: partitions revoked: [demo-0]
+2022-01-11 13:54:30.224  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.c.c.internals.AbstractCoordinator  : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Member consumer-spring-kafka-1-62bd28c6-5c8a-49d5-bcb0-9cb02fce7a8d sending LeaveGroup request to coordinator 192.168.100.86:9092 (id: 2147483647 rack: null) due to the consumer unsubscribed from all topics
+2022-01-11 13:54:30.226  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.k.clients.consumer.KafkaConsumer     : [Consumer clientId=consumer-spring-kafka-1, groupId=spring-kafka] Unsubscribed all topics or patterns and assigned partitions
+2022-01-11 13:54:30.290  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] org.apache.kafka.common.metrics.Metrics  : Metrics scheduler closed
+2022-01-11 13:54:30.293  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] org.apache.kafka.common.metrics.Metrics  : Closing reporter org.apache.kafka.common.metrics.JmxReporter
+2022-01-11 13:54:30.294  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] org.apache.kafka.common.metrics.Metrics  : Metrics reporters closed
+2022-01-11 13:54:30.311  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.a.kafka.common.utils.AppInfoParser     : App info kafka.consumer for consumer-spring-kafka-1 unregistered
+2022-01-11 13:54:30.312  INFO 56883 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : spring-kafka: Consumer stopped
+2022-01-11 13:54:30.327  INFO 56883 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2022-01-11 13:54:30.339  INFO 56883 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2022-01-11 13:54:30.531  INFO 56883 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

@@ -68,37 +68,40 @@ public class UserController {
         log.info("[" + requestId + "] << verify account >>");
         return userService.verifyAcc(verifyAccountInput);
     }
+
     @GetMapping("/get-account-asset")
     public ResponseEntity<?> getAccountAsset(HttpServletRequest httpServletRequest,
-                                           @RequestHeader("requestId") String requestId, @RequestParam String cif)
+            @RequestHeader("requestId") String requestId, @RequestParam String cif)
             throws BusinessException {
         log.info("[" + requestId + "] << getAccountAsset >>");
         return userService.getAccountAsset(cif);
     }
+
     @GetMapping("/get-account-invest")
     public ResponseEntity<?> getAccountInvest(HttpServletRequest httpServletRequest,
-                                             @RequestHeader("requestId") String requestId, @RequestParam String cif)
+            @RequestHeader("requestId") String requestId, @RequestParam String cif)
             throws BusinessException {
         log.info("[" + requestId + "] << getAccountInvest >>");
         return userService.getAccountInvest(cif);
     }
+
     @GetMapping("/get-product")
     public ResponseEntity<?> getProduct(HttpServletRequest httpServletRequest,
-                                             @RequestHeader("requestId") String requestId)
+            @RequestHeader("requestId") String requestId)
             throws BusinessException {
         log.info("[" + requestId + "] << getProduct >>");
         return userService.getProduct();
     }
+
     @GetMapping("/get-account-invest-by-product")
     public ResponseEntity<?> getAccountInvestByProduct(HttpServletRequest httpServletRequest,
-                                             @RequestHeader("requestId") String requestId, @RequestParam("cif") String cif, @RequestParam("pid") String pId)
+            @RequestHeader("requestId") String requestId, @RequestParam("cif") String cif,
+            @RequestParam("pid") String pId)
             throws BusinessException {
-        AccountInput accountInput = new AccountInput(cif,pId);
+        AccountInput accountInput = new AccountInput(cif, pId);
         log.info("[" + requestId + "] << getAccountInvestByProduct >>");
         return userService.getAccountInvestByProduct(accountInput);
     }
-
-
 
     @PostMapping("/verify-identity")
     public ResponseEntity<?> verifyIdeEntity(HttpServletRequest httpServletRequest,
