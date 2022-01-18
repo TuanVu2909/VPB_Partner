@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.lendbiz.p2p.api.repository.PackageFilterRepository;
 import com.lendbiz.p2p.api.request.InsertLogRequest;
-import com.lendbiz.p2p.api.response.ApiResponse;
 import com.lendbiz.p2p.api.service.LoggingService;
 import com.lendbiz.p2p.api.utils.StringUtil;
 
@@ -42,6 +41,7 @@ public class LoggingServiceImpl implements LoggingService {
     PackageFilterRepository pkgFilterRepo;
 
     String requestId;
+    String sessionId;
 
     @Override
     public void logRequest(HttpServletRequest httpServletRequest, Object body) {
@@ -52,6 +52,11 @@ public class LoggingServiceImpl implements LoggingService {
             requestId = httpServletRequest.getHeader("RequestId");
         } else
             requestId = "Unknown";
+
+        if (!StringUtil.isEmty(httpServletRequest.getHeader("session"))) {
+            sessionId = httpServletRequest.getHeader("session");
+        } else
+            sessionId = "Unknown";
 
         stringBuilder.append("[" + requestId + "]");
         stringBuilder.append("REQUEST ");
@@ -67,9 +72,8 @@ public class LoggingServiceImpl implements LoggingService {
             stringBuilder.append("body=[" + body + "]");
         }
 
-        InsertLogRequest insertLogRequest = new InsertLogRequest(requestId, "REQUEST", 0, stringBuilder.toString(),
-                httpServletRequest.getMethod(), null, httpServletRequest.getLocalAddr(), null, null,
-                httpServletRequest.getHeader("Authorization"), httpServletRequest.getRequestURI());
+        InsertLogRequest insertLogRequest = new InsertLogRequest(requestId, sessionId, httpServletRequest.getRequestURI(),
+                0, httpServletRequest.getLocalAddr(), 0, null, body.toString(), null);
 
         pkgFilterRepo.insertLogs(insertLogRequest);
 
@@ -81,7 +85,7 @@ public class LoggingServiceImpl implements LoggingService {
             Object body) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        String errorInfo = "";        
+        String errorInfo = "";
 
         if (!StringUtil.isEmty(httpServletRequest.getHeader("RequestId"))) {
             requestId = httpServletRequest.getHeader("RequestId");
@@ -95,9 +99,8 @@ public class LoggingServiceImpl implements LoggingService {
         stringBuilder.append("responseHeaders=[").append(buildHeadersMap(httpServletResponse)).append("]");
         stringBuilder.append("responseBody=[").append(body).append("] ");
 
-        InsertLogRequest insertLogRequest = new InsertLogRequest(requestId, "RESPONSE", 0, stringBuilder.toString(),
-                httpServletRequest.getMethod(), null, null, null, null,
-                httpServletRequest.getHeader("Authorization"), httpServletRequest.getRequestURI());
+        InsertLogRequest insertLogRequest = new InsertLogRequest(requestId, sessionId, httpServletRequest.getRequestURI(),
+                0, httpServletRequest.getLocalAddr(), 1, String.valueOf(httpServletResponse.getStatus()), null, body.toString());
 
         pkgFilterRepo.insertLogs(insertLogRequest);
 

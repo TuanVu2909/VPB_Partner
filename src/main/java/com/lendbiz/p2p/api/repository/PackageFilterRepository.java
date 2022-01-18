@@ -31,41 +31,71 @@ public class PackageFilterRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public int insertLogs(InsertLogRequest insertLogRequest) {
+    // public int insertLogs(InsertLogRequest insertLogRequest) {
 
-        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PKG_LB_AUTHENTICATION")
-                .withFunctionName("fn_insert_logs").declareParameters(new SqlParameter("p_requestId", Types.VARCHAR))
-                .declareParameters(new SqlParameter("p_messageType", Types.VARCHAR))
-                .declareParameters(new SqlParameter("p_status", Types.INTEGER))
-                .declareParameters(new SqlParameter("p_bodyDetail", Types.VARCHAR))
-                .declareParameters(new SqlParameter("p_httpMethod", Types.VARCHAR))
-                .declareParameters(new SqlParameter("p_sourceAppId", Types.VARCHAR))
-                .declareParameters(new SqlParameter("p_sourceAppIp", Types.VARCHAR))
-                .declareParameters(new SqlParameter("p_destAppId", Types.VARCHAR))
-                .declareParameters(new SqlParameter("p_destAppPort", Types.VARCHAR))
-                .declareParameters(new SqlParameter("p_authorization", Types.VARCHAR))
-                .declareParameters(new SqlParameter("p_path", Types.VARCHAR));
+    // SimpleJdbcCall jdbcCall = new
+    // SimpleJdbcCall(jdbcTemplate).withCatalogName("PKG_LB_AUTHENTICATION")
+    // .withFunctionName("fn_insert_logs").declareParameters(new
+    // SqlParameter("p_requestId", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("p_messageType", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("p_status", Types.INTEGER))
+    // .declareParameters(new SqlParameter("p_bodyDetail", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("p_httpMethod", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("p_sourceAppId", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("p_sourceAppIp", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("p_destAppId", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("p_destAppPort", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("p_authorization", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("p_path", Types.VARCHAR));
+
+    // MapSqlParameterSource params = new MapSqlParameterSource();
+    // params.addValue("p_requestId", insertLogRequest.getRequestId());
+    // params.addValue("p_messageType", insertLogRequest.getMessageType());
+    // params.addValue("p_status", insertLogRequest.getStatus());
+    // params.addValue("p_bodyDetail", insertLogRequest.getBodyDetail());
+    // params.addValue("p_httpMethod", insertLogRequest.getHttpMethod());
+    // params.addValue("p_sourceAppId", insertLogRequest.getSourceAppId());
+    // params.addValue("p_sourceAppIp", insertLogRequest.getSourceAppIp());
+    // params.addValue("p_destAppId", insertLogRequest.getDestAppId());
+    // params.addValue("p_destAppPort", insertLogRequest.getDestAppPort());
+    // params.addValue("p_authorization", insertLogRequest.getAuthorization());
+    // params.addValue("p_path", insertLogRequest.getPath());
+
+    // int res = jdbcCall.executeFunction(BigDecimal.class, params).intValue();
+
+    // if (res == 0) {
+    // throw new BusinessException("119", "Insert logs fail!");
+    // }
+
+    // return res;
+    // }
+
+    public void insertLogs(InsertLogRequest insertLogRequest) {
+
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PKG_API")
+                .withProcedureName("fn_insert_logs").declareParameters(new SqlParameter("p_request_id", Types.VARCHAR))
+                .declareParameters(new SqlParameter("p_user_id", Types.VARCHAR))
+                .declareParameters(new SqlParameter("p_function_name", Types.VARCHAR))
+                .declareParameters(new SqlParameter("p_function_id", Types.INTEGER))
+                .declareParameters(new SqlParameter("p_from_ip", Types.VARCHAR))
+                .declareParameters(new SqlParameter("p_request_type", Types.INTEGER))
+                .declareParameters(new SqlParameter("p_response_status", Types.VARCHAR))
+                .declareParameters(new SqlParameter("p_request_body", Types.CLOB))
+                .declareParameters(new SqlParameter("p_response_body", Types.CLOB));
 
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("p_requestId", insertLogRequest.getRequestId());
-        params.addValue("p_messageType", insertLogRequest.getMessageType());
-        params.addValue("p_status", insertLogRequest.getStatus());
-        params.addValue("p_bodyDetail", insertLogRequest.getBodyDetail());
-        params.addValue("p_httpMethod", insertLogRequest.getHttpMethod());
-        params.addValue("p_sourceAppId", insertLogRequest.getSourceAppId());
-        params.addValue("p_sourceAppIp", insertLogRequest.getSourceAppIp());
-        params.addValue("p_destAppId", insertLogRequest.getDestAppId());
-        params.addValue("p_destAppPort", insertLogRequest.getDestAppPort());
-        params.addValue("p_authorization", insertLogRequest.getAuthorization());
-        params.addValue("p_path", insertLogRequest.getPath());
+        params.addValue("p_request_id", insertLogRequest.getRequestId());
+        params.addValue("p_user_id", insertLogRequest.getUserId());
+        params.addValue("p_function_name", insertLogRequest.getFunctionName());
+        params.addValue("p_function_id", insertLogRequest.getFunctionId());
+        params.addValue("p_from_ip", insertLogRequest.getFromIp());
+        params.addValue("p_request_type", insertLogRequest.getRequestType());
+        params.addValue("p_response_status", insertLogRequest.getResponseStatus());
+        params.addValue("p_request_body", insertLogRequest.getRequestBody());
+        params.addValue("p_response_body", insertLogRequest.getResponseBody());
 
-        int res = jdbcCall.executeFunction(BigDecimal.class, params).intValue();
+        jdbcCall.execute(params);
 
-        if (res == 0) {
-            throw new BusinessException("119", "Insert logs fail!");
-        }
-
-        return res;
     }
 
     public Object login(String username, String password, String deviceId) {
@@ -210,6 +240,7 @@ public class PackageFilterRepository {
         jdbcCall.execute(params);
         return "success";
     }
+
     public Object getAccountAsset(String custId) {
         Map.Entry<String, Object> entry;
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
@@ -219,8 +250,8 @@ public class PackageFilterRepository {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("pv_custId", custId);
         Map<String, Object> map = jdbcCall.execute(params);
-        ArrayList <Object> arrayList  = (ArrayList<Object>) map.get("pv_refcursor");
-        if (arrayList.size()==0){
+        ArrayList<Object> arrayList = (ArrayList<Object>) map.get("pv_refcursor");
+        if (arrayList.size() == 0) {
             throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
         }
         return arrayList;
@@ -234,21 +265,22 @@ public class PackageFilterRepository {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("pv_custId", custId);
         Map<String, Object> map = jdbcCall.execute(params);
-        ArrayList <Object> arrayList  = (ArrayList<Object>) map.get("pv_refcursor");
-        if (arrayList.size()==0){
+        ArrayList<Object> arrayList = (ArrayList<Object>) map.get("pv_refcursor");
+        if (arrayList.size() == 0) {
             throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
         }
         return arrayList;
     }
-    public Object getProduct( ) {
+
+    public Object getProduct() {
 
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
                 .withProcedureName("getproduct")
                 .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
         ;
         Map<String, Object> map = jdbcCall.execute();
-        ArrayList <Object> arrayList  = (ArrayList<Object>) map.get("pv_refcursor");
-        if (arrayList.size()==0){
+        ArrayList<Object> arrayList = (ArrayList<Object>) map.get("pv_refcursor");
+        if (arrayList.size() == 0) {
             throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
         }
         return arrayList;
@@ -266,8 +298,8 @@ public class PackageFilterRepository {
         params.addValue("pv_pid", Integer.parseInt(accountInput.getProductId()));
         Map<String, Object> map = jdbcCall.execute(params);
         System.out.println(map.get("pv_refcursor"));
-        ArrayList <Object> arrayList  = (ArrayList<Object>) map.get("pv_refcursor");
-        if (arrayList.size()==0){
+        ArrayList<Object> arrayList = (ArrayList<Object>) map.get("pv_refcursor");
+        if (arrayList.size() == 0) {
             throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
         }
         return arrayList;

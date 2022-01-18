@@ -14,15 +14,13 @@ import lombok.ToString;
 public class InsertLogRequest {
 
    private String requestId;
-   private String messageType;
-   private int status;
-   private String bodyDetail;
-   private String httpMethod;
-   private String sourceAppId;
-   private String sourceAppIp;
-   private String destAppId;
-   private String destAppPort;
-   private String authorization;
-   private String path;
+   private String userId;
+   private String functionName;
+   private int functionId;
+   private String fromIp;
+   private int requestType;
+   private String responseStatus;
+   private String requestBody;
+   private String responseBody;
 
 }
