@@ -93,6 +93,30 @@ public class UserController {
         return userService.getProduct();
     }
 
+    @GetMapping("/get-paytype")
+    public ResponseEntity<?> getPayType(HttpServletRequest httpServletRequest,
+                                        @RequestHeader("requestId") String requestId)
+            throws BusinessException {
+        log.info("[" + requestId + "] << getProduct >>");
+        return userService.getPayType();
+    }
+
+    @GetMapping("/get-term")
+    public ResponseEntity<?> getTerm(HttpServletRequest httpServletRequest,
+                                        @RequestHeader("requestId") String requestId,@RequestParam("pid") String pId)
+            throws BusinessException {
+        log.info("[" + requestId + "] << getProduct >>");
+        return userService.getTerm(pId);
+    }
+
+    @GetMapping("/get-rate")
+    public ResponseEntity<?> getRate(HttpServletRequest httpServletRequest,
+                                     @RequestHeader("requestId") String requestId,@RequestParam("pid") String pId,@RequestParam("term") String term,@RequestParam("amount") String amount)
+            throws BusinessException {
+        log.info("[" + requestId + "] << getProduct >>");
+        return userService.getRate(term,pId,amount);
+    }
+
     @GetMapping("/get-account-invest-by-product")
     public ResponseEntity<?> getAccountInvestByProduct(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestParam("cif") String cif,
