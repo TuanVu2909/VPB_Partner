@@ -28,6 +28,9 @@ public interface UserService {
 	public ResponseEntity<?> getAccountAsset(String custId);
 	public ResponseEntity<?> getAccountInvest(String custId);
 	public ResponseEntity<?> getProduct();
+	public ResponseEntity<?> getPayType();
+	public ResponseEntity<?> getRate(String term,String productId,String amount);
+	public ResponseEntity<?> getTerm(String productId);
 	public ResponseEntity<?> getAccountInvestByProduct(AccountInput accountInput);
 
 	String checkSession(String session);

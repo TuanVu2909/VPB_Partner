@@ -277,7 +277,6 @@ public class PackageFilterRepository {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
                 .withProcedureName("getproduct")
                 .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
-        ;
         Map<String, Object> map = jdbcCall.execute();
         ArrayList<Object> arrayList = (ArrayList<Object>) map.get("pv_refcursor");
         if (arrayList.size() == 0) {
@@ -298,6 +297,56 @@ public class PackageFilterRepository {
         params.addValue("pv_pid", Integer.parseInt(accountInput.getProductId()));
         Map<String, Object> map = jdbcCall.execute(params);
         System.out.println(map.get("pv_refcursor"));
+        ArrayList<Object> arrayList = (ArrayList<Object>) map.get("pv_refcursor");
+        if (arrayList.size() == 0) {
+            throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
+        }
+        return arrayList;
+    }
+
+    public Object getRate(String pId, String term, String amt) {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
+                .withProcedureName("getRate")
+                .declareParameters(new SqlParameter("pv_term", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_pid", Types.NUMERIC))
+                .declareParameters(new SqlParameter("pv_amt", Types.NUMERIC))
+                .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("pv_term",term );
+        params.addValue("pv_pid", Integer.parseInt(pId));
+        params.addValue("pv_amt", Integer.parseInt(amt));
+        Map<String, Object> map = jdbcCall.execute(params);
+        System.out.println(map.get("pv_refcursor"));
+        ArrayList<Object> arrayList = (ArrayList<Object>) map.get("pv_refcursor");
+        if (arrayList.size() == 0) {
+            throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
+        }
+        return arrayList;
+    }
+
+    public Object getTerm(String pId) {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
+                .withProcedureName("getTerm")
+                .declareParameters(new SqlParameter("pv_pid", Types.NUMERIC))
+                .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("pv_pid", Integer.parseInt(pId));
+        Map<String, Object> map = jdbcCall.execute(params);
+        ArrayList<Object> arrayList = (ArrayList<Object>) map.get("pv_refcursor");
+        if (arrayList.size() == 0) {
+            throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
+        }
+        return arrayList;
+    }
+
+    public ArrayList<Object> getPayType() {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
+                .withProcedureName("getPayType")
+                .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
+
+        Map<String, Object> map = jdbcCall.execute();
         ArrayList<Object> arrayList = (ArrayList<Object>) map.get("pv_refcursor");
         if (arrayList.size() == 0) {
             throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);

@@ -108,6 +108,21 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 	}
 
 	@Override
+	public ResponseEntity<?> getPayType() {
+		return response(toResult(pkgFilterRepo.getPayType()));
+	}
+
+	@Override
+	public ResponseEntity<?> getRate(String term, String productId, String amount) {
+		return response(toResult(pkgFilterRepo.getRate(productId,term,amount)));
+	}
+
+	@Override
+	public ResponseEntity<?> getTerm(String productId) {
+		return response(toResult(pkgFilterRepo.getTerm(productId)));
+	}
+
+	@Override
 	public ResponseEntity<?> getAccountInvestByProduct(AccountInput accountInput) {
 
 			return response(toResult(pkgFilterRepo.getAccountInvestByProduct(accountInput)));
