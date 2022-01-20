@@ -295,6 +295,29 @@ public class PackageFilterRepository {
         return arrayList;
     }
 
+
+    public Object crateBear(AccountInput accountInput) {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
+                .withProcedureName("createBear")
+                .declareParameters(new SqlParameter("pv_term", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_pid", Types.NUMERIC))
+                .declareParameters(new SqlParameter("pv_amt", Types.NUMERIC))
+                .declareParameters(new SqlParameter("pv_custId", Types.VARCHAR))
+                .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("pv_term",accountInput.getTerm() );
+        params.addValue("pv_custId",accountInput.getCustId() );
+        params.addValue("pv_pid", Integer.parseInt(accountInput.getProductId()));
+        params.addValue("pv_amt", Integer.parseInt(accountInput.getAmt()));
+        Map<String, Object> map = jdbcCall.execute(params);
+        System.out.println(map.get("pv_refcursor"));
+        ArrayList<Object> arrayList = (ArrayList<Object>) map.get("pv_refcursor");
+        if (arrayList.size() == 0) {
+            throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
+        }
+        return arrayList;
+    }
     public Object getTerm(String pId) {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
                 .withProcedureName("getTerm")

@@ -68,7 +68,13 @@ public class UserController {
         log.info("[" + requestId + "] << verify account >>");
         return userService.verifyAcc(verifyAccountInput);
     }
-
+    @PostMapping("/create-bear")
+    public ResponseEntity<?> createBear(HttpServletRequest httpServletRequest,
+                                           @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
+            throws BusinessException {
+        log.info("[" + requestId + "] << verify account >>");
+        return userService.createBear(accountInput);
+    }
     @GetMapping("/get-account-asset")
     public ResponseEntity<?> getAccountAsset(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestParam String cif)
@@ -122,7 +128,9 @@ public class UserController {
             @RequestHeader("requestId") String requestId, @RequestParam("cif") String cif,
             @RequestParam("pid") String pId)
             throws BusinessException {
-        AccountInput accountInput = new AccountInput(cif, pId);
+        AccountInput accountInput = new AccountInput();
+        accountInput.setProductId(pId);
+        accountInput.setCustId(cif);
         log.info("[" + requestId + "] << getAccountInvestByProduct >>");
         return userService.getAccountInvestByProduct(accountInput);
     }

@@ -86,6 +86,16 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 			throw new BusinessException(Constants.FAIL, e.getMessage());
 		}
 	}
+
+	@Override
+	public ResponseEntity<?> createBear(AccountInput input) {
+		try {
+			return response(toResult(pkgFilterRepo.crateBear(input)));
+		} catch (Exception e) {
+			throw new BusinessException(Constants.FAIL, e.getMessage());
+		}
+	}
+
 	@Override
 	public ResponseEntity<?> getAccountAsset(String custId) {
 
