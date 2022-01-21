@@ -50,8 +50,6 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
 
     @Autowired
     private RestTemplate restTemplate;
-    @Autowired
-    public IdCardImpl idCardImpl;
 
     private final String isSelfie = "TRUE";
 

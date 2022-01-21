@@ -72,10 +72,10 @@ public class LoggingServiceImpl implements LoggingService {
             stringBuilder.append("body=[" + body + "]");
         }
 
-        InsertLogRequest insertLogRequest = new InsertLogRequest(requestId, sessionId, httpServletRequest.getRequestURI(),
-                0, httpServletRequest.getLocalAddr(), 0, null, body.toString(), null);
+        // InsertLogRequest insertLogRequest = new InsertLogRequest(requestId, sessionId, httpServletRequest.getRequestURI(),
+        //         0, httpServletRequest.getLocalAddr(), 0, null, body.toString(), null);
 
-        pkgFilterRepo.insertLogs(insertLogRequest);
+        // pkgFilterRepo.insertLogs(insertLogRequest);
 
         log.info(stringBuilder.toString());
     }
@@ -99,10 +99,10 @@ public class LoggingServiceImpl implements LoggingService {
         stringBuilder.append("responseHeaders=[").append(buildHeadersMap(httpServletResponse)).append("]");
         stringBuilder.append("responseBody=[").append(body).append("] ");
 
-        InsertLogRequest insertLogRequest = new InsertLogRequest(requestId, sessionId, httpServletRequest.getRequestURI(),
-                0, httpServletRequest.getLocalAddr(), 1, String.valueOf(httpServletResponse.getStatus()), null, body.toString());
+        // InsertLogRequest insertLogRequest = new InsertLogRequest(requestId, sessionId, httpServletRequest.getRequestURI(),
+        //         0, httpServletRequest.getLocalAddr(), 1, String.valueOf(httpServletResponse.getStatus()), null, body.toString());
 
-        pkgFilterRepo.insertLogs(insertLogRequest);
+        // pkgFilterRepo.insertLogs(insertLogRequest);
 
         log.info(stringBuilder.toString());
     }

@@ -25,7 +25,6 @@ import com.lendbiz.p2p.api.entity.UserOnline;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.model.exception.InputInvalidExeption;
-import com.lendbiz.p2p.api.repository.AuthRepository;
 import com.lendbiz.p2p.api.repository.PackageFilterRepository;
 import com.lendbiz.p2p.api.repository.UserOnlineRepository;
 import com.lendbiz.p2p.api.request.LoginRequest;
@@ -47,11 +46,8 @@ import org.springframework.stereotype.Service;
  * @create-time Apr 9, 2021 10:43:45 AM
  *
  ***********************************************************************/
-@Service("loginService")
+@Service("userService")
 public class UserServiceImpl extends BaseResponse<UserService> implements UserService {
-
-	@Autowired
-	AuthRepository authRepository;
 
 	@Autowired
 	PackageFilterRepository pkgFilterRepo;
@@ -62,13 +58,15 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 	@Override
 	public ResponseEntity<?> login(LoginRequest loginRequest) {
 
-		List<Object> response = (ArrayList) pkgFilterRepo.login(loginRequest.getUsername(), loginRequest.getPassword(),
-				loginRequest.getDeviceId());
+		// List<Object> response = (ArrayList)
+		// pkgFilterRepo.login(loginRequest.getUsername(), loginRequest.getPassword(),
+		// loginRequest.getDeviceId());
 
 		// return response(toErrorResult(Constans.FAIL, Constans.MESSAGE_FAIL, null,
 		// null));
 
-		return response(toResult(response.get(0)));
+		return response(toResult(pkgFilterRepo.login(loginRequest.getUsername(), loginRequest.getPassword(),
+				loginRequest.getDeviceId())));
 	}
 
 	@Override
@@ -86,24 +84,25 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 			throw new BusinessException(Constants.FAIL, e.getMessage());
 		}
 	}
+
 	@Override
 	public ResponseEntity<?> getAccountAsset(String custId) {
 
-			return response(toResult(pkgFilterRepo.getAccountAsset(custId)));
+		return response(toResult(pkgFilterRepo.getAccountAsset(custId)));
 
 	}
 
 	@Override
 	public ResponseEntity<?> getAccountInvest(String custId) {
 
-			return response(toResult(pkgFilterRepo.getAccountInvest(custId)));
+		return response(toResult(pkgFilterRepo.getAccountInvest(custId)));
 
 	}
 
 	@Override
 	public ResponseEntity<?> getProduct() {
 
-			return response(toResult(pkgFilterRepo.getProduct()));
+		return response(toResult(pkgFilterRepo.getProduct()));
 
 	}
 
@@ -114,7 +113,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
 	@Override
 	public ResponseEntity<?> getRate(String term, String productId, String amount) {
-		return response(toResult(pkgFilterRepo.getRate(productId,term,amount)));
+		return response(toResult(pkgFilterRepo.getRate(productId, term, amount)));
 	}
 
 	@Override
@@ -125,10 +124,9 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 	@Override
 	public ResponseEntity<?> getAccountInvestByProduct(AccountInput accountInput) {
 
-			return response(toResult(pkgFilterRepo.getAccountInvestByProduct(accountInput)));
+		return response(toResult(pkgFilterRepo.getAccountInvestByProduct(accountInput)));
 
 	}
-
 
 	@Override
 	public String checkSession(String session) {

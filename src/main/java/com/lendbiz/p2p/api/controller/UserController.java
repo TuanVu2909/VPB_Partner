@@ -95,7 +95,7 @@ public class UserController {
 
     @GetMapping("/get-paytype")
     public ResponseEntity<?> getPayType(HttpServletRequest httpServletRequest,
-                                        @RequestHeader("requestId") String requestId)
+            @RequestHeader("requestId") String requestId)
             throws BusinessException {
         log.info("[" + requestId + "] << getProduct >>");
         return userService.getPayType();
@@ -103,7 +103,7 @@ public class UserController {
 
     @GetMapping("/get-term")
     public ResponseEntity<?> getTerm(HttpServletRequest httpServletRequest,
-                                        @RequestHeader("requestId") String requestId,@RequestParam("pid") String pId)
+            @RequestHeader("requestId") String requestId, @RequestParam("pid") String pId)
             throws BusinessException {
         log.info("[" + requestId + "] << getProduct >>");
         return userService.getTerm(pId);
@@ -111,10 +111,11 @@ public class UserController {
 
     @GetMapping("/get-rate")
     public ResponseEntity<?> getRate(HttpServletRequest httpServletRequest,
-                                     @RequestHeader("requestId") String requestId,@RequestParam("pid") String pId,@RequestParam("term") String term,@RequestParam("amount") String amount)
+            @RequestHeader("requestId") String requestId, @RequestParam("pid") String pId,
+            @RequestParam("term") String term, @RequestParam("amount") String amount)
             throws BusinessException {
         log.info("[" + requestId + "] << getProduct >>");
-        return userService.getRate(term,pId,amount);
+        return userService.getRate(term, pId, amount);
     }
 
     @GetMapping("/get-account-invest-by-product")

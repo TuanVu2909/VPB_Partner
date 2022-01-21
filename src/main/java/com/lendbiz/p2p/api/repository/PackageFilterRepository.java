@@ -1,6 +1,5 @@
 package com.lendbiz.p2p.api.repository;
 
-import java.math.BigDecimal;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Map;
@@ -100,7 +99,9 @@ public class PackageFilterRepository {
 
     public Object login(String username, String password, String deviceId) {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PKG_API_AUTHENTICATION")
-                .withProcedureName("LOGIN").declareParameters(new SqlParameter("pv_Username", Types.VARCHAR))
+                .withProcedureName("LOGIN")
+                // .withoutProcedureColumnMetaDataAccess()
+                .declareParameters(new SqlParameter("pv_Username", Types.VARCHAR))
                 .declareParameters(new SqlParameter("pv_Password", Types.VARCHAR))
                 .declareParameters(new SqlParameter("pv_Deviceid", Types.VARCHAR))
                 .declareParameters(new SqlOutParameter("PV_REFCURSOR", Types.REF_CURSOR));
@@ -110,22 +111,29 @@ public class PackageFilterRepository {
         params.addValue("pv_Password", password);
         params.addValue("pv_Deviceid", deviceId);
 
+        // Long start = System.currentTimeMillis();
         Map<String, Object> map = jdbcCall.execute(params);
+        // jdbcCall.execute(params);
+        // System.out.println(System.currentTimeMillis() - start);
+        // Long end = System.currentTimeMillis() - start;
+
         Map.Entry<String, Object> entry = map.entrySet().iterator().next();
 
-        String body = JsonMapper.writeValueAsString(entry.getValue());
+        // String body = JsonMapper.writeValueAsString(entry.getValue());
 
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode root;
-        try {
-            root = mapper.readTree(body);
-            if (root.get(0) != null && root.get(0).get("ERRORCODE") != null) {
-                if (root.get(0).get("ERRORCODE").asInt() == 99)
-                    throw new BusinessException(Constants.FAIL, root.get(0).get("STATUS").textValue());
-            }
-        } catch (JsonProcessingException e) {
-            throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
-        }
+        // ObjectMapper mapper = new ObjectMapper();
+        // JsonNode root;
+        // try {
+        // root = mapper.readTree(body);
+        // if (root.get(0) != null && root.get(0).get("ERRORCODE") != null) {
+        // if (root.get(0).get("ERRORCODE").asInt() == 99)
+        // throw new BusinessException(Constants.FAIL,
+        // root.get(0).get("STATUS").textValue());
+        // }
+        // } catch (JsonProcessingException e) {
+        // throw new BusinessException(ErrorCode.FAILED_TO_JSON,
+        // ErrorCode.FAILED_TO_JSON_DESCRIPTION);
+        // }
 
         return entry.getValue();
     }
@@ -313,7 +321,7 @@ public class PackageFilterRepository {
                 .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
 
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("pv_term",term );
+        params.addValue("pv_term", term);
         params.addValue("pv_pid", Integer.parseInt(pId));
         params.addValue("pv_amt", Integer.parseInt(amt));
         Map<String, Object> map = jdbcCall.execute(params);

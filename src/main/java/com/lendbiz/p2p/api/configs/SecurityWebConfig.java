@@ -4,34 +4,25 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import com.lendbiz.p2p.api.service.UserProfileService;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.BeanIds;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
-public class SecurityWebConfig extends WebSecurityConfigurerAdapter
-{
-    @Autowired
-    UserProfileService userProfileService;
+public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public RestAuthenticationEntryPoint restServicesEntryPoint() {
         return new RestAuthenticationEntryPoint();
     }
+
     @Bean
     public CustomAccessDeniedHandler customAccessDeniedHandler() {
         return new CustomAccessDeniedHandler();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new PasswordEncoder() {
@@ -48,13 +39,6 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth)
-            throws Exception {
-        auth.userDetailsService(userProfileService) // Cung cáp userservice cho spring security
-                .passwordEncoder(passwordEncoder()); // cung cấp password encoder
-    }
-
-    @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.antMatcher("/api/**").httpBasic().authenticationEntryPoint(restServicesEntryPoint()).and()
                 .cors()
@@ -68,7 +52,7 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter
                 .anyRequest().authenticated()
                 .and();
     }
-    
+
     public static String getMd5(String input) {
         try {
             // Static getInstance method is called with hashing SHA
