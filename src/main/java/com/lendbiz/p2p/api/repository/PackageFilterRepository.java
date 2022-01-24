@@ -3,6 +3,7 @@ package com.lendbiz.p2p.api.repository;
 import java.math.BigDecimal;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -224,7 +225,7 @@ public class PackageFilterRepository {
         if (arrayList.size() == 0) {
             throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
         }
-        return arrayList;
+        return arrayList.get(0);
     }
 
     public Object getAccountInvest(String custId) {
@@ -243,7 +244,6 @@ public class PackageFilterRepository {
     }
 
     public Object getProduct() {
-
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
                 .withProcedureName("getproduct")
                 .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
