@@ -72,7 +72,7 @@ public class UserController {
     public ResponseEntity<?> createBear(HttpServletRequest httpServletRequest,
                                            @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
             throws BusinessException {
-        log.info("[" + requestId + "] << verify account >>");
+        log.info("[" + requestId + "] << create bear >>");
         return userService.createBear(accountInput);
     }
     @GetMapping("/get-account-asset")
@@ -103,7 +103,7 @@ public class UserController {
     public ResponseEntity<?> getPayType(HttpServletRequest httpServletRequest,
                                         @RequestHeader("requestId") String requestId)
             throws BusinessException {
-        log.info("[" + requestId + "] << getProduct >>");
+        log.info("[" + requestId + "] << get-paytype >>");
         return userService.getPayType();
     }
 
@@ -111,7 +111,7 @@ public class UserController {
     public ResponseEntity<?> getTerm(HttpServletRequest httpServletRequest,
                                         @RequestHeader("requestId") String requestId,@RequestParam("pid") String pId)
             throws BusinessException {
-        log.info("[" + requestId + "] << getProduct >>");
+        log.info("[" + requestId + "] << get-term >>");
         return userService.getTerm(pId);
     }
 
@@ -119,7 +119,7 @@ public class UserController {
     public ResponseEntity<?> getRate(HttpServletRequest httpServletRequest,
                                      @RequestHeader("requestId") String requestId,@RequestParam("pid") String pId,@RequestParam("term") String term,@RequestParam("amount") String amount)
             throws BusinessException {
-        log.info("[" + requestId + "] << getProduct >>");
+        log.info("[" + requestId + "] << get-rate >>");
         return userService.getRate(term,pId,amount);
     }
 
