@@ -25,6 +25,7 @@ public interface UserService {
 
 
 	public ResponseEntity<?> verifyAcc(VerifyAccountInput input);
+	public ResponseEntity<?> createBear(AccountInput input);
 	public ResponseEntity<?> getAccountAsset(String custId);
 	public ResponseEntity<?> getAccountInvest(String custId);
 	public ResponseEntity<?> getProduct();

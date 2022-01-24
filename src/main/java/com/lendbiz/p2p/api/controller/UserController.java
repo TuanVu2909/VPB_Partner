@@ -68,7 +68,13 @@ public class UserController {
         log.info("[" + requestId + "] << verify account >>");
         return userService.verifyAcc(verifyAccountInput);
     }
-
+    @PostMapping("/create-bear")
+    public ResponseEntity<?> createBear(HttpServletRequest httpServletRequest,
+                                           @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
+            throws BusinessException {
+        log.info("[" + requestId + "] << create bear >>");
+        return userService.createBear(accountInput);
+    }
     @GetMapping("/get-account-asset")
     public ResponseEntity<?> getAccountAsset(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestParam String cif)
@@ -97,7 +103,7 @@ public class UserController {
     public ResponseEntity<?> getPayType(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId)
             throws BusinessException {
-        log.info("[" + requestId + "] << getProduct >>");
+        log.info("[" + requestId + "] << get-paytype >>");
         return userService.getPayType();
     }
 
@@ -105,7 +111,7 @@ public class UserController {
     public ResponseEntity<?> getTerm(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestParam("pid") String pId)
             throws BusinessException {
-        log.info("[" + requestId + "] << getProduct >>");
+        log.info("[" + requestId + "] << get-term >>");
         return userService.getTerm(pId);
     }
 
@@ -114,8 +120,8 @@ public class UserController {
             @RequestHeader("requestId") String requestId, @RequestParam("pid") String pId,
             @RequestParam("term") String term, @RequestParam("amount") String amount)
             throws BusinessException {
-        log.info("[" + requestId + "] << getProduct >>");
-        return userService.getRate(term, pId, amount);
+                log.info("[" + requestId + "] << get-rate >>");
+                return userService.getRate(term,pId,amount);
     }
 
     @GetMapping("/get-account-invest-by-product")
@@ -123,7 +129,9 @@ public class UserController {
             @RequestHeader("requestId") String requestId, @RequestParam("cif") String cif,
             @RequestParam("pid") String pId)
             throws BusinessException {
-        AccountInput accountInput = new AccountInput(cif, pId);
+        AccountInput accountInput = new AccountInput();
+        accountInput.setProductId(pId);
+        accountInput.setCustId(cif);
         log.info("[" + requestId + "] << getAccountInvestByProduct >>");
         return userService.getAccountInvestByProduct(accountInput);
     }

@@ -10,5 +10,8 @@ import lombok.*;
 public class AccountInput {
     private String custId;
     private String productId;
+    private String term;
+    private String amt;
+
 
 }
