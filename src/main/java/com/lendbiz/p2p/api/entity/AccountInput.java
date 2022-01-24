@@ -12,6 +12,9 @@ public class AccountInput {
     private String productId;
     private String term;
     private String amt;
+    private String rate;
+    private String contractId;
+    private String payType;
 
 
 }

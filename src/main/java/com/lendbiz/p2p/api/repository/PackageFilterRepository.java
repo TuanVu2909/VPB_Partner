@@ -303,6 +303,9 @@ public class PackageFilterRepository {
                 .declareParameters(new SqlParameter("pv_pid", Types.NUMERIC))
                 .declareParameters(new SqlParameter("pv_amt", Types.NUMERIC))
                 .declareParameters(new SqlParameter("pv_custId", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_rate", Types.NUMERIC))
+                .declareParameters(new SqlParameter("pv_contractId", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_payType", Types.VARCHAR))
                 .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
 
         MapSqlParameterSource params = new MapSqlParameterSource();
@@ -310,13 +313,16 @@ public class PackageFilterRepository {
         params.addValue("pv_custId",accountInput.getCustId() );
         params.addValue("pv_pid", Integer.parseInt(accountInput.getProductId()));
         params.addValue("pv_amt", Integer.parseInt(accountInput.getAmt()));
+        params.addValue("pv_rate", Integer.parseInt(accountInput.getRate()));
+        params.addValue("pv_payType",accountInput.getPayType() );
+        params.addValue("pv_contractId",accountInput.getContractId() );
         Map<String, Object> map = jdbcCall.execute(params);
         System.out.println(map.get("pv_refcursor"));
         ArrayList<Object> arrayList = (ArrayList<Object>) map.get("pv_refcursor");
         if (arrayList.size() == 0) {
             throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
         }
-        return arrayList;
+        return "success";
     }
     public Object getTerm(String pId) {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
