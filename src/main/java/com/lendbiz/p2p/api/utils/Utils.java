@@ -241,6 +241,7 @@ public class Utils {
         float totalByMonth = moneyVal + monthlyProfit;
 
         bearResponse.setRate(rate);
+        bearResponse.setProfitPerDay("");
         bearResponse.setDay(String.valueOf(daysBetween));
         bearResponse.setMonthlyProfit(String.valueOf((long)monthlyProfit));
         bearResponse.setTotal(String.valueOf((long)totalByMonth));

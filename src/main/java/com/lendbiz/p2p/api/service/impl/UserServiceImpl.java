@@ -143,7 +143,12 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
 	@Override
 	public ResponseEntity<?> getProductInfo(BearRequest bearRequest) {
-		return response(toResult(Utils.getProductInfo(bearRequest)));
+		try {
+			return response(toResult(Utils.getProductInfo(bearRequest)));
+		}catch (Exception e) {
+			throw new BusinessException(Constants.FAIL, e.getMessage());
+		}
+
 	}
 
 
