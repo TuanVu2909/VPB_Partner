@@ -2,9 +2,11 @@ package com.lendbiz.p2p.api.service;
 
 import com.lendbiz.p2p.api.entity.AccountInput;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
+import com.lendbiz.p2p.api.request.BearRequest;
 import com.lendbiz.p2p.api.request.LoginRequest;
 import com.lendbiz.p2p.api.request.ReqJoinRequest;
 
+import com.lendbiz.p2p.api.response.BearResponse;
 import org.springframework.http.ResponseEntity;
 
 /***********************************************************************
@@ -33,6 +35,7 @@ public interface UserService {
 	public ResponseEntity<?> getRate(String term,String productId,String amount);
 	public ResponseEntity<?> getTerm(String productId);
 	public ResponseEntity<?> getAccountInvestByProduct(AccountInput accountInput);
+	public ResponseEntity<?> getProductInfo(BearRequest bearRequest);
 
 	String checkSession(String session);
 

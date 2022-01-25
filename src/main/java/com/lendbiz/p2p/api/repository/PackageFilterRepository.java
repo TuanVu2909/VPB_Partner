@@ -264,7 +264,7 @@ public class PackageFilterRepository {
 
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("pv_custId", accountInput.getCustId());
-        params.addValue("pv_pid", Integer.parseInt(accountInput.getProductId()));
+        params.addValue("pv_pid", accountInput.getProductId());
         Map<String, Object> map = jdbcCall.execute(params);
         System.out.println(map.get("pv_refcursor"));
         ArrayList<Object> arrayList = (ArrayList<Object>) map.get("pv_refcursor");
@@ -284,8 +284,8 @@ public class PackageFilterRepository {
 
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("pv_term",term );
-        params.addValue("pv_pid", Integer.parseInt(pId));
-        params.addValue("pv_amt", Integer.parseInt(amt));
+        params.addValue("pv_pid", pId);
+        params.addValue("pv_amt", amt);
         Map<String, Object> map = jdbcCall.execute(params);
         System.out.println(map.get("pv_refcursor"));
         ArrayList<Object> arrayList = (ArrayList<Object>) map.get("pv_refcursor");
@@ -311,9 +311,9 @@ public class PackageFilterRepository {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("pv_term",accountInput.getTerm() );
         params.addValue("pv_custId",accountInput.getCustId() );
-        params.addValue("pv_pid", Integer.parseInt(accountInput.getProductId()));
-        params.addValue("pv_amt", Integer.parseInt(accountInput.getAmt()));
-        params.addValue("pv_rate", Integer.parseInt(accountInput.getRate()));
+        params.addValue("pv_pid", accountInput.getProductId());
+        params.addValue("pv_amt", accountInput.getAmt());
+        params.addValue("pv_rate", accountInput.getRate());
         params.addValue("pv_payType",accountInput.getPayType() );
         params.addValue("pv_contractId",accountInput.getContractId() );
         Map<String, Object> map = jdbcCall.execute(params);
@@ -331,7 +331,7 @@ public class PackageFilterRepository {
                 .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
 
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("pv_pid", Integer.parseInt(pId));
+        params.addValue("pv_pid", pId);
         Map<String, Object> map = jdbcCall.execute(params);
         ArrayList<Object> arrayList = (ArrayList<Object>) map.get("pv_refcursor");
         if (arrayList.size() == 0) {
