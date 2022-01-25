@@ -241,14 +241,14 @@ public class Utils {
         float totalByMonth = moneyVal + monthlyProfit;
 
         bearResponse.setRate(rate);
-        bearResponse.setDay(daysBetween);
+        bearResponse.setDay(String.valueOf(daysBetween));
         bearResponse.setMonthlyProfit(String.valueOf((long)monthlyProfit));
         bearResponse.setTotal(String.valueOf((long)totalByMonth));
         bearResponse.setStartDate(java.time.LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         bearResponse.setEndDate(
                 java.time.LocalDate.now().plusMonths(monthValue).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         if (bearRequest.getPid().equals("15")){
-            bearResponse.setProfitPerDay((long)profitPerDay);
+            bearResponse.setProfitPerDay(String.valueOf((long)profitPerDay));
             bearResponse.setMonthlyProfit("");
             bearResponse.setTotal("");
         }
