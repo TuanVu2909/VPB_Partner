@@ -5,12 +5,15 @@ import javax.servlet.http.HttpServletRequest;
 import com.lendbiz.p2p.api.entity.AccountInput;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.request.BearRequest;
 import com.lendbiz.p2p.api.request.LoginRequest;
 import com.lendbiz.p2p.api.request.ReqJoinRequest;
+import com.lendbiz.p2p.api.response.BearResponse;
 import com.lendbiz.p2p.api.response.InfoIdentity;
 import com.lendbiz.p2p.api.service.SavisService;
 import com.lendbiz.p2p.api.service.UserService;
 
+import com.lendbiz.p2p.api.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -156,6 +159,14 @@ public class UserController {
         log.info("[" + requestId + "] << verifyIdeEntity >>");
         String custId = userService.checkSession(session);
         return savisService.callCheckSelfie(frontFile, selfieFile, custId);
+    }
+        @PostMapping("/product-info")
+    public ResponseEntity<?> productInfo(HttpServletRequest httpServletRequest,
+                                         @RequestHeader("requestId") String requestId, @RequestBody BearRequest bearRequest)
+            throws BusinessException {
+        log.info("[" + requestId + "] << verifyIdeEntity >>");
+
+        return userService.getProductInfo(bearRequest);
     }
 
 }

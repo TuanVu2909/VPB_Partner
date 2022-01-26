@@ -27,12 +27,14 @@ import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.model.exception.InputInvalidExeption;
 import com.lendbiz.p2p.api.repository.PackageFilterRepository;
 import com.lendbiz.p2p.api.repository.UserOnlineRepository;
+import com.lendbiz.p2p.api.request.BearRequest;
 import com.lendbiz.p2p.api.request.LoginRequest;
 import com.lendbiz.p2p.api.request.ReqJoinRequest;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.service.UserService;
 import com.lendbiz.p2p.api.utils.StringUtil;
 
+import com.lendbiz.p2p.api.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -106,8 +108,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
 	@Override
 	public ResponseEntity<?> getProduct() {
-
-		return response(toResult(pkgFilterRepo.getProduct()));
+		System.out.println("End: " +( System.currentTimeMillis()  ));
+			return response(toResult(pkgFilterRepo.getProduct()));
 
 	}
 
@@ -132,6 +134,17 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 		return response(toResult(pkgFilterRepo.getAccountInvestByProduct(accountInput)));
 
 	}
+
+	@Override
+	public ResponseEntity<?> getProductInfo(BearRequest bearRequest) {
+		try {
+			return response(toResult(Utils.getProductInfo(bearRequest)));
+		}catch (Exception e) {
+			throw new BusinessException(Constants.FAIL, e.getMessage());
+		}
+
+	}
+
 
 	@Override
 	public String checkSession(String session) {
