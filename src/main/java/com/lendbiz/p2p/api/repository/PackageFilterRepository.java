@@ -107,15 +107,17 @@ public class PackageFilterRepository {
                 .declareParameters(new SqlParameter("pv_Deviceid", Types.VARCHAR))
                 .declareParameters(new SqlOutParameter("PV_REFCURSOR", Types.REF_CURSOR));
 
+                
+
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("pv_Username", username);
         params.addValue("pv_Password", password);
         params.addValue("pv_Deviceid", deviceId);
 
-        // Long start = System.currentTimeMillis();
+        Long start = System.currentTimeMillis();
         Map<String, Object> map = jdbcCall.execute(params);
         // jdbcCall.execute(params);
-        // System.out.println(System.currentTimeMillis() - start);
+        System.out.println(System.currentTimeMillis() - start);
         // Long end = System.currentTimeMillis() - start;
 
         Map.Entry<String, Object> entry = map.entrySet().iterator().next();
@@ -322,8 +324,8 @@ public class PackageFilterRepository {
 
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("pv_term", term);
-        params.addValue("pv_pid", Integer.parseInt(pId));
-        params.addValue("pv_amt", Integer.parseInt(amt));
+        params.addValue("pv_pid", pId);
+        params.addValue("pv_amt", amt);
         Map<String, Object> map = jdbcCall.execute(params);
         System.out.println(map.get("pv_refcursor"));
         ArrayList<Object> arrayList = (ArrayList<Object>) map.get("pv_refcursor");
@@ -332,7 +334,6 @@ public class PackageFilterRepository {
         }
         return arrayList;
     }
-
 
     public Object crateBear(AccountInput accountInput) {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
@@ -344,8 +345,8 @@ public class PackageFilterRepository {
                 .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
 
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("pv_term",accountInput.getTerm() );
-        params.addValue("pv_custId",accountInput.getCustId() );
+        params.addValue("pv_term", accountInput.getTerm());
+        params.addValue("pv_custId", accountInput.getCustId());
         params.addValue("pv_pid", Integer.parseInt(accountInput.getProductId()));
         params.addValue("pv_amt", Integer.parseInt(accountInput.getAmt()));
         Map<String, Object> map = jdbcCall.execute(params);
@@ -356,6 +357,7 @@ public class PackageFilterRepository {
         }
         return arrayList;
     }
+
     public Object getTerm(String pId) {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
                 .withProcedureName("getTerm")

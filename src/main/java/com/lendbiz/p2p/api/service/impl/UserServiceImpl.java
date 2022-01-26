@@ -58,15 +58,11 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 	@Override
 	public ResponseEntity<?> login(LoginRequest loginRequest) {
 
-		// List<Object> response = (ArrayList)
-		// pkgFilterRepo.login(loginRequest.getUsername(), loginRequest.getPassword(),
-		// loginRequest.getDeviceId());
+		List<Object> response = (ArrayList) pkgFilterRepo.login(loginRequest.getUsername(), loginRequest.getPassword(),
+				loginRequest.getDeviceId());
 
-		// return response(toErrorResult(Constans.FAIL, Constans.MESSAGE_FAIL, null,
-		// null));
+		return response(toResult(response.get(0)));
 
-		return response(toResult(pkgFilterRepo.login(loginRequest.getUsername(), loginRequest.getPassword(),
-				loginRequest.getDeviceId())));
 	}
 
 	@Override
@@ -93,6 +89,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 			throw new BusinessException(Constants.FAIL, e.getMessage());
 		}
 	}
+
 	@Override
 	public ResponseEntity<?> getAccountAsset(String custId) {
 
