@@ -170,63 +170,63 @@ public class Utils {
     public static BearResponse getProductInfo(BearRequest bearRequest) {
         long monthValue = Long.parseLong(bearRequest.getTerm());
         long moneyVal = Long.parseLong(bearRequest.getAmt());
-        String rate = "0.0";
+        String rate = bearRequest.getRate();
         BearResponse bearResponse = new BearResponse();
         bearResponse.setAmt(bearRequest.getAmt());
         bearResponse.setTerm(bearRequest.getTerm());
         bearResponse.setPid(bearRequest.getPid());
         bearResponse.setPayType(bearRequest.getPayType());
-        switch (bearRequest.getPid()) {
-            case "13":
-                if (monthValue == 6) {
-                    if (moneyVal < 5000000 && moneyVal >= 1000000) {
-                        rate = "5.1";
-                    } else if (moneyVal >= 5000000 && moneyVal < 10000000) {
-                        rate = "5.6";
-                    } else if (moneyVal >= 10000000) {
-                        rate = "6.6";
-                    } else {
-                        rate = "0.0";
-                    }
-                } else if (monthValue == 12) {
-                    if (moneyVal < 5000000 && moneyVal >= 1000000) {
-                        rate = "7.7";
-                    } else if (moneyVal >= 5000000 && moneyVal < 10000000) {
-                        rate = "8.2";
-                    } else if (moneyVal >= 10000000) {
-                        rate = "8.7";
-                    } else {
-                        rate = "0.0";
-                    }
-                }
-                break;
-            case "14":
-
-                switch (bearRequest.getTerm()) {
-                    case "1":
-                        rate = "5.5";
-                        break;
-                    case "3":
-                        rate = "6.5";
-                        break;
-                    case "6":
-                        rate = "7.5";
-                        if (bearRequest.getPayType().equals("1"))
-                            rate = "7.0";
-                        break;
-                    case "12":
-                        rate = "8.5";
-                        if (bearRequest.getPayType().equals("1"))
-                            rate = "8.0";
-                        break;
-                    default:
-                        rate = "0.0";
-                }
-
-                break;
-            case "15":
-                rate = "4.3";
-        }
+//        switch (bearRequest.getPid()) {
+//            case "13":
+//                if (monthValue == 6) {
+//                    if (moneyVal < 5000000 && moneyVal >= 1000000) {
+//                        rate = "5.1";
+//                    } else if (moneyVal >= 5000000 && moneyVal < 10000000) {
+//                        rate = "5.6";
+//                    } else if (moneyVal >= 10000000) {
+//                        rate = "6.6";
+//                    } else {
+//                        rate = "0.0";
+//                    }
+//                } else if (monthValue == 12) {
+//                    if (moneyVal < 5000000 && moneyVal >= 1000000) {
+//                        rate = "7.7";
+//                    } else if (moneyVal >= 5000000 && moneyVal < 10000000) {
+//                        rate = "8.2";
+//                    } else if (moneyVal >= 10000000) {
+//                        rate = "8.7";
+//                    } else {
+//                        rate = "0.0";
+//                    }
+//                }
+//                break;
+//            case "14":
+//
+//                switch (bearRequest.getTerm()) {
+//                    case "1":
+//                        rate = "5.5";
+//                        break;
+//                    case "3":
+//                        rate = "6.5";
+//                        break;
+//                    case "6":
+//                        rate = "7.5";
+//                        if (bearRequest.getPayType().equals("1"))
+//                            rate = "7.0";
+//                        break;
+//                    case "12":
+//                        rate = "8.5";
+//                        if (bearRequest.getPayType().equals("1"))
+//                            rate = "8.0";
+//                        break;
+//                    default:
+//                        rate = "0.0";
+//                }
+//
+//                break;
+//            case "15":
+//                rate = "4.3";
+//        }
         LocalDate startDate = LocalDate.parse(java.time.LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         LocalDate endDate = LocalDate.parse(java.time.LocalDate.now().plusMonths(monthValue).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);

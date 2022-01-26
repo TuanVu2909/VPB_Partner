@@ -11,5 +11,6 @@ public class BearRequest {
     private String term;
     private String pid;
     private String payType;
+    private String rate;
     private String amt;
 }
