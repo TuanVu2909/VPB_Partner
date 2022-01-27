@@ -8,6 +8,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
+import java.util.UUID;
 
 import com.google.gson.Gson;
 import com.lendbiz.p2p.api.exception.BusinessException;
@@ -254,5 +255,8 @@ public class Utils {
             bearResponse.setTotal("");
         }
         return bearResponse;
+    }
+    public static String createOtpId(){
+        return UUID.randomUUID().toString();
     }
 }

@@ -23,9 +23,9 @@ public interface SavisService {
 
 	Optional<UserRegisterResponse> callRegisterKyc(MultipartFile frontId);
 
-	Optional<OtpResponse> getOtp(String docId);
+	Optional<OtpResponse> getOtp();
 
-	Boolean validateOtp(String otp,String docId);
+	Boolean validateOtp(String otp);
 
 	Optional<SignPdfResponse> signPdf(MultipartFile contract, SignContractRequest request);
 

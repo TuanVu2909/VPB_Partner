@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.constants.JsonMapper;
+import com.lendbiz.p2p.api.entity.Otp;
 import com.lendbiz.p2p.api.model.SavisResponse.IdentityFromSavisResponse;
 import com.lendbiz.p2p.api.repository.CfMastRepository;
 import com.lendbiz.p2p.api.exception.BusinessException;
@@ -28,6 +29,7 @@ import com.lendbiz.p2p.api.response.UserRegisterResponse;
 import com.lendbiz.p2p.api.service.SavisService;
 import com.lendbiz.p2p.api.utils.StringUtil;
 
+import com.lendbiz.p2p.api.utils.Utils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +59,8 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
 
     @Autowired
     CfMastRepository cfMastRepo;
-
+@Autowired
+OtpServiceImpl otpService;
     @Override
     public ResponseEntity<?> callPredict(MultipartFile file, InfoIdentity identity, int type) {
         logger.info("---------Start call predict---------------");
@@ -310,7 +313,7 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
         return response(toResult(isMatching));
     }
     @Override
-    public Boolean validateOtp(String otp,String docID) {
+    public Boolean validateOtp(String otp) {
         AccesToken access = getToken();
         logger.info("---------Start call api verify otp---------------");
         final String uri = Constants.VERIFY_OTP_URL;
@@ -319,8 +322,9 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", access.getToken_type() + " " + access.getAccess_token());
         String lendbiz = "lbz";
+        String otpId = otpService.findIdByOtp(otp);
         String description = "lendbiz";
-        String requestJson = "{\"appID\": \"" + lendbiz + "\", \"userID\":\"" + description + "\",\"token\":\"" + otp + "\",\"uniqueIdentifier\":\""+docID+"\"}";
+        String requestJson = "{\"appID\": \"" + lendbiz + "\", \"userID\":\"" + description + "\",\"token\":\"" + otp + "\",\"uniqueIdentifier\":\""+otpId+"\"}";
         logger.info("[Call verify otp] request : {}",requestJson);
 
         HttpEntity<String> request = new HttpEntity<String>(requestJson, headers);
@@ -350,7 +354,7 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
         }
     }
     @Override
-    public Optional<OtpResponse> getOtp(String docID) {
+    public Optional<OtpResponse> getOtp() {
         AccesToken access = getToken();
         logger.info("---------Start call api get otp---------------");
         final String uri = Constants.GET_OTP_URl_2;
@@ -362,8 +366,9 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
         // UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(uri).queryParam("userName",
         //         Constants.USER_NAME_CLIENT);
         String lendbiz = "lbz";
+        String otpId = Utils.createOtpId();
         String description = "lendbiz";
-        String requestJson = "{\"appID\": \"" + lendbiz + "\", \"userID\":\"" + description + "\",\"ttl\":2,\"verificationAttempt\":3,\"uniqueIdentifier\":\"" + docID + "\"}";
+        String requestJson = "{\"appID\": \"" + lendbiz + "\", \"userID\":\"" + description + "\",\"ttl\":2,\"verificationAttempt\":3,\"uniqueIdentifier\":\"" + otpId + "\"}";
         logger.info("[Call api get otp] request : {}", requestJson);
         HttpEntity<String> request = new HttpEntity<>(requestJson, headers);
 //        HttpEntity<?> entity = new HttpEntity<>(headers);
@@ -384,8 +389,8 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
                 response.setData(otpResponseNew.getToken());
                 response.setCode(200);
                 response.setMessage("success");
-
-
+                Otp otp = new Otp(otpId,otpResponseNew.getToken());
+                otpService.create(otp);
                 return Optional.of(response);
             } catch (JsonProcessingException e) {
                 throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
