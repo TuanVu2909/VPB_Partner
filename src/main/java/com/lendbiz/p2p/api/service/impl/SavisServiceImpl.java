@@ -313,7 +313,7 @@ OtpServiceImpl otpService;
         return response(toResult(isMatching));
     }
     @Override
-    public Boolean validateOtp(String otp) {
+    public Boolean validateOtp(String otp,String id) {
         AccesToken access = getToken();
         logger.info("---------Start call api verify otp---------------");
         final String uri = Constants.VERIFY_OTP_URL;
@@ -323,8 +323,7 @@ OtpServiceImpl otpService;
         headers.add("Authorization", access.getToken_type() + " " + access.getAccess_token());
         String lendbiz = "lbz";
         String otpId = otpService.findIdByOtp(otp);
-        String description = "lendbiz";
-        String requestJson = "{\"appID\": \"" + lendbiz + "\", \"userID\":\"" + description + "\",\"token\":\"" + otp + "\",\"uniqueIdentifier\":\""+otpId+"\"}";
+        String requestJson = "{\"appID\": \"" + lendbiz + "\", \"userID\":\"" + id + "\",\"token\":\"" + otp + "\",\"uniqueIdentifier\":\""+otpId+"\"}";
         logger.info("[Call verify otp] request : {}",requestJson);
 
         HttpEntity<String> request = new HttpEntity<String>(requestJson, headers);
@@ -354,7 +353,7 @@ OtpServiceImpl otpService;
         }
     }
     @Override
-    public Optional<OtpResponse> getOtp() {
+    public Optional<OtpResponse> getOtp(String id) {
         AccesToken access = getToken();
         logger.info("---------Start call api get otp---------------");
         final String uri = Constants.GET_OTP_URl_2;
@@ -368,7 +367,7 @@ OtpServiceImpl otpService;
         String lendbiz = "lbz";
         String otpId = Utils.createOtpId();
         String description = "lendbiz";
-        String requestJson = "{\"appID\": \"" + lendbiz + "\", \"userID\":\"" + description + "\",\"ttl\":2,\"verificationAttempt\":3,\"uniqueIdentifier\":\"" + otpId + "\"}";
+        String requestJson = "{\"appID\": \"" + lendbiz + "\", \"userID\":\"" + id + "\",\"ttl\":2,\"verificationAttempt\":3,\"uniqueIdentifier\":\"" + otpId + "\"}";
         logger.info("[Call api get otp] request : {}", requestJson);
         HttpEntity<String> request = new HttpEntity<>(requestJson, headers);
 //        HttpEntity<?> entity = new HttpEntity<>(headers);
