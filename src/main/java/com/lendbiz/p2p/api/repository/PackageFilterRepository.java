@@ -247,7 +247,9 @@ public class PackageFilterRepository {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
                 .withProcedureName("getproduct")
                 .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
+        System.out.println("End: " +( System.currentTimeMillis()  ));
         Map<String, Object> map = jdbcCall.execute();
+        System.out.println("End: " +( System.currentTimeMillis()  ));
         ArrayList<Object> arrayList = (ArrayList<Object>) map.get("pv_refcursor");
         if (arrayList.size() == 0) {
             throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
@@ -303,7 +305,7 @@ public class PackageFilterRepository {
                 .declareParameters(new SqlParameter("pv_pid", Types.NUMERIC))
                 .declareParameters(new SqlParameter("pv_amt", Types.NUMERIC))
                 .declareParameters(new SqlParameter("pv_custId", Types.VARCHAR))
-                .declareParameters(new SqlParameter("pv_rate", Types.NUMERIC))
+                .declareParameters(new SqlParameter("pv_rate", Types.FLOAT))
                 .declareParameters(new SqlParameter("pv_contractId", Types.VARCHAR))
                 .declareParameters(new SqlParameter("pv_payType", Types.VARCHAR))
                 .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
@@ -317,11 +319,30 @@ public class PackageFilterRepository {
         params.addValue("pv_payType",accountInput.getPayType() );
         params.addValue("pv_contractId",accountInput.getContractId() );
         Map<String, Object> map = jdbcCall.execute(params);
-        System.out.println(map.get("pv_refcursor"));
-        ArrayList<Object> arrayList = (ArrayList<Object>) map.get("pv_refcursor");
-        if (arrayList.size() == 0) {
-            throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
+        Map.Entry<String, Object> entry = map.entrySet().iterator().next();
+
+        String body = JsonMapper.writeValueAsString(entry.getValue());
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root;
+        try {
+
+            root = mapper.readTree(body);
+            if (root.get(0).get(":B2")!=null){
+                String status = root.get(0).get(":B2").textValue();
+                if (status.equals("0")
+                ) {
+                    throw new BusinessException(Constants.FAIL,
+                            root.get(0).get(":B1").textValue());
+                }
+            }
+
+
+        } catch (JsonProcessingException e) {
+            throw new BusinessException(ErrorCode.FAILED_TO_JSON,
+                    ErrorCode.FAILED_TO_JSON_DESCRIPTION);
         }
+
         return "success";
     }
     public Object getTerm(String pId) {
