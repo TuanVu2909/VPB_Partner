@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.constants.JsonMapper;
+import com.lendbiz.p2p.api.entity.Otp;
 import com.lendbiz.p2p.api.model.SavisResponse.IdentityFromSavisResponse;
 import com.lendbiz.p2p.api.repository.CfMastRepository;
 import com.lendbiz.p2p.api.exception.BusinessException;
@@ -28,6 +29,7 @@ import com.lendbiz.p2p.api.response.UserRegisterResponse;
 import com.lendbiz.p2p.api.service.SavisService;
 import com.lendbiz.p2p.api.utils.StringUtil;
 
+import com.lendbiz.p2p.api.utils.Utils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +57,8 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
 
     @Autowired
     CfMastRepository cfMastRepo;
-
+@Autowired
+OtpServiceImpl otpService;
     @Override
     public ResponseEntity<?> callPredict(MultipartFile file, InfoIdentity identity, int type) {
         logger.info("---------Start call predict---------------");
@@ -307,72 +310,19 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
         }
         return response(toResult(isMatching));
     }
-
     @Override
-    public Optional<OtpResponse> getOtp() {
-        AccesToken access = getToken();
-        logger.info("---------Start call api get otp---------------");
-        final String uri = Constants.GET_OTP;
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set(Constants.OTP_API_KEY, Constants.OTP_VALUE_HEADER);
-        // headers.set("Authorization", "Basic Og==");
-        headers.add("Authorization", access.getToken_type() + " " + access.getAccess_token());
-        // UriComponentsBuilder builder =
-        // UriComponentsBuilder.fromHttpUrl(uri).queryParam("userName",
-        // Constants.USER_NAME_CLIENT);
-        String lendbiz = "LENDBIZ";
-        String des = "OTP for LENDBIZ";
-        String requestJson = "{\"userName\": \"" + Constants.USER_NAME_CLIENT + "\", \"appRequest\":\"" + lendbiz
-                + "\",\"step\":120,\"totpSize\":6,\"description\":\"" + des + "\"}";
-
-        HttpEntity<String> request = new HttpEntity<>(requestJson, headers);
-        // HttpEntity<?> entity = new HttpEntity<>(headers);
-        // ResponseEntity<String> responseEntityStr =
-        // restTemplate.exchange(builder.toUriString(), HttpMethod.GET, entity,
-        // String.class);
-        ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(uri, request, String.class);
-        System.out.println(responseEntityStr.toString());
-        // mapping response
-        if (responseEntityStr.getStatusCodeValue() == 200) {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode root;
-            logger.info("[Call api get otp] response : {}", responseEntityStr.getBody());
-            try {
-                root = mapper.readTree(responseEntityStr.getBody());
-                OtpResponseNew otpResponseNew = new OtpResponseNew();
-                otpResponseNew = mapper.readValue(root.toString(), OtpResponseNew.class);
-                OtpResponse response = new OtpResponse();
-                response.setData(otpResponseNew.getData().getOtp());
-                response.setCode(otpResponseNew.getCode());
-                response.setMessage(otpResponseNew.getMessage());
-                response.setTraceId(otpResponseNew.getTraceId());
-
-                return Optional.of(response);
-            } catch (JsonProcessingException e) {
-                throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
-            }
-
-        } else {
-            throw new BusinessException(ErrorCode.FAILED_TO_EXECUTE, ErrorCode.FAILED_TO_EXECUTE_DESCRIPTION);
-        }
-    }
-
-    @Override
-    public Boolean validateOtp(String otp) {
+    public Boolean validateOtp(String otp,String id) {
         AccesToken access = getToken();
         logger.info("---------Start call api verify otp---------------");
-        final String uri = Constants.VALIDATE_OTP;
+        final String uri = Constants.VERIFY_OTP_URL;
         HttpHeaders headers = new HttpHeaders();
-        headers.set(Constants.OTP_API_KEY, Constants.OTP_VALUE_HEADER);
+        headers.set("apikey",Constants.GET_OTP_HEAD_VALUE_2);
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", access.getToken_type() + " " + access.getAccess_token());
-        SavisVerifyOtpRequest requestObj = new SavisVerifyOtpRequest();
-        requestObj.setUserName(Constants.USER_NAME_CLIENT);
-        requestObj.setOtp(otp);
-        String requestJson = "{\"userName\": \"" + Constants.USER_NAME_CLIENT + "\", \"appRequest\":\""
-                + Constants.LENDBIZ + "\",\"step\":120,\"otp\":\"" + otp + "\",\"description\":\"" + Constants.DES
-                + "\"}";
+        String lendbiz = "lbz";
+        String otpId = otpService.findIdByOtp(otp);
+        String requestJson = "{\"appID\": \"" + lendbiz + "\", \"userID\":\"" + id + "\",\"token\":\"" + otp + "\",\"uniqueIdentifier\":\""+otpId+"\"}";
+        logger.info("[Call verify otp] request : {}",requestJson);
 
         HttpEntity<String> request = new HttpEntity<String>(requestJson, headers);
 
@@ -387,7 +337,7 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
             logger.info("[Call api validate otp] response : {}", responseEntityStr.getBody());
             try {
                 root = mapper.readTree(responseEntityStr.getBody());
-                if (root.get("data").asBoolean()) {
+                if (root.get("otpStatus").asBoolean()) {
                     return true;
                 } else {
                     return false;
@@ -400,6 +350,54 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
             throw new BusinessException(ErrorCode.FAILED_TO_EXECUTE, ErrorCode.FAILED_TO_EXECUTE_DESCRIPTION);
         }
     }
+    @Override
+    public Optional<OtpResponse> getOtp(String id) {
+        AccesToken access = getToken();
+        logger.info("---------Start call api get otp---------------");
+        final String uri = Constants.GET_OTP_URl_2;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("apikey", Constants.GET_OTP_HEAD_VALUE_2);
+        // headers.set("Authorization", "Basic Og==");
+        headers.add("Authorization", access.getToken_type() + " " + access.getAccess_token());
+        // UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(uri).queryParam("userName",
+        //         Constants.USER_NAME_CLIENT);
+        String lendbiz = "lbz";
+        String otpId = Utils.createOtpId();
+        String description = "lendbiz";
+        String requestJson = "{\"appID\": \"" + lendbiz + "\", \"userID\":\"" + id + "\",\"ttl\":2,\"verificationAttempt\":3,\"uniqueIdentifier\":\"" + otpId + "\"}";
+        logger.info("[Call api get otp] request : {}", requestJson);
+        HttpEntity<String> request = new HttpEntity<>(requestJson, headers);
+//        HttpEntity<?> entity = new HttpEntity<>(headers);
+//        ResponseEntity<String> responseEntityStr = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, entity,
+//                String.class);
+        ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(uri, request, String.class);
+        System.out.println(responseEntityStr.toString());
+        // mapping response
+        if (responseEntityStr.getStatusCodeValue() == 200) {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root;
+            logger.info("[Call api get otp] response : {}", responseEntityStr.getBody());
+            try {
+                root = mapper.readTree(responseEntityStr.getBody());
+                OtpResponseNew otpResponseNew = new OtpResponseNew();
+                otpResponseNew = mapper.readValue(root.toString(), OtpResponseNew.class);
+                OtpResponse response = new OtpResponse();
+                response.setData(otpResponseNew.getToken());
+                response.setCode(200);
+                response.setMessage("success");
+                Otp otp = new Otp(otpId,otpResponseNew.getToken());
+                otpService.create(otp);
+                return Optional.of(response);
+            } catch (JsonProcessingException e) {
+                throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
+            }
+
+        } else {
+            throw new BusinessException(ErrorCode.FAILED_TO_EXECUTE, ErrorCode.FAILED_TO_EXECUTE_DESCRIPTION);
+        }
+    }
+
 
     @Override
     public Optional<UserRegisterResponse> callRegisterKyc(MultipartFile frontId) {

@@ -11,9 +11,10 @@ import lombok.ToString;
 @NoArgsConstructor	
 @ToString
 public class OtpResponseNew {
-    
-	private DataOTP data;
+
 	private int code;
 	private String message;
 	private String traceId;
+	private String token;
+	private String success;
 }
