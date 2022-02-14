@@ -3,7 +3,7 @@ package com.lendbiz.p2p.api.repository;
 import java.math.BigDecimal;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.AccountInput;
+import com.lendbiz.p2p.api.entity.InvestAssets;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.request.InsertLogRequest;
@@ -19,6 +20,7 @@ import com.lendbiz.p2p.api.request.ReqJoinRequest;
 import com.lendbiz.p2p.api.utils.JsonMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.SqlParameter;
@@ -260,6 +262,7 @@ public class PackageFilterRepository {
     public Object getAccountInvestByProduct(AccountInput accountInput) {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
                 .withProcedureName("getAccountInvestByProduct")
+                .returningResultSet("pv_refcursor", BeanPropertyRowMapper.newInstance(InvestAssets.class) )
                 .declareParameters(new SqlParameter("pv_custId", Types.VARCHAR))
                 .declareParameters(new SqlParameter("pv_pid", Types.NUMERIC))
                 .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
@@ -268,12 +271,11 @@ public class PackageFilterRepository {
         params.addValue("pv_custId", accountInput.getCustId());
         params.addValue("pv_pid", accountInput.getProductId());
         Map<String, Object> map = jdbcCall.execute(params);
-        System.out.println(map.get("pv_refcursor"));
-        ArrayList<Object> arrayList = (ArrayList<Object>) map.get("pv_refcursor");
-        if (arrayList.size() == 0) {
+        List<InvestAssets> listContacts = (List<InvestAssets>) map.get("pv_refcursor");
+        if (listContacts.size() == 0){
             throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
         }
-        return arrayList;
+        return listContacts;
     }
 
     public Object getRate(String pId, String term, String amt) {
@@ -325,6 +327,7 @@ public class PackageFilterRepository {
 
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root;
+
         try {
 
             root = mapper.readTree(body);
