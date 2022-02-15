@@ -2,8 +2,12 @@ package com.lendbiz.p2p.api.repository;
 
 import java.math.BigDecimal;
 import java.sql.Types;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -15,10 +19,13 @@ import com.lendbiz.p2p.api.entity.AccountInput;
 import com.lendbiz.p2p.api.entity.InvestAssets;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.request.BearRequest;
 import com.lendbiz.p2p.api.request.InsertLogRequest;
 import com.lendbiz.p2p.api.request.ReqJoinRequest;
+import com.lendbiz.p2p.api.response.BearResponse;
 import com.lendbiz.p2p.api.utils.JsonMapper;
 
+import com.lendbiz.p2p.api.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -274,6 +281,29 @@ public class PackageFilterRepository {
         List<InvestAssets> listContacts = (List<InvestAssets>) map.get("pv_refcursor");
         if (listContacts.size() == 0){
             throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
+        }
+        BearRequest bearRequest = new BearRequest();
+        bearRequest.setPayType("2");
+        bearRequest.setPid(accountInput.getProductId());
+        if (!accountInput.getProductId().equals("15")){
+          listContacts.forEach((element) -> {
+              bearRequest.setTerm(element.getTerm());
+              bearRequest.setAmt(element.getAmount());
+              bearRequest.setRate(element.getRate());
+              element.setProfit(Utils.getProductInfo(bearRequest).getMonthlyProfit());
+              String startDate = element.getStart_date().replace("00:00:00", "");
+              startDate = startDate.replace(" ", "");
+              LocalDate date = LocalDate.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE);
+              startDate =date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+              element.setStart_date(startDate);
+              String endDate = element.getEnd_date().replace("00", "");
+              endDate = endDate.replace(":", "");
+              endDate = endDate.replace(" ", "");
+              date = LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE);
+              endDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+              element.setEnd_date(endDate);
+
+          });
         }
         return listContacts;
     }
