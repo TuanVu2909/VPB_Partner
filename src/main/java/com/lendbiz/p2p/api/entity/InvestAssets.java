@@ -10,6 +10,7 @@ import lombok.*;
 public class InvestAssets {
     private String documentno;
     private String amount;
+    private String profit;
     private String term;
     private String rate;
     private String start_date;
