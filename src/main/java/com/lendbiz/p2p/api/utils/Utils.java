@@ -1,23 +1,33 @@
 package com.lendbiz.p2p.api.utils;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 import com.google.gson.Gson;
+import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.exception.BusinessException;
 
 import com.lendbiz.p2p.api.request.BearRequest;
 import com.lendbiz.p2p.api.response.BearResponse;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.tomcat.util.codec.binary.Base64;
+
+import javax.crypto.*;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 /***********************************************************************
  *
@@ -168,6 +178,118 @@ public class Utils {
         }
     }
 
+    public static void main(String[] args) {
+        System.out.println( getDate());
+    }
+    public static String getDate( ) {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SS");
+        String strDate = sdf.format(cal.getTime());
+        System.out.println("Current date in String Format: "+strDate);
+
+        SimpleDateFormat sdf1 = new SimpleDateFormat();
+        sdf1.applyPattern("dd/MM/yyyy HH:mm:ss.SS");
+        Date date = null;
+        try {
+            date = sdf1.parse(strDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String dateString=sdf.format(date);
+
+        return dateString;
+
+    }
+    private static final Charset ASCII = Charset.forName("US-ASCII");
+
+
+    public static String decrypt(String base64Cipher) {
+
+        byte[] cipherBytes = java.util.Base64.getDecoder().decode(base64Cipher);
+        byte[] iv = "1234123412341234".getBytes(ASCII);
+        byte[] keyBytes = "wU6JlogmAFU0MQEF4FXhEISiTauXC9eZ".getBytes(ASCII);
+        SecretKey aesKey = new SecretKeySpec(keyBytes, "AES");
+        Cipher cipher = null;
+        String upToNCharacters = "";
+        try {
+            cipher = Cipher.getInstance("AES/CBC/NOPADDING");
+            IvParameterSpec ivParams = new IvParameterSpec(iv);
+            cipher.init(Cipher.DECRYPT_MODE, aesKey, ivParams);
+            byte[] result = cipher.doFinal(cipherBytes);
+            byte[] bytes = Hex.decodeHex(Hex.encodeHexString(result).toCharArray());
+            String resultString = new String(bytes, "UTF-8");
+            upToNCharacters = resultString.substring(0, Math.min(resultString.length(), 16));
+            System.out.println("card_code : " + upToNCharacters);
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.NO_DATA, e.getMessage());
+        }
+        return upToNCharacters;
+    }
+
+
+    public static HashMap<String, String> crateMessage(HashMap<String, String> map) {
+        String date = LocalDate.now().toString();
+        HashMap<String, String> rq9Pay = new HashMap<>();
+        date = date.replace("-", "");
+        String unId = UUID.randomUUID().toString();
+        String rqId = "L6WPKJXN4Y9P" + date + unId;
+        ;
+        String messageString = "";
+        if (map.get("type").equals("1")) {
+            messageString = rqId + "|L6WPKJXN4Y|" + map.get("service_id");
+        } else if (map.get("type").equals("2")) {
+            messageString = rqId + "|L6WPKJXN4Y|" + map.get("product_id") + "|" + map.get("qua");
+        } else if (map.get("type").equals("3")) {
+            messageString = rqId + "|L6WPKJXN4Y|TRANSACTION|" + map.get("content_id");
+        } else if (map.get("type").equals("4")) {
+            messageString = rqId + "|L6WPKJXN4Y|" + map.get("rq_time");
+
+        }
+
+        rq9Pay.put("rqId", rqId);
+        rq9Pay.put("mess", messageString);
+
+        return rq9Pay;
+
+    }
+
+    ;
+
+    public static String[] getSignatureNinePay(HashMap<String, String> map) {
+        HashMap<String, String> createMessRqId = crateMessage(map);
+        String rqId = createMessRqId.get("rqId");
+        String messageString = createMessRqId.get("mess");
+        String publicKeyB64 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6cEUTrHSw9ZHfirrMZ8Lq2SkdGhZuEzxTr5DYi989G/ulDdNGgSHrpIB58JEtAsCSxdme7YgO3C8aZWpuOqWN07Wh+XBK/4imZPlhDt5h9InOHK90m6zVAOE6V4JFtE3k05Nz7p9RMxoizHTjZSQEvj13bK9WeCjFPAppBgvOJZJKrWHkuu2mrF4o9lD4bIoyIZbdjC8ynzarS4GIk+hXIiOs5+rff76bZiVX0hApGmnEtPs3IaD4wOCfBJFiOEKzkX7xgZPrYkn26KivPhO5/4ozRZXZKHM25dXRtQD7OnQBXhaLdVmRN4XnqctrTUxsFazcCLZAvg3CkqbH+2MuQIDAQAB";
+
+        String private64 = "MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDpwRROsdLD1kd+KusxnwurZKR0aFm4TPFOvkNiL3z0b+6UN00aBIeukgHnwkS0CwJLF2Z7tiA7cLxplam46pY3TtaH5cEr/iKZk+WEO3mH0ic4cr3SbrNUA4TpXgkW0TeTTk3Pun1EzGiLMdONlJAS+PXdsr1Z4KMU8CmkGC84lkkqtYeS67aasXij2UPhsijIhlt2MLzKfNqtLgYiT6FciI6zn6t9/vptmJVfSECkaacS0+zchoPjA4J8EkWI4QrORfvGBk+tiSfboqK8+E7n/ijNFldkoczbl1dG1APs6dAFeFot1WZE3heepy2tNTGwVrNwItkC+DcKSpsf7Yy5AgMBAAECggEBAI2A9YMiAJ3OxJ6q6o+yYQUTOr7BQLbh1R4+7Vmtt63daIbO51y9q0lRV9ftcVuwYmYEt2Rifyace2JLWF/5mo/GqPXBbuvrvxRLRKCExHAlFtsEEsclfmd4beg7pbLrWgJRX6dFlHmmaA8DTbaiXYkurt/TSO70nqSZMgwFG+jbYSiFrNURUDG0fuCM/qVjs0cwquKJzHGxFIKD54SGkg0EH6Ch2iHFEcNHp+ZlA4oKdiGo9oyr1EiGjQwAgxV8f0li3xIwk5NYvAG032WPyOAZTQAmC+LPGhpS6WLk6VKdjs5720gmsy8kMFNckkPMTZGejzclHfWHaugpeMKw5dECgYEA9bzfyBmkhorNLSrqK6BsG3et09ixXEt26R1E/DMrub07HzAqgm+cLhsi3zIkHg0K89rwqNMP/zu74yAwj9TY8S1saLXNpaOn9M+ruJHRAebucEAGOMF0GmpsXeOCj3PBTW5MSAg9Mpt1X8J+uqyl6nlogY23arsQl6x7x+by9E0CgYEA84QXcO0SXsrz3I5GJ2xEHksv5kaYDWhLEhSGSsm4Xa86DCE7FKewaIwjZIkqFcGkUvsvpUhD4JVf3J4l2ATci6YxFxYVLPPXbyHE5hZuvIPP95J4VnymMj+7thSf/XFCxsu7Y1QwogslfzOHZ2QscGPcMVgl4Dt3x9c/Cfd3YB0CgYEAv7Wx/7HBoRT4LJymQ5LLxEIB4pvTAmX9RrAG+ZoSKr1uOk6hW1EnTvDsq6O6eZdDTCsqRQskF8LKOc8LE6rB9KWzRZ1P6kFa7qp1FXDs1ccLjZblQ7HomhMcp8KuQKvVykqaSDflRm3xi9t4crnuVpaQ6UFeLm3x6+IsTy/lqqECgYEAtQdtpbWYAoA96aia3pPNz/d1FGtGfjEaHcbETrTHKl4pePr7QM+ohRAo/4Q4lRPvZQD22phuXXauXQP0fjKfAfH6bH8uHsznSuZ/yczDZcFXyWRJsYHYy2I12ZZbmb2pNsAd/imIPe6rYXSdJG+D2cli2Av/nEKZOSb65h3h0MECgYAw9hv16CtTC1ygtK7QO7EohJUFtwlPBF98ysZ7hw8zPo5/USD648dPv8+eIvcGjdCB1I2H0FAmSD7WytqlZ22kYVO9yHbKOgCnaFO3RadSCBqL7nMRla55U7PjooFCjF6iQUC8UR4cp+EqZjRRx2kbhu2atqJ5/nCnS8lcejquEA==";
+        try {
+            byte[] decoded = java.util.Base64.getDecoder().decode(publicKeyB64);
+            KeyFactory kf = KeyFactory.getInstance("RSA");
+            PublicKey RSAPublicKey = kf.generatePublic(new X509EncodedKeySpec(decoded));
+            byte[] decoded2 = java.util.Base64.getDecoder().decode(private64);
+            PrivateKey RSAPrivateKey = kf.generatePrivate(new PKCS8EncodedKeySpec(decoded2));
+            Signature signature = Signature.getInstance("SHA1withRSA");
+            signature.initSign(RSAPrivateKey, new SecureRandom());
+            byte[] message = messageString.getBytes();
+            signature.update(message);
+            byte[] sigBytes = signature.sign();
+            String sig = java.util.Base64.getEncoder().encodeToString(sigBytes);
+            Signature signature1 = Signature.getInstance("SHA1withRSA");
+            signature1.initVerify(RSAPublicKey);
+            signature1.update(message);
+            boolean result = signature1.verify(sigBytes);
+            System.out.println("result-signature = " + result);
+            String[] arrays = new String[2];
+            arrays[0] = rqId;
+            arrays[1] = sig;
+            return arrays;
+        } catch (NoSuchAlgorithmException | SignatureException | InvalidKeyException | InvalidKeySpecException ex) {
+            throw new BusinessException(ErrorCode.SIGN_FAIL, ErrorCode.SIGN_FAIL_DESCRIPTION);
+        }
+
+
+    }
+
     public static BearResponse getProductInfo(BearRequest bearRequest) {
         long monthValue = Long.parseLong(bearRequest.getTerm());
         long moneyVal = Long.parseLong(bearRequest.getAmt());
@@ -236,27 +358,28 @@ public class Utils {
         float yearProfit = amtFloat * (rateValue / 100);
 
 
-        float profitPerDay =  yearProfit / 365;
-        float profitPerMonth =  yearProfit / 12;
-        float monthlyProfit =  profitPerMonth *monthValue;
+        float profitPerDay = yearProfit / 365;
+        float profitPerMonth = yearProfit / 12;
+        float monthlyProfit = profitPerMonth * monthValue;
         float totalByMonth = moneyVal + monthlyProfit;
 
         bearResponse.setRate(rate);
         bearResponse.setProfitPerDay("");
         bearResponse.setDay(String.valueOf(daysBetween));
-        bearResponse.setMonthlyProfit(String.valueOf((long)monthlyProfit));
-        bearResponse.setTotal(String.valueOf((long)totalByMonth));
+        bearResponse.setMonthlyProfit(String.valueOf((long) monthlyProfit));
+        bearResponse.setTotal(String.valueOf((long) totalByMonth));
         bearResponse.setStartDate(java.time.LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         bearResponse.setEndDate(
                 java.time.LocalDate.now().plusMonths(monthValue).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        if (bearRequest.getPid().equals("15")){
-            bearResponse.setProfitPerDay(String.valueOf((long)profitPerDay));
+        if (bearRequest.getPid().equals("15")) {
+            bearResponse.setProfitPerDay(String.valueOf((long) profitPerDay));
             bearResponse.setMonthlyProfit("");
             bearResponse.setTotal("");
         }
         return bearResponse;
     }
-    public static String createOtpId(){
+
+    public static String createOtpId() {
         return UUID.randomUUID().toString();
     }
 }
