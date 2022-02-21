@@ -40,44 +40,18 @@ public class PackageFilterRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    // public int insertLogs(InsertLogRequest insertLogRequest) {
+    public Object getProductField() {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PKG_API")
+                .withProcedureName("GET_CONFIG_PRODUCT")
+                // .withoutProcedureColumnMetaDataAccess()
+                .declareParameters(new SqlOutParameter("PV_REFCURSOR", Types.REF_CURSOR));
 
-    // SimpleJdbcCall jdbcCall = new
-    // SimpleJdbcCall(jdbcTemplate).withCatalogName("PKG_LB_AUTHENTICATION")
-    // .withFunctionName("fn_insert_logs").declareParameters(new
-    // SqlParameter("p_requestId", Types.VARCHAR))
-    // .declareParameters(new SqlParameter("p_messageType", Types.VARCHAR))
-    // .declareParameters(new SqlParameter("p_status", Types.INTEGER))
-    // .declareParameters(new SqlParameter("p_bodyDetail", Types.VARCHAR))
-    // .declareParameters(new SqlParameter("p_httpMethod", Types.VARCHAR))
-    // .declareParameters(new SqlParameter("p_sourceAppId", Types.VARCHAR))
-    // .declareParameters(new SqlParameter("p_sourceAppIp", Types.VARCHAR))
-    // .declareParameters(new SqlParameter("p_destAppId", Types.VARCHAR))
-    // .declareParameters(new SqlParameter("p_destAppPort", Types.VARCHAR))
-    // .declareParameters(new SqlParameter("p_authorization", Types.VARCHAR))
-    // .declareParameters(new SqlParameter("p_path", Types.VARCHAR));
+        Map<String, Object> map = jdbcCall.execute();
 
-    // MapSqlParameterSource params = new MapSqlParameterSource();
-    // params.addValue("p_requestId", insertLogRequest.getRequestId());
-    // params.addValue("p_messageType", insertLogRequest.getMessageType());
-    // params.addValue("p_status", insertLogRequest.getStatus());
-    // params.addValue("p_bodyDetail", insertLogRequest.getBodyDetail());
-    // params.addValue("p_httpMethod", insertLogRequest.getHttpMethod());
-    // params.addValue("p_sourceAppId", insertLogRequest.getSourceAppId());
-    // params.addValue("p_sourceAppIp", insertLogRequest.getSourceAppIp());
-    // params.addValue("p_destAppId", insertLogRequest.getDestAppId());
-    // params.addValue("p_destAppPort", insertLogRequest.getDestAppPort());
-    // params.addValue("p_authorization", insertLogRequest.getAuthorization());
-    // params.addValue("p_path", insertLogRequest.getPath());
+        Map.Entry<String, Object> entry = map.entrySet().iterator().next();
 
-    // int res = jdbcCall.executeFunction(BigDecimal.class, params).intValue();
-
-    // if (res == 0) {
-    // throw new BusinessException("119", "Insert logs fail!");
-    // }
-
-    // return res;
-    // }
+        return entry.getValue();
+    }
 
     public void insertLogs(InsertLogRequest insertLogRequest) {
 
@@ -115,8 +89,6 @@ public class PackageFilterRepository {
                 .declareParameters(new SqlParameter("pv_Password", Types.VARCHAR))
                 .declareParameters(new SqlParameter("pv_Deviceid", Types.VARCHAR))
                 .declareParameters(new SqlOutParameter("PV_REFCURSOR", Types.REF_CURSOR));
-
-                
 
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("pv_Username", username);
@@ -296,9 +268,9 @@ public class PackageFilterRepository {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
                 .withProcedureName("getproduct")
                 .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
-        System.out.println("End: " +( System.currentTimeMillis()  ));
+        System.out.println("End: " + (System.currentTimeMillis()));
         Map<String, Object> map = jdbcCall.execute();
-        System.out.println("End: " +( System.currentTimeMillis()  ));
+        System.out.println("End: " + (System.currentTimeMillis()));
         ArrayList<Object> arrayList = (ArrayList<Object>) map.get("pv_refcursor");
         if (arrayList.size() == 0) {
             throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
@@ -309,7 +281,7 @@ public class PackageFilterRepository {
     public Object getAccountInvestByProduct(AccountInput accountInput) {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
                 .withProcedureName("getAccountInvestByProduct")
-                .returningResultSet("pv_refcursor", BeanPropertyRowMapper.newInstance(InvestAssets.class) )
+                .returningResultSet("pv_refcursor", BeanPropertyRowMapper.newInstance(InvestAssets.class))
                 .declareParameters(new SqlParameter("pv_custId", Types.VARCHAR))
                 .declareParameters(new SqlParameter("pv_pid", Types.NUMERIC))
                 .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
@@ -319,31 +291,31 @@ public class PackageFilterRepository {
         params.addValue("pv_pid", accountInput.getProductId());
         Map<String, Object> map = jdbcCall.execute(params);
         List<InvestAssets> listContacts = (List<InvestAssets>) map.get("pv_refcursor");
-        if (listContacts.size() == 0){
+        if (listContacts.size() == 0) {
             throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
         }
         BearRequest bearRequest = new BearRequest();
         bearRequest.setPayType("2");
         bearRequest.setPid(accountInput.getProductId());
-        if (!accountInput.getProductId().equals("15")){
-          listContacts.forEach((element) -> {
-              bearRequest.setTerm(element.getTerm());
-              bearRequest.setAmt(element.getAmount());
-              bearRequest.setRate(element.getRate());
-              element.setProfit(Utils.getProductInfo(bearRequest).getMonthlyProfit());
-              String startDate = element.getStart_date().replace("00:00:00", "");
-              startDate = startDate.replace(" ", "");
-              LocalDate date = LocalDate.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE);
-              startDate =date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-              element.setStart_date(startDate);
-              String endDate = element.getEnd_date().replace("00", "");
-              endDate = endDate.replace(":", "");
-              endDate = endDate.replace(" ", "");
-              date = LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE);
-              endDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-              element.setEnd_date(endDate);
+        if (!accountInput.getProductId().equals("15")) {
+            listContacts.forEach((element) -> {
+                bearRequest.setTerm(element.getTerm());
+                bearRequest.setAmt(element.getAmount());
+                bearRequest.setRate(element.getRate());
+                element.setProfit(Utils.getProductInfo(bearRequest).getMonthlyProfit());
+                String startDate = element.getStart_date().replace("00:00:00", "");
+                startDate = startDate.replace(" ", "");
+                LocalDate date = LocalDate.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE);
+                startDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+                element.setStart_date(startDate);
+                String endDate = element.getEnd_date().replace("00", "");
+                endDate = endDate.replace(":", "");
+                endDate = endDate.replace(" ", "");
+                date = LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE);
+                endDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+                element.setEnd_date(endDate);
 
-          });
+            });
         }
         return listContacts;
     }
@@ -357,7 +329,7 @@ public class PackageFilterRepository {
                 .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
 
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("pv_term",term );
+        params.addValue("pv_term", term);
         params.addValue("pv_pid", pId);
         params.addValue("pv_amt", amt);
         Map<String, Object> map = jdbcCall.execute(params);
@@ -382,13 +354,13 @@ public class PackageFilterRepository {
                 .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
 
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("pv_term",accountInput.getTerm() );
-        params.addValue("pv_custId",accountInput.getCustId() );
+        params.addValue("pv_term", accountInput.getTerm());
+        params.addValue("pv_custId", accountInput.getCustId());
         params.addValue("pv_pid", accountInput.getProductId());
         params.addValue("pv_amt", accountInput.getAmt());
         params.addValue("pv_rate", accountInput.getRate());
-        params.addValue("pv_payType",accountInput.getPayType() );
-        params.addValue("pv_contractId",accountInput.getContractId() );
+        params.addValue("pv_payType", accountInput.getPayType());
+        params.addValue("pv_contractId", accountInput.getContractId());
         Map<String, Object> map = jdbcCall.execute(params);
         Map.Entry<String, Object> entry = map.entrySet().iterator().next();
 
@@ -400,15 +372,13 @@ public class PackageFilterRepository {
         try {
 
             root = mapper.readTree(body);
-            if (root.get(0).get(":B2")!=null){
+            if (root.get(0).get(":B2") != null) {
                 String status = root.get(0).get(":B2").textValue();
-                if (status.equals("0")
-                ) {
+                if (status.equals("0")) {
                     throw new BusinessException(Constants.FAIL,
                             root.get(0).get(":B1").textValue());
                 }
             }
-
 
         } catch (JsonProcessingException e) {
             throw new BusinessException(ErrorCode.FAILED_TO_JSON,
