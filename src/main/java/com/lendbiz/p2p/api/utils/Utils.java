@@ -183,12 +183,12 @@ public class Utils {
     }
     public static String getDate( ) {
         Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SS");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String strDate = sdf.format(cal.getTime());
         System.out.println("Current date in String Format: "+strDate);
 
         SimpleDateFormat sdf1 = new SimpleDateFormat();
-        sdf1.applyPattern("dd/MM/yyyy HH:mm:ss.SS");
+        sdf1.applyPattern("dd-MM-yyyy HH:mm:ss");
         Date date = null;
         try {
             date = sdf1.parse(strDate);

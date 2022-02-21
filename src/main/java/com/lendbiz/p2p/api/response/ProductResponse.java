@@ -1,5 +1,6 @@
 package com.lendbiz.p2p.api.response;
 
+import com.lendbiz.p2p.api.entity.Card9PayCategory;
 import com.lendbiz.p2p.api.entity.Card9PayService;
 import lombok.*;
 
@@ -16,7 +17,8 @@ public class ProductResponse implements Serializable {
     private String description;
     private long price;
     private Card9PayService provider;
-    private String category;
+    private Card9PayCategory category;
+
     private Card9PayService service;
 
 }
