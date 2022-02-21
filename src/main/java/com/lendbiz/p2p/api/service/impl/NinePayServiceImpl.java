@@ -23,6 +23,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.Constants;
@@ -385,16 +386,15 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
             if (root.get("success").toString().equals("false")) {
                 throw new BusinessException(root.get("error").get("code").toString(), root.get("error").get("message").toString());
             }
-            Card9PayResponse response = mapper.readValue(root.get("data").toString(), Card9PayResponse.class);
-            byte[] dc = Base64.getDecoder().decode(response.getCards());
-            String data = new String(dc, "UTF-8");
-//                System.out.println(data);
-//                Card9PayDetails[] card9PayDetailsList = mapper.readValue(data,Card9PayDetails[].class);
-//                Card9PayDetails card9PayDetails = card9PayDetailsList[0];
+            System.out.println( root.get("data").get("balance_info").get(0).toString());
+            String response = root.get("data").get("balance_info").get(0).get("balance").asText();
             return response(toResult(response));
-        } catch (JsonProcessingException | UnsupportedEncodingException e) {
-            throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
 }
