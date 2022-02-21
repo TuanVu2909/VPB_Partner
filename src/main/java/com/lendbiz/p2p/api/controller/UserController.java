@@ -68,16 +68,17 @@ public class UserController {
     public ResponseEntity<?> verifyAccount(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestBody VerifyAccountInput verifyAccountInput)
             throws BusinessException {
-        log.info("[" + requestId + "] << verify account >>");
         return userService.verifyAcc(verifyAccountInput);
     }
+
     @PostMapping("/create-bear")
     public ResponseEntity<?> createBear(HttpServletRequest httpServletRequest,
-                                           @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
+            @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
             throws BusinessException {
         log.info("[" + requestId + "] << create bear >>");
         return userService.createBear(accountInput);
     }
+
     @GetMapping("/get-account-asset")
     public ResponseEntity<?> getAccountAsset(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestParam String cif)
@@ -123,8 +124,8 @@ public class UserController {
             @RequestHeader("requestId") String requestId, @RequestParam("pid") String pId,
             @RequestParam("term") String term, @RequestParam("amount") String amount)
             throws BusinessException {
-                log.info("[" + requestId + "] << get-rate >>");
-                return userService.getRate(term,pId,amount);
+        log.info("[" + requestId + "] << get-rate >>");
+        return userService.getRate(term, pId, amount);
     }
 
     @GetMapping("/get-account-invest-by-product")
@@ -144,8 +145,7 @@ public class UserController {
             @RequestHeader("requestId") String requestId, @RequestHeader("session") String session,
             @RequestParam("id_file") MultipartFile idFile, @RequestParam("id_type") int idType)
             throws BusinessException {
-        log.info("[" + requestId + "] << verifyIdeEntity >>");
-        log.info("[" + idType + "] << verifyIdeEntity >>");
+
         // String custId = userService.checkSession(session);
         InfoIdentity identity = new InfoIdentity();
         return savisService.callPredict(idFile, identity, idType);
@@ -156,13 +156,14 @@ public class UserController {
             @RequestHeader("requestId") String requestId, @RequestHeader("session") String session,
             @RequestParam("front_file") MultipartFile frontFile, @RequestParam("selfie_file") MultipartFile selfieFile)
             throws BusinessException {
-        log.info("[" + requestId + "] << verifyIdeEntity >>");
+
         String custId = userService.checkSession(session);
         return savisService.callCheckSelfie(frontFile, selfieFile, custId);
     }
-        @PostMapping("/product-info")
+
+    @PostMapping("/product-info")
     public ResponseEntity<?> productInfo(HttpServletRequest httpServletRequest,
-                                         @RequestHeader("requestId") String requestId, @RequestBody BearRequest bearRequest)
+            @RequestHeader("requestId") String requestId, @RequestBody BearRequest bearRequest)
             throws BusinessException {
         log.info("[" + requestId + "] << verifyIdeEntity >>");
 
