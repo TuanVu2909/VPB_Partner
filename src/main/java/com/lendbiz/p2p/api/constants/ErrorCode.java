@@ -78,4 +78,6 @@ public class ErrorCode {
     public static final String NO_DATA_DESCRIPTION = "Không có dữ liệu";
     public static final String SIGN_FAIL = "19";
     public static final String SIGN_FAIL_DESCRIPTION = "SIGN_FAIL";
+    public static final String NO_CARD = "20";
+    public static final String NO_CARD_DESCRIPTION = "HẾT THẺ";
 }

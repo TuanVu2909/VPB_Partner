@@ -289,15 +289,18 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
             byte[] dc = Base64.getDecoder().decode(response.getCards());
             String data = new String(dc, "UTF-8");
             System.out.println(data);
+            if (response.getPrice().equals("0")){
+                throw new BusinessException(ErrorCode.NO_CARD,ErrorCode.NO_CARD_DESCRIPTION);
+            }
             Card9PayEntity card9PayEntity = new Card9PayEntity();
             Card9PayDetails[] card9PayDetailsList = mapper.readValue(data, Card9PayDetails[].class);
             for (int i = 0; i < card9PayDetailsList.length; i++) {
                 Card9PayDetails card9PayDetails = card9PayDetailsList[i];
                 card9PayEntity.setStatus("Y");
                 card9PayEntity.setCard_seri(card9PayDetails.getCard_seri());
-                card9PayEntity.setPid("111");
+                card9PayEntity.setPid(response.getProduct_id());
                 card9PayEntity.setPrice(card9PayDetails.getPrice());
-                card9PayEntity.setTransId("111133");
+                card9PayEntity.setTransId(response.getTransaction_id());
                 String id = String.valueOf((int) Math.floor(Math.random() * 100000));
                 card9PayEntity.setId(id);
                 card9PayEntity.setPayDate(Utils.getDate());
@@ -306,6 +309,7 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
                 service9.create(card9PayEntity);
                 String codeDe = Utils.decrypt(card9PayDetails.getCard_code());
                 card9PayDetailsList[i].setCard_code(codeDe);
+
             }
 
             return response(toResult(card9PayDetailsList));
