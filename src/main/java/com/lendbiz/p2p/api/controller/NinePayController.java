@@ -102,8 +102,8 @@ public class NinePayController {
             throws BusinessException, UnsupportedEncodingException {
 
         log.info("[" + requestId + "] << payCard >>");
-        String custId = userService.checkSession(session);
-        input9Pay.setCif(custId);
+//        String custId = userService.checkSession(session);
+        input9Pay.setCif("000028");
         return ninepayService.buyCard(input9Pay);
 
     }

@@ -298,9 +298,9 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
                 Card9PayDetails card9PayDetails = card9PayDetailsList[i];
                 card9PayEntity.setStatus("Y");
                 card9PayEntity.setCard_seri(card9PayDetails.getCard_seri());
-                card9PayEntity.setPid("111");
+                card9PayEntity.setPid(response.getProduct_id());
                 card9PayEntity.setPrice(card9PayDetails.getPrice());
-                card9PayEntity.setTransId("111133");
+                card9PayEntity.setTransId(response.getTransaction_id());
                 String id = String.valueOf((int) Math.floor(Math.random() * 100000));
                 card9PayEntity.setId(id);
                 card9PayEntity.setPayDate(Utils.getDate());
