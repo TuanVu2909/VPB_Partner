@@ -7,8 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Card9PayService {
-    private int id;
+public class Card9PayCategory {
     private String name;
     private String description;
 

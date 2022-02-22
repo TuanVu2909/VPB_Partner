@@ -38,6 +38,7 @@ public class NinePayController {
     @Autowired
     UserService userService;
 
+
     @PostMapping("/9pay/create")
     public ResponseEntity<?> createNinePayUrl(HttpServletRequest httpServletRequest,
                                               @RequestHeader("requestId") String requestId,
@@ -78,12 +79,20 @@ public class NinePayController {
     }
 
     @GetMapping("/9pay/trans")
-    public ResponseEntity<?> test(HttpServletRequest httpServletRequest,
+    public ResponseEntity<?> trans(HttpServletRequest httpServletRequest,
                                   @RequestHeader("requestId") String requestId, @RequestParam("cid") String cId)
             throws BusinessException, UnsupportedEncodingException {
         log.info("[" + requestId + "] << check-trans-info-buy-card >>");
 
         return ninepayService.findTransaction(cId);
+
+    }
+    @GetMapping("/9pay/get-trans-by-custid")
+    public ResponseEntity<?> transBycustId(HttpServletRequest httpServletRequest,
+                                   @RequestHeader("requestId") String requestId, @RequestParam("cif") String cId)
+            throws BusinessException, UnsupportedEncodingException {
+        log.info("[" + requestId + "] << check-trans-info-by-cif >>");
+        return card9PayService.getAllByCustId(cId);
 
     }
 

@@ -28,11 +28,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
-import com.lendbiz.p2p.api.entity.Card9PayDetails;
-import com.lendbiz.p2p.api.entity.Card9PayEntity;
-import com.lendbiz.p2p.api.entity.Card9PayService;
-import com.lendbiz.p2p.api.entity.Input9Pay;
+import com.lendbiz.p2p.api.entity.*;
 import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.repository.Products9payRepository;
 import com.lendbiz.p2p.api.request.Create9PayRequest;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.response.Card9PayResponse;
@@ -77,6 +75,8 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
     private RestTemplate restTemplate;
     @Autowired
     private Card9PayServiceImpl service9;
+    @Autowired
+    Products9payRepository pay9Repository;
 
     @Override
     public ResponseEntity<?> create9Payment(Create9PayRequest request) throws UnsupportedEncodingException {
@@ -228,6 +228,17 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
                 if (myObjects.length == 0) {
                     throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
                 }
+//                Product9PayEntity entity = new Product9PayEntity();
+//
+//                for (int i = 0; i < myObjects.length; i++) {
+//                    entity.setId(myObjects[i].getId());
+//                    entity.setDes(myObjects[i].getDescription());
+//                    entity.setName(myObjects[i].getName());
+//                    entity.setPrice(myObjects[i].getPrice());
+//                    entity.setService_id(myObjects[i].getService().getId());
+//                    entity.setProvider_id(myObjects[i].getProvider().getId());
+//                    pay9Repository.save(entity);
+//                }
                 return response(toResult(myObjects));
             } catch (JsonProcessingException e) {
                 throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
