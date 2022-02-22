@@ -73,11 +73,13 @@ public class ErrorCode {
     public static final String FACE_NOT_MATCHING = "17";
     public static final String FACE_NOT_MATCHING_DESCRIPTION = "Khuôn mặt của bạn không khớp với giấy tờ tuỳ thân! Bạn thử chụp lại nhé!";
 
-
     public static final String NO_DATA = "18";
     public static final String NO_DATA_DESCRIPTION = "Không có dữ liệu";
     public static final String SIGN_FAIL = "19";
     public static final String SIGN_FAIL_DESCRIPTION = "SIGN_FAIL";
     public static final String NO_CARD = "20";
     public static final String NO_CARD_DESCRIPTION = "HẾT THẺ";
+
+    public static final String SESSION_TIMEOUT = "901";
+    public static final String SESSION_TIMEOUT_DESCRIPTION = "Hết phiên đăng nhập, vui lòng đăng nhập lại!";
 }

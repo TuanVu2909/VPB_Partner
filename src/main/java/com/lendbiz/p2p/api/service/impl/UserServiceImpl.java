@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.lendbiz.p2p.api.constants.Constants;
+import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.AccountInput;
 import com.lendbiz.p2p.api.entity.UserOnline;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
@@ -109,7 +110,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 	@Override
 	public ResponseEntity<?> getProduct() {
 
-			return response(toResult(pkgFilterRepo.getProduct()));
+		return response(toResult(pkgFilterRepo.getProduct()));
 
 	}
 
@@ -139,22 +140,22 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 	public ResponseEntity<?> getProductInfo(BearRequest bearRequest) {
 		try {
 			return response(toResult(Utils.getProductInfo(bearRequest)));
-		}catch (Exception e) {
+		} catch (Exception e) {
 			throw new BusinessException(Constants.FAIL, e.getMessage());
 		}
 
 	}
 
-
 	@Override
 	public String checkSession(String session) {
 		logger.info("[" + session + "] << checkSession >>");
 		if (StringUtil.isEmty(session))
-			throw new InputInvalidExeption("user or pass invalid");
+			throw new BusinessException("user or pass invalid");
 
 		Optional<UserOnline> userOnline = userOnlineRepo.findBySession(session);
 		if (!userOnline.isPresent())
-			throw new InputInvalidExeption("Session is invalid or time out");
+
+			throw new BusinessException(ErrorCode.SESSION_TIMEOUT, ErrorCode.SESSION_TIMEOUT_DESCRIPTION);
 
 		return userOnline.get().getCustId();
 	}
