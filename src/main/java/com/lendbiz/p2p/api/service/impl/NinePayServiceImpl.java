@@ -289,6 +289,9 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
             byte[] dc = Base64.getDecoder().decode(response.getCards());
             String data = new String(dc, "UTF-8");
             System.out.println(data);
+            if (response.getPrice().equals("0")){
+                throw new BusinessException(ErrorCode.NO_CARD,ErrorCode.NO_CARD_DESCRIPTION);
+            }
             Card9PayEntity card9PayEntity = new Card9PayEntity();
             Card9PayDetails[] card9PayDetailsList = mapper.readValue(data, Card9PayDetails[].class);
             for (int i = 0; i < card9PayDetailsList.length; i++) {
@@ -306,6 +309,7 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
                 service9.create(card9PayEntity);
                 String codeDe = Utils.decrypt(card9PayDetails.getCard_code());
                 card9PayDetailsList[i].setCard_code(codeDe);
+
             }
 
             return response(toResult(card9PayDetailsList));
