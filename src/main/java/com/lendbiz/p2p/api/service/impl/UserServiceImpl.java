@@ -160,4 +160,11 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 		return userOnline.get().getCustId();
 	}
 
+	@Override
+	public ResponseEntity<?> getTransHistory(String customerId) {
+
+		return response(toResult(pkgFilterRepo.getTransHistory(customerId)));
+
+	}
+
 }

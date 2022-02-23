@@ -53,6 +53,36 @@ public class PackageFilterRepository {
         return entry.getValue();
     }
 
+    public Object get9PayTrans() {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PKG_API")
+                .withProcedureName("GET_NINE_PAY_TRANS")
+                // .withoutProcedureColumnMetaDataAccess()
+                .declareParameters(new SqlOutParameter("PV_REFCURSOR", Types.REF_CURSOR));
+
+        Map<String, Object> map = jdbcCall.execute();
+
+        Map.Entry<String, Object> entry = map.entrySet().iterator().next();
+
+        return entry.getValue();
+    }
+
+    public Object getTransHistory(String customerId) {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PKG_API")
+                .withProcedureName("GET_BG_TRANS_HIS")
+                // .withoutProcedureColumnMetaDataAccess()
+                .declareParameters(new SqlParameter("p_custId", Types.VARCHAR))
+                .declareParameters(new SqlOutParameter("PV_REFCURSOR", Types.REF_CURSOR));
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("p_custId", customerId);
+
+        Map<String, Object> map = jdbcCall.execute(params);
+
+        Map.Entry<String, Object> entry = map.entrySet().iterator().next();
+
+        return entry.getValue();
+    }
+
     public void insertLogs(InsertLogRequest insertLogRequest) {
 
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PKG_API")

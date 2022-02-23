@@ -36,6 +36,7 @@ public interface UserService {
 	public ResponseEntity<?> getTerm(String productId);
 	public ResponseEntity<?> getAccountInvestByProduct(AccountInput accountInput);
 	public ResponseEntity<?> getProductInfo(BearRequest bearRequest);
+	public ResponseEntity<?> getTransHistory(String customerId);
 
 	String checkSession(String session);
 

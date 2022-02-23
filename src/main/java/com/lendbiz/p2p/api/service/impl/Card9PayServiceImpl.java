@@ -3,6 +3,7 @@ package com.lendbiz.p2p.api.service.impl;
 import com.lendbiz.p2p.api.entity.Card9PayEntity;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.Card9PayRepository;
+import com.lendbiz.p2p.api.repository.PackageFilterRepository;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,9 @@ import java.util.List;
 public class Card9PayServiceImpl extends BaseResponse<NinePayServiceImpl> {
     @Autowired
     Card9PayRepository card9PayRepository;
+
+    @Autowired
+    PackageFilterRepository filter;
 
     public List<Card9PayEntity> getAll() {
         return card9PayRepository.findAll();
@@ -29,5 +33,9 @@ public class Card9PayServiceImpl extends BaseResponse<NinePayServiceImpl> {
         } catch (Exception e) {
             throw new BusinessException("01", e.getMessage());
         }
+    }
+
+    public ResponseEntity<?> getTranTest(String cif) {
+        return response(toResult(filter.get9PayTrans()));
     }
 }

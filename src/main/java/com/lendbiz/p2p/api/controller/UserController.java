@@ -165,9 +165,21 @@ public class UserController {
     public ResponseEntity<?> productInfo(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestBody BearRequest bearRequest)
             throws BusinessException {
-        log.info("[" + requestId + "] << verifyIdeEntity >>");
+        log.info("[" + requestId + "] << productInfo >>");
 
         return userService.getProductInfo(bearRequest);
+    }
+
+    @GetMapping("/get-bg-tran-his")
+    public ResponseEntity<?> getTransHistory(HttpServletRequest httpServletRequest,
+            @RequestHeader("session") String session,
+            @RequestHeader("requestId") String requestId)
+            throws BusinessException {
+        log.info("[" + requestId + "] << getTransHistory >>");
+
+        String customerId = userService.checkSession(session);
+
+        return userService.getTransHistory(customerId);
     }
 
 }

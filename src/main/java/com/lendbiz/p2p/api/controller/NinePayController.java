@@ -150,4 +150,13 @@ public class NinePayController {
         return modelAndView;
     }
 
+    @GetMapping("/9pay/get-trans-test")
+    public ResponseEntity<?> getTransTest(HttpServletRequest httpServletRequest,
+                                   @RequestHeader("requestId") String requestId, @RequestParam("cif") String cId)
+            throws BusinessException, UnsupportedEncodingException {
+        log.info("[" + requestId + "] << check-trans-info-by-cif >>");
+        return card9PayService.getAllByCustId(cId);
+
+    }
+
 }
