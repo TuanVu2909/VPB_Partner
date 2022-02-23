@@ -2,6 +2,7 @@ package com.lendbiz.p2p.api.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedStoredProcedureQueries;
 import javax.persistence.NamedStoredProcedureQuery;
@@ -16,14 +17,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "CARD9PAY")
-@Setter
+@NamedStoredProcedureQueries({ //
+        @NamedStoredProcedureQuery(name = "Card9PayEntity_v2.findViaProcedure", procedureName = "PKG_API.GET_NINE_PAY_TRANS", resultClasses = Card9PayEntity_v2.class, parameters = { //
+                @StoredProcedureParameter(name = "p_cursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
+                @StoredProcedureParameter(name = "p_custId", mode = ParameterMode.IN, type = String.class), }) //
+})
 @Getter
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class Card9PayEntity {
+@Setter
+public class Card9PayEntity_v2 {
     @Id
+    // @GeneratedValue
     private String id;
     @Column(name = "PRICE")
     private String price;

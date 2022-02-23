@@ -21,6 +21,7 @@ import com.lendbiz.p2p.api.service.UserService;
 import com.lendbiz.p2p.api.service.impl.Card9PayServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -38,11 +39,10 @@ public class NinePayController {
     @Autowired
     UserService userService;
 
-
     @PostMapping("/9pay/create")
     public ResponseEntity<?> createNinePayUrl(HttpServletRequest httpServletRequest,
-                                              @RequestHeader("requestId") String requestId,
-                                              @RequestBody Create9PayRequest request) throws UnsupportedEncodingException {
+            @RequestHeader("requestId") String requestId,
+            @RequestBody Create9PayRequest request) throws UnsupportedEncodingException {
         log.info("[" + requestId + "] << createNinePayUrl >>");
 
         return ninepayService.create9Payment(request);
@@ -50,7 +50,7 @@ public class NinePayController {
 
     @PostMapping("/9pay/decode")
     public ResponseEntity<?> decodeNinePayResult(HttpServletRequest httpServletRequest,
-                                                 @RequestHeader("requestId") String requestId, @RequestBody String encodeString)
+            @RequestHeader("requestId") String requestId, @RequestBody String encodeString)
             throws BusinessException, UnsupportedEncodingException {
         log.info("[" + requestId + "] << decodeNinePayResult >>");
         return ninepayService.decode9Payment(encodeString);
@@ -59,7 +59,8 @@ public class NinePayController {
 
     @GetMapping("/9pay/test")
     public ResponseEntity<?> test(HttpServletRequest httpServletRequest,
-                                  @RequestHeader("requestId") String requestId, @RequestParam("sId") String sId, @RequestParam("qua") String qua)
+            @RequestHeader("requestId") String requestId, @RequestParam("sId") String sId,
+            @RequestParam("qua") String qua)
             throws BusinessException, UnsupportedEncodingException {
         log.info("[" + requestId + "] << test >>");
         Input9Pay input9Pay = new Input9Pay();
@@ -70,26 +71,27 @@ public class NinePayController {
     }
 
     @GetMapping("/9pay/test2")
-    public Object test2(@RequestHeader("session")String session)
+    public Object test2(@RequestHeader("session") String session)
             throws BusinessException, UnsupportedEncodingException {
 
-//        card9PayService.create();
-        return     userService.checkSession(session);
+        // card9PayService.create();
+        return userService.checkSession(session);
 
     }
 
     @GetMapping("/9pay/trans")
     public ResponseEntity<?> trans(HttpServletRequest httpServletRequest,
-                                  @RequestHeader("requestId") String requestId, @RequestParam("cid") String cId)
+            @RequestHeader("requestId") String requestId, @RequestParam("cid") String cId)
             throws BusinessException, UnsupportedEncodingException {
         log.info("[" + requestId + "] << check-trans-info-buy-card >>");
 
         return ninepayService.findTransaction(cId);
 
     }
+
     @GetMapping("/9pay/get-trans-by-custid")
     public ResponseEntity<?> transBycustId(HttpServletRequest httpServletRequest,
-                                   @RequestHeader("requestId") String requestId, @RequestParam("cif") String cId)
+            @RequestHeader("requestId") String requestId, @RequestParam("cif") String cId)
             throws BusinessException, UnsupportedEncodingException {
         log.info("[" + requestId + "] << check-trans-info-by-cif >>");
         return card9PayService.getAllByCustId(cId);
@@ -97,8 +99,8 @@ public class NinePayController {
     }
 
     @PostMapping("/9pay/pay-card")
-    public ResponseEntity<?> payCard(HttpServletRequest httpServletRequest,@RequestHeader("session") String session,
-                                     @RequestHeader("requestId") String requestId, @RequestBody Input9Pay input9Pay)
+    public ResponseEntity<?> payCard(HttpServletRequest httpServletRequest, @RequestHeader("session") String session,
+            @RequestHeader("requestId") String requestId, @RequestBody Input9Pay input9Pay)
             throws BusinessException, UnsupportedEncodingException {
 
         log.info("[" + requestId + "] << payCard >>");
@@ -110,16 +112,17 @@ public class NinePayController {
 
     @GetMapping("/9pay/products")
     public ResponseEntity<?> products(HttpServletRequest httpServletRequest,
-                                      @RequestHeader("requestId") String requestId, @RequestParam("serviceId") String sId)
+            @RequestHeader("requestId") String requestId, @RequestParam("serviceId") String sId)
             throws BusinessException, UnsupportedEncodingException {
         log.info("[" + requestId + "] << get-9pay-products >>");
 
         return ninepayService.getCardProducts(sId);
 
     }
+
     @GetMapping("/9pay/balance")
     public ResponseEntity<?> balance(HttpServletRequest httpServletRequest,
-                                      @RequestHeader("requestId") String requestId)
+            @RequestHeader("requestId") String requestId)
             throws BusinessException, UnsupportedEncodingException {
         log.info("[" + requestId + "] << get-9pay-balance >>");
 
@@ -129,7 +132,7 @@ public class NinePayController {
 
     @RequestMapping("/9pay/success")
     public ModelAndView thanhtoan(@RequestParam("result") String result,
-                                  @RequestParam("checksum") String checksum) throws JsonMappingException, JsonProcessingException {
+            @RequestParam("checksum") String checksum) throws JsonMappingException, JsonProcessingException {
         // System.out.println(result + "_______" + checksum);
 
         String byteArray = result;
@@ -150,12 +153,22 @@ public class NinePayController {
         return modelAndView;
     }
 
-    @GetMapping("/9pay/get-trans-test")
+    @GetMapping("/9pay/get-cc")
     public ResponseEntity<?> getTransTest(HttpServletRequest httpServletRequest,
-                                   @RequestHeader("requestId") String requestId, @RequestParam("cif") String cId)
+            @RequestHeader("requestId") String requestId, @RequestParam("cif") String cId)
             throws BusinessException, UnsupportedEncodingException {
         log.info("[" + requestId + "] << check-trans-info-by-cif >>");
-        return card9PayService.getAllByCustId(cId);
+        return card9PayService.getTranTest(cId);
+
+    }
+
+    @GetMapping("/9pay/get-tt")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getTransTest2(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId, @RequestParam("cif") String cId)
+            throws BusinessException, UnsupportedEncodingException {
+        log.info("[" + requestId + "] << check-trans-info-by-cif >>");
+        return card9PayService.getTransHistory(cId);
 
     }
 
