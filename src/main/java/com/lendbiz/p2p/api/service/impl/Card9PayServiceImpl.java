@@ -1,21 +1,20 @@
 package com.lendbiz.p2p.api.service.impl;
 
+import java.util.List;
+
+import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.Card9PayEntity;
 import com.lendbiz.p2p.api.entity.Card9PayEntity_v2;
-import com.lendbiz.p2p.api.entity.Role;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.Card9PayRepository;
 import com.lendbiz.p2p.api.repository.DynamicRepository;
 import com.lendbiz.p2p.api.repository.PackageFilterRepository;
 import com.lendbiz.p2p.api.repository.RoleRepository;
 import com.lendbiz.p2p.api.response.BaseResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @Service
 public class Card9PayServiceImpl extends BaseResponse<NinePayServiceImpl> {
@@ -52,7 +51,17 @@ public class Card9PayServiceImpl extends BaseResponse<NinePayServiceImpl> {
     }
 
     public ResponseEntity<?> getTransHistory(String cif) {
+        List<Card9PayEntity_v2> lstCard9Pay;
+        try {
+            lstCard9Pay = dynamicRepository.findViaProcedure(cif);
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.ERROR_500, ErrorCode.ERROR_500_DESCRIPTION);
+        }
+        
+        if (lstCard9Pay.isEmpty()) {
+            throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
+        }
 
-        return response(toResult(dynamicRepository.findViaProcedure(cif)));
+        return response(toResult(lstCard9Pay));
     }
 }

@@ -57,9 +57,15 @@ public class PackageFilterRepository {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PKG_API")
                 .withProcedureName("GET_NINE_PAY_TRANS")
                 // .withoutProcedureColumnMetaDataAccess()
+                .declareParameters(new SqlParameter("p_custId", Types.VARCHAR))
                 .declareParameters(new SqlOutParameter("p_cursor", Types.REF_CURSOR));
 
-        Map<String, Object> map = jdbcCall.execute();
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("p_custId", "012198");
+
+        long start = System.currentTimeMillis();
+        Map<String, Object> map = jdbcCall.execute(params);
+        System.out.println(System.currentTimeMillis() - start);
 
         Map.Entry<String, Object> entry = map.entrySet().iterator().next();
 
@@ -69,7 +75,7 @@ public class PackageFilterRepository {
     public Object getTransHistory(String customerId) {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PKG_API")
                 .withProcedureName("GET_BG_TRANS_HIS")
-                // .withoutProcedureColumnMetaDataAccess()
+                .withoutProcedureColumnMetaDataAccess()
                 .declareParameters(new SqlParameter("p_custId", Types.VARCHAR))
                 .declareParameters(new SqlOutParameter("p_cursor", Types.REF_CURSOR));
 

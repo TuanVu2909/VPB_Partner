@@ -18,6 +18,7 @@ package com.lendbiz.p2p.api.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.lendbiz.p2p.api.repository.BgConfigRepository;
 import com.lendbiz.p2p.api.repository.PackageFilterRepository;
 import com.lendbiz.p2p.api.repository.UserOnlineRepository;
 import com.lendbiz.p2p.api.response.BaseResponse;
@@ -45,12 +46,13 @@ public class ConfigServiceImpl extends BaseResponse<ConfigService> implements Co
 	@Autowired
 	UserOnlineRepository userOnlineRepo;
 
+	@Autowired
+	BgConfigRepository bgConfigRepository;
+
 	@Override
 	public ResponseEntity<?> getProductField() {
 
-		List<Object> response = (ArrayList) pkgFilterRepo.getProductField();
-
-		return response(toResult(response));
+		return response(toResult(bgConfigRepository.findViaProcedure()));
 
 	}
 

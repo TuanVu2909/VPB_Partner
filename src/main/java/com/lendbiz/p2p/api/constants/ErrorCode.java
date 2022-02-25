@@ -82,4 +82,7 @@ public class ErrorCode {
 
     public static final String SESSION_TIMEOUT = "901";
     public static final String SESSION_TIMEOUT_DESCRIPTION = "Hết phiên đăng nhập, vui lòng đăng nhập lại!";
+
+    public static final String ERROR_500 = "500";
+    public static final String ERROR_500_DESCRIPTION = "Lỗi không xác định!";
 }
