@@ -80,4 +80,6 @@ public class ErrorCode {
     public static final String SIGN_FAIL_DESCRIPTION = "SIGN_FAIL";
     public static final String NO_CARD = "20";
     public static final String NO_CARD_DESCRIPTION = "HẾT THẺ";
+    public static final String NO_refId = "21";
+    public static final String NO_refId_DESCRIPTION = "Mã giới thiệu đã tồn tại";
 }

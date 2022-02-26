@@ -30,6 +30,7 @@ import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.*;
 import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.repository.PackageFilterRepository;
 import com.lendbiz.p2p.api.repository.Products9payRepository;
 import com.lendbiz.p2p.api.request.Create9PayRequest;
 import com.lendbiz.p2p.api.response.BaseResponse;
@@ -77,6 +78,8 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
     private Card9PayServiceImpl service9;
     @Autowired
     Products9payRepository pay9Repository;
+    @Autowired
+    PackageFilterRepository filterRepository;
 
     @Override
     public ResponseEntity<?> create9Payment(Create9PayRequest request) throws UnsupportedEncodingException {
@@ -267,7 +270,7 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
         map.add("product_id", input9Pay.getProductId());
         map.add("quantity", input9Pay.getQuantity());
         map.add("signature", rq9Pay[1]);
-
+        System.out.println(map);
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
         ResponseEntity<String> responseEntityStr;
@@ -296,17 +299,17 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
             Card9PayDetails[] card9PayDetailsList = mapper.readValue(data, Card9PayDetails[].class);
             for (int i = 0; i < card9PayDetailsList.length; i++) {
                 Card9PayDetails card9PayDetails = card9PayDetailsList[i];
-                card9PayEntity.setStatus("Y");
-                card9PayEntity.setCard_seri(card9PayDetails.getCard_seri());
-                card9PayEntity.setPid(response.getProduct_id());
+                card9PayEntity.setPay_status("Y");
+                card9PayEntity.setSeri_code(card9PayDetails.getCard_seri());
+                card9PayEntity.setProduct_id(response.getProduct_id());
                 card9PayEntity.setPrice(card9PayDetails.getPrice());
-                card9PayEntity.setTransId(response.getTransaction_id());
-                String id = String.valueOf((int) Math.floor(Math.random() * 100000));
-                card9PayEntity.setId(id);
-                card9PayEntity.setPayDate(Utils.getDate());
-                card9PayEntity.setCif(input9Pay.getCif());
+                card9PayEntity.setTrans_Id(response.getTransaction_id());
+//                String id = String.valueOf((int) Math.floor(Math.random() * 100000));
+//                card9PayEntity.setId(id);
+                card9PayEntity.setPay_Date(Utils.getDate());
+                card9PayEntity.setCustid(input9Pay.getCif());
                 card9PayEntity.setCard_code(card9PayDetails.getCard_code());
-                service9.create(card9PayEntity);
+                filterRepository.saveTrans(card9PayEntity);
                 String codeDe = Utils.decrypt(card9PayDetails.getCard_code());
                 card9PayDetailsList[i].setCard_code(codeDe);
 

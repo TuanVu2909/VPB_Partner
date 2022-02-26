@@ -17,17 +17,17 @@ public class Card9PayEntity {
     @Column(name = "PRICE")
     private String price;
     @Column(name = "CUSTID")
-    private String cif;
+    private String custid;
     @Column(name = "PAY_DATE")
-    private String payDate;
+    private String pay_Date;
     @Column(name = "SERI_CODE")
-    private String card_seri;
+    private String seri_code;
     @Column(name = "CARD_CODE")
     private String card_code;
     @Column(name = "PAY_STATUS")
-    private String status;
+    private String pay_status;
     @Column(name = "PRODUCT_ID")
-    private String pid;
+    private String product_id;
     @Column(name = "TRANS_ID")
-    private String transId;
+    private String trans_Id;
 }

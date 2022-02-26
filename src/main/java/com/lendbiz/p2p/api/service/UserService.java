@@ -36,6 +36,10 @@ public interface UserService {
 	public ResponseEntity<?> getTerm(String productId);
 	public ResponseEntity<?> getAccountInvestByProduct(AccountInput accountInput);
 	public ResponseEntity<?> getProductInfo(BearRequest bearRequest);
+	public ResponseEntity<?> getCoin(String cif);
+	public ResponseEntity<?> changeCoin(AccountInput input);
+	public ResponseEntity<?> updateReferenceId(AccountInput input);
+
 
 	String checkSession(String session);
 
