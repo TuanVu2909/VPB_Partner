@@ -11,15 +11,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lendbiz.p2p.api.entity.AccountInput;
 import com.lendbiz.p2p.api.entity.Input9Pay;
 import com.lendbiz.p2p.api.entity.NinePayResult;
 import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.repository.PackageFilterRepository;
 import com.lendbiz.p2p.api.request.Create9PayRequest;
 import com.lendbiz.p2p.api.service.NinePayService;
 
 import com.lendbiz.p2p.api.service.UserService;
 import com.lendbiz.p2p.api.service.impl.Card9PayServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +41,8 @@ public class NinePayController {
     Card9PayServiceImpl card9PayService;
     @Autowired
     UserService userService;
+    @Autowired
+    PackageFilterRepository filterRepository;
 
     @PostMapping("/9pay/create")
     public ResponseEntity<?> createNinePayUrl(HttpServletRequest httpServletRequest,
@@ -69,19 +74,19 @@ public class NinePayController {
         return ninepayService.findTransaction(sId);
 
     }
-
-    @GetMapping("/9pay/test2")
-    public Object test2(@RequestHeader("session") String session)
-            throws BusinessException, UnsupportedEncodingException {
-
-        // card9PayService.create();
-        return userService.checkSession(session);
-
-    }
+//
+//    @GetMapping("/9pay/test2")
+//    public Object test2()
+//            throws BusinessException, UnsupportedEncodingException {
+//
+////        card9PayService.create();
+//        return filterRepository.changeCoin();
+//
+//    }
 
     @GetMapping("/9pay/trans")
     public ResponseEntity<?> trans(HttpServletRequest httpServletRequest,
-            @RequestHeader("requestId") String requestId, @RequestParam("cid") String cId)
+                                   @RequestHeader("requestId") String requestId, @RequestParam("cid") String cId)
             throws BusinessException, UnsupportedEncodingException {
         log.info("[" + requestId + "] << check-trans-info-buy-card >>");
 
@@ -89,9 +94,37 @@ public class NinePayController {
 
     }
 
+    @PostMapping("/9pay/update-ref")
+    public ResponseEntity<?> updateReferenceId(HttpServletRequest httpServletRequest,
+                                               @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
+            throws BusinessException, UnsupportedEncodingException {
+        log.info("[" + requestId + "] << check-updateReferenceId >>");
+        return userService.updateReferenceId(accountInput);
+
+    }
+
+    @GetMapping("/9pay/get-coin")
+    public ResponseEntity<?> getCoin(HttpServletRequest httpServletRequest,
+                                     @RequestHeader("requestId") String requestId, @RequestParam("cif") String cId)
+            throws BusinessException, UnsupportedEncodingException {
+        log.info("[" + requestId + "] << check-get-coin >>");
+
+        return userService.getCoin(cId);
+
+    }
+    @PostMapping("/9pay/change-coin")
+    public ResponseEntity<?> changeCoin(HttpServletRequest httpServletRequest,
+                                     @RequestHeader("requestId") String requestId, @RequestBody AccountInput input)
+            throws BusinessException, UnsupportedEncodingException {
+        log.info("[" + requestId + "] << check-change-coin>>");
+
+        return userService.changeCoin(input);
+
+    }
+
     @GetMapping("/9pay/get-trans-by-custid")
     public ResponseEntity<?> transBycustId(HttpServletRequest httpServletRequest,
-            @RequestHeader("requestId") String requestId, @RequestParam("cif") String cId)
+                                           @RequestHeader("requestId") String requestId, @RequestParam("cif") String cId)
             throws BusinessException, UnsupportedEncodingException {
         log.info("[" + requestId + "] << check-trans-info-by-cif >>");
         return card9PayService.getAllByCustId(cId);
@@ -100,13 +133,24 @@ public class NinePayController {
 
     @PostMapping("/9pay/pay-card")
     public ResponseEntity<?> payCard(HttpServletRequest httpServletRequest, @RequestHeader("session") String session,
-            @RequestHeader("requestId") String requestId, @RequestBody Input9Pay input9Pay)
+                                     @RequestHeader("requestId") String requestId, @RequestBody Input9Pay input9Pay)
             throws BusinessException, UnsupportedEncodingException {
 
         log.info("[" + requestId + "] << payCard >>");
-        String custId = userService.checkSession(session);
-        input9Pay.setCif(custId);
+//        String custId = userService.checkSession(session);
+        input9Pay.setCif("000028");
         return ninepayService.buyCard(input9Pay);
+
+    }
+
+    @GetMapping("/9pay/trans-by-date")
+    public ResponseEntity<?> findTrans(HttpServletRequest httpServletRequest, @RequestHeader("session") String session,
+                                       @RequestHeader("requestId") String requestId, @RequestParam("edate") String eDate, @RequestParam("sdate") String sDate)
+            throws BusinessException, UnsupportedEncodingException {
+
+        log.info("[" + requestId + "] << find-trans >>");
+//        String custId = userService.checkSession(session);
+        return card9PayService.findByDate(sDate, eDate, "000028");
 
     }
 
@@ -122,7 +166,7 @@ public class NinePayController {
 
     @GetMapping("/9pay/balance")
     public ResponseEntity<?> balance(HttpServletRequest httpServletRequest,
-            @RequestHeader("requestId") String requestId)
+                                     @RequestHeader("requestId") String requestId)
             throws BusinessException, UnsupportedEncodingException {
         log.info("[" + requestId + "] << get-9pay-balance >>");
 

@@ -85,4 +85,6 @@ public class ErrorCode {
 
     public static final String ERROR_500 = "500";
     public static final String ERROR_500_DESCRIPTION = "Lỗi không xác định!";
+    public static final String NO_refId = "21";
+    public static final String NO_refId_DESCRIPTION = "Mã giới thiệu đã tồn tại";
 }

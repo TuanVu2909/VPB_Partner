@@ -10,6 +10,7 @@ import com.lendbiz.p2p.api.repository.Card9PayRepository;
 import com.lendbiz.p2p.api.repository.DynamicRepository;
 import com.lendbiz.p2p.api.repository.PackageFilterRepository;
 import com.lendbiz.p2p.api.repository.RoleRepository;
+import com.lendbiz.p2p.api.repository.PackageFilterRepository;
 import com.lendbiz.p2p.api.response.BaseResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ import org.springframework.stereotype.Service;
 public class Card9PayServiceImpl extends BaseResponse<NinePayServiceImpl> {
     @Autowired
     Card9PayRepository card9PayRepository;
+    @Autowired
+    PackageFilterRepository filterRepository;
 
     @Autowired
     PackageFilterRepository filter;
@@ -37,7 +40,9 @@ public class Card9PayServiceImpl extends BaseResponse<NinePayServiceImpl> {
     public ResponseEntity<?> getAllByCustId(String cif) {
         return response(toResult(card9PayRepository.findByCustId(cif)));
     }
-
+    public ResponseEntity<?> findByDate(String sDate,String eDate,String cif) {
+        return response(toResult(filterRepository.findTrans9PayByDate(sDate,eDate,cif)));
+    }
     public void create(Card9PayEntity card9PayEntity) {
         try {
             card9PayRepository.save(card9PayEntity);

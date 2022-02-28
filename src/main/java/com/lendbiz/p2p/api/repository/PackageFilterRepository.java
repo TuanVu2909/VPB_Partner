@@ -1,13 +1,10 @@
 package com.lendbiz.p2p.api.repository;
 
 import java.sql.Types;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -15,13 +12,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.AccountInput;
+import com.lendbiz.p2p.api.entity.Card9PayEntity;
 import com.lendbiz.p2p.api.entity.InvestAssets;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.request.BearRequest;
 import com.lendbiz.p2p.api.request.InsertLogRequest;
 import com.lendbiz.p2p.api.request.ReqJoinRequest;
-import com.lendbiz.p2p.api.response.BearResponse;
 import com.lendbiz.p2p.api.utils.JsonMapper;
 
 import com.lendbiz.p2p.api.utils.Utils;
@@ -314,6 +311,109 @@ public class PackageFilterRepository {
         return arrayList;
     }
 
+    public Object getCoin(String cif) {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
+                .withProcedureName("getCoin")
+                .declareParameters(new SqlParameter("pv_custId", Types.VARCHAR))
+                .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("pv_custId", cif);
+        Map<String, Object> map = jdbcCall.execute(params);
+        Map.Entry<String, Object> entry = map.entrySet().iterator().next();
+
+        String body = JsonMapper.writeValueAsString(entry.getValue());
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root;
+        try {
+            root = mapper.readTree(body);
+            if (root.get(0).get("COINAMOUNT").asText().equals("0")) {
+                throw new BusinessException(ErrorCode.NO_DATA,
+                        ErrorCode.NO_DATA_DESCRIPTION);
+            }
+
+        } catch (JsonProcessingException e) {
+            throw new BusinessException(ErrorCode.FAILED_TO_JSON,
+                    ErrorCode.FAILED_TO_JSON_DESCRIPTION);
+        }
+        return root.get(0);
+    }
+
+    public Object changeCoin(AccountInput input) {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
+                .withProcedureName("changeCoin")
+                .declareParameters(new SqlParameter("pv_custId", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_coinAmount", Types.NUMERIC))
+                .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("pv_custId", input.getCustId());
+        params.addValue("pv_coinAmount", input.getCoin());
+        Map<String, Object> map = jdbcCall.execute(params);
+        Map.Entry<String, Object> entry = map.entrySet().iterator().next();
+
+        String body = JsonMapper.writeValueAsString(entry.getValue());
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root;
+        try {
+            root = mapper.readTree(body);
+            if (root.get(0).get(":B2") != null) {
+                if (root.get(0).get(":B2").asText().equals("0")) {
+                    throw new BusinessException("22",
+                            root.get(0).get(":B1").asText());
+                }
+            }
+            if (root.get(0).get("0") != null) {
+                if (root.get(0).get("0").asText().equals("0") && root.get(0).get("0") != null) {
+                    throw new BusinessException("23",
+                            root.get(0).get("CÓLỖIXẢYRA.VUILÒNGLIÊNHỆBỘPHẬNHỖTRỢ").asText());
+                }
+            }
+
+        } catch (JsonProcessingException e) {
+            throw new BusinessException(ErrorCode.FAILED_TO_JSON,
+                    ErrorCode.FAILED_TO_JSON_DESCRIPTION);
+        }
+        return root.get(0);
+    }
+
+    public Object updateReferenceId(AccountInput accountInput) {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
+                .withProcedureName("updateReferenceId")
+                .declareParameters(new SqlParameter("pv_custId", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_refId", Types.VARCHAR))
+                .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("pv_custId", accountInput.getCustId());
+        params.addValue("pv_refId", accountInput.getPv_refId());
+        Map<String, Object> map = jdbcCall.execute(params);
+        Map.Entry<String, Object> entry = map.entrySet().iterator().next();
+
+        String body = JsonMapper.writeValueAsString(entry.getValue());
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root;
+        try {
+
+            root = mapper.readTree(body);
+            if (root.get(0).get(":B2") != null) {
+                if (root.get(0).get(":B2").asText().equals("0")) {
+                    throw new BusinessException(ErrorCode.NO_refId,
+                            ErrorCode.NO_refId_DESCRIPTION);
+                }
+            }
+
+
+        } catch (JsonProcessingException e) {
+            throw new BusinessException(ErrorCode.FAILED_TO_JSON,
+                    ErrorCode.FAILED_TO_JSON_DESCRIPTION);
+        }
+        return "success";
+    }
+
     public Object getAccountInvestByProduct(AccountInput accountInput) {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
                 .withProcedureName("getAccountInvestByProduct")
@@ -377,6 +477,37 @@ public class PackageFilterRepository {
         return arrayList;
     }
 
+    public Object saveTrans(Card9PayEntity entity) {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                .withProcedureName("createTrans9Pay")
+                .declareParameters(new SqlParameter("cid", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pid", Types.VARCHAR))
+                .declareParameters(new SqlParameter("tid", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pri", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pstatus", Types.VARCHAR))
+                .declareParameters(new SqlParameter("scode", Types.VARCHAR))
+                .declareParameters(new SqlParameter("ccode", Types.VARCHAR))
+
+                .declareParameters(new SqlOutParameter("rs", Types.NUMERIC));
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("cid", entity.getCustid());
+        params.addValue("tid", entity.getTrans_Id());
+        params.addValue("pid", entity.getProduct_id());
+        params.addValue("pri", entity.getPrice());
+        params.addValue("pstatus", entity.getPay_status());
+        params.addValue("scode", entity.getSeri_code());
+        params.addValue("ccode", entity.getCard_code());
+
+
+        Map<String, Object> map = jdbcCall.execute(params);
+        String result = map.get("rs").toString();
+        if (!result.equals("0")) {
+            throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
+        }
+        return result;
+    }
+
     public Object crateBear(AccountInput accountInput) {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
                 .withProcedureName("createBear")
@@ -434,6 +565,40 @@ public class PackageFilterRepository {
         params.addValue("pv_pid", pId);
         Map<String, Object> map = jdbcCall.execute(params);
         ArrayList<Object> arrayList = (ArrayList<Object>) map.get("pv_refcursor");
+        if (arrayList.size() == 0) {
+            throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
+        }
+        return arrayList;
+    }
+
+    public Object findTrans9PayByDate(String sDate, String eDate, String cif) {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                .withProcedureName("findTransByDate")
+                .returningResultSet("c_ref", BeanPropertyRowMapper.newInstance(Card9PayEntity.class))
+                .declareParameters(new SqlParameter("pdate", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pedate", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pcif", Types.VARCHAR))
+                .declareParameters(new SqlOutParameter("c_ref", Types.REF_CURSOR));
+        Date sDateF = null;
+        Date eDateF = null;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+            sDateF = sdf.parse(sDate);
+            eDateF = sdf.parse(eDate);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        formatter = new SimpleDateFormat("dd-MMM-yyyy");
+        String strSDate = formatter.format(sDateF);
+        String strEDate = formatter.format(eDateF);
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("pdate", strSDate);
+        params.addValue("pedate", strEDate);
+        params.addValue("pcif", cif);
+        Map<String, Object> map = jdbcCall.execute(params);
+        List<Card9PayEntity> arrayList = (List<Card9PayEntity>) map.get("c_ref");
         if (arrayList.size() == 0) {
             throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
         }

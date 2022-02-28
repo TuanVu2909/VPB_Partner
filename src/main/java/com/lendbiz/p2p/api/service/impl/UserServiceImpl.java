@@ -147,6 +147,22 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 	}
 
 	@Override
+	public ResponseEntity<?> getCoin(String cif) {
+		return response(toResult(pkgFilterRepo.getCoin(cif)));
+	}
+
+	@Override
+	public ResponseEntity<?> changeCoin(AccountInput input) {
+		return response(toResult(pkgFilterRepo.changeCoin(input)));
+	}
+
+	@Override
+	public ResponseEntity<?> updateReferenceId(AccountInput input) {
+		return response(toResult(pkgFilterRepo.updateReferenceId(input)));
+	}
+
+
+	@Override
 	public String checkSession(String session) {
 		logger.info("[" + session + "] << checkSession >>");
 		if (StringUtil.isEmty(session))

@@ -15,6 +15,10 @@ public class AccountInput {
     private String rate;
     private String contractId;
     private String payType;
+    private String pv_refId;
+    private String coin;
+
+
 
 
 }
