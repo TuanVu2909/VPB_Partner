@@ -10,6 +10,8 @@ services:
   
   kafka:
     image: confluentinc/cp-kafka:latest
+    volumes:
+      - /var/lib/kafka/data:/home/kafka
     depends_on:
       - zookeeper
     ports:
