@@ -11,7 +11,7 @@ services:
   kafka:
     image: confluentinc/cp-kafka:latest
     volumes:
-      - /var/lib/kafka/data:/home/kafka
+      - /home/kafka:/var/lib/kafka/data
     depends_on:
       - zookeeper
     ports:
