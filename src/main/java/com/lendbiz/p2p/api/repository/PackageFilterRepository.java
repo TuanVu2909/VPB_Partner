@@ -431,6 +431,7 @@ public class PackageFilterRepository {
             throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
         }
 //        BearRequest bearRequest = new BearRequest();
+//        bearRequest.setPayType("2");//        BearRequest bearRequest = new BearRequest();
 //        bearRequest.setPayType("2");
 //        bearRequest.setPid(accountInput.getProductId());
 //        if (!accountInput.getProductId().equals("15")) {

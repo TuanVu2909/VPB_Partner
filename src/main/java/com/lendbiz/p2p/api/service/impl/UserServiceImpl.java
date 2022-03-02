@@ -67,6 +67,12 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 	ProductGMRepository productGMRepository;
 	@Autowired
 	AccountAssetRepository accountAssetRepository;
+	@Autowired
+	AccountInvestRepository accountInvestRepository;
+	@Autowired
+	RateRepo rateRepo;
+	@Autowired
+	TermRepo termRepo;
 	@Override
 	public ResponseEntity<?> login(LoginRequest loginRequest) {
 
@@ -112,7 +118,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 	@Override
 	public ResponseEntity<?> getAccountInvest(String custId) {
 
-		return response(toResult(pkgFilterRepo.getAccountInvest(custId)));
+		return response(toResult(accountInvestRepository.getAccountInvest(custId)));
 
 	}
 
@@ -130,12 +136,15 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
 	@Override
 	public ResponseEntity<?> getRate(String term, String productId, String amount) {
-		return response(toResult(pkgFilterRepo.getRate(productId, term, amount)));
+		if (!productId.equals("15")){
+			return response(toResult(rateRepo.getRate(productId,term,amount)));
+		}
+		return response(toResult(rateRepo.getRateNoPeriod(productId, amount)));
 	}
 
 	@Override
 	public ResponseEntity<?> getTerm(String productId) {
-		return response(toResult(pkgFilterRepo.getTerm(productId)));
+		return response(toResult(termRepo.getTerm(productId)));
 	}
 
 	@Override

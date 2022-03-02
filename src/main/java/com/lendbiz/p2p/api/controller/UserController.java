@@ -92,6 +92,7 @@ public class UserController {
     }
 
     @GetMapping("/get-account-invest")
+    @Transactional(readOnly = true)
     public ResponseEntity<?> getAccountInvest(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestParam String cif)
             throws BusinessException {
@@ -109,6 +110,8 @@ public class UserController {
     }
 
     @GetMapping("/get-paytype")
+    @Transactional(readOnly = true)
+
     public ResponseEntity<?> getPayType(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId)
             throws BusinessException {
@@ -117,6 +120,8 @@ public class UserController {
     }
 
     @GetMapping("/get-term")
+    @Transactional(readOnly = true)
+
     public ResponseEntity<?> getTerm(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestParam("pid") String pId)
             throws BusinessException {
