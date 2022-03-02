@@ -13,8 +13,12 @@ import org.springframework.stereotype.Repository;
 public interface DynamicRepository extends JpaRepository<Card9PayEntity_v2, String> {
     // @Procedure(name = "get_trans")
     // List<Card9PayEntity> getTransHistory();
-
+//
     @Procedure("Card9PayEntity_v2.findViaProcedure")
-    List<Card9PayEntity_v2> findViaProcedure(@Param("p_custId") String custId);
+    List<Card9PayEntity_v2> findViaProcedure(@Param("p_custId") String custId,@Param("p_sdate") String p_sdate,@Param("p_edate") String p_edate);
+
+//    @Procedure("ABC.FINDTRANSBYDATE")
+//    List<Card9PayEntity_v3> findViaProcedure(@Param("pdate") String date
+//    ,@Param("pedate") String edate,@Param("pcif") String pcif);
 
 }

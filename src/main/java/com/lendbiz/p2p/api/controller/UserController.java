@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.lendbiz.p2p.api.entity.AccountInput;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.repository.ProductGMRepository;
 import com.lendbiz.p2p.api.request.BearRequest;
 import com.lendbiz.p2p.api.request.LoginRequest;
 import com.lendbiz.p2p.api.request.ReqJoinRequest;
@@ -16,6 +17,7 @@ import com.lendbiz.p2p.api.service.UserService;
 import com.lendbiz.p2p.api.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,6 +48,7 @@ public class UserController {
 
     @Autowired
     SavisService savisService;
+
 
     @PostMapping("/login")
     public ResponseEntity<?> login(HttpServletRequest httpServletRequest, @RequestHeader("requestId") String requestId,
@@ -80,6 +83,7 @@ public class UserController {
     }
 
     @GetMapping("/get-account-asset")
+    @Transactional(readOnly = true)
     public ResponseEntity<?> getAccountAsset(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestParam String cif)
             throws BusinessException {
@@ -96,6 +100,7 @@ public class UserController {
     }
 
     @GetMapping("/get-product")
+    @Transactional(readOnly = true)
     public ResponseEntity<?> getProduct(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId)
             throws BusinessException {

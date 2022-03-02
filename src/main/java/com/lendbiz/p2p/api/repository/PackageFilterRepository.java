@@ -430,29 +430,29 @@ public class PackageFilterRepository {
         if (listContacts.size() == 0) {
             throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
         }
-        BearRequest bearRequest = new BearRequest();
-        bearRequest.setPayType("2");
-        bearRequest.setPid(accountInput.getProductId());
-        if (!accountInput.getProductId().equals("15")) {
-            listContacts.forEach((element) -> {
-                bearRequest.setTerm(element.getTerm());
-                bearRequest.setAmt(element.getAmount());
-                bearRequest.setRate(element.getRate());
-                element.setProfit(Utils.getProductInfo(bearRequest).getMonthlyProfit());
-                String startDate = element.getStart_date().replace("00:00:00", "");
-                startDate = startDate.replace(" ", "");
-                LocalDate date = LocalDate.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE);
-                startDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-                element.setStart_date(startDate);
-                String endDate = element.getEnd_date().replace("00", "");
-                endDate = endDate.replace(":", "");
-                endDate = endDate.replace(" ", "");
-                date = LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE);
-                endDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-                element.setEnd_date(endDate);
-
-            });
-        }
+//        BearRequest bearRequest = new BearRequest();
+//        bearRequest.setPayType("2");
+//        bearRequest.setPid(accountInput.getProductId());
+//        if (!accountInput.getProductId().equals("15")) {
+//            listContacts.forEach((element) -> {
+//                bearRequest.setTerm(element.getTerm());
+//                bearRequest.setAmt(element.getAmount());
+//                bearRequest.setRate(element.getRate());
+//                element.setProfit(Utils.getProductInfo(bearRequest).getMonthlyProfit());
+//                String startDate = element.getStart_date().replace("00:00:00", "");
+//                startDate = startDate.replace(" ", "");
+//                LocalDate date = LocalDate.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE);
+//                startDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+//                element.setStart_date(startDate);
+//                String endDate = element.getEnd_date().replace("00", "");
+//                endDate = endDate.replace(":", "");
+//                endDate = endDate.replace(" ", "");
+//                date = LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE);
+//                endDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+//                element.setEnd_date(endDate);
+//
+//            });
+//        }
         return listContacts;
     }
 

@@ -26,7 +26,9 @@ import com.lendbiz.p2p.api.entity.UserOnline;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.model.exception.InputInvalidExeption;
+import com.lendbiz.p2p.api.repository.AccountAssetRepository;
 import com.lendbiz.p2p.api.repository.PackageFilterRepository;
+import com.lendbiz.p2p.api.repository.ProductGMRepository;
 import com.lendbiz.p2p.api.repository.UserOnlineRepository;
 import com.lendbiz.p2p.api.request.BearRequest;
 import com.lendbiz.p2p.api.request.LoginRequest;
@@ -57,7 +59,10 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
 	@Autowired
 	UserOnlineRepository userOnlineRepo;
-
+	@Autowired
+	ProductGMRepository productGMRepository;
+	@Autowired
+	AccountAssetRepository accountAssetRepository;
 	@Override
 	public ResponseEntity<?> login(LoginRequest loginRequest) {
 
@@ -96,7 +101,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 	@Override
 	public ResponseEntity<?> getAccountAsset(String custId) {
 
-		return response(toResult(pkgFilterRepo.getAccountAsset(custId)));
+		return response(toResult(accountAssetRepository.getAccountAsset(custId)));
 
 	}
 
@@ -110,7 +115,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 	@Override
 	public ResponseEntity<?> getProduct() {
 
-		return response(toResult(pkgFilterRepo.getProduct()));
+		return response(toResult(productGMRepository.getproduct()));
 
 	}
 
