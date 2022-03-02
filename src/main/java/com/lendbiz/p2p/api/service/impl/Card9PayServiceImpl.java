@@ -1,17 +1,20 @@
 package com.lendbiz.p2p.api.service.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.Card9PayEntity;
 import com.lendbiz.p2p.api.entity.Card9PayEntity_v2;
+import com.lendbiz.p2p.api.entity.InvestAssets;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.*;
 import com.lendbiz.p2p.api.repository.PackageFilterRepository;
 import com.lendbiz.p2p.api.response.BaseResponse;
 
+import com.lendbiz.p2p.api.response.InvestAssetResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -70,10 +73,11 @@ public class Card9PayServiceImpl extends BaseResponse<NinePayServiceImpl> {
         return response(toResult(card9PayRepository.findByCustId(cif)));
     }
 @Autowired
-InvestAssetsRepository investAssetsRepository;
+AccountInvestRepository investAssetsRepository;
     public ResponseEntity<?> getP( ) {
         try {
-            return response(toResult(investAssetsRepository.getInvestAssets("000028",14)));
+
+            return response(toResult(investAssetsRepository.getAccountInvest("000028")));
         }catch (Exception e){
             throw new BusinessException("11",e.getMessage());
         }

@@ -227,7 +227,7 @@ public class NinePayController {
     public ResponseEntity<?> getTransTest2(HttpServletRequest httpServletRequest,
                                        @RequestParam("cif") String cId)
             throws BusinessException, UnsupportedEncodingException {
-        return card9PayService.getTransHistory(cId);
+        return card9PayService.getP();
 
     }
 
