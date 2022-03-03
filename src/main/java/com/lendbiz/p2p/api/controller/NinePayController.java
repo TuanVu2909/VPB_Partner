@@ -95,34 +95,7 @@ public class NinePayController {
 
     }
 
-    @PostMapping("/9pay/update-ref")
-    public ResponseEntity<?> updateReferenceId(HttpServletRequest httpServletRequest,
-                                               @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
-            throws BusinessException, UnsupportedEncodingException {
-        log.info("[" + requestId + "] << check-updateReferenceId >>");
-        return userService.updateReferenceId(accountInput);
 
-    }
-
-    @GetMapping("/9pay/get-coin")
-    public ResponseEntity<?> getCoin(HttpServletRequest httpServletRequest,
-                                     @RequestHeader("requestId") String requestId, @RequestParam("cif") String cId)
-            throws BusinessException, UnsupportedEncodingException {
-        log.info("[" + requestId + "] << check-get-coin >>");
-
-        return userService.getCoin(cId);
-
-    }
-
-    @PostMapping("/9pay/change-coin")
-    public ResponseEntity<?> changeCoin(HttpServletRequest httpServletRequest,
-                                        @RequestHeader("requestId") String requestId, @RequestBody AccountInput input)
-            throws BusinessException, UnsupportedEncodingException {
-        log.info("[" + requestId + "] << check-change-coin>>");
-
-        return userService.changeCoin(input);
-
-    }
 
     @GetMapping("/9pay/get-trans-by-custid")
     public ResponseEntity<?> transBycustId(HttpServletRequest httpServletRequest,

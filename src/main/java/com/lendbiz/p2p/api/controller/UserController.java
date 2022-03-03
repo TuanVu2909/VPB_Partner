@@ -29,6 +29,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lombok.extern.log4j.Log4j2;
 
+import java.io.UnsupportedEncodingException;
+
 /***********************************************************************
  *
  * @package：com.lendbiz.p2p.api.controller，@class-name：UserController.java
@@ -160,7 +162,35 @@ public class UserController {
         InfoIdentity identity = new InfoIdentity();
         return savisService.callPredict(idFile, identity, idType);
     }
+    @PostMapping("/update-ref")
+    public ResponseEntity<?> updateReferenceId(HttpServletRequest httpServletRequest,
+                                               @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
+            throws BusinessException, UnsupportedEncodingException {
+        log.info("[" + requestId + "] << check-updateReferenceId >>");
+        return userService.updateReferenceId(accountInput);
 
+    }
+
+    @GetMapping("/get-coin")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getCoin(HttpServletRequest httpServletRequest,
+                                     @RequestHeader("requestId") String requestId, @RequestParam("cif") String cId)
+            throws BusinessException, UnsupportedEncodingException {
+        log.info("[" + requestId + "] << check-get-coin >>");
+
+        return userService.getCoin(cId);
+
+    }
+
+    @PostMapping("/change-coin")
+    public ResponseEntity<?> changeCoin(HttpServletRequest httpServletRequest,
+                                        @RequestHeader("requestId") String requestId, @RequestBody AccountInput input)
+            throws BusinessException, UnsupportedEncodingException {
+        log.info("[" + requestId + "] << check-change-coin>>");
+
+        return userService.changeCoin(input);
+
+    }
     @PostMapping("/verify-face")
     public ResponseEntity<?> verifyFace(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestHeader("session") String session,

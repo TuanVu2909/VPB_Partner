@@ -73,11 +73,11 @@ public class Card9PayServiceImpl extends BaseResponse<NinePayServiceImpl> {
         return response(toResult(card9PayRepository.findByCustId(cif)));
     }
 @Autowired
-TermRepo termRepo;
+CoinRepo coinRepo;
     public ResponseEntity<?> getP( ) {
         try {
             System.out.println("2323");
-            return response(toResult(termRepo.getTerm("14")));
+            return response(toResult(coinRepo.getCoin("012418")));
         }catch (Exception e){
             throw new BusinessException("11",e.getMessage());
         }

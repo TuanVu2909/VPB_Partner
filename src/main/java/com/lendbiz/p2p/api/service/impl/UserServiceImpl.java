@@ -73,6 +73,12 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 	RateRepo rateRepo;
 	@Autowired
 	TermRepo termRepo;
+	@Autowired
+	PayRepo payRepo;
+	@Autowired
+	CoinRepo coinRepo;
+
+
 	@Override
 	public ResponseEntity<?> login(LoginRequest loginRequest) {
 
@@ -131,7 +137,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
 	@Override
 	public ResponseEntity<?> getPayType() {
-		return response(toResult(pkgFilterRepo.getPayType()));
+		return response(toResult(payRepo.getPay()));
 	}
 
 	@Override
@@ -205,7 +211,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
 	@Override
 	public ResponseEntity<?> getCoin(String cif) {
-		return response(toResult(pkgFilterRepo.getCoin(cif)));
+		return response(toResult(coinRepo.getCoin(cif)));
 	}
 
 	@Override
