@@ -8,10 +8,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.security.authentication.jaas.JaasPasswordCallbackHandler;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public interface AccountInvestRepository extends JpaRepository<AccountInvest , Integer> {
     @Procedure("AccountInvest.getAccountInvest")
-    List<AccountInvest> getAccountInvest(@Param("pv_custId")String cif);
+    ArrayList<AccountInvest> getAccountInvest(@Param("pv_custId")String cif);
 }

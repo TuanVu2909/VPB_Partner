@@ -77,6 +77,7 @@ public class UserController {
     }
 
     @PostMapping("/create-bear")
+    @Transactional(readOnly = true)
     public ResponseEntity<?> createBear(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
             throws BusinessException {
@@ -163,6 +164,7 @@ public class UserController {
         return savisService.callPredict(idFile, identity, idType);
     }
     @PostMapping("/update-ref")
+    @Transactional(readOnly = true)
     public ResponseEntity<?> updateReferenceId(HttpServletRequest httpServletRequest,
                                                @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
             throws BusinessException, UnsupportedEncodingException {
@@ -183,6 +185,7 @@ public class UserController {
     }
 
     @PostMapping("/change-coin")
+    @Transactional(readOnly = true)
     public ResponseEntity<?> changeCoin(HttpServletRequest httpServletRequest,
                                         @RequestHeader("requestId") String requestId, @RequestBody AccountInput input)
             throws BusinessException, UnsupportedEncodingException {

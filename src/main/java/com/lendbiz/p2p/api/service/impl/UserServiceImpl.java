@@ -23,10 +23,7 @@ import java.util.Optional;
 
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
-import com.lendbiz.p2p.api.entity.AccountInput;
-import com.lendbiz.p2p.api.entity.InvestAssets;
-import com.lendbiz.p2p.api.entity.UserOnline;
-import com.lendbiz.p2p.api.entity.VerifyAccountInput;
+import com.lendbiz.p2p.api.entity.*;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.model.exception.InputInvalidExeption;
 import com.lendbiz.p2p.api.repository.*;
@@ -46,9 +43,9 @@ import org.springframework.stereotype.Service;
 import javax.swing.text.IconView;
 
 /***********************************************************************
- * 
+ *
  * @package：com.lendbiz.p2p.api.service.impl，@class-name：UserServiceImpl.java
- * 
+ *
  * @copyright Copyright: 2021-2022
  * @creator Hoang Thanh Tu <br/>
  * @create-time Apr 9, 2021 10:43:45 AM
@@ -57,193 +54,235 @@ import javax.swing.text.IconView;
 @Service("userService")
 public class UserServiceImpl extends BaseResponse<UserService> implements UserService {
 
-	@Autowired
-	PackageFilterRepository pkgFilterRepo;
-	@Autowired
-	InvestAssetsRepository investAssetsRepository;
-	@Autowired
-	UserOnlineRepository userOnlineRepo;
-	@Autowired
-	ProductGMRepository productGMRepository;
-	@Autowired
-	AccountAssetRepository accountAssetRepository;
-	@Autowired
-	AccountInvestRepository accountInvestRepository;
-	@Autowired
-	RateRepo rateRepo;
-	@Autowired
-	TermRepo termRepo;
-	@Autowired
-	PayRepo payRepo;
-	@Autowired
-	CoinRepo coinRepo;
+    @Autowired
+    PackageFilterRepository pkgFilterRepo;
+    @Autowired
+    InvestAssetsRepository investAssetsRepository;
+    @Autowired
+    UserOnlineRepository userOnlineRepo;
+    @Autowired
+    ProductGMRepository productGMRepository;
+    @Autowired
+    AccountAssetRepository accountAssetRepository;
+    @Autowired
+    AccountInvestRepository accountInvestRepository;
+    @Autowired
+    RateRepo rateRepo;
+    @Autowired
+    TermRepo termRepo;
+    @Autowired
+    PayRepo payRepo;
+    @Autowired
+    CoinRepo coinRepo;
+    @Autowired
+    NotifyRepo notifyRepo;
+
+    @Override
+    public ResponseEntity<?> login(LoginRequest loginRequest) {
+
+        List<Object> response = (ArrayList) pkgFilterRepo.login(loginRequest.getUsername(), loginRequest.getPassword(),
+                loginRequest.getDeviceId());
+
+        return response(toResult(response.get(0)));
+
+    }
+
+    @Override
+    public ResponseEntity<?> register(ReqJoinRequest reqJoinRequest) {
+
+        List<Object> response = (ArrayList) pkgFilterRepo.reqJoin(reqJoinRequest);
+        return response(toResult(response.get(0)));
+    }
+
+    @Override
+    public ResponseEntity<?> verifyAcc(VerifyAccountInput input) {
+        try {
+            return response(toResult(pkgFilterRepo.verifyAcc(input)));
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> createBear(AccountInput input) {
+        try {
+            NotifyEntity notify = notifyRepo.createBear(input.getCustId()
+                    , input.getProductId(),
+                    input.getTerm(),
+                    input.getRate(),
+                    input.getAmt(),
+                    input.getContractId(), input.getPayType());
+            if (!notify.getPStatus().equals("01")) {
+                throw new BusinessException(notify.getPStatus(), notify.getDes());
+            }
+            return response(toResult(notify));
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getAccountAsset(String custId) {
+        AccountAssetEntity entity = accountAssetRepository.getAccountAsset(custId);
+        if (entity == null)
+            throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+        return response(toResult(entity));
+
+    }
+
+    @Override
+    public ResponseEntity<?> getAccountInvest(String custId) {
+        try {
+            ArrayList<AccountInvest> list = accountInvestRepository.getAccountInvest(custId);
+            if (list.size() == 0)
+                throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+            return response(toResult(list));
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, e.getMessage());
+        }
+
+    }
+
+    @Override
+    public ResponseEntity<?> getProduct() {
+        try {
+            return response(toResult(productGMRepository.getproduct()));
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getPayType() {
+        try {
+            return response(toResult(payRepo.getPay()));
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getRate(String term, String productId, String amount) {
+        if (!productId.equals("15")) {
+            return response(toResult(rateRepo.getRate(productId, term, amount)));
+        }
+        return response(toResult(rateRepo.getRateNoPeriod(productId, amount)));
+    }
+
+    @Override
+    public ResponseEntity<?> getTerm(String productId) {
+        try {
+            return response(toResult(termRepo.getTerm(productId)));
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getAccountInvestByProduct(AccountInput accountInput) {
+        try {
+            ArrayList<InvestAssets> list = investAssetsRepository.getInvestAssets(accountInput.getCustId(), Integer.parseInt(accountInput.getProductId()));
+            ArrayList<InvestAssetResponse> investAssetResponseList = new ArrayList<>();
+            BearRequest bearRequest = new BearRequest();
+
+            bearRequest.setPayType("2");
+            bearRequest.setPid(accountInput.getProductId());
+            if (!accountInput.getProductId().equals("15")) {
+                list.forEach((element) -> {
+                    bearRequest.setTerm(element.getTerm());
+                    bearRequest.setAmt(element.getAmount());
+                    bearRequest.setRate(element.getRate());
+                    InvestAssetResponse response = new InvestAssetResponse();
+                    response.setAmount(element.getAmount());
+                    response.setRate(element.getRate());
+                    response.setDocumentno(element.getDocumentno());
+                    response.setTerm(element.getTerm());
+                    response.setProfit(Utils.getProductInfo(bearRequest).getMonthlyProfit());
+                    String startDate = element.getStart_date().replace("00:00:00", "");
+                    startDate = startDate.replace(" ", "");
+                    LocalDate date = LocalDate.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE);
+                    startDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+                    element.setStart_date(startDate);
+                    String endDate = element.getEnd_date().replace("00", "");
+                    endDate = endDate.replace(":", "");
+                    endDate = endDate.replace(" ", "");
+                    date = LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE);
+                    endDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+                    element.setEnd_date(endDate);
+                    response.setEnd_date(endDate);
+                    response.setStart_date(startDate);
+                    investAssetResponseList.add(response);
+
+                });
+            }
+
+            return response(toResult(investAssetResponseList));
+        } catch (Exception e) {
+            throw new BusinessException("11", e.getMessage());
+        }
 
 
-	@Override
-	public ResponseEntity<?> login(LoginRequest loginRequest) {
+    }
 
-		List<Object> response = (ArrayList) pkgFilterRepo.login(loginRequest.getUsername(), loginRequest.getPassword(),
-				loginRequest.getDeviceId());
+    @Override
+    public ResponseEntity<?> getProductInfo(BearRequest bearRequest) {
+        try {
+            return response(toResult(Utils.getProductInfo(bearRequest)));
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, e.getMessage());
+        }
 
-		return response(toResult(response.get(0)));
+    }
 
-	}
+    @Override
+    public ResponseEntity<?> getCoin(String cif) {
+        try {
+            CoinEntity coinEntity = coinRepo.getCoin(cif);
+            return response(toResult(coinEntity));
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, e.getMessage());
+        }
+    }
 
-	@Override
-	public ResponseEntity<?> register(ReqJoinRequest reqJoinRequest) {
+    @Override
+    public ResponseEntity<?> changeCoin(AccountInput input) {
+        NotifyEntity notify = notifyRepo.changeCoin(input.getCustId(), input.getCoin());
+        if (!notify.getPStatus().equals("01")) {
+            throw new BusinessException(notify.getPStatus(), notify.getDes());
+        }
+        return response(toResult(notify));
 
-		List<Object> response = (ArrayList) pkgFilterRepo.reqJoin(reqJoinRequest);
-		return response(toResult(response.get(0)));
-	}
+    }
 
-	@Override
-	public ResponseEntity<?> verifyAcc(VerifyAccountInput input) {
-		try {
-			return response(toResult(pkgFilterRepo.verifyAcc(input)));
-		} catch (Exception e) {
-			throw new BusinessException(Constants.FAIL, e.getMessage());
-		}
-	}
-
-	@Override
-	public ResponseEntity<?> createBear(AccountInput input) {
-		try {
-			return response(toResult(pkgFilterRepo.crateBear(input)));
-		} catch (Exception e) {
-			throw new BusinessException(Constants.FAIL, e.getMessage());
-		}
-	}
-
-	@Override
-	public ResponseEntity<?> getAccountAsset(String custId) {
-
-		return response(toResult(accountAssetRepository.getAccountAsset(custId)));
-
-	}
-
-	@Override
-	public ResponseEntity<?> getAccountInvest(String custId) {
-
-		return response(toResult(accountInvestRepository.getAccountInvest(custId)));
-
-	}
-
-	@Override
-	public ResponseEntity<?> getProduct() {
-
-		return response(toResult(productGMRepository.getproduct()));
-
-	}
-
-	@Override
-	public ResponseEntity<?> getPayType() {
-		return response(toResult(payRepo.getPay()));
-	}
-
-	@Override
-	public ResponseEntity<?> getRate(String term, String productId, String amount) {
-		if (!productId.equals("15")){
-			return response(toResult(rateRepo.getRate(productId,term,amount)));
-		}
-		return response(toResult(rateRepo.getRateNoPeriod(productId, amount)));
-	}
-
-	@Override
-	public ResponseEntity<?> getTerm(String productId) {
-		return response(toResult(termRepo.getTerm(productId)));
-	}
-
-	@Override
-	public ResponseEntity<?> getAccountInvestByProduct(AccountInput accountInput) {
-		try {
-			ArrayList<InvestAssets> list = investAssetsRepository.getInvestAssets(accountInput.getCustId(),Integer.parseInt(accountInput.getProductId()));
-			ArrayList<InvestAssetResponse> investAssetResponseList = new ArrayList<>();
-			BearRequest bearRequest = new BearRequest();
-
-			bearRequest.setPayType("2");
-			bearRequest.setPid(accountInput.getProductId());
-			if (!accountInput.getProductId().equals("15")) {
-				list.forEach((element) -> {
-					bearRequest.setTerm(element.getTerm());
-					bearRequest.setAmt(element.getAmount());
-					bearRequest.setRate(element.getRate());
-					InvestAssetResponse response = new InvestAssetResponse();
-					response.setAmount(element.getAmount());
-					response.setRate(element.getRate());
-					response.setDocumentno(element.getDocumentno());
-					response.setTerm(element.getTerm());
-					response.setProfit(Utils.getProductInfo(bearRequest).getMonthlyProfit());
-					String startDate = element.getStart_date().replace("00:00:00", "");
-					startDate = startDate.replace(" ", "");
-					LocalDate date = LocalDate.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE);
-					startDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-					element.setStart_date(startDate);
-					String endDate = element.getEnd_date().replace("00", "");
-					endDate = endDate.replace(":", "");
-					endDate = endDate.replace(" ", "");
-					date = LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE);
-					endDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-					element.setEnd_date(endDate);
-					response.setEnd_date(endDate);
-					response.setStart_date(startDate);
-					investAssetResponseList.add(response);
-
-				});
-			}
-
-			return response(toResult(investAssetResponseList));
-		}catch (Exception e){
-			throw new BusinessException("11",e.getMessage());
-		}
+    @Override
+    public ResponseEntity<?> updateReferenceId(AccountInput input) {
+        NotifyEntity notify = notifyRepo.updateReferenceId(input.getCustId(), input.getPv_refId());
+        if (!notify.getPStatus().equals("01")) {
+            throw new BusinessException(notify.getPStatus(), notify.getDes());
+        }
+        return response(toResult(notify));
+    }
 
 
-	}
+    @Override
+    public String checkSession(String session) {
+        logger.info("[" + session + "] << checkSession >>");
+        if (StringUtil.isEmty(session))
+            throw new BusinessException("user or pass invalid");
 
-	@Override
-	public ResponseEntity<?> getProductInfo(BearRequest bearRequest) {
-		try {
-			return response(toResult(Utils.getProductInfo(bearRequest)));
-		} catch (Exception e) {
-			throw new BusinessException(Constants.FAIL, e.getMessage());
-		}
+        Optional<UserOnline> userOnline = userOnlineRepo.findBySession(session);
+        if (!userOnline.isPresent())
 
-	}
+            throw new BusinessException(ErrorCode.SESSION_TIMEOUT, ErrorCode.SESSION_TIMEOUT_DESCRIPTION);
 
-	@Override
-	public ResponseEntity<?> getCoin(String cif) {
-		return response(toResult(coinRepo.getCoin(cif)));
-	}
+        return userOnline.get().getCustId();
+    }
 
-	@Override
-	public ResponseEntity<?> changeCoin(AccountInput input) {
-		return response(toResult(pkgFilterRepo.changeCoin(input)));
-	}
+    @Override
+    public ResponseEntity<?> getTransHistory(String customerId) {
 
-	@Override
-	public ResponseEntity<?> updateReferenceId(AccountInput input) {
-		return response(toResult(pkgFilterRepo.updateReferenceId(input)));
-	}
+        return response(toResult(pkgFilterRepo.getTransHistory(customerId)));
 
-
-	@Override
-	public String checkSession(String session) {
-		logger.info("[" + session + "] << checkSession >>");
-		if (StringUtil.isEmty(session))
-			throw new BusinessException("user or pass invalid");
-
-		Optional<UserOnline> userOnline = userOnlineRepo.findBySession(session);
-		if (!userOnline.isPresent())
-
-			throw new BusinessException(ErrorCode.SESSION_TIMEOUT, ErrorCode.SESSION_TIMEOUT_DESCRIPTION);
-
-		return userOnline.get().getCustId();
-	}
-
-	@Override
-	public ResponseEntity<?> getTransHistory(String customerId) {
-
-		return response(toResult(pkgFilterRepo.getTransHistory(customerId)));
-
-	}
+    }
 
 }

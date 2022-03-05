@@ -557,13 +557,13 @@ public class PackageFilterRepository {
     }
 
     public Object getTerm(String pId) {
-        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
-                .withProcedureName("getTerm")
-                .declareParameters(new SqlParameter("pv_pid", Types.NUMERIC))
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("pck_test")
+                .withProcedureName("duytest")
+                .declareParameters(new SqlParameter("p_status", Types.NUMERIC))
                 .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
 
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("pv_pid", pId);
+        params.addValue("p_status", pId);
         Map<String, Object> map = jdbcCall.execute(params);
         ArrayList<Object> arrayList = (ArrayList<Object>) map.get("pv_refcursor");
         if (arrayList.size() == 0) {
