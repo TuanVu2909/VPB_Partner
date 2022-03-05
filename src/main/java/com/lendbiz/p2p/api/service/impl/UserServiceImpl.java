@@ -163,10 +163,14 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> getRate(String term, String productId, String amount) {
-        if (!productId.equals("15")) {
-            return response(toResult(rateRepo.getRate(productId, term, amount)));
-        }
-        return response(toResult(rateRepo.getRateNoPeriod(productId, amount)));
+
+        ArrayList<RateEntity> list = rateRepo.getRatePro(productId, term, amount);
+        if (list.size() == 0)
+            throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+
+        return response(toResult(list));
+
+
     }
 
     @Override
@@ -181,42 +185,44 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     public ResponseEntity<?> getAccountInvestByProduct(AccountInput accountInput) {
         try {
-            ArrayList<InvestAssets> list = investAssetsRepository.getInvestAssets(accountInput.getCustId(), Integer.parseInt(accountInput.getProductId()));
-            ArrayList<InvestAssetResponse> investAssetResponseList = new ArrayList<>();
-            BearRequest bearRequest = new BearRequest();
+            ArrayList<InvestAssets> list = investAssetsRepository.getAccountInvestByProduct(accountInput.getCustId(), accountInput.getProductId());
+            if (list.size() == 0)
+                throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+//            ArrayList<InvestAssetResponse> investAssetResponseList = new ArrayList<>();
+//            BearRequest bearRequest = new BearRequest();
+//
+//            bearRequest.setPayType("2");
+//            bearRequest.setPid(accountInput.getProductId());
+//            if (!accountInput.getProductId().equals("15")) {
+//                list.forEach((element) -> {
+//                    bearRequest.setTerm(element.getTerm());
+//                    bearRequest.setAmt(element.getAmount());
+//                    bearRequest.setRate(element.getRate());
+//                    InvestAssetResponse response = new InvestAssetResponse();
+//                    response.setAmount(element.getAmount());
+//                    response.setRate(element.getRate());
+//                    response.setDocumentno(element.getDocumentno());
+//                    response.setTerm(element.getTerm());
+//                    response.setProfit(Utils.getProductInfo(bearRequest).getMonthlyProfit());
+//                    String startDate = element.getStart_date().replace("00:00:00", "");
+//                    startDate = startDate.replace(" ", "");
+//                    LocalDate date = LocalDate.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE);
+//                    startDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+//                    element.setStart_date(startDate);
+//                    String endDate = element.getEnd_date().replace("00", "");
+//                    endDate = endDate.replace(":", "");
+//                    endDate = endDate.replace(" ", "");
+//                    date = LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE);
+//                    endDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+//                    element.setEnd_date(endDate);
+//                    response.setEnd_date(endDate);
+//                    response.setStart_date(startDate);
+//                    investAssetResponseList.add(response);
+//
+//                });
+//            }
 
-            bearRequest.setPayType("2");
-            bearRequest.setPid(accountInput.getProductId());
-            if (!accountInput.getProductId().equals("15")) {
-                list.forEach((element) -> {
-                    bearRequest.setTerm(element.getTerm());
-                    bearRequest.setAmt(element.getAmount());
-                    bearRequest.setRate(element.getRate());
-                    InvestAssetResponse response = new InvestAssetResponse();
-                    response.setAmount(element.getAmount());
-                    response.setRate(element.getRate());
-                    response.setDocumentno(element.getDocumentno());
-                    response.setTerm(element.getTerm());
-                    response.setProfit(Utils.getProductInfo(bearRequest).getMonthlyProfit());
-                    String startDate = element.getStart_date().replace("00:00:00", "");
-                    startDate = startDate.replace(" ", "");
-                    LocalDate date = LocalDate.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE);
-                    startDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-                    element.setStart_date(startDate);
-                    String endDate = element.getEnd_date().replace("00", "");
-                    endDate = endDate.replace(":", "");
-                    endDate = endDate.replace(" ", "");
-                    date = LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE);
-                    endDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-                    element.setEnd_date(endDate);
-                    response.setEnd_date(endDate);
-                    response.setStart_date(startDate);
-                    investAssetResponseList.add(response);
-
-                });
-            }
-
-            return response(toResult(investAssetResponseList));
+            return response(toResult(list));
         } catch (Exception e) {
             throw new BusinessException("11", e.getMessage());
         }

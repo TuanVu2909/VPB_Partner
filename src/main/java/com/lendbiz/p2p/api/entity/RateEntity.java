@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NamedStoredProcedureQueries({ //
-        @NamedStoredProcedureQuery(name = "RateEntity.getRate", resultClasses = RateEntity.class, procedureName = "pck_gm.getRate", parameters = { //
+        @NamedStoredProcedureQuery(name = "RateEntity.getRatePro", resultClasses = RateEntity.class, procedureName = "pck_gm.getRate", parameters = { //
                 @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
                 @StoredProcedureParameter(name = "pv_pid", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "pv_term", mode = ParameterMode.IN, type = String.class),
@@ -17,11 +17,10 @@ import javax.persistence.*;
 })
 public class RateEntity {
     @Id
-    @Column(name = "paytype")
-    private  String paytype;
     @Column(name = "term")
     private String term;
     @Column(name = "rate")
     private String rate;
-
+    @Column(name = "paytype")
+    private  String paytype;
 }

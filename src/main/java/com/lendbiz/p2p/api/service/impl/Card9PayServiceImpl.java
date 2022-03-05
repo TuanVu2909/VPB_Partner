@@ -76,11 +76,12 @@ public class Card9PayServiceImpl extends BaseResponse<NinePayServiceImpl> {
     public ResponseEntity<?> getTranTest(String cif) {
         return response(toResult(card9PayRepository.findByCustId(cif)));
     }
-
+@Autowired
+RateRepo rateRepo;
     public ResponseEntity<?> getP() {
         try {
             System.out.println("2323");
-            return response(toResult(notifyRepo.insert_trans9pay("012418", "012419", "14", "12418", "1", "âzzz", "3482374837")));
+            return response(toResult(rateRepo.getRatePro("12","6.5","10000000")));
         } catch (Exception e) {
             throw new BusinessException("11", e.getMessage());
         }

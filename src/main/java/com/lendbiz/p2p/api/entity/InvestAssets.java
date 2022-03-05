@@ -11,6 +11,13 @@ import javax.persistence.*;
 @NoArgsConstructor
 @ToString
 @Entity
+@NamedStoredProcedureQueries({ //
+        @NamedStoredProcedureQuery(name = "InvestAssets.getAccountInvestByProduct", resultClasses = InvestAssets.class, procedureName = "pck_gm.getAccountInvestByProduct", parameters = { //
+                @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
+                @StoredProcedureParameter(name = "pv_custId", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_pid", mode = ParameterMode.IN, type = String.class)
+        }) //
+})
 public class InvestAssets {
     @Id
     @Column(name = "DOCUMENTNO")
@@ -21,6 +28,8 @@ public class InvestAssets {
     private String term;
     @Column(name = "RATE")
     private String rate;
+    @Column(name = "estint")
+    private String estint;
     @Column(name = "START_DATE")
     private String start_date;
     @Column(name = "END_DATE")

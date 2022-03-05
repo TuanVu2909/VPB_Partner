@@ -133,6 +133,7 @@ public class UserController {
     }
 
     @GetMapping("/get-rate")
+    @Transactional(readOnly = true)
     public ResponseEntity<?> getRate(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestParam("pid") String pId,
             @RequestParam("term") String term, @RequestParam("amount") String amount)
@@ -142,6 +143,7 @@ public class UserController {
     }
 
     @GetMapping("/get-account-invest-by-product")
+    @Transactional(readOnly = true)
     public ResponseEntity<?> getAccountInvestByProduct(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestParam("cif") String cif,
             @RequestParam("pid") String pId)

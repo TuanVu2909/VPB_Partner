@@ -1,6 +1,7 @@
 package com.lendbiz.p2p.api.repository;
 
 import com.lendbiz.p2p.api.entity.AccountAssetEntity;
+import com.lendbiz.p2p.api.entity.Card9PayEntity_v2;
 import com.lendbiz.p2p.api.entity.InvestAssets;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,5 +18,7 @@ public interface InvestAssetsRepository extends JpaRepository<InvestAssets, Stri
             "        where cif = :pv_custId and invest_type = :pv_pid", nativeQuery = true)
     ArrayList<InvestAssets> getInvestAssets(@Param("pv_custId")String cif, @Param("pv_pid")int pid);
 
+    @Procedure("InvestAssets.getAccountInvestByProduct")
+    ArrayList<InvestAssets> getAccountInvestByProduct(@Param("pv_custId")String cif, @Param("pv_pid")String pid);
 
 }
