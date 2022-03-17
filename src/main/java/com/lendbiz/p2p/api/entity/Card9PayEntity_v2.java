@@ -18,9 +18,11 @@ import lombok.Setter;
 
 @Entity
 @NamedStoredProcedureQueries({ //
-        @NamedStoredProcedureQuery(name = "Card9PayEntity_v2.findViaProcedure", procedureName = "PKG_API.GET_NINE_PAY_TRANS", resultClasses = Card9PayEntity_v2.class, parameters = { //
+        @NamedStoredProcedureQuery(name = "Card9PayEntity_v2.findViaProcedure", procedureName = "PKG_API.FIND_TRANS_BY_DATE", resultClasses = Card9PayEntity_v2.class, parameters = { //
                 @StoredProcedureParameter(name = "p_cursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
-                @StoredProcedureParameter(name = "p_custId", mode = ParameterMode.IN, type = String.class), }) //
+                @StoredProcedureParameter(name = "p_custId", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "p_sdate", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "p_edate", mode = ParameterMode.IN, type = String.class),}) //
 })
 @Getter
 @Setter
