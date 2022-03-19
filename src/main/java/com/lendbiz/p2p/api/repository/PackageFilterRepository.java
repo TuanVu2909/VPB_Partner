@@ -155,79 +155,116 @@ public class PackageFilterRepository {
         return entry.getValue();
     }
 
+    // public Object reqJoin(ReqJoinRequest reqJoinRequest) {
+
+    // SimpleJdbcCall jdbcCall = new
+    // SimpleJdbcCall(jdbcTemplate).withCatalogName("PKG_API_AUTHENTICATION")
+    // .withProcedureName("REQJOIN").declareParameters(new SqlParameter("pv_Type",
+    // Types.VARCHAR))
+    // .declareParameters(new SqlParameter("pv_Fullname", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_Sex", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_DOB", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_Place", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_IDCode", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_IDDate", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_IDPlace", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_OrgAddress", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_Address", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_IDWard", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_IDDistrict", Types.INTEGER))
+    // .declareParameters(new SqlParameter("Pv_Phone", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_Mobile", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_Email", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_BankAccount", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_Bank", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_Address", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_TaxNo", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_Online", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_ProductInfo", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_ConsultalInfo", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_Position", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_Job", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_exFullname", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_exPosition", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_exJob", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_exMobile", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("Pv_ExEmail", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("pv_ExAddress", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("pv_ExBank", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("pv_ExSTK", Types.VARCHAR))
+    // .declareParameters(new SqlParameter("pv_password", Types.VARCHAR))
+    // .declareParameters(new SqlOutParameter("PV_REFCURSOR", Types.REF_CURSOR));
+
+    // MapSqlParameterSource params = new MapSqlParameterSource();
+    // params.addValue("pv_Type", reqJoinRequest.getType());
+    // params.addValue("pv_Fullname", reqJoinRequest.getFullName());
+    // params.addValue("Pv_Sex", reqJoinRequest.getSex());
+    // params.addValue("Pv_DOB", reqJoinRequest.getDob());
+    // params.addValue("Pv_Place", reqJoinRequest.getPlace());
+    // params.addValue("Pv_IDCode", reqJoinRequest.getIdCode());
+    // params.addValue("Pv_IDDate", reqJoinRequest.getIdDate());
+    // params.addValue("Pv_IDPlace", reqJoinRequest.getIdPlace());
+    // params.addValue("Pv_OrgAddress", reqJoinRequest.getOrgAddress());
+    // params.addValue("Pv_Address", reqJoinRequest.getAddress());
+    // params.addValue("Pv_IDWard", reqJoinRequest.getIdWard());
+    // params.addValue("Pv_IDDistrict", reqJoinRequest.getIdDistrict());
+    // params.addValue("Pv_Phone", reqJoinRequest.getPhone());
+    // params.addValue("Pv_Mobile", reqJoinRequest.getMobile());
+    // params.addValue("Pv_Email", reqJoinRequest.getEmail());
+    // params.addValue("Pv_BankAccount", reqJoinRequest.getBankAccount());
+    // params.addValue("Pv_Bank", reqJoinRequest.getBank());
+    // params.addValue("Pv_TaxNo", reqJoinRequest.getTaxNo());
+    // params.addValue("Pv_Online", reqJoinRequest.getOnline());
+    // params.addValue("Pv_MatchOrdSMS", reqJoinRequest.getMatchOrdSms());
+    // params.addValue("Pv_ProductInfo", reqJoinRequest.getProductInfo());
+    // params.addValue("Pv_ConsultalInfo", reqJoinRequest.getConsultalInfo());
+    // params.addValue("Pv_OfficeName", reqJoinRequest.getOfficeName());
+    // params.addValue("Pv_Position", reqJoinRequest.getPosition());
+    // params.addValue("Pv_Job", reqJoinRequest.getJob());
+    // params.addValue("Pv_exFullname", reqJoinRequest.getExFullName());
+    // params.addValue("Pv_exPosition", reqJoinRequest.getExPosition());
+    // params.addValue("Pv_exJob", reqJoinRequest.getExJob());
+    // params.addValue("Pv_exMobile", reqJoinRequest.getExMobile());
+    // params.addValue("Pv_ExEmail", reqJoinRequest.getExEmail());
+    // params.addValue("pv_ExAddress", reqJoinRequest.getExAddress());
+    // params.addValue("pv_ExBank", reqJoinRequest.getExBank());
+    // params.addValue("pv_ExSTK", reqJoinRequest.getExStk());
+    // params.addValue("pv_password", reqJoinRequest.getPassword());
+
+    // Map<String, Object> map = jdbcCall.execute(params);
+    // Map.Entry<String, Object> entry = map.entrySet().iterator().next();
+
+    // String body = JsonMapper.writeValueAsString(entry.getValue());
+
+    // ObjectMapper mapper = new ObjectMapper();
+    // JsonNode root;
+    // try {
+    // root = mapper.readTree(body);
+    // if (root.get(0) != null && root.get(0).get(":B1") != null &&
+    // root.get(0).get(":B2") != null) {
+    // // responseId = root.get(0).get(":B1").textValue();
+    // } else {
+    // throw new BusinessException(Constants.FAIL,
+    // root.get(0).get("ERRMSG").textValue());
+    // }
+
+    // } catch (JsonProcessingException e) {
+    // throw new BusinessException(ErrorCode.FAILED_TO_JSON,
+    // ErrorCode.FAILED_TO_JSON_DESCRIPTION);
+    // }
+
+    // return entry.getValue();
+    // }
+
     public Object reqJoin(ReqJoinRequest reqJoinRequest) {
 
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PKG_API_AUTHENTICATION")
-                .withProcedureName("REQJOIN").declareParameters(new SqlParameter("pv_Type", Types.VARCHAR))
-                .declareParameters(new SqlParameter("pv_Fullname", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_Sex", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_DOB", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_Place", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_IDCode", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_IDDate", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_IDPlace", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_OrgAddress", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_Address", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_IDWard", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_IDDistrict", Types.INTEGER))
-                .declareParameters(new SqlParameter("Pv_Phone", Types.VARCHAR))
+                .withProcedureName("REQJOIN_V2")
                 .declareParameters(new SqlParameter("Pv_Mobile", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_Email", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_BankAccount", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_Bank", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_Address", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_TaxNo", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_Online", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_ProductInfo", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_ConsultalInfo", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_Position", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_Job", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_exFullname", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_exPosition", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_exJob", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_exMobile", Types.VARCHAR))
-                .declareParameters(new SqlParameter("Pv_ExEmail", Types.VARCHAR))
-                .declareParameters(new SqlParameter("pv_ExAddress", Types.VARCHAR))
-                .declareParameters(new SqlParameter("pv_ExBank", Types.VARCHAR))
-                .declareParameters(new SqlParameter("pv_ExSTK", Types.VARCHAR))
-                .declareParameters(new SqlParameter("pv_password", Types.VARCHAR))
                 .declareParameters(new SqlOutParameter("PV_REFCURSOR", Types.REF_CURSOR));
 
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("pv_Type", reqJoinRequest.getType());
-        params.addValue("pv_Fullname", reqJoinRequest.getFullName());
-        params.addValue("Pv_Sex", reqJoinRequest.getSex());
-        params.addValue("Pv_DOB", reqJoinRequest.getDob());
-        params.addValue("Pv_Place", reqJoinRequest.getPlace());
-        params.addValue("Pv_IDCode", reqJoinRequest.getIdCode());
-        params.addValue("Pv_IDDate", reqJoinRequest.getIdDate());
-        params.addValue("Pv_IDPlace", reqJoinRequest.getIdPlace());
-        params.addValue("Pv_OrgAddress", reqJoinRequest.getOrgAddress());
-        params.addValue("Pv_Address", reqJoinRequest.getAddress());
-        params.addValue("Pv_IDWard", reqJoinRequest.getIdWard());
-        params.addValue("Pv_IDDistrict", reqJoinRequest.getIdDistrict());
-        params.addValue("Pv_Phone", reqJoinRequest.getPhone());
         params.addValue("Pv_Mobile", reqJoinRequest.getMobile());
-        params.addValue("Pv_Email", reqJoinRequest.getEmail());
-        params.addValue("Pv_BankAccount", reqJoinRequest.getBankAccount());
-        params.addValue("Pv_Bank", reqJoinRequest.getBank());
-        params.addValue("Pv_TaxNo", reqJoinRequest.getTaxNo());
-        params.addValue("Pv_Online", reqJoinRequest.getOnline());
-        params.addValue("Pv_MatchOrdSMS", reqJoinRequest.getMatchOrdSms());
-        params.addValue("Pv_ProductInfo", reqJoinRequest.getProductInfo());
-        params.addValue("Pv_ConsultalInfo", reqJoinRequest.getConsultalInfo());
-        params.addValue("Pv_OfficeName", reqJoinRequest.getOfficeName());
-        params.addValue("Pv_Position", reqJoinRequest.getPosition());
-        params.addValue("Pv_Job", reqJoinRequest.getJob());
-        params.addValue("Pv_exFullname", reqJoinRequest.getExFullName());
-        params.addValue("Pv_exPosition", reqJoinRequest.getExPosition());
-        params.addValue("Pv_exJob", reqJoinRequest.getExJob());
-        params.addValue("Pv_exMobile", reqJoinRequest.getExMobile());
-        params.addValue("Pv_ExEmail", reqJoinRequest.getExEmail());
-        params.addValue("pv_ExAddress", reqJoinRequest.getExAddress());
-        params.addValue("pv_ExBank", reqJoinRequest.getExBank());
-        params.addValue("pv_ExSTK", reqJoinRequest.getExStk());
-        params.addValue("pv_password", reqJoinRequest.getPassword());
 
         Map<String, Object> map = jdbcCall.execute(params);
         Map.Entry<String, Object> entry = map.entrySet().iterator().next();
@@ -406,7 +443,6 @@ public class PackageFilterRepository {
                 }
             }
 
-
         } catch (JsonProcessingException e) {
             throw new BusinessException(ErrorCode.FAILED_TO_JSON,
                     ErrorCode.FAILED_TO_JSON_DESCRIPTION);
@@ -430,30 +466,31 @@ public class PackageFilterRepository {
         if (listContacts.size() == 0) {
             throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
         }
-//        BearRequest bearRequest = new BearRequest();
-//        bearRequest.setPayType("2");//        BearRequest bearRequest = new BearRequest();
-//        bearRequest.setPayType("2");
-//        bearRequest.setPid(accountInput.getProductId());
-//        if (!accountInput.getProductId().equals("15")) {
-//            listContacts.forEach((element) -> {
-//                bearRequest.setTerm(element.getTerm());
-//                bearRequest.setAmt(element.getAmount());
-//                bearRequest.setRate(element.getRate());
-//                element.setProfit(Utils.getProductInfo(bearRequest).getMonthlyProfit());
-//                String startDate = element.getStart_date().replace("00:00:00", "");
-//                startDate = startDate.replace(" ", "");
-//                LocalDate date = LocalDate.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE);
-//                startDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-//                element.setStart_date(startDate);
-//                String endDate = element.getEnd_date().replace("00", "");
-//                endDate = endDate.replace(":", "");
-//                endDate = endDate.replace(" ", "");
-//                date = LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE);
-//                endDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-//                element.setEnd_date(endDate);
-//
-//            });
-//        }
+        // BearRequest bearRequest = new BearRequest();
+        // bearRequest.setPayType("2");// BearRequest bearRequest = new BearRequest();
+        // bearRequest.setPayType("2");
+        // bearRequest.setPid(accountInput.getProductId());
+        // if (!accountInput.getProductId().equals("15")) {
+        // listContacts.forEach((element) -> {
+        // bearRequest.setTerm(element.getTerm());
+        // bearRequest.setAmt(element.getAmount());
+        // bearRequest.setRate(element.getRate());
+        // element.setProfit(Utils.getProductInfo(bearRequest).getMonthlyProfit());
+        // String startDate = element.getStart_date().replace("00:00:00", "");
+        // startDate = startDate.replace(" ", "");
+        // LocalDate date = LocalDate.parse(startDate,
+        // DateTimeFormatter.ISO_LOCAL_DATE);
+        // startDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        // element.setStart_date(startDate);
+        // String endDate = element.getEnd_date().replace("00", "");
+        // endDate = endDate.replace(":", "");
+        // endDate = endDate.replace(" ", "");
+        // date = LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE);
+        // endDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        // element.setEnd_date(endDate);
+        //
+        // });
+        // }
         return listContacts;
     }
 
@@ -499,7 +536,6 @@ public class PackageFilterRepository {
         params.addValue("pstatus", entity.getPay_status());
         params.addValue("scode", entity.getSeri_code());
         params.addValue("ccode", entity.getCard_code());
-
 
         Map<String, Object> map = jdbcCall.execute(params);
         String result = map.get("rs").toString();
