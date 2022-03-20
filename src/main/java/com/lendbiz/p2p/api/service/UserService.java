@@ -5,7 +5,7 @@ import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.request.BearRequest;
 import com.lendbiz.p2p.api.request.LoginRequest;
 import com.lendbiz.p2p.api.request.ReqJoinRequest;
-
+import com.lendbiz.p2p.api.request.SetAccountPasswordRequest;
 import com.lendbiz.p2p.api.response.BearResponse;
 import org.springframework.http.ResponseEntity;
 
@@ -25,22 +25,35 @@ public interface UserService {
 	// ReqJoin
 	public ResponseEntity<?> register(ReqJoinRequest reqJoinRequest);
 
-
 	public ResponseEntity<?> verifyAcc(VerifyAccountInput input);
-	public ResponseEntity<?> createBear(AccountInput input);
-	public ResponseEntity<?> getAccountAsset(String custId);
-	public ResponseEntity<?> getAccountInvest(String custId);
-	public ResponseEntity<?> getProduct();
-	public ResponseEntity<?> getPayType();
-	public ResponseEntity<?> getRate(String term,String productId,String amount);
-	public ResponseEntity<?> getTerm(String productId);
-	public ResponseEntity<?> getAccountInvestByProduct(AccountInput accountInput);
-	public ResponseEntity<?> getProductInfo(BearRequest bearRequest);
-	public ResponseEntity<?> getTransHistory(String customerId);
-	public ResponseEntity<?> getCoin(String cif);
-	public ResponseEntity<?> changeCoin(AccountInput input);
-	public ResponseEntity<?> updateReferenceId(AccountInput input);
 
+	public ResponseEntity<?> setAccountPassword(SetAccountPasswordRequest setAccountPasswordRequest);
+
+	public ResponseEntity<?> createBear(AccountInput input);
+
+	public ResponseEntity<?> getAccountAsset(String custId);
+
+	public ResponseEntity<?> getAccountInvest(String custId);
+
+	public ResponseEntity<?> getProduct();
+
+	public ResponseEntity<?> getPayType();
+
+	public ResponseEntity<?> getRate(String term, String productId, String amount);
+
+	public ResponseEntity<?> getTerm(String productId);
+
+	public ResponseEntity<?> getAccountInvestByProduct(AccountInput accountInput);
+
+	public ResponseEntity<?> getProductInfo(BearRequest bearRequest);
+
+	public ResponseEntity<?> getTransHistory(String customerId);
+
+	public ResponseEntity<?> getCoin(String cif);
+
+	public ResponseEntity<?> changeCoin(AccountInput input);
+
+	public ResponseEntity<?> updateReferenceId(AccountInput input);
 
 	String checkSession(String session);
 

@@ -15,32 +15,48 @@
  */
 package com.lendbiz.p2p.api.service.impl;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
-import com.lendbiz.p2p.api.entity.*;
+import com.lendbiz.p2p.api.entity.AccountAssetEntity;
+import com.lendbiz.p2p.api.entity.AccountInput;
+import com.lendbiz.p2p.api.entity.AccountInvest;
+import com.lendbiz.p2p.api.entity.CoinEntity;
+import com.lendbiz.p2p.api.entity.FirstPasswordEntity;
+import com.lendbiz.p2p.api.entity.InvestAssets;
+import com.lendbiz.p2p.api.entity.NotifyEntity;
+import com.lendbiz.p2p.api.entity.RateEntity;
+import com.lendbiz.p2p.api.entity.UserOnline;
+import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
-import com.lendbiz.p2p.api.model.exception.InputInvalidExeption;
-import com.lendbiz.p2p.api.repository.*;
+import com.lendbiz.p2p.api.repository.AccountAssetRepository;
+import com.lendbiz.p2p.api.repository.AccountInvestRepository;
+import com.lendbiz.p2p.api.repository.CoinRepo;
+import com.lendbiz.p2p.api.repository.FirstPasswordRepository;
+import com.lendbiz.p2p.api.repository.InvestAssetsRepository;
+import com.lendbiz.p2p.api.repository.NotifyRepo;
+import com.lendbiz.p2p.api.repository.PackageFilterRepository;
+import com.lendbiz.p2p.api.repository.PayRepo;
+import com.lendbiz.p2p.api.repository.ProductGMRepository;
+import com.lendbiz.p2p.api.repository.RateRepo;
+import com.lendbiz.p2p.api.repository.TermRepo;
+import com.lendbiz.p2p.api.repository.UserOnlineRepository;
 import com.lendbiz.p2p.api.request.BearRequest;
 import com.lendbiz.p2p.api.request.LoginRequest;
 import com.lendbiz.p2p.api.request.ReqJoinRequest;
+import com.lendbiz.p2p.api.request.SetAccountPasswordRequest;
 import com.lendbiz.p2p.api.response.BaseResponse;
-import com.lendbiz.p2p.api.response.InvestAssetResponse;
 import com.lendbiz.p2p.api.service.UserService;
 import com.lendbiz.p2p.api.utils.StringUtil;
-
 import com.lendbiz.p2p.api.utils.Utils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.swing.text.IconView;
 
 /***********************************************************************
  *
@@ -67,6 +83,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     AccountInvestRepository accountInvestRepository;
     @Autowired
+    FirstPasswordRepository firstPasswordRepository;
+    @Autowired
     RateRepo rateRepo;
     @Autowired
     TermRepo termRepo;
@@ -77,13 +95,23 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     NotifyRepo notifyRepo;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public ResponseEntity<?> login(LoginRequest loginRequest) {
+        // List<Object> response;
+        String getEncodedPassword = userOnlineRepo.getPwd(loginRequest.getUsername());
 
-        List<Object> response = (ArrayList) pkgFilterRepo.login(loginRequest.getUsername(), loginRequest.getPassword(),
-                loginRequest.getDeviceId());
+        if (!passwordEncoder.matches(loginRequest.getPassword(), getEncodedPassword)) {
+            // response = (ArrayList) pkgFilterRepo.login(loginRequest.getUsername(),
+            // getEncodedPassword,
+            // loginRequest.getDeviceId());
+            // } else {
+            throw new BusinessException(ErrorCode.FAIL_LOGIN, ErrorCode.FAIL_LOGIN_DESCRIPTION);
+        }
 
-        return response(toResult(response.get(0)));
+        return response(toResult("Đăng nhập thành công"));
 
     }
 
@@ -104,10 +132,22 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     }
 
     @Override
+    public ResponseEntity<?> setAccountPassword(SetAccountPasswordRequest setAccountPasswordRequest) {
+        FirstPasswordEntity entity;
+        try {
+            entity = firstPasswordRepository.firstPassword(setAccountPasswordRequest.getCustId(),
+                    passwordEncoder.encode(setAccountPasswordRequest.getPassword()));
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
+        }
+
+        return response(toResult(entity));
+    }
+
+    @Override
     public ResponseEntity<?> createBear(AccountInput input) {
         try {
-            NotifyEntity notify = notifyRepo.createBear(input.getCustId()
-                    , input.getProductId(),
+            NotifyEntity notify = notifyRepo.createBear(input.getCustId(), input.getProductId(),
                     input.getTerm(),
                     input.getRate(),
                     input.getAmt(),
@@ -170,7 +210,6 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
         return response(toResult(list));
 
-
     }
 
     @Override
@@ -185,48 +224,49 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     public ResponseEntity<?> getAccountInvestByProduct(AccountInput accountInput) {
         try {
-            ArrayList<InvestAssets> list = investAssetsRepository.getAccountInvestByProduct(accountInput.getCustId(), accountInput.getProductId());
+            ArrayList<InvestAssets> list = investAssetsRepository.getAccountInvestByProduct(accountInput.getCustId(),
+                    accountInput.getProductId());
             if (list.size() == 0)
                 throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
-//            ArrayList<InvestAssetResponse> investAssetResponseList = new ArrayList<>();
-//            BearRequest bearRequest = new BearRequest();
-//
-//            bearRequest.setPayType("2");
-//            bearRequest.setPid(accountInput.getProductId());
-//            if (!accountInput.getProductId().equals("15")) {
-//                list.forEach((element) -> {
-//                    bearRequest.setTerm(element.getTerm());
-//                    bearRequest.setAmt(element.getAmount());
-//                    bearRequest.setRate(element.getRate());
-//                    InvestAssetResponse response = new InvestAssetResponse();
-//                    response.setAmount(element.getAmount());
-//                    response.setRate(element.getRate());
-//                    response.setDocumentno(element.getDocumentno());
-//                    response.setTerm(element.getTerm());
-//                    response.setProfit(Utils.getProductInfo(bearRequest).getMonthlyProfit());
-//                    String startDate = element.getStart_date().replace("00:00:00", "");
-//                    startDate = startDate.replace(" ", "");
-//                    LocalDate date = LocalDate.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE);
-//                    startDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-//                    element.setStart_date(startDate);
-//                    String endDate = element.getEnd_date().replace("00", "");
-//                    endDate = endDate.replace(":", "");
-//                    endDate = endDate.replace(" ", "");
-//                    date = LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE);
-//                    endDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-//                    element.setEnd_date(endDate);
-//                    response.setEnd_date(endDate);
-//                    response.setStart_date(startDate);
-//                    investAssetResponseList.add(response);
-//
-//                });
-//            }
+            // ArrayList<InvestAssetResponse> investAssetResponseList = new ArrayList<>();
+            // BearRequest bearRequest = new BearRequest();
+            //
+            // bearRequest.setPayType("2");
+            // bearRequest.setPid(accountInput.getProductId());
+            // if (!accountInput.getProductId().equals("15")) {
+            // list.forEach((element) -> {
+            // bearRequest.setTerm(element.getTerm());
+            // bearRequest.setAmt(element.getAmount());
+            // bearRequest.setRate(element.getRate());
+            // InvestAssetResponse response = new InvestAssetResponse();
+            // response.setAmount(element.getAmount());
+            // response.setRate(element.getRate());
+            // response.setDocumentno(element.getDocumentno());
+            // response.setTerm(element.getTerm());
+            // response.setProfit(Utils.getProductInfo(bearRequest).getMonthlyProfit());
+            // String startDate = element.getStart_date().replace("00:00:00", "");
+            // startDate = startDate.replace(" ", "");
+            // LocalDate date = LocalDate.parse(startDate,
+            // DateTimeFormatter.ISO_LOCAL_DATE);
+            // startDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            // element.setStart_date(startDate);
+            // String endDate = element.getEnd_date().replace("00", "");
+            // endDate = endDate.replace(":", "");
+            // endDate = endDate.replace(" ", "");
+            // date = LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE);
+            // endDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            // element.setEnd_date(endDate);
+            // response.setEnd_date(endDate);
+            // response.setStart_date(startDate);
+            // investAssetResponseList.add(response);
+            //
+            // });
+            // }
 
             return response(toResult(list));
         } catch (Exception e) {
             throw new BusinessException("11", e.getMessage());
         }
-
 
     }
 
@@ -268,7 +308,6 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         }
         return response(toResult(notify));
     }
-
 
     @Override
     public String checkSession(String session) {

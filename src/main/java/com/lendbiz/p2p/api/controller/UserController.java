@@ -9,6 +9,7 @@ import com.lendbiz.p2p.api.repository.ProductGMRepository;
 import com.lendbiz.p2p.api.request.BearRequest;
 import com.lendbiz.p2p.api.request.LoginRequest;
 import com.lendbiz.p2p.api.request.ReqJoinRequest;
+import com.lendbiz.p2p.api.request.SetAccountPasswordRequest;
 import com.lendbiz.p2p.api.response.BearResponse;
 import com.lendbiz.p2p.api.response.InfoIdentity;
 import com.lendbiz.p2p.api.service.SavisService;
@@ -74,6 +75,14 @@ public class UserController {
             @RequestHeader("requestId") String requestId, @RequestBody VerifyAccountInput verifyAccountInput)
             throws BusinessException {
         return userService.verifyAcc(verifyAccountInput);
+    }
+
+    @PostMapping("/set-account-password")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> verifyAccount(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId, @RequestBody SetAccountPasswordRequest setAccountPasswordRequest)
+            throws BusinessException {
+        return userService.setAccountPassword(setAccountPasswordRequest);
     }
 
     @PostMapping("/create-bear")

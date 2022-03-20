@@ -19,6 +19,7 @@ import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.request.BearRequest;
 import com.lendbiz.p2p.api.request.InsertLogRequest;
 import com.lendbiz.p2p.api.request.ReqJoinRequest;
+import com.lendbiz.p2p.api.request.SetAccountPasswordRequest;
 import com.lendbiz.p2p.api.utils.JsonMapper;
 
 import com.lendbiz.p2p.api.utils.Utils;
@@ -301,6 +302,23 @@ public class PackageFilterRepository {
         params.addValue("pv_verifycode", verifyAccountInput.getVerifyCode());
         jdbcCall.execute(params);
         return "success";
+    }
+
+    public Object setFirstPassword(SetAccountPasswordRequest setAccountPasswordRequest) {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PKG_API_AUTHENTICATION")
+                .withProcedureName("FIRST_PASSWORD").declareParameters(new SqlParameter("pv_custId", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_Password", Types.VARCHAR))
+                .declareParameters(new SqlOutParameter("PV_REFCURSOR", Types.REF_CURSOR));
+        ;
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("pv_custid", setAccountPasswordRequest.getCustId());
+        params.addValue("pv_Password", setAccountPasswordRequest.getPassword());
+        Map<String, Object> map = jdbcCall.execute(params);
+        ArrayList<Object> arrayList = (ArrayList<Object>) map.get("PV_REFCURSOR");
+        if (arrayList.size() == 0) {
+            throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
+        }
+        return arrayList.get(0);
     }
 
     public Object getAccountAsset(String custId) {
