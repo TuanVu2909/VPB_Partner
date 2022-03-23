@@ -224,6 +224,15 @@ public class UserController {
         return userService.getProductInfo(bearRequest);
     }
 
+    @GetMapping("/bank-info")
+    public ResponseEntity<?> bankInfo(HttpServletRequest httpServletRequest,
+                                         @RequestHeader("requestId") String requestId)
+            throws BusinessException {
+        log.info("[" + requestId + "] << productInfo >>");
+
+        return userService.getBankInfo();
+    }
+
     @GetMapping("/get-bg-tran-his")
     public ResponseEntity<?> getTransHistory(HttpServletRequest httpServletRequest,
             @RequestHeader("session") String session,

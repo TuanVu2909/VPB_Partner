@@ -21,29 +21,9 @@ import java.util.Optional;
 
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
-import com.lendbiz.p2p.api.entity.AccountAssetEntity;
-import com.lendbiz.p2p.api.entity.AccountInput;
-import com.lendbiz.p2p.api.entity.AccountInvest;
-import com.lendbiz.p2p.api.entity.CoinEntity;
-import com.lendbiz.p2p.api.entity.FirstPasswordEntity;
-import com.lendbiz.p2p.api.entity.InvestAssets;
-import com.lendbiz.p2p.api.entity.NotifyEntity;
-import com.lendbiz.p2p.api.entity.RateEntity;
-import com.lendbiz.p2p.api.entity.UserOnline;
-import com.lendbiz.p2p.api.entity.VerifyAccountInput;
+import com.lendbiz.p2p.api.entity.*;
 import com.lendbiz.p2p.api.exception.BusinessException;
-import com.lendbiz.p2p.api.repository.AccountAssetRepository;
-import com.lendbiz.p2p.api.repository.AccountInvestRepository;
-import com.lendbiz.p2p.api.repository.CoinRepo;
-import com.lendbiz.p2p.api.repository.FirstPasswordRepository;
-import com.lendbiz.p2p.api.repository.InvestAssetsRepository;
-import com.lendbiz.p2p.api.repository.NotifyRepo;
-import com.lendbiz.p2p.api.repository.PackageFilterRepository;
-import com.lendbiz.p2p.api.repository.PayRepo;
-import com.lendbiz.p2p.api.repository.ProductGMRepository;
-import com.lendbiz.p2p.api.repository.RateRepo;
-import com.lendbiz.p2p.api.repository.TermRepo;
-import com.lendbiz.p2p.api.repository.UserOnlineRepository;
+import com.lendbiz.p2p.api.repository.*;
 import com.lendbiz.p2p.api.request.BearRequest;
 import com.lendbiz.p2p.api.request.LoginRequest;
 import com.lendbiz.p2p.api.request.ReqJoinRequest;
@@ -94,7 +74,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     CoinRepo coinRepo;
     @Autowired
     NotifyRepo notifyRepo;
-
+    @Autowired
+    BankRepository bankRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -307,6 +288,14 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             throw new BusinessException(notify.getPStatus(), notify.getDes());
         }
         return response(toResult(notify));
+    }
+
+    @Override
+    public ResponseEntity<?> getBankInfo() {
+        ArrayList<BankInfoEntity> list = (ArrayList<BankInfoEntity>) bankRepository.findAll();
+        if (list.size() == 0)
+            throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+        return response(toResult(list));
     }
 
     @Override

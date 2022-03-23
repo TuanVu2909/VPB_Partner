@@ -54,6 +54,7 @@ public interface UserService {
 	public ResponseEntity<?> changeCoin(AccountInput input);
 
 	public ResponseEntity<?> updateReferenceId(AccountInput input);
+	public ResponseEntity<?> getBankInfo();
 
 	String checkSession(String session);
 
