@@ -24,10 +24,7 @@ import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.*;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.*;
-import com.lendbiz.p2p.api.request.BearRequest;
-import com.lendbiz.p2p.api.request.LoginRequest;
-import com.lendbiz.p2p.api.request.ReqJoinRequest;
-import com.lendbiz.p2p.api.request.SetAccountPasswordRequest;
+import com.lendbiz.p2p.api.request.*;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.service.UserService;
 import com.lendbiz.p2p.api.utils.StringUtil;
@@ -52,6 +49,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Autowired
     PackageFilterRepository pkgFilterRepo;
+    @Autowired
+    RelationRepo relationRepo;
     @Autowired
     InvestAssetsRepository investAssetsRepository;
     @Autowired
@@ -78,8 +77,10 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     BankRepository bankRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+    @Autowired
+    BaoVietRepo baoVietRepo;
     @Override
+
     public ResponseEntity<?> login(LoginRequest loginRequest) {
         // List<Object> response;
         String getEncodedPassword = userOnlineRepo.getPwd(loginRequest.getUsername());
@@ -296,6 +297,54 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         if (list.size() == 0)
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         return response(toResult(list));
+    }
+
+    @Override
+    public ResponseEntity<?> getInsurancePackage() {
+        ArrayList<BaoVietEntity> list = baoVietRepo.getInsurancePackage();
+        if (list.size() == 0)
+            throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+        return response(toResult(list));
+    }
+
+    @Override
+    public ResponseEntity<?> getRelation() {
+            ArrayList<RelationEntity> list = relationRepo.getRelation();
+        if (list.size() == 0)
+            throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+        return response(toResult(list));
+    }
+
+    @Override
+    public ResponseEntity<?> createInsurance(InsuranceRequest insuranceRequest) {
+
+//        return response(toResult(pkgFilterRepo.createInsurance(insuranceRequest)));
+        return response(toResult(notifyRepo.createInsurance(insuranceRequest.getPv_custId(),
+                insuranceRequest.getPv_packageId(),
+                insuranceRequest.getPv_startDate(),
+                insuranceRequest.getPv_fee(),
+                insuranceRequest.getPv_beneficiaryFullName(),
+                insuranceRequest.getPv_beneficiaryBirthDate(),
+                insuranceRequest.getPv_beneficiaryIdNumber(),
+                insuranceRequest.getPv_RelationId(),
+                insuranceRequest.getPv_isSick(),
+                insuranceRequest.getPv_isTreatedIn3Years(),
+                insuranceRequest.getPv_isTreatedNext12Months(),
+                insuranceRequest.getPv_isTreatedSpecialIn3Years(),
+                insuranceRequest.getPv_isRejectInsurance(),
+                insuranceRequest.getPv_isNormal(),
+                insuranceRequest.getPv_isConfirm(),
+                insuranceRequest.getPv_insuredPersonFullName(),
+                insuranceRequest.getPv_insuredPersonBirthDate(),
+                insuranceRequest.getPv_insuredPersonGender(),
+                insuranceRequest.getPv_insuredPersonIdNumber(),
+                insuranceRequest.getPv_insuredPersonMobile(),
+                insuranceRequest.getPv_insuredPersonEmail(),
+                insuranceRequest.getPv_insuredPersonAddress(),
+                insuranceRequest.getPv_ParentInsuranceCode(),
+                insuranceRequest.getPv_InsuredRelationId(),
+                insuranceRequest.getPv_insuredPersonNationality())));
+
     }
 
     @Override

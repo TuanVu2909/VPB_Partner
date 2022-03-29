@@ -197,10 +197,10 @@ public class NinePayController {
 
     @GetMapping("/9pay/get-tt2")
     @Transactional(readOnly = true)
-    public ResponseEntity<?> getTransTest2(HttpServletRequest httpServletRequest,
+    public Object getTransTest2(HttpServletRequest httpServletRequest,
                                        @RequestParam("cif") String cId)
             throws BusinessException, UnsupportedEncodingException {
-        return card9PayService.getP();
+        return filterRepository.getTerm(cId);
 
     }
 

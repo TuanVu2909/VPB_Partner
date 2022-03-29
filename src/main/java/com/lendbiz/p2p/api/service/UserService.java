@@ -2,10 +2,7 @@ package com.lendbiz.p2p.api.service;
 
 import com.lendbiz.p2p.api.entity.AccountInput;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
-import com.lendbiz.p2p.api.request.BearRequest;
-import com.lendbiz.p2p.api.request.LoginRequest;
-import com.lendbiz.p2p.api.request.ReqJoinRequest;
-import com.lendbiz.p2p.api.request.SetAccountPasswordRequest;
+import com.lendbiz.p2p.api.request.*;
 import com.lendbiz.p2p.api.response.BearResponse;
 import org.springframework.http.ResponseEntity;
 
@@ -55,6 +52,10 @@ public interface UserService {
 
 	public ResponseEntity<?> updateReferenceId(AccountInput input);
 	public ResponseEntity<?> getBankInfo();
+
+	public ResponseEntity<?> getInsurancePackage();
+	public ResponseEntity<?> getRelation();
+	public ResponseEntity<?> createInsurance(InsuranceRequest insuranceRequest);
 
 	String checkSession(String session);
 
