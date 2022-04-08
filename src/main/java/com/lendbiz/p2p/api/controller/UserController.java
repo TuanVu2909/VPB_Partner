@@ -2,19 +2,29 @@ package com.lendbiz.p2p.api.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.lendbiz.p2p.api.configs.JwtProvider;
 import com.lendbiz.p2p.api.entity.AccountInput;
+import com.lendbiz.p2p.api.entity.User3GEntity;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.model.MyUserDetails;
 import com.lendbiz.p2p.api.repository.ProductGMRepository;
 import com.lendbiz.p2p.api.request.*;
 import com.lendbiz.p2p.api.response.BearResponse;
 import com.lendbiz.p2p.api.response.InfoIdentity;
+import com.lendbiz.p2p.api.response.MyResponse;
 import com.lendbiz.p2p.api.service.SavisService;
+import com.lendbiz.p2p.api.service.User3GService;
 import com.lendbiz.p2p.api.service.UserService;
 
 import com.lendbiz.p2p.api.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,9 +60,14 @@ public class UserController {
 
     @Autowired
     SavisService savisService;
+    @Autowired
+    JwtProvider provider;
+    @Autowired
+    User3GService user3GService;
+    @Autowired
+    AuthenticationManager authenticationManager;
 
-
-    @PostMapping("/login")
+    @PostMapping("/api/login")
     public ResponseEntity<?> login(HttpServletRequest httpServletRequest, @RequestHeader("requestId") String requestId,
             @RequestBody LoginRequest loginRequest) {
         log.info("[" + requestId + "] << login >>");
@@ -60,7 +75,7 @@ public class UserController {
         return userService.login(loginRequest);
     }
 
-    @PostMapping("/register")
+    @PostMapping("/api/register")
     public ResponseEntity<?> register(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestBody ReqJoinRequest reqJoinRequest)
             throws BusinessException {
@@ -69,14 +84,14 @@ public class UserController {
 
     }
 
-    @PostMapping("/verify-account")
+    @PostMapping("/api/verify-account")
     public ResponseEntity<?> verifyAccount(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestBody VerifyAccountInput verifyAccountInput)
             throws BusinessException {
         return userService.verifyAcc(verifyAccountInput);
     }
 
-    @PostMapping("/set-account-password")
+    @PostMapping("/api/set-account-password")
     @Transactional(readOnly = true)
     public ResponseEntity<?> verifyAccount(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestBody SetAccountPasswordRequest setAccountPasswordRequest)
@@ -84,7 +99,7 @@ public class UserController {
         return userService.setAccountPassword(setAccountPasswordRequest);
     }
 
-    @PostMapping("/create-bear")
+    @PostMapping("/api/create-bear")
     @Transactional(readOnly = true)
     public ResponseEntity<?> createBear(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
@@ -93,7 +108,7 @@ public class UserController {
         return userService.createBear(accountInput);
     }
 
-    @GetMapping("/get-account-asset")
+    @GetMapping("/api/get-account-asset")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getAccountAsset(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestParam String cif)
@@ -102,7 +117,7 @@ public class UserController {
         return userService.getAccountAsset(cif);
     }
 
-    @GetMapping("/get-account-invest")
+    @GetMapping("/api/get-account-invest")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getAccountInvest(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestParam String cif)
@@ -111,7 +126,7 @@ public class UserController {
         return userService.getAccountInvest(cif);
     }
 
-    @GetMapping("/get-product")
+    @GetMapping("/api/get-product")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getProduct(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId)
@@ -120,7 +135,7 @@ public class UserController {
         return userService.getProduct();
     }
 
-    @GetMapping("/get-paytype")
+    @GetMapping("/api/get-paytype")
     @Transactional(readOnly = true)
 
     public ResponseEntity<?> getPayType(HttpServletRequest httpServletRequest,
@@ -130,7 +145,7 @@ public class UserController {
         return userService.getPayType();
     }
 
-    @GetMapping("/get-term")
+    @GetMapping("/api/get-term")
     @Transactional(readOnly = true)
 
     public ResponseEntity<?> getTerm(HttpServletRequest httpServletRequest,
@@ -140,7 +155,7 @@ public class UserController {
         return userService.getTerm(pId);
     }
 
-    @GetMapping("/get-rate")
+    @GetMapping("/api/get-rate")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getRate(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestParam("pid") String pId,
@@ -150,7 +165,7 @@ public class UserController {
         return userService.getRate(term, pId, amount);
     }
 
-    @GetMapping("/get-account-invest-by-product")
+    @GetMapping("/api/get-account-invest-by-product")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getAccountInvestByProduct(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestParam("cif") String cif,
@@ -163,7 +178,7 @@ public class UserController {
         return userService.getAccountInvestByProduct(accountInput);
     }
 
-    @PostMapping("/verify-identity")
+    @PostMapping("/api/verify-identity")
     public ResponseEntity<?> verifyIdeEntity(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestHeader("session") String session,
             @RequestParam("id_file") MultipartFile idFile, @RequestParam("id_type") int idType)
@@ -173,7 +188,38 @@ public class UserController {
         InfoIdentity identity = new InfoIdentity();
         return savisService.callPredict(idFile, identity, idType);
     }
-    @PostMapping("/update-ref")
+
+
+    //Authorization
+
+
+    @PostMapping("/auth/signup")
+    public ResponseEntity<?> createUser3G(@RequestBody User3GEntity user) {
+
+       MyResponse response = new MyResponse();
+
+        response.setData("Đăng ký thành công");
+        response.setMessage("success");
+        response.setStatus("200");
+        user3GService.create(user);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+    @PostMapping("/auth/signin")
+    public ResponseEntity<?> signin(@RequestBody SignInReq req) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(req.getUsername(),req.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = provider.crateToken(authentication);
+        MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
+        MyResponse response = new MyResponse();
+        response.setData(token);
+        response.setMessage("ok");
+        response.setStatus("200");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/api/update-ref")
     @Transactional(readOnly = true)
     public ResponseEntity<?> updateReferenceId(HttpServletRequest httpServletRequest,
                                                @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
@@ -183,7 +229,7 @@ public class UserController {
 
     }
 
-    @GetMapping("/get-coin")
+    @GetMapping("/api/get-coin")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getCoin(HttpServletRequest httpServletRequest,
                                      @RequestHeader("requestId") String requestId, @RequestParam("cif") String cId)
@@ -194,7 +240,7 @@ public class UserController {
 
     }
 
-    @PostMapping("/change-coin")
+    @PostMapping("/api/change-coin")
     @Transactional(readOnly = true)
     public ResponseEntity<?> changeCoin(HttpServletRequest httpServletRequest,
                                         @RequestHeader("requestId") String requestId, @RequestBody AccountInput input)
@@ -204,7 +250,7 @@ public class UserController {
         return userService.changeCoin(input);
 
     }
-    @PostMapping("/verify-face")
+    @PostMapping("/api/verify-face")
     public ResponseEntity<?> verifyFace(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestHeader("session") String session,
             @RequestParam("front_file") MultipartFile frontFile, @RequestParam("selfie_file") MultipartFile selfieFile)
@@ -214,7 +260,7 @@ public class UserController {
         return savisService.callCheckSelfie(frontFile, selfieFile, custId);
     }
 
-    @PostMapping("/product-info")
+    @PostMapping("/api/product-info")
     public ResponseEntity<?> productInfo(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestBody BearRequest bearRequest)
             throws BusinessException {
@@ -223,7 +269,7 @@ public class UserController {
         return userService.getProductInfo(bearRequest);
     }
 
-    @GetMapping("/bank-info")
+    @GetMapping("/api/bank-info")
     public ResponseEntity<?> bankInfo(HttpServletRequest httpServletRequest,
                                          @RequestHeader("requestId") String requestId)
             throws BusinessException {
@@ -232,7 +278,7 @@ public class UserController {
         return userService.getBankInfo();
     }
 
-    @GetMapping("/get-ins-pck")
+    @GetMapping("/api/get-ins-pck")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getInsurancePackage(HttpServletRequest httpServletRequest,
                                       @RequestHeader("requestId") String requestId)
@@ -242,7 +288,7 @@ public class UserController {
         return userService.getInsurancePackage();
     }
 
-    @GetMapping("/get-relation")
+    @GetMapping("/api/bv/get-relation")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getRelation(HttpServletRequest httpServletRequest,
                                                  @RequestHeader("requestId") String requestId)
@@ -251,7 +297,7 @@ public class UserController {
 
         return userService.getRelation();
     }
-    @PostMapping("/create-ins")
+    @PostMapping("/api/create-ins")
     @Transactional(readOnly = true)
     public ResponseEntity<?> createInsurance(HttpServletRequest httpServletRequest,
                                              @RequestHeader("requestId") String requestId, @RequestBody InsuranceRequest request)
@@ -261,7 +307,7 @@ public class UserController {
         return userService.createInsurance(request);
     }
 
-    @GetMapping("/get-bg-tran-his")
+    @GetMapping("/api/get-bg-tran-his")
     public ResponseEntity<?> getTransHistory(HttpServletRequest httpServletRequest,
             @RequestHeader("session") String session,
             @RequestHeader("requestId") String requestId)

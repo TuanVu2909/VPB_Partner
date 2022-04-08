@@ -32,7 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
 import lombok.extern.log4j.Log4j2;
 
 @RestController
-@RequestMapping("/lendbiz")
+@RequestMapping("/lendbiz/api")
 @Log4j2
 public class NinePayController {
 
