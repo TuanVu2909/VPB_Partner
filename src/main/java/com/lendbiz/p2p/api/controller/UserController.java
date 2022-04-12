@@ -271,6 +271,37 @@ public class UserController {
     }
 
 
+    @GetMapping("/get-fund-list")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getFundList(HttpServletRequest httpServletRequest,
+                                         @RequestHeader("requestId") String requestId)
+            throws BusinessException {
+        log.info("[" + requestId + "] << getFundList >>");
+
+        return userService.getFundList();
+    }
+
+
+    @GetMapping("/get-invest-pk")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getInvestPackage(HttpServletRequest httpServletRequest,
+                                         @RequestHeader("requestId") String requestId)
+            throws BusinessException {
+        log.info("[" + requestId + "] << getInvestPackage >>");
+
+        return userService.getInvestPackage();
+    }
+
+    @GetMapping("/get-detail-pk")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getInvestPackageDetail(HttpServletRequest httpServletRequest,
+                                              @RequestHeader("requestId") String requestId, @RequestParam("pkId") String pkId)
+            throws BusinessException {
+        log.info("[" + requestId + "] << getInvestPackageDetail >>");
+
+        return userService.getInvestPackageDetail(pkId);
+    }
+
     @GetMapping("/get-bg-tran-his")
     public ResponseEntity<?> getTransHistory(HttpServletRequest httpServletRequest,
             @RequestHeader("session") String session,

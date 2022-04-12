@@ -58,6 +58,9 @@ public interface UserService {
 	public ResponseEntity<?> createInsurance(InsuranceRequest insuranceRequest);
 
 	public ResponseEntity<?> createNavDaily(GmFundNavRequest request);
+	public ResponseEntity<?> getFundList();
+	public ResponseEntity<?> getInvestPackage();
+	public ResponseEntity<?> getInvestPackageDetail(String pkId);
 
 
 

@@ -46,11 +46,14 @@ import org.springframework.stereotype.Service;
  ***********************************************************************/
 @Service("userService")
 public class UserServiceImpl extends BaseResponse<UserService> implements UserService {
-
+    @Autowired
+    InvestPackageDetailRepository investPackageDetailRepository;
     @Autowired
     PackageFilterRepository pkgFilterRepo;
     @Autowired
     RelationRepo relationRepo;
+    @Autowired
+    FundListRepository fundListRepository;
     @Autowired
     InvestAssetsRepository investAssetsRepository;
     @Autowired
@@ -79,8 +82,10 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     private PasswordEncoder passwordEncoder;
     @Autowired
     BaoVietRepo baoVietRepo;
-    @Override
+    @Autowired
+    InvestPackageRepository investPackageRepository;
 
+    @Override
     public ResponseEntity<?> login(LoginRequest loginRequest) {
         // List<Object> response;
         String getEncodedPassword = userOnlineRepo.getPwd(loginRequest.getUsername());
@@ -309,7 +314,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> getRelation() {
-            ArrayList<RelationEntity> list = relationRepo.getRelation();
+        ArrayList<RelationEntity> list = relationRepo.getRelation();
         if (list.size() == 0)
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         return response(toResult(list));
@@ -349,10 +354,37 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> createNavDaily(GmFundNavRequest request) {
-        NotifyEntity notify =notifyRepo.createNavDaily(request.getFundCode(),request.getNav(), request.getNavDate());
+        NotifyEntity notify = notifyRepo.createNavDaily(request.getFundCode(), request.getNav(), request.getNavDate());
 
         return response(toResult(notify));
 
+    }
+
+    @Override
+    public ResponseEntity<?> getFundList() {
+
+        ArrayList<FundListEntity> list = fundListRepository.getFundList();
+        if (list.size() == 0)
+            throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+        return response(toResult(list));
+    }
+
+    @Override
+    public ResponseEntity<?> getInvestPackage() {
+        ArrayList<InvestPackageEntity> list = investPackageRepository.getInvestPackage();
+        if (list.size() == 0)
+            throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+        return response(toResult(list));
+    }
+
+    @Override
+    public ResponseEntity<?> getInvestPackageDetail(String pkId) {
+        InvestPackageDetailEntity investPackage = investPackageDetailRepository.getInvestPackageDetail(pkId);
+if (investPackage == null){
+
+    throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+}
+        return response(toResult(investPackage));
     }
 
 
