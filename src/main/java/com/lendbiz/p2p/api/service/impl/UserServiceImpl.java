@@ -348,6 +348,15 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     }
 
     @Override
+    public ResponseEntity<?> createNavDaily(GmFundNavRequest request) {
+        NotifyEntity notify =notifyRepo.createNavDaily(request.getFundCode(),request.getNav(), request.getNavDate());
+
+        return response(toResult(notify));
+
+    }
+
+
+    @Override
     public String checkSession(String session) {
         logger.info("[" + session + "] << checkSession >>");
         if (StringUtil.isEmty(session))

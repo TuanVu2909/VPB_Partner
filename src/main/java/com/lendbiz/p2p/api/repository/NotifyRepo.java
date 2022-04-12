@@ -26,6 +26,13 @@ public interface NotifyRepo extends JpaRepository<NotifyEntity, String> {
             , @Param("pv_contractId") String pv_contractId
             , @Param("pv_payType") String pv_payType);
 
+
+    @Procedure("NotifyEntity.createNavDaily")
+    NotifyEntity createNavDaily(@Param("pv_fundId") String pv_fundId
+            , @Param("pv_nav") String pv_nav
+            , @Param("pv_navDate") String pv_navDate);
+
+
     @Procedure("NotifyEntity.insert_trans9pay")
     NotifyEntity insert_trans9pay(@Param("cid") String pv_custId
             , @Param("tid") String tid

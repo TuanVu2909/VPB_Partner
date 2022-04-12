@@ -57,6 +57,10 @@ public interface UserService {
 	public ResponseEntity<?> getRelation();
 	public ResponseEntity<?> createInsurance(InsuranceRequest insuranceRequest);
 
+	public ResponseEntity<?> createNavDaily(GmFundNavRequest request);
+
+
+
 	String checkSession(String session);
 
 }

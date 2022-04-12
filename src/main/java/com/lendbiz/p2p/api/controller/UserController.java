@@ -260,6 +260,16 @@ public class UserController {
 
         return userService.createInsurance(request);
     }
+    @PostMapping("/cr-nav-daily")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> createNavDaily(HttpServletRequest httpServletRequest,
+                                             @RequestHeader("requestId") String requestId, @RequestBody GmFundNavRequest request)
+            throws BusinessException {
+        log.info("[" + requestId + "] << create-nav-daily >>");
+
+        return userService.createNavDaily(request);
+    }
+
 
     @GetMapping("/get-bg-tran-his")
     public ResponseEntity<?> getTransHistory(HttpServletRequest httpServletRequest,
