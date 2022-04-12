@@ -1,6 +1,7 @@
 package com.lendbiz.p2p.api.repository;
 
 import java.sql.Types;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -11,15 +12,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
-import com.lendbiz.p2p.api.entity.AccountInput;
-import com.lendbiz.p2p.api.entity.Card9PayEntity;
-import com.lendbiz.p2p.api.entity.InvestAssets;
-import com.lendbiz.p2p.api.entity.VerifyAccountInput;
+import com.lendbiz.p2p.api.entity.*;
 import com.lendbiz.p2p.api.exception.BusinessException;
-import com.lendbiz.p2p.api.request.BearRequest;
-import com.lendbiz.p2p.api.request.InsertLogRequest;
-import com.lendbiz.p2p.api.request.ReqJoinRequest;
-import com.lendbiz.p2p.api.request.SetAccountPasswordRequest;
+import com.lendbiz.p2p.api.request.*;
 import com.lendbiz.p2p.api.utils.JsonMapper;
 
 import com.lendbiz.p2p.api.utils.Utils;
@@ -563,67 +558,122 @@ public class PackageFilterRepository {
         return result;
     }
 
-    public Object crateBear(AccountInput accountInput) {
+    public Object createInsurance(InsuranceRequest input) {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PCK_GM")
-                .withProcedureName("createBear")
-                .declareParameters(new SqlParameter("pv_term", Types.VARCHAR))
-                .declareParameters(new SqlParameter("pv_pid", Types.NUMERIC))
-                .declareParameters(new SqlParameter("pv_amt", Types.NUMERIC))
+                .withProcedureName("createInsurance")
+                .returningResultSet("pv_refcursor", BeanPropertyRowMapper.newInstance(NotifyEntity.class))
                 .declareParameters(new SqlParameter("pv_custId", Types.VARCHAR))
-                .declareParameters(new SqlParameter("pv_rate", Types.FLOAT))
-                .declareParameters(new SqlParameter("pv_contractId", Types.VARCHAR))
-                .declareParameters(new SqlParameter("pv_payType", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_packageId", Types.NUMERIC))
+                .declareParameters(new SqlParameter("pv_startDate", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_fee", Types.NUMERIC))
+                .declareParameters(new SqlParameter("pv_beneficiaryFullName", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_beneficiaryBirthDate", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_beneficiaryIdNumber", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_RelationId", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_isSick", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_isTreatedIn3Years", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_isTreatedNext12Months", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_isTreatedSpecialIn3Years", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_isRejectInsurance", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_isNormal", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_isConfirm", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_insuredPersonFullName", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_insuredPersonBirthDate", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_insuredPersonGender", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_insuredPersonIdNumber", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_insuredPersonMobile", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_insuredPersonEmail", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_insuredPersonAddress", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_ParentInsuranceCode", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_InsuredRelationId", Types.VARCHAR))
+                .declareParameters(new SqlParameter("pv_insuredPersonNationality", Types.VARCHAR))
                 .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
 
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("pv_term", accountInput.getTerm());
-        params.addValue("pv_custId", accountInput.getCustId());
-        params.addValue("pv_pid", accountInput.getProductId());
-        params.addValue("pv_amt", accountInput.getAmt());
-        params.addValue("pv_rate", accountInput.getRate());
-        params.addValue("pv_payType", accountInput.getPayType());
-        params.addValue("pv_contractId", accountInput.getContractId());
-        Map<String, Object> map = jdbcCall.execute(params);
-        Map.Entry<String, Object> entry = map.entrySet().iterator().next();
-
-        String body = JsonMapper.writeValueAsString(entry.getValue());
-
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode root;
 
         try {
+//            Date sDate = new SimpleDateFormat("dd-MM-yyyy").parse(input.getPv_startDate());
+//            Date bDate = new SimpleDateFormat("dd-MM-yyyy").parse(input.getPv_beneficiaryBirthDate());
+//            Date ipDate = new SimpleDateFormat("dd-MM-yyyy").parse(input.getPv_insuredPersonBirthDate());
+            MapSqlParameterSource params = new MapSqlParameterSource();
+            params.addValue("pv_custId", input.getPv_custId());
+            params.addValue("pv_packageId", input.getPv_packageId());
+            params.addValue("pv_startDate", input.getPv_startDate());
+            params.addValue("pv_fee", input.getPv_fee());
+            params.addValue("pv_beneficiaryFullName", input.getPv_beneficiaryFullName());
+            params.addValue("pv_beneficiaryBirthDate", input.getPv_beneficiaryBirthDate());
+            params.addValue("pv_beneficiaryIdNumber", input.getPv_beneficiaryIdNumber());
+            params.addValue("pv_RelationId", input.getPv_RelationId());
+            params.addValue("pv_isSick", input.getPv_isSick());
+            params.addValue("pv_isTreatedIn3Years", input.getPv_isTreatedIn3Years());
+            params.addValue("pv_isTreatedNext12Months", input.getPv_isTreatedNext12Months());
+            params.addValue("pv_isTreatedSpecialIn3Years", input.getPv_isTreatedSpecialIn3Years());
+            params.addValue("pv_isRejectInsurance", input.getPv_isRejectInsurance());
+            params.addValue("pv_isNormal", input.getPv_isNormal());
+            params.addValue("pv_isConfirm", input.getPv_isConfirm());
+            params.addValue("pv_insuredPersonFullName", input.getPv_insuredPersonFullName());
+            params.addValue("pv_insuredPersonBirthDate", input.getPv_insuredPersonBirthDate());
+            params.addValue("pv_insuredPersonGender", input.getPv_insuredPersonGender());
+            params.addValue("pv_insuredPersonIdNumber", input.getPv_insuredPersonIdNumber());
+            params.addValue("pv_insuredPersonMobile", input.getPv_insuredPersonMobile());
+            params.addValue("pv_insuredPersonEmail", input.getPv_insuredPersonEmail());
+            params.addValue("pv_insuredPersonAddress", input.getPv_insuredPersonAddress());
+            params.addValue("pv_ParentInsuranceCode", input.getPv_ParentInsuranceCode());
+            params.addValue("pv_InsuredRelationId", input.getPv_InsuredRelationId());
+            params.addValue("pv_insuredPersonNationality", input.getPv_insuredPersonNationality());
 
-            root = mapper.readTree(body);
-            if (root.get(0).get(":B2") != null) {
-                String status = root.get(0).get(":B2").textValue();
-                if (status.equals("0")) {
-                    throw new BusinessException(Constants.FAIL,
-                            root.get(0).get(":B1").textValue());
+
+            Map<String, Object> map = jdbcCall.execute(params);
+            Map.Entry<String, Object> entry = map.entrySet().iterator().next();
+//            NotifyEntity notify = (NotifyEntity) map.get("pv_refcursor");
+            String body = JsonMapper.writeValueAsString(entry.getValue());
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root;
+
+            try {
+
+                root = mapper.readTree(body);
+                if (root.get(0).get(":B2") != null) {
+                    String status = root.get(0).get(":B2").textValue();
+                    if (status.equals("0")) {
+                        throw new BusinessException(Constants.FAIL,
+                                root.get(0).get(":B1").textValue());
+                    }
                 }
+
+            } catch (JsonProcessingException e) {
+                throw new BusinessException(ErrorCode.FAILED_TO_JSON,
+                        ErrorCode.FAILED_TO_JSON_DESCRIPTION);
             }
 
-        } catch (JsonProcessingException e) {
-            throw new BusinessException(ErrorCode.FAILED_TO_JSON,
-                    ErrorCode.FAILED_TO_JSON_DESCRIPTION);
+            return entry;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return null;
 
-        return "success";
     }
+
 
     public Object getTerm(String pId) {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("pck_test")
-                .withProcedureName("duytest")
-                .declareParameters(new SqlParameter("p_status", Types.NUMERIC))
+                .withProcedureName("datetest")
+                .declareParameters(new SqlParameter("pd", Types.DATE))
                 .declareParameters(new SqlOutParameter("pv_refcursor", Types.REF_CURSOR));
-
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("p_status", pId);
-        Map<String, Object> map = jdbcCall.execute(params);
-        ArrayList<Object> arrayList = (ArrayList<Object>) map.get("pv_refcursor");
-        if (arrayList.size() == 0) {
-            throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
+        try {
+            Date utilDate = new SimpleDateFormat("dd-MM-yyyy").parse("26-03-2022");
+            MapSqlParameterSource params = new MapSqlParameterSource();
+            params.addValue("pd", utilDate);
+            Map<String, Object> map = jdbcCall.execute(params);
+            ArrayList<Object> arrayList = (ArrayList<Object>) map.get("pv_refcursor");
+            if (arrayList.size() == 0) {
+                throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
+            }
+            return arrayList;
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-        return arrayList;
+        return null;
     }
 
     public Object findTrans9PayByDate(String sDate, String eDate, String cif) {

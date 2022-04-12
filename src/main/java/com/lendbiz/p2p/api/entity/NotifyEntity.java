@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @NamedStoredProcedureQueries({
@@ -36,6 +37,45 @@ import javax.persistence.*;
                 @StoredProcedureParameter(name = "pstatus", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "scode", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "ccode", mode = ParameterMode.IN, type = String.class),
+        }),
+        @NamedStoredProcedureQuery(name = "NotifyEntity.createNavDaily", procedureName = "pck_gm.createNavDaily", resultClasses = NotifyEntity.class, parameters = { //
+                @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
+                @StoredProcedureParameter(name = "pv_fundId", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_nav", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_navDate", mode = ParameterMode.IN, type = String.class),
+
+        }),
+        @NamedStoredProcedureQuery(name = "NotifyEntity.createInsurance", procedureName = "pck_gm.createInsurance", resultClasses = NotifyEntity.class, parameters = { //
+                @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
+                @StoredProcedureParameter(name = "pv_custId", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_packageId", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_startDate", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_fee", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_beneficiaryFullName", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_beneficiaryBirthDate", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_beneficiaryIdNumber", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_RelationId", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_isSick", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_isTreatedIn3Years", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_isTreatedNext12Months", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_isTreatedSpecialIn3Years", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_isRejectInsurance", mode = ParameterMode.IN, type = String.class),
+
+
+                @StoredProcedureParameter(name = "pv_isNormal", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_isConfirm", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_insuredPersonFullName", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_insuredPersonBirthDate", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_insuredPersonGender", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_insuredPersonIdNumber", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_insuredPersonMobile", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_insuredPersonEmail", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_insuredPersonAddress", mode = ParameterMode.IN, type = String.class),
+
+                @StoredProcedureParameter(name = "pv_insuredPersonNationality", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_ParentInsuranceCode", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_InsuredRelationId", mode = ParameterMode.IN, type = String.class),
+
         }),
 })
 @Getter

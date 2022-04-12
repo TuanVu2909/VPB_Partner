@@ -6,10 +6,7 @@ import com.lendbiz.p2p.api.entity.AccountInput;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.ProductGMRepository;
-import com.lendbiz.p2p.api.request.BearRequest;
-import com.lendbiz.p2p.api.request.LoginRequest;
-import com.lendbiz.p2p.api.request.ReqJoinRequest;
-import com.lendbiz.p2p.api.request.SetAccountPasswordRequest;
+import com.lendbiz.p2p.api.request.*;
 import com.lendbiz.p2p.api.response.BearResponse;
 import com.lendbiz.p2p.api.response.InfoIdentity;
 import com.lendbiz.p2p.api.service.SavisService;
@@ -31,6 +28,8 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 /***********************************************************************
  *
@@ -228,10 +227,49 @@ public class UserController {
     public ResponseEntity<?> bankInfo(HttpServletRequest httpServletRequest,
                                          @RequestHeader("requestId") String requestId)
             throws BusinessException {
-        log.info("[" + requestId + "] << productInfo >>");
+        log.info("[" + requestId + "] << bankInfo >>");
 
         return userService.getBankInfo();
     }
+
+    @GetMapping("/get-ins-pck")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getInsurancePackage(HttpServletRequest httpServletRequest,
+                                      @RequestHeader("requestId") String requestId)
+            throws BusinessException {
+        log.info("[" + requestId + "] << getInsurancePackage >>");
+
+        return userService.getInsurancePackage();
+    }
+
+    @GetMapping("/get-relation")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getRelation(HttpServletRequest httpServletRequest,
+                                                 @RequestHeader("requestId") String requestId)
+            throws BusinessException {
+        log.info("[" + requestId + "] << getRelation >>");
+
+        return userService.getRelation();
+    }
+    @PostMapping("/create-ins")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> createInsurance(HttpServletRequest httpServletRequest,
+                                             @RequestHeader("requestId") String requestId, @RequestBody InsuranceRequest request)
+            throws BusinessException {
+        log.info("[" + requestId + "] << createInsurance >>");
+
+        return userService.createInsurance(request);
+    }
+    @PostMapping("/cr-nav-daily")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> createNavDaily(HttpServletRequest httpServletRequest,
+                                             @RequestHeader("requestId") String requestId, @RequestBody GmFundNavRequest request)
+            throws BusinessException {
+        log.info("[" + requestId + "] << create-nav-daily >>");
+
+        return userService.createNavDaily(request);
+    }
+
 
     @GetMapping("/get-bg-tran-his")
     public ResponseEntity<?> getTransHistory(HttpServletRequest httpServletRequest,
