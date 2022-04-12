@@ -98,7 +98,7 @@ OtpServiceImpl otpService;
                 // ErrorCode.ID_FAKE_DESCRIPTION);
                 // }
 
-                validateIdentityCard(type, sideType);
+                // validateIdentityCard(type, sideType);
 
                 // mặt trước
                 identity.setFullName(root.get("output").get(0).get("ho_ten") != null
