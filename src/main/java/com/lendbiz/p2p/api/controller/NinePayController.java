@@ -121,12 +121,13 @@ public class NinePayController {
     @GetMapping("/9pay/trans-by-date")
     @Transactional(readOnly = true)
     public ResponseEntity<?> findTrans(HttpServletRequest httpServletRequest, @RequestHeader("session") String session,
-                                       @RequestHeader("requestId") String requestId, @RequestParam("edate") String eDate, @RequestParam("sdate") String sDate)
+                                       @RequestHeader("requestId") String requestId, @RequestParam("edate") String eDate, @RequestParam("sdate") String sDate
+    ,@RequestParam("cif") String cif)
             throws BusinessException, UnsupportedEncodingException {
 
         log.info("[" + requestId + "] << find-trans >>");
 //        String custId = userService.checkSession(session);
-        return card9PayService.findByDate(sDate, eDate, "000028");
+        return card9PayService.findByDate(sDate, eDate, cif);
 
     }
 
