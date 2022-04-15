@@ -40,7 +40,8 @@ public interface NotifyRepo extends JpaRepository<NotifyEntity, String> {
             , @Param("pri") String pri
             , @Param("pstatus") String pstatus
             , @Param("scode") String scode
-            , @Param("ccode") String ccode);
+            , @Param("ccode") String ccode
+            , @Param("c_amount") String c_amount);
 
     @Procedure("NotifyEntity.createInsurance")
     NotifyEntity createInsurance(@Param("pv_custId") String pv_custId

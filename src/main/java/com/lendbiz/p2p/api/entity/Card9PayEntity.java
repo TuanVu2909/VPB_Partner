@@ -41,4 +41,6 @@ public class Card9PayEntity {
     private String product_id;
     @Column(name = "TRANS_ID")
     private String trans_Id;
+    @Column(name = "AMOUNT")
+    private String amount;
 }

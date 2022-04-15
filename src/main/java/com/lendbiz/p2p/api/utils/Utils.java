@@ -218,8 +218,8 @@ public class Utils {
             byte[] result = cipher.doFinal(cipherBytes);
             byte[] bytes = Hex.decodeHex(Hex.encodeHexString(result).toCharArray());
             String resultString = new String(bytes, "UTF-8");
-            upToNCharacters = resultString.substring(0, Math.min(resultString.length(), 16));
-            System.out.println("card_code : " + upToNCharacters);
+            upToNCharacters = resultString.substring(0, Math.min(resultString.length(), 15));
+//            System.out.println("card_code : " + upToNCharacters);
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.NO_DATA, e.getMessage());
         }

@@ -241,6 +241,7 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
 //                    entity.setService_id(myObjects[i].getService().getId());
 //                    entity.setProvider_id(myObjects[i].getProvider().getId());
 //                    pay9Repository.save(entity);
+//
 //                }
                 return response(toResult(myObjects));
             } catch (JsonProcessingException e) {
@@ -296,20 +297,21 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
                 throw new BusinessException(ErrorCode.NO_CARD,ErrorCode.NO_CARD_DESCRIPTION);
             }
             Card9PayEntity card9PayEntity = new Card9PayEntity();
+            card9PayEntity.setPay_status("Y");
+            card9PayEntity.setSeri_code("");
+            card9PayEntity.setProduct_id(response.getProduct_id());
+            card9PayEntity.setPrice(response.getPrice());
+            card9PayEntity.setTrans_Id(response.getTransaction_id());
+//                String id = String.valueOf((int) Math.floor(Math.random() * 100000));
+//                card9PayEntity.setId(id);
+            card9PayEntity.setPay_Date(Utils.getDate());
+            card9PayEntity.setCustid(input9Pay.getCif());
+            card9PayEntity.setCard_code(response.getCards());
+            card9PayEntity.setAmount(response.getAmount());
+            service9.create(card9PayEntity);
             Card9PayDetails[] card9PayDetailsList = mapper.readValue(data, Card9PayDetails[].class);
             for (int i = 0; i < card9PayDetailsList.length; i++) {
                 Card9PayDetails card9PayDetails = card9PayDetailsList[i];
-                card9PayEntity.setPay_status("Y");
-                card9PayEntity.setSeri_code(card9PayDetails.getCard_seri());
-                card9PayEntity.setProduct_id(response.getProduct_id());
-                card9PayEntity.setPrice(card9PayDetails.getPrice());
-                card9PayEntity.setTrans_Id(response.getTransaction_id());
-//                String id = String.valueOf((int) Math.floor(Math.random() * 100000));
-//                card9PayEntity.setId(id);
-                card9PayEntity.setPay_Date(Utils.getDate());
-                card9PayEntity.setCustid(input9Pay.getCif());
-                card9PayEntity.setCard_code(card9PayDetails.getCard_code());
-                filterRepository.saveTrans(card9PayEntity);
                 String codeDe = Utils.decrypt(card9PayDetails.getCard_code());
                 card9PayDetailsList[i].setCard_code(codeDe);
 
