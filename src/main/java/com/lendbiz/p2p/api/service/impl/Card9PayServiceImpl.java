@@ -40,6 +40,8 @@ public class Card9PayServiceImpl extends BaseResponse<NinePayServiceImpl> {
     NotifyRepo notifyRepo;
     @Autowired
     DynamicRepository dynamicRepository;
+    @Autowired
+    Products9payRepository products9payRepository;
 
     @Autowired
     RoleRepository roleRepository;
@@ -133,7 +135,7 @@ public class Card9PayServiceImpl extends BaseResponse<NinePayServiceImpl> {
     public ResponseEntity<?> getP() {
         try {
             System.out.println("2323");
-            return response(toResult(rateRepo.getRatePro("12", "6.5", "10000000")));
+            return response(toResult(products9payRepository.getById("1")));
         } catch (Exception e) {
             throw new BusinessException("11", e.getMessage());
         }

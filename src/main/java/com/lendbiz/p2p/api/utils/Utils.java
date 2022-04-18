@@ -9,6 +9,7 @@ import java.security.spec.X509EncodedKeySpec;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -357,25 +358,28 @@ public class Utils {
         float amtFloat = (float) moneyVal;
         float yearProfit = amtFloat * (rateValue / 100);
 
+        int daysInYear = Year.of( 2015 ).length();
+        float profitPerDay = yearProfit / daysInYear;
+        bearResponse.setProfitPerDay(String.valueOf((long) profitPerDay));
+        bearResponse.setStartDate(java.time.LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        bearResponse.setRate(rate);
+        if (bearResponse.getPid().equals("15")){
+            return bearResponse;
+        }
 
-        float profitPerDay = yearProfit / 365;
         float profitPerMonth = yearProfit / 12;
         float monthlyProfit = profitPerMonth * monthValue;
-        float totalByMonth = moneyVal + monthlyProfit;
+//        float totalByMonth = moneyVal + monthlyProfit;
+        float profit = profitPerDay*daysBetween;
+        float total = moneyVal+profit;
 
-        bearResponse.setRate(rate);
-        bearResponse.setProfitPerDay("");
+        bearResponse.setProfit(String.valueOf(profit));
         bearResponse.setDay(String.valueOf(daysBetween));
-        bearResponse.setMonthlyProfit(String.valueOf((long) monthlyProfit));
-        bearResponse.setTotal(String.valueOf((long) totalByMonth));
-        bearResponse.setStartDate(java.time.LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        bearResponse.setTotal(String.valueOf((long) total));
+
         bearResponse.setEndDate(
                 java.time.LocalDate.now().plusMonths(monthValue).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        if (bearRequest.getPid().equals("15")) {
-            bearResponse.setProfitPerDay(String.valueOf((long) profitPerDay));
-            bearResponse.setMonthlyProfit("");
-            bearResponse.setTotal("");
-        }
+
         return bearResponse;
     }
 
