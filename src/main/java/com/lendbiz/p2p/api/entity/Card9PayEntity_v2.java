@@ -29,6 +29,8 @@ public class Card9PayEntity_v2 {
     private String id;
     @Column(name = "PRICE")
     private String price;
+    @Column(name = "AMOUNT")
+    private String amount;
     @Column(name = "CUSTID")
     private String cif;
     @Column(name = "PAY_DATE")
@@ -43,4 +45,11 @@ public class Card9PayEntity_v2 {
     private String pid;
     @Column(name = "TRANS_ID")
     private String transId;
+    @Column(name = "PRODUCT_NAME")
+    private String product_name;
+    @Column(name = "P_DES")
+    private String product_des;
+    @Column(name = "S_NAME")
+    private String service_name;
+
 }

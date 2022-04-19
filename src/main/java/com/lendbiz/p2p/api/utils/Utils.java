@@ -9,6 +9,7 @@ import java.security.spec.X509EncodedKeySpec;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -179,13 +180,14 @@ public class Utils {
     }
 
     public static void main(String[] args) {
-        System.out.println( getDate());
+        System.out.println(getDate());
     }
-    public static String getDate( ) {
+
+    public static String getDate() {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String strDate = sdf.format(cal.getTime());
-        System.out.println("Current date in String Format: "+strDate);
+        System.out.println("Current date in String Format: " + strDate);
 
         SimpleDateFormat sdf1 = new SimpleDateFormat();
         sdf1.applyPattern("dd-MM-yyyy HH:mm:ss");
@@ -195,11 +197,12 @@ public class Utils {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        String dateString=sdf.format(date);
+        String dateString = sdf.format(date);
 
         return dateString;
 
     }
+
     private static final Charset ASCII = Charset.forName("US-ASCII");
 
 
@@ -218,8 +221,8 @@ public class Utils {
             byte[] result = cipher.doFinal(cipherBytes);
             byte[] bytes = Hex.decodeHex(Hex.encodeHexString(result).toCharArray());
             String resultString = new String(bytes, "UTF-8");
-            upToNCharacters = resultString.substring(0, Math.min(resultString.length(), 16));
-            System.out.println("card_code : " + upToNCharacters);
+            upToNCharacters = resultString.substring(0, Math.min(resultString.length(), 15));
+//            System.out.println("card_code : " + upToNCharacters);
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.NO_DATA, e.getMessage());
         }
@@ -356,26 +359,32 @@ public class Utils {
         float rateValue = Float.parseFloat(rate);
         float amtFloat = (float) moneyVal;
         float yearProfit = amtFloat * (rateValue / 100);
+        int term = Integer.parseInt(bearRequest.getTerm());
 
-
-        float profitPerDay = yearProfit / 365;
-        float profitPerMonth = yearProfit / 12;
-        float monthlyProfit = profitPerMonth * monthValue;
-        float totalByMonth = moneyVal + monthlyProfit;
-
-        bearResponse.setRate(rate);
-        bearResponse.setProfitPerDay("");
-        bearResponse.setDay(String.valueOf(daysBetween));
-        bearResponse.setMonthlyProfit(String.valueOf((long) monthlyProfit));
-        bearResponse.setTotal(String.valueOf((long) totalByMonth));
+        int daysInYear = Year.of(2015).length();
+        float profitPerDay = yearProfit / daysInYear;
+        bearResponse.setProfitPerDay(String.valueOf((long) profitPerDay));
         bearResponse.setStartDate(java.time.LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        bearResponse.setRate(rate);
+        if (bearResponse.getPid().equals("15")) {
+            return bearResponse;
+        }
+
+        float profitPerMonth = yearProfit / 12;
+
+//        float totalByMonth = moneyVal + monthlyProfit;
+        float profit = profitPerDay * daysBetween;
+        float total = moneyVal + profit;
+        float monthlyProfit = profit / term;
+        if (bearRequest.getPayType().equals("1")){
+            bearResponse.setMonthlyProfit(String.valueOf((long) monthlyProfit));
+        }
+
+        bearResponse.setProfit(String.valueOf(profit));
+        bearResponse.setDay(String.valueOf(daysBetween));
+        bearResponse.setTotal(String.valueOf((long) total));
         bearResponse.setEndDate(
                 java.time.LocalDate.now().plusMonths(monthValue).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        if (bearRequest.getPid().equals("15")) {
-            bearResponse.setProfitPerDay(String.valueOf((long) profitPerDay));
-            bearResponse.setMonthlyProfit("");
-            bearResponse.setTotal("");
-        }
         return bearResponse;
     }
 

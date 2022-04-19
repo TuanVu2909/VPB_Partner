@@ -21,6 +21,7 @@ public class BearResponse {
     private String day;
     private String profitPerDay;
     private String monthlyProfit;
+    private String profit;
     private String total;
     private String startDate;
     private String endDate;

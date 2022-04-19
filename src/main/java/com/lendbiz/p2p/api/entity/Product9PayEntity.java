@@ -2,10 +2,7 @@ package com.lendbiz.p2p.api.entity;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "PRODUCTS9PAY")
@@ -30,4 +27,8 @@ public class Product9PayEntity {
     @Column(name = "SERVICE_ID")
     private int service_id;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @MapsId
+    @JoinColumn(name = "CATEGORY_ID",referencedColumnName = "PID")
+    private Service9Pay service9Pay;
 }

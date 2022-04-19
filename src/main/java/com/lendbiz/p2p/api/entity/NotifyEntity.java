@@ -38,6 +38,7 @@ import java.util.Date;
                 @StoredProcedureParameter(name = "pstatus", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "scode", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "ccode", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "c_amount", mode = ParameterMode.IN, type = String.class),
         }),
         @NamedStoredProcedureQuery(name = "NotifyEntity.createNavDaily", procedureName = "pck_gm.createNavDaily", resultClasses = NotifyEntity.class, parameters = { //
                 @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
