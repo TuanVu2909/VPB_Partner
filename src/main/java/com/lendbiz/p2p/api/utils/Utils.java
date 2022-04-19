@@ -180,13 +180,14 @@ public class Utils {
     }
 
     public static void main(String[] args) {
-        System.out.println( getDate());
+        System.out.println(getDate());
     }
-    public static String getDate( ) {
+
+    public static String getDate() {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String strDate = sdf.format(cal.getTime());
-        System.out.println("Current date in String Format: "+strDate);
+        System.out.println("Current date in String Format: " + strDate);
 
         SimpleDateFormat sdf1 = new SimpleDateFormat();
         sdf1.applyPattern("dd-MM-yyyy HH:mm:ss");
@@ -196,11 +197,12 @@ public class Utils {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        String dateString=sdf.format(date);
+        String dateString = sdf.format(date);
 
         return dateString;
 
     }
+
     private static final Charset ASCII = Charset.forName("US-ASCII");
 
 
@@ -357,29 +359,32 @@ public class Utils {
         float rateValue = Float.parseFloat(rate);
         float amtFloat = (float) moneyVal;
         float yearProfit = amtFloat * (rateValue / 100);
+        int term = Integer.parseInt(bearRequest.getTerm());
 
-        int daysInYear = Year.of( 2015 ).length();
+        int daysInYear = Year.of(2015).length();
         float profitPerDay = yearProfit / daysInYear;
         bearResponse.setProfitPerDay(String.valueOf((long) profitPerDay));
         bearResponse.setStartDate(java.time.LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         bearResponse.setRate(rate);
-        if (bearResponse.getPid().equals("15")){
+        if (bearResponse.getPid().equals("15")) {
             return bearResponse;
         }
 
         float profitPerMonth = yearProfit / 12;
-        float monthlyProfit = profitPerMonth * monthValue;
+
 //        float totalByMonth = moneyVal + monthlyProfit;
-        float profit = profitPerDay*daysBetween;
-        float total = moneyVal+profit;
+        float profit = profitPerDay * daysBetween;
+        float total = moneyVal + profit;
+        float monthlyProfit = profit / term;
+        if (bearRequest.getPayType().equals("1")){
+            bearResponse.setMonthlyProfit(String.valueOf((long) monthlyProfit));
+        }
 
         bearResponse.setProfit(String.valueOf(profit));
         bearResponse.setDay(String.valueOf(daysBetween));
         bearResponse.setTotal(String.valueOf((long) total));
-
         bearResponse.setEndDate(
                 java.time.LocalDate.now().plusMonths(monthValue).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-
         return bearResponse;
     }
 
