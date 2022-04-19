@@ -2,27 +2,24 @@ package com.lendbiz.p2p.api.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedStoredProcedureQueries;
 import javax.persistence.NamedStoredProcedureQuery;
 import javax.persistence.ParameterMode;
 import javax.persistence.StoredProcedureParameter;
-import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
+@ToString
 @Entity
 @NamedStoredProcedureQueries({ //
         @NamedStoredProcedureQuery(name = "Card9PayEntity_v2.findViaProcedure", procedureName = "PKG_API.FIND_TRANS_BY_DATE", resultClasses = Card9PayEntity_v2.class, parameters = { //
                 @StoredProcedureParameter(name = "p_cursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
                 @StoredProcedureParameter(name = "p_custId", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "p_sdate", mode = ParameterMode.IN, type = String.class),
-                @StoredProcedureParameter(name = "p_edate", mode = ParameterMode.IN, type = String.class),}) //
+                @StoredProcedureParameter(name = "p_edate", mode = ParameterMode.IN, type = String.class), }) //
 })
 @Getter
 @Setter

@@ -69,6 +69,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     RateRepo rateRepo;
     @Autowired
+    RateConfigRepo rateConfRepo;
+    @Autowired
     TermRepo termRepo;
     @Autowired
     PayRepo payRepo;
@@ -88,17 +90,24 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     public ResponseEntity<?> login(LoginRequest loginRequest) {
         // List<Object> response;
-        String getEncodedPassword = userOnlineRepo.getPwd(loginRequest.getUsername());
 
-        if (!passwordEncoder.matches(loginRequest.getPassword(), getEncodedPassword)) {
+        UserOnline user = userOnlineRepo.getUserOnline(loginRequest.getUsername());
+
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPwd())) {
             // response = (ArrayList) pkgFilterRepo.login(loginRequest.getUsername(),
             // getEncodedPassword,
             // loginRequest.getDeviceId());
             // } else {
             throw new BusinessException(ErrorCode.FAIL_LOGIN, ErrorCode.FAIL_LOGIN_DESCRIPTION);
+        } else {
+            if (userOnlineRepo.checkAccountMappingExist(user.getCustId()) == 0) {
+                ReqJoinRequest reqJoinRequest = new ReqJoinRequest();
+                reqJoinRequest.setMobile(loginRequest.getUsername());
+                pkgFilterRepo.reqJoin(reqJoinRequest);
+            }
         }
 
-        return response(toResult("Đăng nhập thành công"));
+        return response(toResult(user.getCustId()));
 
     }
 
@@ -192,6 +201,17 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     public ResponseEntity<?> getRate(String term, String productId, String amount) {
 
         ArrayList<RateEntity> list = rateRepo.getRatePro(productId, term, amount);
+        if (list.size() == 0)
+            throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+
+        return response(toResult(list));
+
+    }
+
+    @Override
+    public ResponseEntity<?> getConfigRate() {
+
+        List<RateConfigEntity> list = rateConfRepo.getRate();
         if (list.size() == 0)
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
 
@@ -323,7 +343,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     public ResponseEntity<?> createInsurance(InsuranceRequest insuranceRequest) {
 
-//        return response(toResult(pkgFilterRepo.createInsurance(insuranceRequest)));
+        // return response(toResult(pkgFilterRepo.createInsurance(insuranceRequest)));
         return response(toResult(notifyRepo.createInsurance(insuranceRequest.getPv_custId(),
                 insuranceRequest.getPv_packageId(),
                 insuranceRequest.getPv_startDate(),
@@ -380,13 +400,12 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     public ResponseEntity<?> getInvestPackageDetail(String pkId) {
         InvestPackageDetailEntity investPackage = investPackageDetailRepository.getInvestPackageDetail(pkId);
-if (investPackage == null){
+        if (investPackage == null) {
 
-    throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
-}
+            throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+        }
         return response(toResult(investPackage));
     }
-
 
     @Override
     public String checkSession(String session) {

@@ -10,12 +10,15 @@ import javax.persistence.StoredProcedureParameter;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.ToString;
+
 @Entity
 @NamedStoredProcedureQueries({ //
         @NamedStoredProcedureQuery(name = "Role.findRolesViaProcedure", procedureName = "collect_roles", resultClasses = Role.class, parameters = { //
                 @StoredProcedureParameter(name = "role_list_o", mode = ParameterMode.REF_CURSOR, type = Void.class) }) //
 })
 
+@ToString
 public class Role {
 
     @Id

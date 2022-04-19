@@ -9,10 +9,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Entity
 @Table(name = "CMDMENU")
 @Data
+@ToString
 public class CmdMenuEntity {
 
     @Id

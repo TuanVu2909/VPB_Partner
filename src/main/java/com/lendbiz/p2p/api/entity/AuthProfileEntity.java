@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.ToString;
 
 /***********************************************************************  
  *  
@@ -19,6 +20,7 @@ import lombok.Data;
 @Entity
 @Table(name = "TLPROFILES")
 @Data
+@ToString
 public class AuthProfileEntity {
 
 	@Id

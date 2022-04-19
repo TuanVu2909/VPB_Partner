@@ -38,6 +38,8 @@ public interface UserService {
 
 	public ResponseEntity<?> getRate(String term, String productId, String amount);
 
+	public ResponseEntity<?> getConfigRate();
+
 	public ResponseEntity<?> getTerm(String productId);
 
 	public ResponseEntity<?> getAccountInvestByProduct(AccountInput accountInput);

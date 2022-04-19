@@ -14,6 +14,7 @@ import javax.persistence.Table;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Product9PayEntity {
     @Id
     @Column(name = "PID")

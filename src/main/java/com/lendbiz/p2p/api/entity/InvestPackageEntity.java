@@ -2,6 +2,7 @@ package com.lendbiz.p2p.api.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -12,6 +13,7 @@ import javax.persistence.*;
 })
 @Getter
 @Setter
+@ToString
 public class InvestPackageEntity {
     @Id
     // @GeneratedValue

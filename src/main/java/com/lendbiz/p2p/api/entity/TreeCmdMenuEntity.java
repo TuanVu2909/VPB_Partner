@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import lombok.ToString;
+
+@ToString
 public class TreeCmdMenuEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;

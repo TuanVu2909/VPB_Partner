@@ -2,12 +2,14 @@ package com.lendbiz.p2p.api.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
+@ToString
 @NamedStoredProcedureQueries({ //
         @NamedStoredProcedureQuery(name = "BaoVietEntity.getInsurancePackage", resultClasses = BaoVietEntity.class, procedureName = "pck_gm.getInsurancePackage", parameters = { //
                 @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),

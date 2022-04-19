@@ -10,7 +10,9 @@ import javax.persistence.StoredProcedureParameter;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+@ToString
 @Entity
 @Getter
 @Setter

@@ -24,12 +24,15 @@ public interface UserOnlineRepository extends JpaRepository<UserOnline, String> 
 			" AND SYSDATE - u.last_change < 1800/(24*60*60)", nativeQuery = true)
 	String findDeviceId(String custId);
 
-	@Query(value = "SELECT pwd FROM useronline u, cfmast c, allcode a_sex WHERE c.sex=" +
+	@Query(value = "SELECT * FROM useronline u, cfmast c, allcode a_sex WHERE c.sex=" +
 			"a_sex.cdval AND a_sex.cdname='SEX' " +
 			"AND u.custid = c.custid" +
 			" AND (TRIM(u.username) = TRIM(?1) or " +
 			"	  c.phone = trim(?1) or c.mobile = trim(?1) or " +
 			"c.mobilesms = trim(?1))", nativeQuery = true)
-	String getPwd(String username);
+	UserOnline getUserOnline(String username);
+
+	@Query(value = "select count(*) from useronline u, cfmast c where c.custid = ?1 and u.custid = c.custid and exists(select (1) from account_mapping a where a.custid = c.custid and pid = '17')", nativeQuery = true)
+	int checkAccountMappingExist(String custId);
 
 }

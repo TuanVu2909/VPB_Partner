@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.ToString;
 
 /***********************************************************************
  * 
@@ -21,6 +22,7 @@ import lombok.Data;
 
 @Entity
 @Table(name = "API_LOGS")
+@ToString
 public class ApiLogsEntity {
 
 	@Id

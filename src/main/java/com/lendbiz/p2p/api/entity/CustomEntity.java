@@ -2,9 +2,11 @@ package com.lendbiz.p2p.api.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class CustomEntity {
 
     private String errorCode;

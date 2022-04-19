@@ -11,6 +11,7 @@ import javax.persistence.*;
 })
 @Getter
 @Setter
+@ToString
 public class FundListEntity {
     @Id
     // @GeneratedValue

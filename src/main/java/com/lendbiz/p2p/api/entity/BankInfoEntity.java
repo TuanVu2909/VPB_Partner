@@ -14,6 +14,7 @@ import javax.persistence.Table;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class BankInfoEntity {
     @Id
     @Column(name = "ID")

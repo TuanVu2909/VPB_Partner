@@ -2,6 +2,7 @@ package com.lendbiz.p2p.api.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -80,6 +81,7 @@ import java.util.Date;
 })
 @Getter
 @Setter
+@ToString
 public class NotifyEntity {
     @Id
     @Column(name = "pv_status")
