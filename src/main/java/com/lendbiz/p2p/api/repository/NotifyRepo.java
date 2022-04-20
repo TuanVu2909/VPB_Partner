@@ -33,6 +33,11 @@ public interface NotifyRepo extends JpaRepository<NotifyEntity, String> {
             , @Param("pv_navDate") String pv_navDate);
 
 
+    @Procedure("NotifyEntity.createFundInvest")
+    NotifyEntity createFundInvest(@Param("pv_custId") String pv_custId
+            , @Param("pv_amt") String pv_amt
+            , @Param("pv_packageId") String pv_packageId);
+
     @Procedure("NotifyEntity.insert_trans9pay")
     NotifyEntity insert_trans9pay(@Param("cid") String pv_custId
             , @Param("tid") String tid
@@ -42,6 +47,25 @@ public interface NotifyRepo extends JpaRepository<NotifyEntity, String> {
             , @Param("scode") String scode
             , @Param("ccode") String ccode
             , @Param("c_amount") String c_amount);
+
+
+    @Procedure("NotifyEntity.createFundInvestOptionally")
+    NotifyEntity createFundInvestOptionally(@Param("pv_custId") String pv_custId
+            , @Param("pv_amt1") String pv_amt1
+            , @Param("pv_amt2") String pv_amt2
+            , @Param("pv_amt3") String pv_amt3
+            , @Param("pv_amt4") String pv_amt4
+            , @Param("pv_amt5") String pv_amt5
+            , @Param("pv_amt6") String pv_amt6
+            , @Param("pv_amt7") String pv_amt7
+            , @Param("pv_amt8") String pv_amt8
+            , @Param("pv_amt9") String pv_amt9
+            , @Param("pv_amt10") String pv_amt10
+            , @Param("pv_amt11") String pv_amt11
+            , @Param("pv_amt12") String pv_amt12
+            , @Param("pv_amt13") String pv_amt13
+            , @Param("pv_amt14") String pv_amt14 );
+
 
     @Procedure("NotifyEntity.createInsurance")
     NotifyEntity createInsurance(@Param("pv_custId") String pv_custId

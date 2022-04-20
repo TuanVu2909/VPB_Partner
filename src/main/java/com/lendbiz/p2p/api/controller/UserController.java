@@ -292,6 +292,43 @@ public class UserController {
         return userService.getInvestPackage();
     }
 
+
+    @GetMapping("/get-nav")
+    public ResponseEntity<?> getNav(HttpServletRequest httpServletRequest,
+                                      @RequestHeader("requestId") String requestId)
+            throws BusinessException {
+        log.info("[" + requestId + "] << nav >>");
+
+        return userService.getFundNAV();
+    }
+    @GetMapping("/get-nav-fid")
+    public ResponseEntity<?> getNavByFid(HttpServletRequest httpServletRequest,
+                                    @RequestHeader("requestId") String requestId,@RequestParam("fid")String fid)
+            throws BusinessException {
+        log.info("[" + requestId + "] << nav >>");
+
+        return userService.getFundNAByFundID(fid);
+    }
+
+    @PostMapping("/cr-fund-iv")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> createFundInvest(HttpServletRequest httpServletRequest,
+                                            @RequestHeader("requestId") String requestId, @RequestBody GmFundNavRequest request)
+            throws BusinessException {
+        log.info("[" + requestId + "] << createFundInvest >>");
+
+        return userService.createFundInvest(request);
+    }
+
+    @PostMapping("/cr-fund-ivo")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> createFundInvestOptionally(HttpServletRequest httpServletRequest,
+                                              @RequestHeader("requestId") String requestId, @RequestBody GmFundNavRequest request)
+            throws BusinessException {
+        log.info("[" + requestId + "] << createFundInvest >>");
+
+        return userService.createFundInvestOptionally(request);
+    }
     @GetMapping("/get-detail-pk")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getInvestPackageDetail(HttpServletRequest httpServletRequest,

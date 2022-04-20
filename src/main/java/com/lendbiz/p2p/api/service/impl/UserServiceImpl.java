@@ -49,6 +49,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     InvestPackageDetailRepository investPackageDetailRepository;
     @Autowired
+    NAVRepository navRepository;
+    @Autowired
     PackageFilterRepository pkgFilterRepo;
     @Autowired
     RelationRepo relationRepo;
@@ -361,6 +363,13 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     }
 
     @Override
+    public ResponseEntity<?> createFundInvest(GmFundNavRequest request) {
+        NotifyEntity notify = notifyRepo.createFundInvest(request.getPv_custId(), request.getPv_amt(), request.getPv_packageId());
+
+        return response(toResult(notify));
+    }
+
+    @Override
     public ResponseEntity<?> getFundList() {
 
         ArrayList<FundListEntity> list = fundListRepository.getFundList();
@@ -385,6 +394,43 @@ if (investPackage == null){
     throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
 }
         return response(toResult(investPackage));
+    }
+
+    @Override
+    public ResponseEntity<?> getFundNAV() {
+
+        ArrayList<GmFundNAVEntity> list = (ArrayList<GmFundNAVEntity>) navRepository.getAll();
+        if (list.size() == 0)
+            throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+        return response(toResult(list));
+    }
+
+    @Override
+    public ResponseEntity<?> getFundNAByFundID(String fid) {
+        ArrayList<GmFundNAVEntity> list = (ArrayList<GmFundNAVEntity>) navRepository.getAllByFundID(fid);
+        if (list.size() == 0)
+            throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+        return response(toResult(list));
+    }
+
+    @Override
+    public ResponseEntity<?> createFundInvestOptionally(GmFundNavRequest request) {
+        NotifyEntity notify = notifyRepo.createFundInvestOptionally(request.getPv_custId(),
+                request.getPv_amt1(),
+                request.getPv_amt2(),
+                request.getPv_amt3(),
+                request.getPv_amt4(),
+                request.getPv_amt5(),
+                request.getPv_amt6(),
+                request.getPv_amt7(),
+                request.getPv_amt8(),
+                request.getPv_amt9(),
+                request.getPv_amt10(),
+                request.getPv_amt11(),
+                request.getPv_amt12(),
+                request.getPv_amt13(),
+                request.getPv_amt14());
+        return response(toResult(notify));
     }
 
 

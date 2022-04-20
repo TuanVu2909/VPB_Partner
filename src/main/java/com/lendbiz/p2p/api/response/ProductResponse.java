@@ -18,7 +18,6 @@ public class ProductResponse implements Serializable {
     private long price;
     private Card9PayService provider;
     private Card9PayCategory category;
-
     private Card9PayService service;
 
 }
