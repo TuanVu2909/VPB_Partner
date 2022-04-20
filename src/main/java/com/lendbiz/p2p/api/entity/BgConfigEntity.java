@@ -36,4 +36,6 @@ public class BgConfigEntity {
     private String routing;
     @Column(name = "CURRENTPAGE")
     private int currentPage;
+    @Column(name = "SORTORDER")
+    private int sortOrder;
 }

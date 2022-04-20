@@ -53,18 +53,22 @@ public interface UserService {
 	public ResponseEntity<?> changeCoin(AccountInput input);
 
 	public ResponseEntity<?> updateReferenceId(AccountInput input);
+
 	public ResponseEntity<?> getBankInfo();
 
 	public ResponseEntity<?> getInsurancePackage();
+
 	public ResponseEntity<?> getRelation();
+
 	public ResponseEntity<?> createInsurance(InsuranceRequest insuranceRequest);
 
 	public ResponseEntity<?> createNavDaily(GmFundNavRequest request);
+
 	public ResponseEntity<?> getFundList();
+
 	public ResponseEntity<?> getInvestPackage();
+
 	public ResponseEntity<?> getInvestPackageDetail(String pkId);
-
-
 
 	String checkSession(String session);
 

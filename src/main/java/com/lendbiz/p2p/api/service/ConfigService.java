@@ -22,4 +22,8 @@ public interface ConfigService {
 
 	public ResponseEntity<?> getProductField();
 
+	public ResponseEntity<?> getProductConfig();
+
+
+
 }

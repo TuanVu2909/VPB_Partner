@@ -18,8 +18,14 @@ package com.lendbiz.p2p.api.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.lendbiz.p2p.api.constants.Constants;
+import com.lendbiz.p2p.api.constants.ErrorCode;
+import com.lendbiz.p2p.api.entity.BgConfigEntity;
+import com.lendbiz.p2p.api.entity.ProductConfigEntity;
+import com.lendbiz.p2p.api.model.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.BgConfigRepository;
 import com.lendbiz.p2p.api.repository.PackageFilterRepository;
+import com.lendbiz.p2p.api.repository.ProductConfigRepo;
 import com.lendbiz.p2p.api.repository.UserOnlineRepository;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.service.ConfigService;
@@ -49,10 +55,30 @@ public class ConfigServiceImpl extends BaseResponse<ConfigService> implements Co
 	@Autowired
 	BgConfigRepository bgConfigRepository;
 
+	@Autowired
+	ProductConfigRepo prodConfigRepo;
+
 	@Override
 	public ResponseEntity<?> getProductField() {
 
-		return response(toResult(bgConfigRepository.findViaProcedure()));
+		// return response(toResult(bgConfigRepository.findViaProcedure()));
+
+		List<BgConfigEntity> list = bgConfigRepository.findViaProcedure();
+		if (list.size() == 0)
+			throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+
+		return response(toResult(list));
+
+	}
+
+	@Override
+	public ResponseEntity<?> getProductConfig() {
+
+		List<ProductConfigEntity> list = prodConfigRepo.getProductConfig();
+		if (list.size() == 0)
+			throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+
+		return response(toResult(list));
 
 	}
 
