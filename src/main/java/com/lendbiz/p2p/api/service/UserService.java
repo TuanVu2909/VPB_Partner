@@ -61,6 +61,8 @@ public interface UserService {
 	public ResponseEntity<?> getFundList();
 	public ResponseEntity<?> getInvestPackage();
 	public ResponseEntity<?> getInvestPackageDetail(String pkId);
+	public ResponseEntity<?> getFundNAV();
+	public ResponseEntity<?> getFundNAByFundID(String fid);
 
 
 

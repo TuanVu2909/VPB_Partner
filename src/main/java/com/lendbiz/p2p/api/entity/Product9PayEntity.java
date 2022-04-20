@@ -5,10 +5,15 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "PRODUCTS9PAY")
 @Setter
 @Getter
 @Data
+@NamedStoredProcedureQueries({ //
+        @NamedStoredProcedureQuery(name = "Product9PayEntity.get_productcard9pay", resultClasses = Product9PayEntity.class, procedureName = "PKG_API.get_productcard9pay", parameters = { //
+                @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
+                @StoredProcedureParameter(name = "s_id", mode = ParameterMode.IN, type = String.class),
+        }) //
+})
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product9PayEntity {
@@ -25,9 +30,11 @@ public class Product9PayEntity {
     private int provider_id;
     @Column(name = "SERVICE_ID")
     private int service_id;
+    @Column(name = "PROVIDER_NAME")
+    private String pv_name;
+    @Column(name = "SERVICE_NAME")
+    private String sv_name;
+    @Column(name = "SERVICE_DES")
+    private String sv_des;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @MapsId
-    @JoinColumn(name = "CATEGORY_ID",referencedColumnName = "PID")
-    private Service9Pay service9Pay;
 }
