@@ -86,6 +86,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     BaoVietRepo baoVietRepo;
     @Autowired
     InvestPackageRepository investPackageRepository;
+    @Autowired
+    CfMastRepository cfmMastRepository;
 
     @Override
     public ResponseEntity<?> login(LoginRequest loginRequest) {
@@ -94,10 +96,6 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         UserOnline user = userOnlineRepo.getUserOnline(loginRequest.getUsername());
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPwd())) {
-            // response = (ArrayList) pkgFilterRepo.login(loginRequest.getUsername(),
-            // getEncodedPassword,
-            // loginRequest.getDeviceId());
-            // } else {
             throw new BusinessException(ErrorCode.FAIL_LOGIN, ErrorCode.FAIL_LOGIN_DESCRIPTION);
         } else {
             if (userOnlineRepo.checkAccountMappingExist(user.getCustId()) == 0) {
@@ -105,6 +103,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 reqJoinRequest.setMobile(loginRequest.getUsername());
                 pkgFilterRepo.reqJoin(reqJoinRequest);
             }
+
         }
 
         return response(toResult(user.getCustId()));
@@ -122,6 +121,15 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     public ResponseEntity<?> verifyAcc(VerifyAccountInput input) {
         try {
             return response(toResult(pkgFilterRepo.verifyAcc(input)));
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getUserInfo(String mobile) {
+        try {
+            return response(toResult(cfmMastRepository.findByMobileSms(mobile)));
         } catch (Exception e) {
             throw new BusinessException(Constants.FAIL, e.getMessage());
         }

@@ -24,6 +24,8 @@ public interface UserService {
 
 	public ResponseEntity<?> verifyAcc(VerifyAccountInput input);
 
+	public ResponseEntity<?> getUserInfo(String mobile);
+
 	public ResponseEntity<?> setAccountPassword(SetAccountPasswordRequest setAccountPasswordRequest);
 
 	public ResponseEntity<?> createBear(AccountInput input);

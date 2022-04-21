@@ -75,6 +75,14 @@ public class UserController {
         return userService.verifyAcc(verifyAccountInput);
     }
 
+    @GetMapping("/get-user-info")
+    public ResponseEntity<?> getUserInfo(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId, @RequestParam String mobile)
+            throws BusinessException {
+        log.info("[" + requestId + "] << get-account-asset >>");
+        return userService.getUserInfo(mobile);
+    }
+
     @PostMapping("/set-account-password")
     @Transactional(readOnly = true)
     public ResponseEntity<?> verifyAccount(HttpServletRequest httpServletRequest,
