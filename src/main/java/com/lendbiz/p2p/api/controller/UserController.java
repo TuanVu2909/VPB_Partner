@@ -79,7 +79,7 @@ public class UserController {
     public ResponseEntity<?> getUserInfo(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestParam String mobile)
             throws BusinessException {
-        log.info("[" + requestId + "] << get-account-asset >>");
+        log.info("[" + requestId + "] << get-user-info >>");
         return userService.getUserInfo(mobile);
     }
 

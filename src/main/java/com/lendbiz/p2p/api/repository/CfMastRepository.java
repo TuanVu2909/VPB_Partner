@@ -25,6 +25,10 @@ public interface CfMastRepository extends CrudRepository<CfMast, String> {
 	@Query(value = "select * from cfmast where mobilesms = ?1", nativeQuery = true)
 	List<CfMast> findByMobileSms(String phone);
 
+	// get cfmast vs truong hop la nha dau tu
+	@Query(value = "select fullname, dateofbirth, idcode, mobilesms from cfmast where custid = ?1", nativeQuery = true)
+	CfMast getUserInfo(String custId);
+
 	@Transactional
 	@Modifying
 	@Query(value = "update cfmast set status = 'A' where custid = ?1", nativeQuery = true)

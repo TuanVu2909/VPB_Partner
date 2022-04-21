@@ -89,7 +89,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     InvestPackageRepository investPackageRepository;
     @Autowired
-    CfMastRepository cfmMastRepository;
+    UserInfoRepository userInfoRepository;
 
     @Override
     public ResponseEntity<?> login(LoginRequest loginRequest) {
@@ -131,7 +131,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     public ResponseEntity<?> getUserInfo(String mobile) {
         try {
-            return response(toResult(cfmMastRepository.findByMobileSms(mobile)));
+            return response(toResult(userInfoRepository.getUserInfo(mobile)));
         } catch (Exception e) {
             throw new BusinessException(Constants.FAIL, e.getMessage());
         }
@@ -433,7 +433,6 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         return response(toResult(list));
     }
-
 
     @Override
     public String checkSession(String session) {
