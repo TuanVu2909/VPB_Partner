@@ -140,16 +140,16 @@ public class NinePayController {
         return ninepayService.getCardProducts(sId);
 
     }
-//    @GetMapping("/9pay/get-prod-from-lb")
-//    @Transactional(readOnly = true)
-//    public ResponseEntity<?> getProducts(HttpServletRequest httpServletRequest,
-//                                      @RequestHeader("requestId") String requestId, @RequestParam("sid") String sId)
-//            throws BusinessException, UnsupportedEncodingException {
-//        log.info("[" + requestId + "] << get-9pay-products-f-lendbiz >>");
-//
-//        return ninepayService.getCardProducts9Pay(sId);
-//
-//    }
+    @GetMapping("/9pay/get-prod-from-lb")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getProducts(HttpServletRequest httpServletRequest,
+                                      @RequestHeader("requestId") String requestId, @RequestParam("sid") String sId)
+            throws BusinessException, UnsupportedEncodingException {
+        log.info("[" + requestId + "] << get-9pay-products-f-lendbiz >>");
+
+        return card9PayService.getProductCard9pay(sId);
+
+    }
 
     @GetMapping("/9pay/balance")
     public ResponseEntity<?> balance(HttpServletRequest httpServletRequest,

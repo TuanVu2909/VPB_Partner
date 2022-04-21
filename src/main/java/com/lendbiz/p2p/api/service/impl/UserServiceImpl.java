@@ -49,6 +49,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     InvestPackageDetailRepository investPackageDetailRepository;
     @Autowired
+    NAVRepository navRepository;
+    @Autowired
     PackageFilterRepository pkgFilterRepo;
     @Autowired
     RelationRepo relationRepo;
@@ -414,6 +416,24 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         }
         return response(toResult(investPackage));
     }
+
+    @Override
+    public ResponseEntity<?> getFundNAV() {
+
+        ArrayList<GmFundNAVEntity> list = (ArrayList<GmFundNAVEntity>) navRepository.getAll();
+        if (list.size() == 0)
+            throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+        return response(toResult(list));
+    }
+
+    @Override
+    public ResponseEntity<?> getFundNAByFundID(String fid) {
+        ArrayList<GmFundNAVEntity> list = (ArrayList<GmFundNAVEntity>) navRepository.getAllByFundID(fid);
+        if (list.size() == 0)
+            throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+        return response(toResult(list));
+    }
+
 
     @Override
     public String checkSession(String session) {

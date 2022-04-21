@@ -72,6 +72,10 @@ public interface UserService {
 
 	public ResponseEntity<?> getInvestPackageDetail(String pkId);
 
+	public ResponseEntity<?> getFundNAV();
+
+	public ResponseEntity<?> getFundNAByFundID(String fid);
+
 	String checkSession(String session);
 
 }

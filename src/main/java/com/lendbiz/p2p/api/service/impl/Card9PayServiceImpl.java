@@ -11,10 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
-import com.lendbiz.p2p.api.entity.Card9PayDetails;
-import com.lendbiz.p2p.api.entity.Card9PayEntity;
-import com.lendbiz.p2p.api.entity.Card9PayEntity_v2;
-import com.lendbiz.p2p.api.entity.TransactionBuyCard;
+import com.lendbiz.p2p.api.entity.*;
 
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.*;
@@ -109,7 +106,6 @@ public class Card9PayServiceImpl extends BaseResponse<NinePayServiceImpl> {
     }
 
     public void create(Card9PayEntity card9PayEntity) {
-        System.out.println("-----");
         try {
             notifyRepo.insert_trans9pay(card9PayEntity.getCustid()
                     , card9PayEntity.getTrans_Id()
@@ -129,15 +125,24 @@ public class Card9PayServiceImpl extends BaseResponse<NinePayServiceImpl> {
         return response(toResult(card9PayRepository.findByCustId(cif)));
     }
 
-    @Autowired
-    RateRepo rateRepo;
 
     public ResponseEntity<?> getP() {
         try {
-            System.out.println("2323");
+
             return response(toResult(products9payRepository.getById("1")));
         } catch (Exception e) {
             throw new BusinessException("11", e.getMessage());
+        }
+
+    }
+    public ResponseEntity<?> getProductCard9pay(String sId) {
+        try {
+            ArrayList<Product9PayEntity> list = (ArrayList<Product9PayEntity>) products9payRepository.get_productcard9pay(sId);
+            if (list.size() == 0)
+                throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+            return response(toResult(list));
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, e.getMessage());
         }
 
     }

@@ -311,6 +311,24 @@ public class UserController {
         return userService.getInvestPackage();
     }
 
+
+    @GetMapping("/get-nav")
+    public ResponseEntity<?> getNav(HttpServletRequest httpServletRequest,
+                                      @RequestHeader("requestId") String requestId)
+            throws BusinessException {
+        log.info("[" + requestId + "] << nav >>");
+
+        return userService.getFundNAV();
+    }
+    @GetMapping("/get-nav-fid")
+    public ResponseEntity<?> getNavByFid(HttpServletRequest httpServletRequest,
+                                    @RequestHeader("requestId") String requestId,@RequestParam("fid")String fid)
+            throws BusinessException {
+        log.info("[" + requestId + "] << nav >>");
+
+        return userService.getFundNAByFundID(fid);
+    }
+
     @GetMapping("/get-detail-pk")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getInvestPackageDetail(HttpServletRequest httpServletRequest,
