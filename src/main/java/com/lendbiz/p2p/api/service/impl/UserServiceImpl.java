@@ -86,7 +86,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     BaoVietRepo baoVietRepo;
     @Autowired
     InvestPackageRepository investPackageRepository;
-
+@Autowired
+FundInvestRepository fundInvestRepository;
     @Override
     public ResponseEntity<?> login(LoginRequest loginRequest) {
         // List<Object> response;
@@ -430,6 +431,14 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 request.getPv_amt13(),
                 request.getPv_amt14());
         return response(toResult(notify));
+    }
+
+    @Override
+    public ResponseEntity<?> getFundInvest(String cid) {
+        ArrayList<FundInvestEntity> list =  fundInvestRepository.getFundInvest(cid);
+        if (list.size() == 0)
+            throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+        return response(toResult(list));
     }
 
 

@@ -67,6 +67,9 @@ public interface UserService {
 	public ResponseEntity<?> createFundInvestOptionally(GmFundNavRequest request);
 
 
+	public ResponseEntity<?> getFundInvest(String cid);
+
+
 
 
 	String checkSession(String session);
