@@ -67,6 +67,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     AccountInvestRepository accountInvestRepository;
     @Autowired
+    PortfolioRepository portfolioRepository;
+    @Autowired
     FirstPasswordRepository firstPasswordRepository;
     @Autowired
     RateRepo rateRepo;
@@ -180,6 +182,19 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     public ResponseEntity<?> getAccountInvest(String custId) {
         try {
             ArrayList<AccountInvest> list = accountInvestRepository.getAccountInvest(custId);
+            if (list.size() == 0)
+                throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+            return response(toResult(list));
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, e.getMessage());
+        }
+
+    }
+
+    @Override
+    public ResponseEntity<?> getPortfolioInvest(String custId) {
+        try {
+            List<PortfolioInvest> list = portfolioRepository.getPortfolio(custId);
             if (list.size() == 0)
                 throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
             return response(toResult(list));

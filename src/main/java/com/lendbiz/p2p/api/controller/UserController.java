@@ -119,6 +119,15 @@ public class UserController {
         return userService.getAccountInvest(cif);
     }
 
+    @GetMapping("/get-account-portfolio")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getAccountPortfolio(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId, @RequestParam String cif)
+            throws BusinessException {
+        log.info("[" + requestId + "] << getAccountPortfolio >>");
+        return userService.getPortfolioInvest(cif);
+    }
+
     @GetMapping("/get-product")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getProduct(HttpServletRequest httpServletRequest,
@@ -311,18 +320,18 @@ public class UserController {
         return userService.getInvestPackage();
     }
 
-
     @GetMapping("/get-nav")
     public ResponseEntity<?> getNav(HttpServletRequest httpServletRequest,
-                                      @RequestHeader("requestId") String requestId)
+            @RequestHeader("requestId") String requestId)
             throws BusinessException {
         log.info("[" + requestId + "] << nav >>");
 
         return userService.getFundNAV();
     }
+
     @GetMapping("/get-nav-fid")
     public ResponseEntity<?> getNavByFid(HttpServletRequest httpServletRequest,
-                                    @RequestHeader("requestId") String requestId,@RequestParam("fid")String fid)
+            @RequestHeader("requestId") String requestId, @RequestParam("fid") String fid)
             throws BusinessException {
         log.info("[" + requestId + "] << nav >>");
 

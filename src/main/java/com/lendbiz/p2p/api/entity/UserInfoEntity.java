@@ -30,6 +30,9 @@ public class UserInfoEntity {
     @Column(name = "MOBILESMS")
     private String mobileSms;
 
+    @Column(name = "EMAIL")
+    private String email;
+
     @Column(name = "STATUS")
     private String status;
 }
