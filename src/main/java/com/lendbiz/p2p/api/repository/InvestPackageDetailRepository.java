@@ -8,8 +8,9 @@ import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface InvestPackageDetailRepository  extends JpaRepository<InvestPackageDetailEntity, String> {
     @Procedure("InvestPackageDetailEntity.getInvestPackageDetail")
-    InvestPackageDetailEntity getInvestPackageDetail(@Param("pv_packageId") String pkId);
+    List<InvestPackageDetailEntity> getInvestPackageDetail(@Param("pv_packageId") String pkId);
 }

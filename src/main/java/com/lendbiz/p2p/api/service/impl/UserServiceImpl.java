@@ -388,12 +388,11 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> getInvestPackageDetail(String pkId) {
-        InvestPackageDetailEntity investPackage = investPackageDetailRepository.getInvestPackageDetail(pkId);
-if (investPackage == null){
 
-    throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
-}
-        return response(toResult(investPackage));
+        ArrayList<InvestPackageDetailEntity> list = (ArrayList<InvestPackageDetailEntity>) investPackageDetailRepository.getInvestPackageDetail(pkId);
+        if (list.size() == 0)
+            throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+        return response(toResult(list));
     }
 
     @Override
