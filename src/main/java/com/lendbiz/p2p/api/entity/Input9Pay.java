@@ -11,4 +11,5 @@ public class Input9Pay {
     private String productId;
     private String quantity;
     private String cif;
+    private String phone;
 }

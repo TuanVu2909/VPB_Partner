@@ -20,6 +20,7 @@ public class TransactionBuyCard {
     private String price;
     private String payDate;
     private String transactionId;
+    private String phone_received;
     private String product_name;
     private String product_des;
     private String service_name;

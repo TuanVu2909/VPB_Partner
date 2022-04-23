@@ -75,22 +75,32 @@ public class Card9PayServiceImpl extends BaseResponse<NinePayServiceImpl> {
     }
 
         list.forEach((n) -> {
-            Card9PayDetails[] card9PayDetailsList;
-            try {
-                byte[] dc = Base64.getDecoder().decode(n.getCard_code());
-                String data = new String(dc, "UTF-8");
-                card9PayDetailsList = mapper.readValue(data, Card9PayDetails[].class);
-                for (int i = 0; i < card9PayDetailsList.length; i++) {
-                    Card9PayDetails card9PayDetails = card9PayDetailsList[i];
-                    String codeDe = Utils.decrypt(card9PayDetails.getCard_code());
-                    card9PayDetailsList[i].setCard_code(codeDe);
 
+            Card9PayDetails[] card9PayDetailsList;
+            TransactionBuyCard tran = new TransactionBuyCard();
+            try {
+                if (n.getCard_code()!= null){
+                    byte[] dc = Base64.getDecoder().decode(n.getCard_code());
+                    String data = new String(dc, "UTF-8");
+                    card9PayDetailsList = mapper.readValue(data, Card9PayDetails[].class);
+                    for (int i = 0; i < card9PayDetailsList.length; i++) {
+                        Card9PayDetails card9PayDetails = card9PayDetailsList[i];
+                        String codeDe = Utils.decrypt(card9PayDetails.getCard_code());
+                        card9PayDetailsList[i].setCard_code(codeDe);
+
+                    }
+                    tran.setCard9PayDetailsList(card9PayDetailsList);
+                    tran.setPhone_received("");
+                }else {
+
+                    tran.setPhone_received(n.getPhone());
                 }
-                TransactionBuyCard tran = new TransactionBuyCard();
+
+
                 tran.setId(n.getId());
                 tran.setCif(n.getCif());
                 tran.setPayDate(n.getPayDate());
-                tran.setCard9PayDetailsList(card9PayDetailsList);
+
                 tran.setPrice(n.getPrice());
                 tran.setService_name(n.getService_name());
                 tran.setTransactionId(n.getTransId());
@@ -114,7 +124,8 @@ public class Card9PayServiceImpl extends BaseResponse<NinePayServiceImpl> {
                     , card9PayEntity.getPay_status()
                     , card9PayEntity.getSeri_code()
                     , card9PayEntity.getCard_code(),
-                    card9PayEntity.getAmount()
+                    card9PayEntity.getAmount(),
+                    card9PayEntity.getPhone()
             );
         } catch (Exception e) {
             throw new BusinessException("01", e.getMessage());

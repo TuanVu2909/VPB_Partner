@@ -30,6 +30,7 @@ import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.*;
 import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.repository.C9payProductRepo;
 import com.lendbiz.p2p.api.repository.PackageFilterRepository;
 import com.lendbiz.p2p.api.repository.Products9payRepository;
 import com.lendbiz.p2p.api.request.Create9PayRequest;
@@ -193,6 +194,9 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
         return response(toResult(decodedString));
     }
 
+    @Autowired
+    C9payProductRepo c9payProductRepo;
+
     @Override
     public ResponseEntity<?> getCardProducts(String serviceId) {
         HttpHeaders headers = new HttpHeaders();
@@ -225,24 +229,24 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
                 root = mapper.readTree(responseEntityStr.getBody());
                 if (root.get("success").toString().equals("false")) {
                     throw new BusinessException(root.get("error").get("code").toString(), root.get("error").get("message").toString());
-
                 }
                 ProductResponse[] myObjects = mapper.readValue(root.get("data").get("products").toString(), ProductResponse[].class);
                 if (myObjects.length == 0) {
                     throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
                 }
-//                Product9PayEntity entity = new Product9PayEntity();
-//
+//                ArrayList<Product9PayCardEntity> arrayList = new ArrayList<>();
 //                for (int i = 0; i < myObjects.length; i++) {
+//                    Product9PayCardEntity entity = new Product9PayCardEntity();
 //                    entity.setId(myObjects[i].getId());
 //                    entity.setDes(myObjects[i].getDescription());
 //                    entity.setName(myObjects[i].getName());
 //                    entity.setPrice(myObjects[i].getPrice());
 //                    entity.setService_id(myObjects[i].getService().getId());
 //                    entity.setProvider_id(myObjects[i].getProvider().getId());
-//                    pay9Repository.save(entity);
-//
+//                    arrayList.add(entity);
 //                }
+//                Iterable<Product9PayCardEntity> list = arrayList;
+//                c9payProductRepo.saveAll(list);
                 return response(toResult(myObjects));
             } catch (JsonProcessingException e) {
                 throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
@@ -260,7 +264,9 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
         HashMap<String, String> fieldMap = new HashMap<>();
-
+        if (input9Pay.getQuantity() == null) {
+            input9Pay.setQuantity("1");
+        }
         fieldMap.put("type", "2");
         fieldMap.put("product_id", input9Pay.getProductId());
         fieldMap.put("qua", input9Pay.getQuantity());
@@ -270,6 +276,11 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
         map.add("partner_id", PARTNER_KEY);
         map.add("product_id", input9Pay.getProductId());
         map.add("quantity", input9Pay.getQuantity());
+        if (input9Pay.getPhone() != null) {
+            map.add("phone", input9Pay.getPhone());
+        } else {
+            input9Pay.setPhone("");
+        }
         map.add("signature", rq9Pay[1]);
         System.out.println(map);
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
@@ -289,12 +300,11 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
             if (root.get("success").toString().equals("false")) {
                 throw new BusinessException(root.get("error").get("code").toString(), root.get("error").get("message").toString());
             }
+
             Card9PayResponse response = mapper.readValue(root.get("data").toString(), Card9PayResponse.class);
-            byte[] dc = Base64.getDecoder().decode(response.getCards());
-            String data = new String(dc, "UTF-8");
-            System.out.println(data);
-            if (response.getPrice().equals("0")){
-                throw new BusinessException(ErrorCode.NO_CARD,ErrorCode.NO_CARD_DESCRIPTION);
+
+            if (response.getPrice().equals("0")) {
+                throw new BusinessException(ErrorCode.NO_CARD, ErrorCode.NO_CARD_DESCRIPTION);
             }
             Card9PayEntity card9PayEntity = new Card9PayEntity();
             card9PayEntity.setPay_status("Y");
@@ -302,22 +312,32 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
             card9PayEntity.setProduct_id(response.getProduct_id());
             card9PayEntity.setPrice(response.getPrice());
             card9PayEntity.setTrans_Id(response.getTransaction_id());
-//                String id = String.valueOf((int) Math.floor(Math.random() * 100000));
-//                card9PayEntity.setId(id);
             card9PayEntity.setPay_Date(Utils.getDate());
             card9PayEntity.setCustid(input9Pay.getCif());
             card9PayEntity.setCard_code(response.getCards());
             card9PayEntity.setAmount(response.getAmount());
+            card9PayEntity.setPhone(input9Pay.getPhone());
             service9.create(card9PayEntity);
-            Card9PayDetails[] card9PayDetailsList = mapper.readValue(data, Card9PayDetails[].class);
-            for (int i = 0; i < card9PayDetailsList.length; i++) {
-                Card9PayDetails card9PayDetails = card9PayDetailsList[i];
-                String codeDe = Utils.decrypt(card9PayDetails.getCard_code());
-                card9PayDetailsList[i].setCard_code(codeDe);
+            if (input9Pay.getPhone().equals("")) {
+                byte[] dc = Base64.getDecoder().decode(response.getCards());
+                String data = new String(dc, "UTF-8");
+                Card9PayDetails[] card9PayDetailsList = mapper.readValue(data, Card9PayDetails[].class);
+                for (int i = 0; i < card9PayDetailsList.length; i++) {
+                    Card9PayDetails card9PayDetails = card9PayDetailsList[i];
+                    String codeDe = Utils.decrypt(card9PayDetails.getCard_code());
+                    card9PayDetailsList[i].setCard_code(codeDe);
 
+                }
+                return response(toResult(card9PayDetailsList));
             }
-
-            return response(toResult(card9PayDetailsList));
+            Card9PayDetails details = new Card9PayDetails();
+            details.setAmount(response.getAmount());
+            details.setCard_seri("");
+            details.setCard_code("");
+            details.setExpired_at(response.getCreated_at());
+            details.setDiscount("0");
+            details.setPrice(response.getAmount());
+            return response(toResult(details));
         } catch (JsonProcessingException e) {
             throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
         } catch (UnsupportedEncodingException e) {
@@ -406,7 +426,7 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
             if (root.get("success").toString().equals("false")) {
                 throw new BusinessException(root.get("error").get("code").toString(), root.get("error").get("message").toString());
             }
-            System.out.println( root.get("data").get("balance_info").get(0).toString());
+            System.out.println(root.get("data").get("balance_info").get(0).toString());
             String response = root.get("data").get("balance_info").get(0).get("balance").asText();
             return response(toResult(response));
         } catch (JsonMappingException e) {
