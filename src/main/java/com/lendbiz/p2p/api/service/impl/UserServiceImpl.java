@@ -48,6 +48,9 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl extends BaseResponse<UserService> implements UserService {
     @Autowired
     InvestPackageDetailRepository investPackageDetailRepository;
+
+    @Autowired
+    FundInvestDetailRepository fundInvestDetailRepository;
     @Autowired
     NAVRepository navRepository;
     @Autowired
@@ -436,6 +439,14 @@ FundInvestRepository fundInvestRepository;
     @Override
     public ResponseEntity<?> getFundInvest(String cid) {
         ArrayList<FundInvestEntity> list =  fundInvestRepository.getFundInvest(cid);
+        if (list.size() == 0)
+            throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+        return response(toResult(list));
+    }
+
+    @Override
+    public ResponseEntity<?> getFundInvestDetail(String cid, String packageId) {
+        ArrayList<FundInvestDetailEntity> list =  fundInvestDetailRepository.getFundInvestDetail(cid,packageId);
         if (list.size() == 0)
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         return response(toResult(list));
