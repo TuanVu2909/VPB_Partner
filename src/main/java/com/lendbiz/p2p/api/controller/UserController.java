@@ -367,6 +367,25 @@ public class UserController {
         return userService.getInvestPackageDetail(pkId);
     }
 
+    @GetMapping("/get-fund-invest")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getFundInvest(HttpServletRequest httpServletRequest,
+                                              @RequestHeader("requestId") String requestId , @RequestParam("cid") String cid)
+            throws BusinessException {
+        log.info("[" + requestId + "] << getFundInvest >>");
+
+        return userService.getFundInvest(cid);
+    }
+    @GetMapping("/get-fund-invest-detail")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getFundInvestDetail(HttpServletRequest httpServletRequest,
+                                           @RequestHeader("requestId") String requestId , @RequestParam("cid") String cid,
+                                                 @RequestParam("pkid") String pkid)
+            throws BusinessException {
+        log.info("[" + requestId + "] << getFundInvest >>");
+
+        return userService.getFundInvestDetail(cid,pkid);
+    }
     @GetMapping("/get-bg-tran-his")
     public ResponseEntity<?> getTransHistory(HttpServletRequest httpServletRequest,
             @RequestHeader("session") String session,

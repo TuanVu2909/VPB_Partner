@@ -48,6 +48,9 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl extends BaseResponse<UserService> implements UserService {
     @Autowired
     InvestPackageDetailRepository investPackageDetailRepository;
+
+    @Autowired
+    FundInvestDetailRepository fundInvestDetailRepository;
     @Autowired
     NAVRepository navRepository;
     @Autowired
@@ -93,6 +96,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     UserInfoRepository userInfoRepository;
 
+@Autowired
+FundInvestRepository fundInvestRepository;
     @Override
     public ResponseEntity<?> login(LoginRequest loginRequest) {
         // List<Object> response;
@@ -431,12 +436,11 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> getInvestPackageDetail(String pkId) {
-        InvestPackageDetailEntity investPackage = investPackageDetailRepository.getInvestPackageDetail(pkId);
-        if (investPackage == null) {
 
+        ArrayList<InvestPackageDetailEntity> list = (ArrayList<InvestPackageDetailEntity>) investPackageDetailRepository.getInvestPackageDetail(pkId);
+        if (list.size() == 0)
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
-        }
-        return response(toResult(investPackage));
+        return response(toResult(list));
     }
 
     @Override
@@ -474,6 +478,22 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 request.getPv_amt13(),
                 request.getPv_amt14());
         return response(toResult(notify));
+    }
+
+    @Override
+    public ResponseEntity<?> getFundInvest(String cid) {
+        ArrayList<FundInvestEntity> list =  fundInvestRepository.getFundInvest(cid);
+        if (list.size() == 0)
+            throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+        return response(toResult(list));
+    }
+
+    @Override
+    public ResponseEntity<?> getFundInvestDetail(String cid, String packageId) {
+        ArrayList<FundInvestDetailEntity> list =  fundInvestDetailRepository.getFundInvestDetail(cid,packageId);
+        if (list.size() == 0)
+            throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+        return response(toResult(list));
     }
 
 
