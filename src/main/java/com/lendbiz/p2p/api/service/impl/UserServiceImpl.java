@@ -406,6 +406,13 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     }
 
     @Override
+    public ResponseEntity<?> createFundInvest(GmFundNavRequest request) {
+        NotifyEntity notify = notifyRepo.createFundInvest(request.getPv_custId(), request.getPv_amt(), request.getPv_packageId());
+
+        return response(toResult(notify));
+    }
+
+    @Override
     public ResponseEntity<?> getFundList() {
 
         ArrayList<FundListEntity> list = fundListRepository.getFundList();
@@ -448,6 +455,27 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         return response(toResult(list));
     }
+
+    @Override
+    public ResponseEntity<?> createFundInvestOptionally(GmFundNavRequest request) {
+        NotifyEntity notify = notifyRepo.createFundInvestOptionally(request.getPv_custId(),
+                request.getPv_amt1(),
+                request.getPv_amt2(),
+                request.getPv_amt3(),
+                request.getPv_amt4(),
+                request.getPv_amt5(),
+                request.getPv_amt6(),
+                request.getPv_amt7(),
+                request.getPv_amt8(),
+                request.getPv_amt9(),
+                request.getPv_amt10(),
+                request.getPv_amt11(),
+                request.getPv_amt12(),
+                request.getPv_amt13(),
+                request.getPv_amt14());
+        return response(toResult(notify));
+    }
+
 
     @Override
     public String checkSession(String session) {

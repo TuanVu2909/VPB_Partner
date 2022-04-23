@@ -47,6 +47,32 @@ import java.util.Date;
                 @StoredProcedureParameter(name = "pv_navDate", mode = ParameterMode.IN, type = String.class),
 
         }),
+        @NamedStoredProcedureQuery(name = "NotifyEntity.createFundInvest", procedureName = "pck_gm.createFundInvest", resultClasses = NotifyEntity.class, parameters = { //
+                @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
+                @StoredProcedureParameter(name = "pv_custId", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_amt", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_packageId", mode = ParameterMode.IN, type = String.class),
+
+        }),
+
+        @NamedStoredProcedureQuery(name = "NotifyEntity.createFundInvestOptionally", procedureName = "pck_gm.createFundInvestOptionally", resultClasses = NotifyEntity.class, parameters = { //
+                @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
+                @StoredProcedureParameter(name = "pv_custId", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_amt1", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_amt2", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_amt3", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_amt4", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_amt5", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_amt6", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_amt7", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_amt8", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_amt9", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_amt10", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_amt11", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_amt12", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_amt13", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_amt14", mode = ParameterMode.IN, type = String.class),
+        }),
         @NamedStoredProcedureQuery(name = "NotifyEntity.createInsurance", procedureName = "pck_gm.createInsurance", resultClasses = NotifyEntity.class, parameters = { //
                 @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
                 @StoredProcedureParameter(name = "pv_custId", mode = ParameterMode.IN, type = String.class),
