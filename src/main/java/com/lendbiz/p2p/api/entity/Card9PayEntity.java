@@ -45,4 +45,6 @@ public class Card9PayEntity {
     private String trans_Id;
     @Column(name = "AMOUNT")
     private String amount;
+    @Column(name = "PHONE_RECEIVED")
+    private String phone;
 }
