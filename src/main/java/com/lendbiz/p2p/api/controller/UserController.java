@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import javax.servlet.http.HttpServletRequest;
 
 import com.lendbiz.p2p.api.entity.AccountInput;
+import com.lendbiz.p2p.api.entity.PkgFundInfoEntity;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.request.BearRequest;
@@ -298,6 +299,15 @@ public class UserController {
         log.info("[" + requestId + "] << create-nav-daily >>");
 
         return userService.createNavDaily(request);
+    }
+    @PostMapping("/save-pkg-fund")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> savePkgFund(HttpServletRequest httpServletRequest,
+                                            @RequestHeader("requestId") String requestId, @RequestBody PkgFundInfoEntity request)
+            throws BusinessException {
+        log.info("[" + requestId + "] << create-pkg-fundy >>");
+
+        return userService.savePkgFundInfo(request);
     }
 
     @GetMapping("/get-fund-list")
