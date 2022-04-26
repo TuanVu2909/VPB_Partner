@@ -15,10 +15,13 @@
  */
 package com.lendbiz.p2p.api.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.*;
@@ -26,6 +29,8 @@ import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.*;
 import com.lendbiz.p2p.api.request.*;
 import com.lendbiz.p2p.api.response.BaseResponse;
+import com.lendbiz.p2p.api.response.PkgFundDetail;
+import com.lendbiz.p2p.api.response.PkgFundResponse;
 import com.lendbiz.p2p.api.service.UserService;
 import com.lendbiz.p2p.api.utils.StringUtil;
 import com.lendbiz.p2p.api.utils.Utils;
@@ -48,7 +53,10 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl extends BaseResponse<UserService> implements UserService {
     @Autowired
     InvestPackageDetailRepository investPackageDetailRepository;
-
+    @Autowired
+    SumGrowthRepository sumGrowthRepository;
+    @Autowired
+    PkgFundInfoRepository pkgFundInfoRepository;
     @Autowired
     FundInvestDetailRepository fundInvestDetailRepository;
     @Autowired
@@ -96,8 +104,9 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     UserInfoRepository userInfoRepository;
 
-@Autowired
-FundInvestRepository fundInvestRepository;
+    @Autowired
+    FundInvestRepository fundInvestRepository;
+
     @Override
     public ResponseEntity<?> login(LoginRequest loginRequest) {
         // List<Object> response;
@@ -482,7 +491,7 @@ FundInvestRepository fundInvestRepository;
 
     @Override
     public ResponseEntity<?> getFundInvest(String cid) {
-        ArrayList<FundInvestEntity> list =  fundInvestRepository.getFundInvest(cid);
+        ArrayList<FundInvestEntity> list = fundInvestRepository.getFundInvest(cid);
         if (list.size() == 0)
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         return response(toResult(list));
@@ -490,10 +499,55 @@ FundInvestRepository fundInvestRepository;
 
     @Override
     public ResponseEntity<?> getFundInvestDetail(String cid, String packageId) {
-        ArrayList<FundInvestDetailEntity> list =  fundInvestDetailRepository.getFundInvestDetail(cid,packageId);
+        ArrayList<FundInvestDetailEntity> list = fundInvestDetailRepository.getFundInvestDetail(cid, packageId);
         if (list.size() == 0)
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         return response(toResult(list));
+    }
+
+    @Override
+    public ResponseEntity<?> savePkgFundInfo(PkgSumFundRequest request) {
+        Date sDateF = null;
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+            sDateF = sdf.parse(request.getFund_date());
+
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        formatter = new SimpleDateFormat("dd-MMM-yyyy");
+        String strSDate = formatter.format(sDateF);
+        sumGrowthRepository.save(strSDate, request.getSum());
+        pkgFundInfoRepository.save(strSDate, request.getGrowth(), request.getF_code(), request.getPkg_id());
+        return response(toResult("success"));
+    }
+
+    @Override
+    public ResponseEntity<?> getPkgFundInfo() {
+        ArrayList<PkgFundInfoEntity> list =  pkgFundInfoRepository.findByFund_date();
+        ArrayList<SumGrowthEntity> list2 = (ArrayList<SumGrowthEntity>) sumGrowthRepository.findAll();
+        ArrayList<PkgFundResponse> list3 = new ArrayList<>();
+        for (int i = 0; i < list2.size(); i++) {
+            PkgFundResponse pkgFundResponse = new PkgFundResponse();
+            pkgFundResponse.setFund_date(list2.get(i).getFund_date());
+            pkgFundResponse.setSum(list2.get(i).getSum());
+            ArrayList<PkgFundDetail> details = new ArrayList<>();
+            list.forEach((n) -> {
+                if (n.getFund_date().equals(pkgFundResponse.getFund_date())) {
+                    PkgFundDetail pkgFundDetail = new PkgFundDetail();
+                    pkgFundDetail.setPkg_id(n.getPkg_id());
+                    pkgFundDetail.setF_code(n.getF_code());
+                    pkgFundDetail.setGrowth(n.getGrowth());
+                    details.add(pkgFundDetail);
+                }
+
+            });
+            pkgFundResponse.setPkgFundDetail(details);
+            list3.add(pkgFundResponse);
+        }
+        return response(toResult(list3));
     }
 
 

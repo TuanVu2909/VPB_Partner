@@ -1,6 +1,7 @@
 package com.lendbiz.p2p.api.service;
 
 import com.lendbiz.p2p.api.entity.AccountInput;
+import com.lendbiz.p2p.api.entity.PkgFundInfoEntity;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.request.*;
 import com.lendbiz.p2p.api.response.BearResponse;
@@ -82,6 +83,8 @@ public interface UserService {
 
 	public ResponseEntity<?> getFundInvestDetail(String cid,String packageId);
 
+	public ResponseEntity<?> savePkgFundInfo(PkgSumFundRequest request);
+	public ResponseEntity<?> getPkgFundInfo();
 
 	String checkSession(String session);
 
