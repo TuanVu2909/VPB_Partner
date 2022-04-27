@@ -139,6 +139,15 @@ public class UserController {
         return userService.getPortfolioInvest(cif);
     }
 
+    @GetMapping("/get-account-notifications")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getAccountNotifications(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId, @RequestParam String cif)
+            throws BusinessException {
+        log.info("[" + requestId + "] << getAccountNotifications >>");
+        return userService.getAccountNotifications(cif);
+    }
+
     @GetMapping("/get-product")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getProduct(HttpServletRequest httpServletRequest,
@@ -310,10 +319,11 @@ public class UserController {
 
         return userService.createNavDaily(request);
     }
+
     @PostMapping("/save-pkg-fund")
     @Transactional(readOnly = true)
     public ResponseEntity<?> savePkgFund(HttpServletRequest httpServletRequest,
-                                            @RequestHeader("requestId") String requestId, @RequestBody PkgFundInfoEntity request)
+            @RequestHeader("requestId") String requestId, @RequestBody PkgFundInfoEntity request)
             throws BusinessException {
         log.info("[" + requestId + "] << create-pkg-fundy >>");
 
