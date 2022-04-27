@@ -20,4 +20,6 @@ public class SumGrowthEntity {
     private String fund_date;
     @Column(name = "SUM")
     private String sum;
+    @Column(name = "PKG_ID")
+    private String pkg_id;
 }

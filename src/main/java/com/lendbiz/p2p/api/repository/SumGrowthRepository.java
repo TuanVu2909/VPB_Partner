@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface SumGrowthRepository extends JpaRepository<SumGrowthEntity, Integer> {
     @Transactional
     @Modifying
-    @Query(value = "insert into sum_growth values (fundPkgInfo_seq.nextval, to_date(:nDate),:sum)", nativeQuery = true)
-    void save(@Param("nDate")String nDate, @Param("sum") String sum);
+    @Query(value = "insert into sum_growth values (fundPkgInfo_seq.nextval, to_date(:nDate),:sum,:pid)", nativeQuery = true)
+    void save(@Param("nDate")String nDate, @Param("sum") String sum,@Param("pid") String pid);
 
 }

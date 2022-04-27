@@ -537,7 +537,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         formatter = new SimpleDateFormat("dd-MMM-yyyy");
         String strSDate = formatter.format(sDateF);
-        sumGrowthRepository.save(strSDate, request.getSum());
+        sumGrowthRepository.save(strSDate, request.getSum(),request.getPkg_id());
         pkgFundInfoRepository.save(strSDate, request.getGrowth(), request.getF_code(), request.getPkg_id());
         return response(toResult("success"));
     }
