@@ -126,7 +126,7 @@ OtpServiceImpl otpService;
                         ? root.get("output").get(0).get("id").get("value").asText()
                         : null);
                 identity.setDateIssued(root.get("output").get(0).get("ngay_cap") != null
-                        ? root.get("output").get(0).get("ngay_cap").get("value").asText()
+                        ? root.get("output").get(0).get("ngay_cap").get("normalized").get("value").asText()
                         : null);
                 identity.setIssuedBy(root.get("output").get(0).get("noi_cap") != null
                         ? root.get("output").get(0).get("noi_cap").get("value").asText()

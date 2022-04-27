@@ -13,6 +13,7 @@ import com.lendbiz.p2p.api.request.InsuranceRequest;
 import com.lendbiz.p2p.api.request.LoginRequest;
 import com.lendbiz.p2p.api.request.ReqJoinRequest;
 import com.lendbiz.p2p.api.request.SetAccountPasswordRequest;
+import com.lendbiz.p2p.api.request.UpdateAccountRequest;
 import com.lendbiz.p2p.api.response.InfoIdentity;
 import com.lendbiz.p2p.api.service.SavisService;
 import com.lendbiz.p2p.api.service.UserService;
@@ -90,6 +91,15 @@ public class UserController {
             @RequestBody SetAccountPasswordRequest setAccountPasswordRequest)
             throws BusinessException {
         return userService.setAccountPassword(setAccountPasswordRequest);
+    }
+
+    @PostMapping("/update-account-info")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> upDateAccountInfo(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId,
+            @RequestBody UpdateAccountRequest updateAccountRequest)
+            throws BusinessException {
+        return userService.updateAccountInfo(updateAccountRequest);
     }
 
     @PostMapping("/create-bear")
@@ -341,7 +351,7 @@ public class UserController {
     @PostMapping("/cr-fund-iv")
     @Transactional(readOnly = true)
     public ResponseEntity<?> createFundInvest(HttpServletRequest httpServletRequest,
-                                            @RequestHeader("requestId") String requestId, @RequestBody GmFundNavRequest request)
+            @RequestHeader("requestId") String requestId, @RequestBody GmFundNavRequest request)
             throws BusinessException {
         log.info("[" + requestId + "] << createFundInvest >>");
 
@@ -351,12 +361,13 @@ public class UserController {
     @PostMapping("/cr-fund-ivo")
     @Transactional(readOnly = true)
     public ResponseEntity<?> createFundInvestOptionally(HttpServletRequest httpServletRequest,
-                                              @RequestHeader("requestId") String requestId, @RequestBody GmFundNavRequest request)
+            @RequestHeader("requestId") String requestId, @RequestBody GmFundNavRequest request)
             throws BusinessException {
         log.info("[" + requestId + "] << createFundInvest >>");
 
         return userService.createFundInvestOptionally(request);
     }
+
     @GetMapping("/get-detail-pk")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getInvestPackageDetail(HttpServletRequest httpServletRequest,
@@ -370,22 +381,24 @@ public class UserController {
     @GetMapping("/get-fund-invest")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getFundInvest(HttpServletRequest httpServletRequest,
-                                              @RequestHeader("requestId") String requestId , @RequestParam("cid") String cid)
+            @RequestHeader("requestId") String requestId, @RequestParam("cid") String cid)
             throws BusinessException {
         log.info("[" + requestId + "] << getFundInvest >>");
 
         return userService.getFundInvest(cid);
     }
+
     @GetMapping("/get-fund-invest-detail")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getFundInvestDetail(HttpServletRequest httpServletRequest,
-                                           @RequestHeader("requestId") String requestId , @RequestParam("cid") String cid,
-                                                 @RequestParam("pkid") String pkid)
+            @RequestHeader("requestId") String requestId, @RequestParam("cid") String cid,
+            @RequestParam("pkid") String pkid)
             throws BusinessException {
         log.info("[" + requestId + "] << getFundInvest >>");
 
-        return userService.getFundInvestDetail(cid,pkid);
+        return userService.getFundInvestDetail(cid, pkid);
     }
+
     @GetMapping("/get-bg-tran-his")
     public ResponseEntity<?> getTransHistory(HttpServletRequest httpServletRequest,
             @RequestHeader("session") String session,
