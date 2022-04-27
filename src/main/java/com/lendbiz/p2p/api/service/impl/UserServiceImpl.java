@@ -106,7 +106,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Autowired
     FundInvestRepository fundInvestRepository;
-
+    @Autowired
+    UpdateAccountRepository accountRepository;
     @Override
     public ResponseEntity<?> login(LoginRequest loginRequest) {
         // List<Object> response;
