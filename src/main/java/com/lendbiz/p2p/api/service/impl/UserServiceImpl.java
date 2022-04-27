@@ -15,10 +15,13 @@
  */
 package com.lendbiz.p2p.api.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.*;
@@ -49,6 +52,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     InvestPackageDetailRepository investPackageDetailRepository;
 
+    @Autowired
+    PkgFundInfoRepository pkgFundInfoRepository;
     @Autowired
     FundInvestDetailRepository fundInvestDetailRepository;
     @Autowired
@@ -515,6 +520,25 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         if (list.size() == 0)
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         return response(toResult(list));
+    }
+
+    @Override
+    public ResponseEntity<?> savePkgFundInfo(PkgFundInfoEntity request) {
+        Date sDateF = null;
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+            sDateF = sdf.parse(request.getFund_date());
+
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        formatter = new SimpleDateFormat("dd-MMM-yyyy");
+        String strSDate = formatter.format(sDateF);
+
+        pkgFundInfoRepository.save(strSDate, request.getGrowth(), request.getF_code(), request.getPkg_id());
+        return response(toResult("success"));
     }
 
     @Override
