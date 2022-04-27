@@ -29,6 +29,8 @@ public interface UserService {
 
 	public ResponseEntity<?> setAccountPassword(SetAccountPasswordRequest setAccountPasswordRequest);
 
+	public ResponseEntity<?> updateAccountInfo(UpdateAccountRequest updateRequest);
+
 	public ResponseEntity<?> createBear(AccountInput input);
 
 	public ResponseEntity<?> getAccountAsset(String custId);
@@ -68,20 +70,24 @@ public interface UserService {
 	public ResponseEntity<?> createInsurance(InsuranceRequest insuranceRequest);
 
 	public ResponseEntity<?> createNavDaily(GmFundNavRequest request);
+
 	public ResponseEntity<?> createFundInvest(GmFundNavRequest request);
+
 	public ResponseEntity<?> getFundList();
 
 	public ResponseEntity<?> getInvestPackage();
 
 	public ResponseEntity<?> getInvestPackageDetail(String pkId);
-	public ResponseEntity<?> getFundNAV();
-	public ResponseEntity<?> getFundNAByFundID(String fid);
-	public ResponseEntity<?> createFundInvestOptionally(GmFundNavRequest request);
 
+	public ResponseEntity<?> getFundNAV();
+
+	public ResponseEntity<?> getFundNAByFundID(String fid);
+
+	public ResponseEntity<?> createFundInvestOptionally(GmFundNavRequest request);
 
 	public ResponseEntity<?> getFundInvest(String cid);
 
-	public ResponseEntity<?> getFundInvestDetail(String cid,String packageId);
+	public ResponseEntity<?> getFundInvestDetail(String cid, String packageId);
 
 	public ResponseEntity<?> savePkgFundInfo(PkgSumFundRequest request);
 	public ResponseEntity<?> getPkgFundInfo();

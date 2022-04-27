@@ -1,21 +1,20 @@
 package com.lendbiz.p2p.api.controller;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.lendbiz.p2p.api.entity.AccountInput;
 import com.lendbiz.p2p.api.entity.PkgFundInfoEntity;
-import com.lendbiz.p2p.api.entity.SumGrowthEntity;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
-import com.lendbiz.p2p.api.repository.PkgFundInfoRepository;
-import com.lendbiz.p2p.api.repository.SumGrowthRepository;
-import com.lendbiz.p2p.api.request.*;
+import com.lendbiz.p2p.api.request.BearRequest;
+import com.lendbiz.p2p.api.request.GmFundNavRequest;
+import com.lendbiz.p2p.api.request.InsuranceRequest;
+import com.lendbiz.p2p.api.request.LoginRequest;
+import com.lendbiz.p2p.api.request.ReqJoinRequest;
+import com.lendbiz.p2p.api.request.SetAccountPasswordRequest;
 import com.lendbiz.p2p.api.response.InfoIdentity;
-import com.lendbiz.p2p.api.response.PkgFundDetail;
-import com.lendbiz.p2p.api.response.PkgFundResponse;
 import com.lendbiz.p2p.api.service.SavisService;
 import com.lendbiz.p2p.api.service.UserService;
 
@@ -92,6 +91,15 @@ public class UserController {
             @RequestBody SetAccountPasswordRequest setAccountPasswordRequest)
             throws BusinessException {
         return userService.setAccountPassword(setAccountPasswordRequest);
+    }
+
+    @PostMapping("/update-account-info")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> upDateAccountInfo(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId,
+            @RequestBody UpdateAccountRequest updateAccountRequest)
+            throws BusinessException {
+        return userService.updateAccountInfo(updateAccountRequest);
     }
 
     @PostMapping("/create-bear")
@@ -301,7 +309,6 @@ public class UserController {
 
         return userService.createNavDaily(request);
     }
-
     @PostMapping("/save-pkg-fund")
     public ResponseEntity<?> savePkgFund(HttpServletRequest httpServletRequest,
                                          @RequestBody PkgSumFundRequest request)

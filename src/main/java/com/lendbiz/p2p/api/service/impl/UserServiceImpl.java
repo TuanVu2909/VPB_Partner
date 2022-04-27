@@ -167,6 +167,21 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     }
 
     @Override
+    public ResponseEntity<?> updateAccountInfo(UpdateAccountRequest updateRequest) {
+        FirstPasswordEntity entity;
+        try {
+            entity = accountRepository.updateAccount(updateRequest.getCustId(), updateRequest.getFullName(),
+                    updateRequest.getIdCode(), updateRequest.getSex(), updateRequest.getDob(),
+                    updateRequest.getAddress(), updateRequest.getIdExp(), updateRequest.getIdDate(),
+                    updateRequest.getIdPlace());
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
+        }
+
+        return response(toResult(entity));
+    }
+
+    @Override
     public ResponseEntity<?> createBear(AccountInput input) {
         try {
             NotifyEntity notify = notifyRepo.createBear(input.getCustId(), input.getProductId(),
@@ -421,7 +436,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> createFundInvest(GmFundNavRequest request) {
-        NotifyEntity notify = notifyRepo.createFundInvest(request.getPv_custId(), request.getPv_amt(), request.getPv_packageId());
+        NotifyEntity notify = notifyRepo.createFundInvest(request.getPv_custId(), request.getPv_amt(),
+                request.getPv_packageId());
 
         return response(toResult(notify));
     }
@@ -446,7 +462,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     public ResponseEntity<?> getInvestPackageDetail(String pkId) {
 
-        ArrayList<InvestPackageDetailEntity> list = (ArrayList<InvestPackageDetailEntity>) investPackageDetailRepository.getInvestPackageDetail(pkId);
+        ArrayList<InvestPackageDetailEntity> list = (ArrayList<InvestPackageDetailEntity>) investPackageDetailRepository
+                .getInvestPackageDetail(pkId);
         if (list.size() == 0)
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         return response(toResult(list));
@@ -499,7 +516,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> getFundInvestDetail(String cid, String packageId) {
-        ArrayList<FundInvestDetailEntity> list = fundInvestDetailRepository.getFundInvestDetail(cid, packageId);
+        ArrayList<FundInvestDetailEntity> list =  fundInvestDetailRepository.getFundInvestDetail(cid,packageId);
         if (list.size() == 0)
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         return response(toResult(list));
