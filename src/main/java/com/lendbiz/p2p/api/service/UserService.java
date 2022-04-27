@@ -39,6 +39,8 @@ public interface UserService {
 
 	public ResponseEntity<?> getPortfolioInvest(String custId);
 
+	public ResponseEntity<?> getAccountNotifications(String custId);
+
 	public ResponseEntity<?> getProduct();
 
 	public ResponseEntity<?> getPayType();
