@@ -491,7 +491,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> getFundInvest(String cid) {
-        ArrayList<FundInvestEntity> list = fundInvestRepository.getFundInvest(cid);
+        ArrayList<FundInvestEntity> list =  fundInvestRepository.getFundInvest(cid);
         if (list.size() == 0)
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         return response(toResult(list));

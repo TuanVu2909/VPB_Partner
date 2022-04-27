@@ -55,7 +55,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(HttpServletRequest httpServletRequest, @RequestHeader("requestId") String requestId,
-                                   @RequestBody LoginRequest loginRequest) {
+            @RequestBody LoginRequest loginRequest) {
         log.info("[" + requestId + "] << login >>");
 
         return userService.login(loginRequest);
@@ -63,7 +63,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(HttpServletRequest httpServletRequest,
-                                      @RequestHeader("requestId") String requestId, @RequestBody ReqJoinRequest reqJoinRequest)
+            @RequestHeader("requestId") String requestId, @RequestBody ReqJoinRequest reqJoinRequest)
             throws BusinessException {
         log.info("[" + requestId + "] << register >>");
         return userService.register(reqJoinRequest);
@@ -72,14 +72,14 @@ public class UserController {
 
     @PostMapping("/verify-account")
     public ResponseEntity<?> verifyAccount(HttpServletRequest httpServletRequest,
-                                           @RequestHeader("requestId") String requestId, @RequestBody VerifyAccountInput verifyAccountInput)
+            @RequestHeader("requestId") String requestId, @RequestBody VerifyAccountInput verifyAccountInput)
             throws BusinessException {
         return userService.verifyAcc(verifyAccountInput);
     }
 
     @GetMapping("/get-user-info")
     public ResponseEntity<?> getUserInfo(HttpServletRequest httpServletRequest,
-                                         @RequestHeader("requestId") String requestId, @RequestParam String mobile)
+            @RequestHeader("requestId") String requestId, @RequestParam String mobile)
             throws BusinessException {
         log.info("[" + requestId + "] << get-user-info >>");
         return userService.getUserInfo(mobile);
@@ -88,8 +88,8 @@ public class UserController {
     @PostMapping("/set-account-password")
     @Transactional(readOnly = true)
     public ResponseEntity<?> verifyAccount(HttpServletRequest httpServletRequest,
-                                           @RequestHeader("requestId") String requestId,
-                                           @RequestBody SetAccountPasswordRequest setAccountPasswordRequest)
+            @RequestHeader("requestId") String requestId,
+            @RequestBody SetAccountPasswordRequest setAccountPasswordRequest)
             throws BusinessException {
         return userService.setAccountPassword(setAccountPasswordRequest);
     }
@@ -97,7 +97,7 @@ public class UserController {
     @PostMapping("/create-bear")
     @Transactional(readOnly = true)
     public ResponseEntity<?> createBear(HttpServletRequest httpServletRequest,
-                                        @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
+            @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
             throws BusinessException {
         log.info("[" + requestId + "] << create bear >>");
         return userService.createBear(accountInput);
@@ -106,7 +106,7 @@ public class UserController {
     @GetMapping("/get-account-asset")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getAccountAsset(HttpServletRequest httpServletRequest,
-                                             @RequestHeader("requestId") String requestId, @RequestParam String cif)
+            @RequestHeader("requestId") String requestId, @RequestParam String cif)
             throws BusinessException {
         log.info("[" + requestId + "] << getAccountAsset >>");
         return userService.getAccountAsset(cif);
@@ -115,7 +115,7 @@ public class UserController {
     @GetMapping("/get-account-invest")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getAccountInvest(HttpServletRequest httpServletRequest,
-                                              @RequestHeader("requestId") String requestId, @RequestParam String cif)
+            @RequestHeader("requestId") String requestId, @RequestParam String cif)
             throws BusinessException {
         log.info("[" + requestId + "] << getAccountInvest >>");
         return userService.getAccountInvest(cif);
@@ -124,7 +124,7 @@ public class UserController {
     @GetMapping("/get-account-portfolio")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getAccountPortfolio(HttpServletRequest httpServletRequest,
-                                                 @RequestHeader("requestId") String requestId, @RequestParam String cif)
+            @RequestHeader("requestId") String requestId, @RequestParam String cif)
             throws BusinessException {
         log.info("[" + requestId + "] << getAccountPortfolio >>");
         return userService.getPortfolioInvest(cif);
@@ -133,7 +133,7 @@ public class UserController {
     @GetMapping("/get-product")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getProduct(HttpServletRequest httpServletRequest,
-                                        @RequestHeader("requestId") String requestId)
+            @RequestHeader("requestId") String requestId)
             throws BusinessException {
         log.info("[" + requestId + "] << getProduct >>");
         return userService.getProduct();
@@ -143,7 +143,7 @@ public class UserController {
     @Transactional(readOnly = true)
 
     public ResponseEntity<?> getPayType(HttpServletRequest httpServletRequest,
-                                        @RequestHeader("requestId") String requestId)
+            @RequestHeader("requestId") String requestId)
             throws BusinessException {
         log.info("[" + requestId + "] << get-paytype >>");
         return userService.getPayType();
@@ -153,7 +153,7 @@ public class UserController {
     @Transactional(readOnly = true)
 
     public ResponseEntity<?> getTerm(HttpServletRequest httpServletRequest,
-                                     @RequestHeader("requestId") String requestId, @RequestParam("pid") String pId)
+            @RequestHeader("requestId") String requestId, @RequestParam("pid") String pId)
             throws BusinessException {
         log.info("[" + requestId + "] << get-term >>");
         return userService.getTerm(pId);
@@ -162,8 +162,8 @@ public class UserController {
     @GetMapping("/get-rate")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getRate(HttpServletRequest httpServletRequest,
-                                     @RequestHeader("requestId") String requestId, @RequestParam("pid") String pId,
-                                     @RequestParam("term") String term, @RequestParam("amount") String amount)
+            @RequestHeader("requestId") String requestId, @RequestParam("pid") String pId,
+            @RequestParam("term") String term, @RequestParam("amount") String amount)
             throws BusinessException {
         log.info("[" + requestId + "] << get-rate >>");
         return userService.getRate(term, pId, amount);
@@ -172,7 +172,7 @@ public class UserController {
     @GetMapping("/get-rate-conf")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getConfigRate(HttpServletRequest httpServletRequest,
-                                           @RequestHeader("requestId") String requestId)
+            @RequestHeader("requestId") String requestId)
             throws BusinessException {
         log.info("[" + requestId + "] << get-rate >>");
         return userService.getConfigRate();
@@ -181,8 +181,8 @@ public class UserController {
     @GetMapping("/get-account-invest-by-product")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getAccountInvestByProduct(HttpServletRequest httpServletRequest,
-                                                       @RequestHeader("requestId") String requestId, @RequestParam("cif") String cif,
-                                                       @RequestParam("pid") String pId)
+            @RequestHeader("requestId") String requestId, @RequestParam("cif") String cif,
+            @RequestParam("pid") String pId)
             throws BusinessException {
         AccountInput accountInput = new AccountInput();
         accountInput.setProductId(pId);
@@ -193,8 +193,8 @@ public class UserController {
 
     @PostMapping("/verify-identity")
     public ResponseEntity<?> verifyIdeEntity(HttpServletRequest httpServletRequest,
-                                             @RequestHeader("requestId") String requestId, @RequestHeader("session") String session,
-                                             @RequestParam("id_file") MultipartFile idFile, @RequestParam("id_type") int idType)
+            @RequestHeader("requestId") String requestId, @RequestHeader("session") String session,
+            @RequestParam("id_file") MultipartFile idFile, @RequestParam("id_type") int idType)
             throws BusinessException {
 
         // String custId = userService.checkSession(session);
@@ -205,7 +205,7 @@ public class UserController {
     @PostMapping("/update-ref")
     @Transactional(readOnly = true)
     public ResponseEntity<?> updateReferenceId(HttpServletRequest httpServletRequest,
-                                               @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
+            @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
             throws BusinessException, UnsupportedEncodingException {
         log.info("[" + requestId + "] << check-updateReferenceId >>");
         return userService.updateReferenceId(accountInput);
@@ -215,7 +215,7 @@ public class UserController {
     @GetMapping("/get-coin")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getCoin(HttpServletRequest httpServletRequest,
-                                     @RequestHeader("requestId") String requestId, @RequestParam("cif") String cId)
+            @RequestHeader("requestId") String requestId, @RequestParam("cif") String cId)
             throws BusinessException, UnsupportedEncodingException {
         log.info("[" + requestId + "] << check-get-coin >>");
 
@@ -226,7 +226,7 @@ public class UserController {
     @PostMapping("/change-coin")
     @Transactional(readOnly = true)
     public ResponseEntity<?> changeCoin(HttpServletRequest httpServletRequest,
-                                        @RequestHeader("requestId") String requestId, @RequestBody AccountInput input)
+            @RequestHeader("requestId") String requestId, @RequestBody AccountInput input)
             throws BusinessException, UnsupportedEncodingException {
         log.info("[" + requestId + "] << check-change-coin>>");
 
@@ -236,8 +236,8 @@ public class UserController {
 
     @PostMapping("/verify-face")
     public ResponseEntity<?> verifyFace(HttpServletRequest httpServletRequest,
-                                        @RequestHeader("requestId") String requestId, @RequestHeader("session") String session,
-                                        @RequestParam("front_file") MultipartFile frontFile, @RequestParam("selfie_file") MultipartFile selfieFile)
+            @RequestHeader("requestId") String requestId, @RequestHeader("session") String session,
+            @RequestParam("front_file") MultipartFile frontFile, @RequestParam("selfie_file") MultipartFile selfieFile)
             throws BusinessException {
 
         String custId = userService.checkSession(session);
@@ -246,7 +246,7 @@ public class UserController {
 
     @PostMapping("/product-info")
     public ResponseEntity<?> productInfo(HttpServletRequest httpServletRequest,
-                                         @RequestHeader("requestId") String requestId, @RequestBody BearRequest bearRequest)
+            @RequestHeader("requestId") String requestId, @RequestBody BearRequest bearRequest)
             throws BusinessException {
         log.info("[" + requestId + "] << productInfo >>");
 
@@ -255,7 +255,7 @@ public class UserController {
 
     @GetMapping("/bank-info")
     public ResponseEntity<?> bankInfo(HttpServletRequest httpServletRequest,
-                                      @RequestHeader("requestId") String requestId)
+            @RequestHeader("requestId") String requestId)
             throws BusinessException {
         log.info("[" + requestId + "] << bankInfo >>");
 
@@ -265,7 +265,7 @@ public class UserController {
     @GetMapping("/get-ins-pck")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getInsurancePackage(HttpServletRequest httpServletRequest,
-                                                 @RequestHeader("requestId") String requestId)
+            @RequestHeader("requestId") String requestId)
             throws BusinessException {
         log.info("[" + requestId + "] << getInsurancePackage >>");
 
@@ -275,7 +275,7 @@ public class UserController {
     @GetMapping("/get-relation")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getRelation(HttpServletRequest httpServletRequest,
-                                         @RequestHeader("requestId") String requestId)
+            @RequestHeader("requestId") String requestId)
             throws BusinessException {
         log.info("[" + requestId + "] << getRelation >>");
 
@@ -285,7 +285,7 @@ public class UserController {
     @PostMapping("/create-ins")
     @Transactional(readOnly = true)
     public ResponseEntity<?> createInsurance(HttpServletRequest httpServletRequest,
-                                             @RequestHeader("requestId") String requestId, @RequestBody InsuranceRequest request)
+            @RequestHeader("requestId") String requestId, @RequestBody InsuranceRequest request)
             throws BusinessException {
         log.info("[" + requestId + "] << createInsurance >>");
 
@@ -295,7 +295,7 @@ public class UserController {
     @PostMapping("/cr-nav-daily")
     @Transactional(readOnly = true)
     public ResponseEntity<?> createNavDaily(HttpServletRequest httpServletRequest,
-                                            @RequestHeader("requestId") String requestId, @RequestBody GmFundNavRequest request)
+            @RequestHeader("requestId") String requestId, @RequestBody GmFundNavRequest request)
             throws BusinessException {
         log.info("[" + requestId + "] << create-nav-daily >>");
 
@@ -322,19 +322,17 @@ public class UserController {
     @GetMapping("/get-fund-list")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getFundList(HttpServletRequest httpServletRequest,
-                                         @RequestHeader("requestId") String requestId)
+            @RequestHeader("requestId") String requestId)
             throws BusinessException {
         log.info("[" + requestId + "] << getFundList >>");
 
         return userService.getFundList();
     }
 
-
-
     @GetMapping("/get-invest-pk")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getInvestPackage(HttpServletRequest httpServletRequest,
-                                              @RequestHeader("requestId") String requestId)
+            @RequestHeader("requestId") String requestId)
             throws BusinessException {
         log.info("[" + requestId + "] << getInvestPackage >>");
 
@@ -343,7 +341,7 @@ public class UserController {
 
     @GetMapping("/get-nav")
     public ResponseEntity<?> getNav(HttpServletRequest httpServletRequest,
-                                    @RequestHeader("requestId") String requestId)
+            @RequestHeader("requestId") String requestId)
             throws BusinessException {
         log.info("[" + requestId + "] << nav >>");
 
@@ -352,7 +350,7 @@ public class UserController {
 
     @GetMapping("/get-nav-fid")
     public ResponseEntity<?> getNavByFid(HttpServletRequest httpServletRequest,
-                                         @RequestHeader("requestId") String requestId, @RequestParam("fid") String fid)
+            @RequestHeader("requestId") String requestId, @RequestParam("fid") String fid)
             throws BusinessException {
         log.info("[" + requestId + "] << nav >>");
 
@@ -362,7 +360,7 @@ public class UserController {
     @PostMapping("/cr-fund-iv")
     @Transactional(readOnly = true)
     public ResponseEntity<?> createFundInvest(HttpServletRequest httpServletRequest,
-                                              @RequestHeader("requestId") String requestId, @RequestBody GmFundNavRequest request)
+                                            @RequestHeader("requestId") String requestId, @RequestBody GmFundNavRequest request)
             throws BusinessException {
         log.info("[" + requestId + "] << createFundInvest >>");
 
@@ -372,17 +370,16 @@ public class UserController {
     @PostMapping("/cr-fund-ivo")
     @Transactional(readOnly = true)
     public ResponseEntity<?> createFundInvestOptionally(HttpServletRequest httpServletRequest,
-                                                        @RequestHeader("requestId") String requestId, @RequestBody GmFundNavRequest request)
+                                              @RequestHeader("requestId") String requestId, @RequestBody GmFundNavRequest request)
             throws BusinessException {
         log.info("[" + requestId + "] << createFundInvest >>");
 
         return userService.createFundInvestOptionally(request);
     }
-
     @GetMapping("/get-detail-pk")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getInvestPackageDetail(HttpServletRequest httpServletRequest,
-                                                    @RequestHeader("requestId") String requestId, @RequestParam("pkId") String pkId)
+            @RequestHeader("requestId") String requestId, @RequestParam("pkId") String pkId)
             throws BusinessException {
         log.info("[" + requestId + "] << getInvestPackageDetail >>");
 
@@ -392,28 +389,26 @@ public class UserController {
     @GetMapping("/get-fund-invest")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getFundInvest(HttpServletRequest httpServletRequest,
-                                           @RequestHeader("requestId") String requestId, @RequestParam("cid") String cid)
+                                              @RequestHeader("requestId") String requestId , @RequestParam("cid") String cid)
             throws BusinessException {
         log.info("[" + requestId + "] << getFundInvest >>");
 
         return userService.getFundInvest(cid);
     }
-
     @GetMapping("/get-fund-invest-detail")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getFundInvestDetail(HttpServletRequest httpServletRequest,
-                                                 @RequestHeader("requestId") String requestId, @RequestParam("cid") String cid,
+                                           @RequestHeader("requestId") String requestId , @RequestParam("cid") String cid,
                                                  @RequestParam("pkid") String pkid)
             throws BusinessException {
         log.info("[" + requestId + "] << getFundInvest >>");
 
-        return userService.getFundInvestDetail(cid, pkid);
+        return userService.getFundInvestDetail(cid,pkid);
     }
-
     @GetMapping("/get-bg-tran-his")
     public ResponseEntity<?> getTransHistory(HttpServletRequest httpServletRequest,
-                                             @RequestHeader("session") String session,
-                                             @RequestHeader("requestId") String requestId)
+            @RequestHeader("session") String session,
+            @RequestHeader("requestId") String requestId)
             throws BusinessException {
         log.info("[" + requestId + "] << getTransHistory >>");
 
