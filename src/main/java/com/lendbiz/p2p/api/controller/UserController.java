@@ -322,10 +322,10 @@ public class UserController {
 
     @PostMapping("/save-pkg-fund")
     @Transactional(readOnly = true)
-    public ResponseEntity<?> savePkgFund(HttpServletRequest httpServletRequest,
-            @RequestHeader("requestId") String requestId, @RequestBody PkgFundInfoEntity request)
+    public ResponseEntity<?> savePkgFund(HttpServletRequest httpServletRequest, @RequestBody PkgFundInfoEntity request)
             throws BusinessException {
-        log.info("[" + requestId + "] << create-pkg-fundy >>");
+
+
 
         return userService.savePkgFundInfo(request);
     }

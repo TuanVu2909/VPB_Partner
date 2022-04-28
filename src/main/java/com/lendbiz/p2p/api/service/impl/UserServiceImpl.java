@@ -552,8 +552,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         formatter = new SimpleDateFormat("dd-MMM-yyyy");
         String strSDate = formatter.format(sDateF);
 
-        pkgFundInfoRepository.save(strSDate, request.getGrowth(), request.getF_code(), request.getPkg_id());
-        return response(toResult("success"));
+        return response(toResult(notifyRepo.saveNavDaily(request.getF_code(),request.getGrowth(),strSDate,request.getPkg_id())));
     }
 
     @Override
