@@ -93,7 +93,7 @@ public interface UserService {
 
 	public ResponseEntity<?> savePkgFundInfo(PkgSumFundRequest request);
 	public ResponseEntity<?> getPkgFundInfo();
-
+	public ResponseEntity<?> genTransferCode(String cif);
 	String checkSession(String session);
 
 }

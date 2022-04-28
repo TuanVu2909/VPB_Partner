@@ -409,6 +409,15 @@ public class UserController {
         return userService.getFundInvest(cid);
     }
 
+    @GetMapping("/gen-transfercode")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> genTransferCode(HttpServletRequest httpServletRequest,
+                                           @RequestHeader("requestId") String requestId , @RequestParam("cid") String cid)
+            throws BusinessException {
+        log.info("[" + requestId + "] << genTransferCode >>");
+
+        return userService.genTransferCode(cid);
+    }
     @GetMapping("/get-fund-invest-detail")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getFundInvestDetail(HttpServletRequest httpServletRequest,

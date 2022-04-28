@@ -8,8 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class FunNavRequest {
-    private String fund_date;
     private String growth;
     private String f_code;
-    private String pkg_id;
 }

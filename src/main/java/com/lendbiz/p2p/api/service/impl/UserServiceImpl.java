@@ -58,6 +58,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     PkgFundInfoRepository pkgFundInfoRepository;
     @Autowired
+    TransFerCodeRepo transFerCodeRepo;
+    @Autowired
     FundInvestDetailRepository fundInvestDetailRepository;
     @Autowired
     NAVRepository navRepository;
@@ -555,8 +557,10 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         formatter = new SimpleDateFormat("dd-MMM-yyyy");
         String strSDate = formatter.format(sDateF);
         notifyRepo.saveSumGrowthNavDaily(request.getSum(),strSDate,request.getPkg_id());
+
+
         request.getFunNavRequests().forEach((n)->{
-            notifyRepo.saveNavDaily(n.getF_code(),n.getGrowth(),strSDate,n.getPkg_id());
+            notifyRepo.saveNavDaily(n.getF_code(),n.getGrowth(),strSDate,request.getPkg_id());
         });
 
         return response(toResult("success"));
@@ -587,6 +591,15 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             list3.add(pkgFundResponse);
         }
         return response(toResult(list3));
+    }
+
+    @Override
+    public ResponseEntity<?> genTransferCode(String cif) {
+        TransferCodeEntity entity = transFerCodeRepo.genTransferCode(cif);
+        if (entity == null){
+            throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+        }
+        return response(toResult(entity));
     }
 
 
