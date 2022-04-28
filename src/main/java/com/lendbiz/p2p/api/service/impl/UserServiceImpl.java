@@ -51,7 +51,8 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl extends BaseResponse<UserService> implements UserService {
     @Autowired
     InvestPackageDetailRepository investPackageDetailRepository;
-
+    @Autowired
+    SumGrowthRepository sumGrowthRepository;
     @Autowired
     PkgFundInfoRepository pkgFundInfoRepository;
     @Autowired
@@ -523,7 +524,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> getFundInvest(String cid) {
-        ArrayList<FundInvestEntity> list = fundInvestRepository.getFundInvest(cid);
+        ArrayList<FundInvestEntity> list =  fundInvestRepository.getFundInvest(cid);
         if (list.size() == 0)
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         return response(toResult(list));
@@ -531,14 +532,14 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> getFundInvestDetail(String cid, String packageId) {
-        ArrayList<FundInvestDetailEntity> list = fundInvestDetailRepository.getFundInvestDetail(cid, packageId);
+        ArrayList<FundInvestDetailEntity> list =  fundInvestDetailRepository.getFundInvestDetail(cid,packageId);
         if (list.size() == 0)
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         return response(toResult(list));
     }
 
     @Override
-    public ResponseEntity<?> savePkgFundInfo(PkgFundInfoEntity request) {
+    public ResponseEntity<?> savePkgFundInfo(PkgSumFundRequest request) {
         Date sDateF = null;
 
         try {
@@ -551,9 +552,37 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         formatter = new SimpleDateFormat("dd-MMM-yyyy");
         String strSDate = formatter.format(sDateF);
-
-        return response(toResult(notifyRepo.saveNavDaily(request.getF_code(),request.getGrowth(),strSDate,request.getPkg_id())));
+        sumGrowthRepository.save(strSDate, request.getSum(),request.getPkg_id());
+        pkgFundInfoRepository.save(strSDate, request.getGrowth(), request.getF_code(), request.getPkg_id());
+        return response(toResult("success"));
     }
+
+    @Override
+    public ResponseEntity<?> getPkgFundInfo() {
+        ArrayList<PkgFundInfoEntity> list =  pkgFundInfoRepository.findByFund_date();
+        ArrayList<SumGrowthEntity> list2 = (ArrayList<SumGrowthEntity>) sumGrowthRepository.findAll();
+        ArrayList<PkgFundResponse> list3 = new ArrayList<>();
+        for (int i = 0; i < list2.size(); i++) {
+            PkgFundResponse pkgFundResponse = new PkgFundResponse();
+            pkgFundResponse.setFund_date(list2.get(i).getFund_date());
+            pkgFundResponse.setSum(list2.get(i).getSum());
+            ArrayList<PkgFundDetail> details = new ArrayList<>();
+            list.forEach((n) -> {
+                if (n.getFund_date().equals(pkgFundResponse.getFund_date())) {
+                    PkgFundDetail pkgFundDetail = new PkgFundDetail();
+                    pkgFundDetail.setPkg_id(n.getPkg_id());
+                    pkgFundDetail.setF_code(n.getF_code());
+                    pkgFundDetail.setGrowth(n.getGrowth());
+                    details.add(pkgFundDetail);
+                }
+
+            });
+            pkgFundResponse.setPkgFundDetail(details);
+            list3.add(pkgFundResponse);
+        }
+        return response(toResult(list3));
+    }
+
 
     @Override
     public String checkSession(String session) {
