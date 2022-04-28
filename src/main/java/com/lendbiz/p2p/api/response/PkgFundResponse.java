@@ -10,5 +10,6 @@ import java.util.ArrayList;
 public class PkgFundResponse {
     private String fund_date;
     private String sum;
+    private String pkg_id;
     private ArrayList<PkgFundDetail> pkgFundDetail;
 }

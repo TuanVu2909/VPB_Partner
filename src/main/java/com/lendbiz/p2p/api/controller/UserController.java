@@ -8,13 +8,7 @@ import com.lendbiz.p2p.api.entity.AccountInput;
 import com.lendbiz.p2p.api.entity.PkgFundInfoEntity;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
-import com.lendbiz.p2p.api.request.BearRequest;
-import com.lendbiz.p2p.api.request.GmFundNavRequest;
-import com.lendbiz.p2p.api.request.InsuranceRequest;
-import com.lendbiz.p2p.api.request.LoginRequest;
-import com.lendbiz.p2p.api.request.ReqJoinRequest;
-import com.lendbiz.p2p.api.request.SetAccountPasswordRequest;
-import com.lendbiz.p2p.api.request.UpdateAccountRequest;
+import com.lendbiz.p2p.api.request.*;
 import com.lendbiz.p2p.api.response.InfoIdentity;
 import com.lendbiz.p2p.api.service.SavisService;
 import com.lendbiz.p2p.api.service.UserService;
@@ -321,10 +315,11 @@ public class UserController {
     }
 
     @PostMapping("/save-pkg-fund")
+    @Transactional(readOnly = true)
     public ResponseEntity<?> savePkgFund(HttpServletRequest httpServletRequest,
                                          @RequestBody PkgSumFundRequest request)
             throws BusinessException {
-
+        System.out.println("55555");
 
         return userService.savePkgFundInfo(request);
     }

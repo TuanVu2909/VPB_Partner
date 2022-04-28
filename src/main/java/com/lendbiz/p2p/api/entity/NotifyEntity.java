@@ -55,6 +55,12 @@ import java.util.Date;
                 @StoredProcedureParameter(name = "pv_fundDate", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "pv_pid", mode = ParameterMode.IN, type = String.class),
         }),
+        @NamedStoredProcedureQuery(name = "NotifyEntity.saveSumGrowthNavDaily", procedureName = "pkg_api.saveSumGrowthNavDaily", resultClasses = NotifyEntity.class, parameters = { //
+                @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
+                @StoredProcedureParameter(name = "pv_sumgrowth", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_fundDate", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_pid", mode = ParameterMode.IN, type = String.class),
+        }),
         @NamedStoredProcedureQuery(name = "NotifyEntity.createFundInvest", procedureName = "pck_gm.createFundInvest", resultClasses = NotifyEntity.class, parameters = { //
                 @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
                 @StoredProcedureParameter(name = "pv_custId", mode = ParameterMode.IN, type = String.class),

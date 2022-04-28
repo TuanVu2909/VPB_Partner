@@ -38,6 +38,12 @@ public interface NotifyRepo extends JpaRepository<NotifyEntity, String> {
             , @Param("pv_fundDate") String pv_fundDate
             ,@Param("pv_pid") String pv_pid );
 
+    @Procedure("NotifyEntity.saveSumGrowthNavDaily")
+    NotifyEntity saveSumGrowthNavDaily(
+            @Param("pv_sumgrowth") String pv_growth
+            , @Param("pv_fundDate") String pv_fundDate
+            ,@Param("pv_pid") String pv_pid );
+
     @Procedure("NotifyEntity.createFundInvest")
     NotifyEntity createFundInvest(@Param("pv_custId") String pv_custId
             , @Param("pv_amt") String pv_amt
