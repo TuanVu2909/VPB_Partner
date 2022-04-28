@@ -93,7 +93,8 @@ public interface UserService {
 
 	public ResponseEntity<?> getFundInvestDetail(String cid, String packageId);
 
-	public ResponseEntity<?> savePkgFundInfo(PkgFundInfoEntity request);
+	public ResponseEntity<?> savePkgFundInfo(PkgSumFundRequest request);
+	public ResponseEntity<?> getPkgFundInfo();
 
 	String checkSession(String session);
 

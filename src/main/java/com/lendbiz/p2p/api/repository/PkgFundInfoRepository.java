@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface PkgFundInfoRepository extends JpaRepository<PkgFundInfoEntity, Integer> {
@@ -15,5 +16,8 @@ public interface PkgFundInfoRepository extends JpaRepository<PkgFundInfoEntity, 
     @Modifying
     @Query(value = "insert into fundPkgInfo values (fundPkgInfo_seq.nextval, to_date(:nDate),:growth,:f_code,:pid)", nativeQuery = true)
     void save(@Param("nDate")String nDate, @Param("growth") String growth, @Param("f_code") String f_code,@Param("pid") String pid);
+
+    @Query(value = "select * from fundPkgInfo ", nativeQuery = true)
+    ArrayList<PkgFundInfoEntity> findByFund_date();
 
 }
