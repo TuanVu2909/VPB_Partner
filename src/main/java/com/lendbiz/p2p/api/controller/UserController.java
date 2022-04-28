@@ -148,6 +148,15 @@ public class UserController {
         return userService.getAccountNotifications(cif);
     }
 
+    @GetMapping("/get-account-statements")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getStatements(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId, @RequestParam String cif)
+            throws BusinessException {
+        log.info("[" + requestId + "] << getAccountNotifications >>");
+        return userService.getStatements(cif);
+    }
+
     @GetMapping("/get-product")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getProduct(HttpServletRequest httpServletRequest,

@@ -79,6 +79,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     AccountNotificationsRepository accountNotificationsRepository;
     @Autowired
+    StatementsRepository statementsRepository;
+    @Autowired
     FirstPasswordRepository firstPasswordRepository;
     @Autowired
     RateRepo rateRepo;
@@ -239,6 +241,19 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     public ResponseEntity<?> getAccountNotifications(String custId) {
         try {
             List<NotificationsEntity> list = accountNotificationsRepository.getNotifications(custId);
+            if (list.size() == 0)
+                throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+            return response(toResult(list));
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, e.getMessage());
+        }
+
+    }
+
+    @Override
+    public ResponseEntity<?> getStatements(String custId) {
+        try {
+            List<StatementsEntity> list = statementsRepository.getStatements(custId);
             if (list.size() == 0)
                 throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
             return response(toResult(list));
