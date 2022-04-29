@@ -41,6 +41,8 @@ public interface UserService {
 
 	public ResponseEntity<?> getAccountNotifications(String custId);
 
+	public ResponseEntity<?> getStatements(String custId);
+
 	public ResponseEntity<?> getProduct();
 
 	public ResponseEntity<?> getPayType();
