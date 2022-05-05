@@ -21,13 +21,75 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
-import com.lendbiz.p2p.api.entity.*;
+import com.lendbiz.p2p.api.entity.AccountAssetEntity;
+import com.lendbiz.p2p.api.entity.AccountInput;
+import com.lendbiz.p2p.api.entity.AccountInvest;
+import com.lendbiz.p2p.api.entity.BankInfoEntity;
+import com.lendbiz.p2p.api.entity.BaoVietEntity;
+import com.lendbiz.p2p.api.entity.CfMast;
+import com.lendbiz.p2p.api.entity.CoinEntity;
+import com.lendbiz.p2p.api.entity.FirstPasswordEntity;
+import com.lendbiz.p2p.api.entity.FundInvestDetailEntity;
+import com.lendbiz.p2p.api.entity.FundInvestEntity;
+import com.lendbiz.p2p.api.entity.FundListEntity;
+import com.lendbiz.p2p.api.entity.GmFundNAVEntity;
+import com.lendbiz.p2p.api.entity.InvestAssets;
+import com.lendbiz.p2p.api.entity.InvestPackageDetailEntity;
+import com.lendbiz.p2p.api.entity.InvestPackageEntity;
+import com.lendbiz.p2p.api.entity.NotificationsEntity;
+import com.lendbiz.p2p.api.entity.NotifyEntity;
+import com.lendbiz.p2p.api.entity.PkgFundInfoEntity;
+import com.lendbiz.p2p.api.entity.PortfolioInvest;
+import com.lendbiz.p2p.api.entity.RateConfigEntity;
+import com.lendbiz.p2p.api.entity.RateEntity;
+import com.lendbiz.p2p.api.entity.RelationEntity;
+import com.lendbiz.p2p.api.entity.ResendOtpEntity;
+import com.lendbiz.p2p.api.entity.StatementsEntity;
+import com.lendbiz.p2p.api.entity.SumGrowthEntity;
+import com.lendbiz.p2p.api.entity.UserOnline;
+import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
-import com.lendbiz.p2p.api.repository.*;
-import com.lendbiz.p2p.api.request.*;
+import com.lendbiz.p2p.api.repository.AccountAssetRepository;
+import com.lendbiz.p2p.api.repository.AccountInvestRepository;
+import com.lendbiz.p2p.api.repository.AccountNotificationsRepository;
+import com.lendbiz.p2p.api.repository.BankRepository;
+import com.lendbiz.p2p.api.repository.BaoVietRepo;
+import com.lendbiz.p2p.api.repository.CfMastRepository;
+import com.lendbiz.p2p.api.repository.CoinRepo;
+import com.lendbiz.p2p.api.repository.FirstPasswordRepository;
+import com.lendbiz.p2p.api.repository.FundInvestDetailRepository;
+import com.lendbiz.p2p.api.repository.FundInvestRepository;
+import com.lendbiz.p2p.api.repository.FundListRepository;
+import com.lendbiz.p2p.api.repository.InvestAssetsRepository;
+import com.lendbiz.p2p.api.repository.InvestPackageDetailRepository;
+import com.lendbiz.p2p.api.repository.InvestPackageRepository;
+import com.lendbiz.p2p.api.repository.NAVRepository;
+import com.lendbiz.p2p.api.repository.NotifyRepo;
+import com.lendbiz.p2p.api.repository.PackageFilterRepository;
+import com.lendbiz.p2p.api.repository.PayRepo;
+import com.lendbiz.p2p.api.repository.PkgFundInfoRepository;
+import com.lendbiz.p2p.api.repository.PortfolioRepository;
+import com.lendbiz.p2p.api.repository.ProductGMRepository;
+import com.lendbiz.p2p.api.repository.RateConfigRepo;
+import com.lendbiz.p2p.api.repository.RateRepo;
+import com.lendbiz.p2p.api.repository.RelationRepo;
+import com.lendbiz.p2p.api.repository.ResendOtpRepository;
+import com.lendbiz.p2p.api.repository.StatementsRepository;
+import com.lendbiz.p2p.api.repository.SumGrowthRepository;
+import com.lendbiz.p2p.api.repository.TermRepo;
+import com.lendbiz.p2p.api.repository.UpdateAccountRepository;
+import com.lendbiz.p2p.api.repository.UserInfoRepository;
+import com.lendbiz.p2p.api.repository.UserOnlineRepository;
+import com.lendbiz.p2p.api.request.BearRequest;
+import com.lendbiz.p2p.api.request.GmFundNavRequest;
+import com.lendbiz.p2p.api.request.InsuranceRequest;
+import com.lendbiz.p2p.api.request.LoginRequest;
+import com.lendbiz.p2p.api.request.PkgSumFundRequest;
+import com.lendbiz.p2p.api.request.ReqJoinRequest;
+import com.lendbiz.p2p.api.request.SetAccountPasswordRequest;
+import com.lendbiz.p2p.api.request.UpdateAccountRequest;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.response.PkgFundDetail;
 import com.lendbiz.p2p.api.response.PkgFundResponse;
@@ -114,6 +176,12 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     UpdateAccountRepository accountRepository;
 
+    @Autowired
+    CfMastRepository cfMastRepository;
+
+    @Autowired
+    ResendOtpRepository otpRepository;
+
     @Override
     public ResponseEntity<?> login(LoginRequest loginRequest) {
         // List<Object> response;
@@ -138,8 +206,20 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     public ResponseEntity<?> register(ReqJoinRequest reqJoinRequest) {
 
-        List<Object> response = (ArrayList) pkgFilterRepo.reqJoin(reqJoinRequest);
-        return response(toResult(response.get(0)));
+        List<CfMast> lstCfmast = cfMastRepository.findByMobileSms(reqJoinRequest.getMobile());
+        if (lstCfmast.size() > 0 && lstCfmast.get(0).getStatus().equalsIgnoreCase("P")) {
+            try {
+
+                return response(toResult(otpRepository.resendOtp(reqJoinRequest.getMobile())));
+            } catch (Exception e) {
+                throw new BusinessException(Constants.FAIL, e.getMessage());
+            }
+
+        } else {
+            List<Object> response = (ArrayList) pkgFilterRepo.reqJoin(reqJoinRequest);
+            return response(toResult(response.get(0)));
+        }
+
     }
 
     @Override
@@ -541,7 +621,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> getFundInvest(String cid) {
-        ArrayList<FundInvestEntity> list =  fundInvestRepository.getFundInvest(cid);
+        ArrayList<FundInvestEntity> list = fundInvestRepository.getFundInvest(cid);
         if (list.size() == 0)
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         return response(toResult(list));
@@ -549,7 +629,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> getFundInvestDetail(String cid, String packageId) {
-        ArrayList<FundInvestDetailEntity> list =  fundInvestDetailRepository.getFundInvestDetail(cid,packageId);
+        ArrayList<FundInvestDetailEntity> list = fundInvestDetailRepository.getFundInvestDetail(cid, packageId);
         if (list.size() == 0)
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         return response(toResult(list));
@@ -569,9 +649,9 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         formatter = new SimpleDateFormat("dd-MMM-yyyy");
         String strSDate = formatter.format(sDateF);
-        notifyRepo.saveSumGrowthNavDaily(request.getSum(),strSDate,request.getPkg_id());
-        request.getFunNavRequests().forEach((n)->{
-            notifyRepo.saveNavDaily(n.getF_code(),n.getGrowth(),strSDate,n.getPkg_id());
+        notifyRepo.saveSumGrowthNavDaily(request.getSum(), strSDate, request.getPkg_id());
+        request.getFunNavRequests().forEach((n) -> {
+            notifyRepo.saveNavDaily(n.getF_code(), n.getGrowth(), strSDate, n.getPkg_id());
         });
 
         return response(toResult("success"));
@@ -579,7 +659,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> getPkgFundInfo() {
-        ArrayList<PkgFundInfoEntity> list =  pkgFundInfoRepository.findByFund_date();
+        ArrayList<PkgFundInfoEntity> list = pkgFundInfoRepository.findByFund_date();
         ArrayList<SumGrowthEntity> list2 = (ArrayList<SumGrowthEntity>) sumGrowthRepository.findAll();
         ArrayList<PkgFundResponse> list3 = new ArrayList<>();
         for (int i = 0; i < list2.size(); i++) {
@@ -589,7 +669,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             pkgFundResponse.setPkg_id(list2.get(i).getPkg_id());
             ArrayList<PkgFundDetail> details = new ArrayList<>();
             list.forEach((n) -> {
-                if (n.getFund_date().equals(pkgFundResponse.getFund_date())&&n.getPkg_id().equals(pkgFundResponse.getPkg_id())) {
+                if (n.getFund_date().equals(pkgFundResponse.getFund_date())
+                        && n.getPkg_id().equals(pkgFundResponse.getPkg_id())) {
                     PkgFundDetail pkgFundDetail = new PkgFundDetail();
                     pkgFundDetail.setPkg_id(n.getPkg_id());
                     pkgFundDetail.setF_code(n.getF_code());
@@ -603,7 +684,6 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         }
         return response(toResult(list3));
     }
-
 
     @Override
     public String checkSession(String session) {
