@@ -56,6 +56,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
+    @Transactional(readOnly = true)
     public ResponseEntity<?> register(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestBody ReqJoinRequest reqJoinRequest)
             throws BusinessException {

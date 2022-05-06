@@ -58,8 +58,6 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     PkgFundInfoRepository pkgFundInfoRepository;
     @Autowired
-    TransFerCodeRepo transFerCodeRepo;
-    @Autowired
     FundInvestDetailRepository fundInvestDetailRepository;
     @Autowired
     NAVRepository navRepository;
@@ -100,6 +98,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     NotifyRepo notifyRepo;
     @Autowired
+    TransFerCodeRepo transFerCodeRepo;
+    @Autowired
     BankRepository bankRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -115,6 +115,12 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Autowired
     UpdateAccountRepository accountRepository;
+
+    @Autowired
+    CfMastRepository cfMastRepository;
+
+    @Autowired
+    ResendOtpRepository otpRepository;
 
     @Override
     public ResponseEntity<?> login(LoginRequest loginRequest) {
@@ -140,8 +146,20 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     public ResponseEntity<?> register(ReqJoinRequest reqJoinRequest) {
 
-        List<Object> response = (ArrayList) pkgFilterRepo.reqJoin(reqJoinRequest);
-        return response(toResult(response.get(0)));
+        List<CfMast> lstCfmast = cfMastRepository.findByMobileSms(reqJoinRequest.getMobile());
+        if (lstCfmast.size() > 0 && lstCfmast.get(0).getStatus().equalsIgnoreCase("P")) {
+            try {
+
+                return response(toResult(otpRepository.resendOtp(reqJoinRequest.getMobile())));
+            } catch (Exception e) {
+                throw new BusinessException(Constants.FAIL, e.getMessage());
+            }
+
+        } else {
+            List<Object> response = (ArrayList) pkgFilterRepo.reqJoin(reqJoinRequest);
+            return response(toResult(response.get(0)));
+        }
+
     }
 
     @Override
