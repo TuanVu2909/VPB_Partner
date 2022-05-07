@@ -608,6 +608,15 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     }
 
     @Override
+    public ResponseEntity<?> endBear(String cid, String documentNo) {
+        NotifyEntity notify = notifyRepo.endBear(cid,documentNo);
+        if (!notify.getPStatus().equals("01")){
+            throw new BusinessException(notify.getPStatus(),notify.getDes());
+        }
+        return response(toResult(notify));
+    }
+
+    @Override
     public ResponseEntity<?> getFundInvestDetail(String cid, String packageId) {
         ArrayList<FundInvestDetailEntity> list =  fundInvestDetailRepository.getFundInvestDetail(cid,packageId);
         if (list.size() == 0)

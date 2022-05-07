@@ -109,7 +109,14 @@ public class UserController {
         log.info("[" + requestId + "] << create bear >>");
         return userService.createBear(accountInput);
     }
-
+    @PostMapping("/end-bear")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> endBear(HttpServletRequest httpServletRequest,
+                                        @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
+            throws BusinessException {
+        log.info("[" + requestId + "] << end bear >>");
+        return userService.endBear(accountInput.getCustId(),accountInput.getDoc_no());
+    }
     @GetMapping("/get-account-asset")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getAccountAsset(HttpServletRequest httpServletRequest,

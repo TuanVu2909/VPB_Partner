@@ -13,6 +13,8 @@ public interface NotifyRepo extends JpaRepository<NotifyEntity, String> {
     @Procedure("NotifyEntity.changeCoin")
     NotifyEntity changeCoin(@Param("pv_custId") String pv_custId, @Param("pv_coinAmount") String pv_coinAmount);
 
+    @Procedure("NotifyEntity.endBear")
+    NotifyEntity endBear(@Param("pv_custId") String pv_custId, @Param("pv_documentNo") String pv_documentNo);
 
     @Procedure("NotifyEntity.updateReferenceId")
     NotifyEntity updateReferenceId(@Param("pv_custId") String pv_custId, @Param("pv_refId") String pv_refId);

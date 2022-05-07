@@ -68,7 +68,12 @@ import java.util.Date;
                 @StoredProcedureParameter(name = "pv_packageId", mode = ParameterMode.IN, type = String.class),
 
         }),
+        @NamedStoredProcedureQuery(name = "NotifyEntity.endBear", procedureName = "pck_gm.endBear", resultClasses = NotifyEntity.class, parameters = { //
+                @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
+                @StoredProcedureParameter(name = "pv_custId", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_documentNo", mode = ParameterMode.IN, type = String.class),
 
+        }),
         @NamedStoredProcedureQuery(name = "NotifyEntity.createFundInvestOptionally", procedureName = "pck_gm.createFundInvestOptionally", resultClasses = NotifyEntity.class, parameters = { //
                 @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
                 @StoredProcedureParameter(name = "pv_custId", mode = ParameterMode.IN, type = String.class),

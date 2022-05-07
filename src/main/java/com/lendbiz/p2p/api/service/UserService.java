@@ -90,7 +90,7 @@ public interface UserService {
 	public ResponseEntity<?> createFundInvestOptionally(GmFundNavRequest request);
 
 	public ResponseEntity<?> getFundInvest(String cid);
-
+	public ResponseEntity<?> endBear(String cid, String documentNo);
 	public ResponseEntity<?> getFundInvestDetail(String cid, String packageId);
 
 	public ResponseEntity<?> savePkgFundInfo(PkgSumFundRequest request);

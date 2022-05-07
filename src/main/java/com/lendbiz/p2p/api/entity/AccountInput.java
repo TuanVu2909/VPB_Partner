@@ -17,6 +17,7 @@ public class AccountInput {
     private String payType;
     private String pv_refId;
     private String coin;
+    private String doc_no;
 
 
 
