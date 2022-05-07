@@ -66,6 +66,7 @@ public class UserController {
     }
 
     @PostMapping("/verify-account")
+    @Transactional(readOnly = true)
     public ResponseEntity<?> verifyAccount(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestBody VerifyAccountInput verifyAccountInput)
             throws BusinessException {
@@ -82,7 +83,7 @@ public class UserController {
 
     @PostMapping("/set-account-password")
     @Transactional(readOnly = true)
-    public ResponseEntity<?> verifyAccount(HttpServletRequest httpServletRequest,
+    public ResponseEntity<?> setPassword(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId,
             @RequestBody SetAccountPasswordRequest setAccountPasswordRequest)
             throws BusinessException {
@@ -327,13 +328,12 @@ public class UserController {
     @PostMapping("/save-pkg-fund")
     @Transactional(readOnly = true)
     public ResponseEntity<?> savePkgFund(HttpServletRequest httpServletRequest,
-                                         @RequestBody PkgSumFundRequest request)
+            @RequestBody PkgSumFundRequest request)
             throws BusinessException {
         System.out.println("55555");
 
         return userService.savePkgFundInfo(request);
     }
-
 
     @GetMapping("/get-pkg-fund-list")
     public ResponseEntity<?> getPkgFundList(HttpServletRequest httpServletRequest)
@@ -383,7 +383,7 @@ public class UserController {
     @PostMapping("/cr-fund-iv")
     @Transactional(readOnly = true)
     public ResponseEntity<?> createFundInvest(HttpServletRequest httpServletRequest,
-                                            @RequestHeader("requestId") String requestId, @RequestBody GmFundNavRequest request)
+            @RequestHeader("requestId") String requestId, @RequestBody GmFundNavRequest request)
             throws BusinessException {
         log.info("[" + requestId + "] << createFundInvest >>");
 
@@ -393,12 +393,13 @@ public class UserController {
     @PostMapping("/cr-fund-ivo")
     @Transactional(readOnly = true)
     public ResponseEntity<?> createFundInvestOptionally(HttpServletRequest httpServletRequest,
-                                              @RequestHeader("requestId") String requestId, @RequestBody GmFundNavRequest request)
+            @RequestHeader("requestId") String requestId, @RequestBody GmFundNavRequest request)
             throws BusinessException {
         log.info("[" + requestId + "] << createFundInvest >>");
 
         return userService.createFundInvestOptionally(request);
     }
+
     @GetMapping("/get-detail-pk")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getInvestPackageDetail(HttpServletRequest httpServletRequest,
@@ -412,7 +413,7 @@ public class UserController {
     @GetMapping("/get-fund-invest")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getFundInvest(HttpServletRequest httpServletRequest,
-                                              @RequestHeader("requestId") String requestId , @RequestParam("cid") String cid)
+            @RequestHeader("requestId") String requestId, @RequestParam("cid") String cid)
             throws BusinessException {
         log.info("[" + requestId + "] << getFundInvest >>");
 
@@ -431,12 +432,12 @@ public class UserController {
     @GetMapping("/get-fund-invest-detail")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getFundInvestDetail(HttpServletRequest httpServletRequest,
-                                           @RequestHeader("requestId") String requestId , @RequestParam("cid") String cid,
-                                                 @RequestParam("pkid") String pkid)
+            @RequestHeader("requestId") String requestId, @RequestParam("cid") String cid,
+            @RequestParam("pkid") String pkid)
             throws BusinessException {
         log.info("[" + requestId + "] << getFundInvest >>");
 
-        return userService.getFundInvestDetail(cid,pkid);
+        return userService.getFundInvestDetail(cid, pkid);
     }
 
     @GetMapping("/get-bg-tran-his")

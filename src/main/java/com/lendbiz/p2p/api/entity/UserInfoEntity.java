@@ -3,7 +3,6 @@ package com.lendbiz.p2p.api.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +13,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class UserInfoEntity {
+
     @Id
     @Column(name = "CUSTID")
     private String custid;
@@ -35,4 +35,5 @@ public class UserInfoEntity {
 
     @Column(name = "STATUS")
     private String status;
+
 }
