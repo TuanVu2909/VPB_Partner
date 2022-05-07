@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository("userRepository")
 public interface UserInfoRepository extends JpaRepository<UserInfoEntity, String> {
 
-	@Query(value = "select custID, fullname, dateofbirth, idcode, mobilesms, email, status  from cfmast where custid = ?1", nativeQuery = true)
+	@Query(value = "select c.custID, c.fullname, c.dateofbirth, c.idcode, c.mobilesms, c.email, c.status from cfmast c where c.custid = ?1", nativeQuery = true)
 	UserInfoEntity getUserInfo(String custId);
 
 }

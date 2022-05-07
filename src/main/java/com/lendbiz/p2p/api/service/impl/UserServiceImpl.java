@@ -18,7 +18,9 @@ package com.lendbiz.p2p.api.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.lendbiz.p2p.api.constants.Constants;
@@ -26,6 +28,7 @@ import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.AccountAssetEntity;
 import com.lendbiz.p2p.api.entity.AccountInput;
 import com.lendbiz.p2p.api.entity.AccountInvest;
+import com.lendbiz.p2p.api.entity.BankAccountEntity;
 import com.lendbiz.p2p.api.entity.BankInfoEntity;
 import com.lendbiz.p2p.api.entity.BaoVietEntity;
 import com.lendbiz.p2p.api.entity.CfMast;
@@ -44,16 +47,19 @@ import com.lendbiz.p2p.api.entity.PkgFundInfoEntity;
 import com.lendbiz.p2p.api.entity.PortfolioInvest;
 import com.lendbiz.p2p.api.entity.RateConfigEntity;
 import com.lendbiz.p2p.api.entity.RateEntity;
+import com.lendbiz.p2p.api.entity.RegisterEntity;
 import com.lendbiz.p2p.api.entity.RelationEntity;
 import com.lendbiz.p2p.api.entity.ResendOtpEntity;
 import com.lendbiz.p2p.api.entity.StatementsEntity;
 import com.lendbiz.p2p.api.entity.SumGrowthEntity;
+import com.lendbiz.p2p.api.entity.UserInfoEntity;
 import com.lendbiz.p2p.api.entity.UserOnline;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.AccountAssetRepository;
 import com.lendbiz.p2p.api.repository.AccountInvestRepository;
 import com.lendbiz.p2p.api.repository.AccountNotificationsRepository;
+import com.lendbiz.p2p.api.repository.BankAccountRepository;
 import com.lendbiz.p2p.api.repository.BankRepository;
 import com.lendbiz.p2p.api.repository.BaoVietRepo;
 import com.lendbiz.p2p.api.repository.CfMastRepository;
@@ -74,6 +80,7 @@ import com.lendbiz.p2p.api.repository.PortfolioRepository;
 import com.lendbiz.p2p.api.repository.ProductGMRepository;
 import com.lendbiz.p2p.api.repository.RateConfigRepo;
 import com.lendbiz.p2p.api.repository.RateRepo;
+import com.lendbiz.p2p.api.repository.RegisterRepository;
 import com.lendbiz.p2p.api.repository.RelationRepo;
 import com.lendbiz.p2p.api.repository.ResendOtpRepository;
 import com.lendbiz.p2p.api.repository.StatementsRepository;
@@ -82,6 +89,7 @@ import com.lendbiz.p2p.api.repository.TermRepo;
 import com.lendbiz.p2p.api.repository.UpdateAccountRepository;
 import com.lendbiz.p2p.api.repository.UserInfoRepository;
 import com.lendbiz.p2p.api.repository.UserOnlineRepository;
+import com.lendbiz.p2p.api.repository.VerifyAccountRepository;
 import com.lendbiz.p2p.api.request.BearRequest;
 import com.lendbiz.p2p.api.request.GmFundNavRequest;
 import com.lendbiz.p2p.api.request.InsuranceRequest;
@@ -171,6 +179,9 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     UserInfoRepository userInfoRepository;
 
     @Autowired
+    BankAccountRepository bankAccountRepository;
+
+    @Autowired
     FundInvestRepository fundInvestRepository;
 
     @Autowired
@@ -180,7 +191,13 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     CfMastRepository cfMastRepository;
 
     @Autowired
+    RegisterRepository registerRepository;
+
+    @Autowired
     ResendOtpRepository otpRepository;
+
+    @Autowired
+    VerifyAccountRepository verifyAccountRepository;
 
     @Override
     public ResponseEntity<?> login(LoginRequest loginRequest) {
@@ -209,15 +226,22 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         List<CfMast> lstCfmast = cfMastRepository.findByMobileSms(reqJoinRequest.getMobile());
         if (lstCfmast.size() > 0 && lstCfmast.get(0).getStatus().equalsIgnoreCase("P")) {
             try {
-
                 return response(toResult(otpRepository.resendOtp(reqJoinRequest.getMobile())));
             } catch (Exception e) {
                 throw new BusinessException(Constants.FAIL, e.getMessage());
             }
 
         } else {
-            List<Object> response = (ArrayList) pkgFilterRepo.reqJoin(reqJoinRequest);
-            return response(toResult(response.get(0)));
+            // List<Object> response = (ArrayList) pkgFilterRepo.reqJoin(reqJoinRequest);
+            // return response(toResult(response.get(0)));
+            RegisterEntity regEntity = registerRepository.register(reqJoinRequest.getMobile());
+
+            if (regEntity.getErrorCode() == 1) {
+                throw new BusinessException(Constants.FAIL, regEntity.getCustId());
+            } else {
+                return response(toResult(regEntity));
+            }
+
         }
 
     }
@@ -225,18 +249,33 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     public ResponseEntity<?> verifyAcc(VerifyAccountInput input) {
         try {
-            return response(toResult(pkgFilterRepo.verifyAcc(input)));
+            return response(toResult(verifyAccountRepository.verify(input.getCustId(), input.getVerifyCode())));
         } catch (Exception e) {
-            throw new BusinessException(Constants.FAIL, e.getMessage());
+            throw new BusinessException(Constants.FAIL, ErrorCode.ERROR_500_DESCRIPTION);
         }
     }
 
     @Override
     public ResponseEntity<?> getUserInfo(String mobile) {
         try {
-            return response(toResult(userInfoRepository.getUserInfo(mobile)));
+            UserInfoEntity user = userInfoRepository.getUserInfo(mobile);
+            BankAccountEntity bank = bankAccountRepository.getUserBankAccount(mobile);
+
+            if (bank == null) {
+                bank = new BankAccountEntity();
+                bank.setBankAcName("------");
+                bank.setBankAccount("------");
+                bank.setBankName("------");
+            }
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("user", user);
+            map.put("bank", bank);
+
+            return response(toResult(map));
+
         } catch (Exception e) {
-            throw new BusinessException(Constants.FAIL, e.getMessage());
+            throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         }
     }
 

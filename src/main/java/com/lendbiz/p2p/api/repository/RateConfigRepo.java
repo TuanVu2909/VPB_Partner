@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface RateConfigRepo extends JpaRepository<RateConfigEntity, Integer> {
 
-        @Query(value = "Select * from rateinfo", nativeQuery = true)
+        @Query(value = "Select * from gmrateInfo", nativeQuery = true)
         List<RateConfigEntity> getRate();
 
 }
