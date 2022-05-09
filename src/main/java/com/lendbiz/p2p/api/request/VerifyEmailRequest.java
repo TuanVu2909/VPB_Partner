@@ -9,5 +9,6 @@ import lombok.ToString;
 @ToString
 public class VerifyEmailRequest {
     private String email;
+    private String otp;
 
 }

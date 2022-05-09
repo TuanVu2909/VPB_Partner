@@ -30,7 +30,9 @@ public class MailServiceImpl extends BaseResponse<MailService> implements MailSe
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
 
             mimeMessageHelper.setSubject(mail.getMailSubject());
-            mimeMessageHelper.setFrom(new InternetAddress(mail.getMailFrom(), "3Gang.com.vn"));
+            // mimeMessageHelper.setFrom(new InternetAddress(mail.getMailFrom(), "3Gang.com.vn"));
+            
+            mimeMessageHelper.setFrom("cskh@Lendbiz.vn");
             mimeMessageHelper.setTo(mail.getMailTo());
             mimeMessageHelper.setText(mail.getMailContent());
 
@@ -38,10 +40,11 @@ public class MailServiceImpl extends BaseResponse<MailService> implements MailSe
 
         } catch (MessagingException e) {
             e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        } 
+        // catch (UnsupportedEncodingException e) {
+        //     e.printStackTrace();
+        // }
 
-        return response(toResult("ok"));
+        return response(toResult("021399"));
     }
 }
