@@ -91,4 +91,7 @@ public class ErrorCode {
     public static final String FAIL_LOGIN = "100";
     public static final String FAIL_LOGIN_DESCRIPTION = "Mật khẩu hoặc tài khoản không đúng!";
 
+    public static final String ACCOUNT_LOCKED = "101";
+    public static final String ACCOUNT_LOCKED_DESCRIPTION = "Tài khoản bị khoá do bạn nhập sai mật khẩu quá 5 lần! Vui lòng thử lại sau 15 phút!";
+
 }

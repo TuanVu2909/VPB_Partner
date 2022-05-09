@@ -16,6 +16,8 @@
 package com.lendbiz.p2p.api.service.impl;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -145,8 +147,24 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         // List<Object> response;
 
         UserOnline user = userOnlineRepo.getUserOnline(loginRequest.getUsername());
+        if (user.getNumberOffail() > 5) {
+
+            Date now = new Date();
+            long diff = (now.getTime() - user.getLastChange().getTime()) / 1000 / 60;
+
+            System.out.println(diff);
+
+            if (diff <= 2) {
+                throw new BusinessException(ErrorCode.ACCOUNT_LOCKED,
+                        ErrorCode.ACCOUNT_LOCKED_DESCRIPTION);
+            } else {
+                userOnlineRepo.resetFail(user.getCustId());
+            }
+
+        }
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPwd())) {
+            userOnlineRepo.updateNumberFail(user.getCustId());
             throw new BusinessException(ErrorCode.FAIL_LOGIN, ErrorCode.FAIL_LOGIN_DESCRIPTION);
         } else {
             if (userOnlineRepo.checkAccountMappingExist(user.getCustId()) == 0) {
@@ -601,7 +619,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> getFundInvest(String cid) {
-        ArrayList<FundInvestEntity> list =  fundInvestRepository.getFundInvest(cid);
+        ArrayList<FundInvestEntity> list = fundInvestRepository.getFundInvest(cid);
         if (list.size() == 0)
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         return response(toResult(list));
@@ -609,16 +627,16 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> endBear(String cid, String documentNo) {
-        NotifyEntity notify = notifyRepo.endBear(cid,documentNo);
-        if (!notify.getPStatus().equals("01")){
-            throw new BusinessException(notify.getPStatus(),notify.getDes());
+        NotifyEntity notify = notifyRepo.endBear(cid, documentNo);
+        if (!notify.getPStatus().equals("01")) {
+            throw new BusinessException(notify.getPStatus(), notify.getDes());
         }
         return response(toResult(notify));
     }
 
     @Override
     public ResponseEntity<?> getFundInvestDetail(String cid, String packageId) {
-        ArrayList<FundInvestDetailEntity> list =  fundInvestDetailRepository.getFundInvestDetail(cid,packageId);
+        ArrayList<FundInvestDetailEntity> list = fundInvestDetailRepository.getFundInvestDetail(cid, packageId);
         if (list.size() == 0)
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         return response(toResult(list));
@@ -638,11 +656,10 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         formatter = new SimpleDateFormat("dd-MMM-yyyy");
         String strSDate = formatter.format(sDateF);
-        notifyRepo.saveSumGrowthNavDaily(request.getSum(),strSDate,request.getPkg_id());
+        notifyRepo.saveSumGrowthNavDaily(request.getSum(), strSDate, request.getPkg_id());
 
-
-        request.getFunNavRequests().forEach((n)->{
-            notifyRepo.saveNavDaily(n.getF_code(),n.getGrowth(),strSDate,request.getPkg_id());
+        request.getFunNavRequests().forEach((n) -> {
+            notifyRepo.saveNavDaily(n.getF_code(), n.getGrowth(), strSDate, request.getPkg_id());
         });
 
         return response(toResult("success"));
@@ -650,7 +667,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> getPkgFundInfo() {
-        ArrayList<PkgFundInfoEntity> list =  pkgFundInfoRepository.findByFund_date();
+        ArrayList<PkgFundInfoEntity> list = pkgFundInfoRepository.findByFund_date();
         ArrayList<SumGrowthEntity> list2 = (ArrayList<SumGrowthEntity>) sumGrowthRepository.findAll();
         ArrayList<PkgFundResponse> list3 = new ArrayList<>();
         for (int i = 0; i < list2.size(); i++) {
@@ -660,7 +677,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             pkgFundResponse.setPkg_id(list2.get(i).getPkg_id());
             ArrayList<PkgFundDetail> details = new ArrayList<>();
             list.forEach((n) -> {
-                if (n.getFund_date().equals(pkgFundResponse.getFund_date())&&n.getPkg_id().equals(pkgFundResponse.getPkg_id())) {
+                if (n.getFund_date().equals(pkgFundResponse.getFund_date())
+                        && n.getPkg_id().equals(pkgFundResponse.getPkg_id())) {
                     PkgFundDetail pkgFundDetail = new PkgFundDetail();
                     pkgFundDetail.setPkg_id(n.getPkg_id());
                     pkgFundDetail.setF_code(n.getF_code());
@@ -678,12 +696,11 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     public ResponseEntity<?> genTransferCode(String cif) {
         TransferCodeEntity entity = transFerCodeRepo.genTransferCode(cif);
-        if (entity == null){
+        if (entity == null) {
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         }
         return response(toResult(entity));
     }
-
 
     @Override
     public String checkSession(String session) {

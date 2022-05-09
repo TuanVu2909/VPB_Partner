@@ -8,8 +8,10 @@ import com.lendbiz.p2p.api.entity.AccountInput;
 import com.lendbiz.p2p.api.entity.PkgFundInfoEntity;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.model.Mail;
 import com.lendbiz.p2p.api.request.*;
 import com.lendbiz.p2p.api.response.InfoIdentity;
+import com.lendbiz.p2p.api.service.MailService;
 import com.lendbiz.p2p.api.service.SavisService;
 import com.lendbiz.p2p.api.service.UserService;
 
@@ -109,14 +111,16 @@ public class UserController {
         log.info("[" + requestId + "] << create bear >>");
         return userService.createBear(accountInput);
     }
+
     @PostMapping("/end-bear")
     @Transactional(readOnly = true)
     public ResponseEntity<?> endBear(HttpServletRequest httpServletRequest,
-                                        @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
+            @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
             throws BusinessException {
         log.info("[" + requestId + "] << end bear >>");
-        return userService.endBear(accountInput.getCustId(),accountInput.getDoc_no());
+        return userService.endBear(accountInput.getCustId(), accountInput.getDoc_no());
     }
+
     @GetMapping("/get-account-asset")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getAccountAsset(HttpServletRequest httpServletRequest,
@@ -432,12 +436,13 @@ public class UserController {
     @GetMapping("/gen-transfercode")
     @Transactional(readOnly = true)
     public ResponseEntity<?> genTransferCode(HttpServletRequest httpServletRequest,
-                                           @RequestHeader("requestId") String requestId , @RequestParam("cid") String cid)
+            @RequestHeader("requestId") String requestId, @RequestParam("cid") String cid)
             throws BusinessException {
         log.info("[" + requestId + "] << genTransferCode >>");
 
         return userService.genTransferCode(cid);
     }
+
     @GetMapping("/get-fund-invest-detail")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getFundInvestDetail(HttpServletRequest httpServletRequest,
@@ -449,16 +454,23 @@ public class UserController {
         return userService.getFundInvestDetail(cid, pkid);
     }
 
-    @GetMapping("/get-bg-tran-his")
+    @Autowired
+    MailService mailService;
+
+    @PostMapping("/verify-email")
     public ResponseEntity<?> getTransHistory(HttpServletRequest httpServletRequest,
-            @RequestHeader("session") String session,
-            @RequestHeader("requestId") String requestId)
+            @RequestHeader("requestId") String requestId,
+            @RequestBody VerifyEmailRequest request)
             throws BusinessException {
         log.info("[" + requestId + "] << getTransHistory >>");
 
-        String customerId = userService.checkSession(session);
+        Mail mail = new Mail();
+        mail.setMailFrom("tuht@lendbiz.vn");
+        mail.setMailTo(request.getEmail());
+        mail.setMailSubject("3Gang Verification Email");
+        mail.setMailContent("Mã xác nhận của bạn là: 021399");
 
-        return userService.getTransHistory(customerId);
+        return mailService.sendEmail(mail);
     }
 
 }
