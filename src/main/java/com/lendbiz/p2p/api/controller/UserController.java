@@ -1,6 +1,8 @@
 package com.lendbiz.p2p.api.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -272,12 +274,12 @@ public class UserController {
 
     @PostMapping("/verify-face")
     public ResponseEntity<?> verifyFace(HttpServletRequest httpServletRequest,
-            @RequestHeader("requestId") String requestId, @RequestHeader("session") String session,
+            @RequestHeader("requestId") String requestId, @RequestHeader("custid") String session,
             @RequestParam("front_file") MultipartFile frontFile, @RequestParam("selfie_file") MultipartFile selfieFile)
             throws BusinessException {
 
-        String custId = userService.checkSession(session);
-        return savisService.callCheckSelfie(frontFile, selfieFile, custId);
+        // String custId = userService.checkSession(session);
+        return savisService.callCheckSelfie(frontFile, selfieFile, session);
     }
 
     @PostMapping("/product-info")
@@ -457,20 +459,32 @@ public class UserController {
     @Autowired
     MailService mailService;
 
-    @PostMapping("/verify-email")
-    public ResponseEntity<?> getTransHistory(HttpServletRequest httpServletRequest,
+    @PostMapping("/send-email-otp")
+    public ResponseEntity<?> sendEmailOtp(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId,
-            @RequestBody VerifyEmailRequest request)
+            @RequestBody SendEmailRequest request)
             throws BusinessException {
         log.info("[" + requestId + "] << getTransHistory >>");
+
+        // String otp = new DecimalFormat("000000").format(new
+        // Random().nextInt(999999));
 
         Mail mail = new Mail();
         mail.setMailFrom("tuht@lendbiz.vn");
         mail.setMailTo(request.getEmail());
         mail.setMailSubject("3Gang Verification Email");
-        mail.setMailContent("Mã xác nhận của bạn là: 021399");
+        mail.setMailContent("Mã xác nhận của bạn là: " + request.getOtp());
 
-        return mailService.sendEmail(mail);
+        return mailService.sendEmail(mail, request);
+    }
+
+    @PostMapping("/verify-email-otp")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> verifyEmail(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId,
+            @RequestBody VerifyEmailRequest request)
+            throws BusinessException {
+        return mailService.verifyEmail(request);
     }
 
 }

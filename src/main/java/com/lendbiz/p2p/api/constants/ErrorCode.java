@@ -88,6 +88,9 @@ public class ErrorCode {
     public static final String NO_refId = "21";
     public static final String NO_refId_DESCRIPTION = "Mã giới thiệu đã tồn tại";
 
+    public static final String USER_EXISTED = "22";
+    public static final String USER_EXISTED_DESCRIPTION = "Giấy tờ tuỳ thân đã được sử dụng, vui lòng sử dụng giấy tờ tuỳ thân khác!";
+
     public static final String FAIL_LOGIN = "100";
     public static final String FAIL_LOGIN_DESCRIPTION = "Mật khẩu hoặc tài khoản không đúng!";
 

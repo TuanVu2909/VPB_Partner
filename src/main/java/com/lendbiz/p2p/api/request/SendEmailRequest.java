@@ -7,7 +7,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class VerifyEmailRequest {
+public class SendEmailRequest {
     private String custId;
     private String email;
     private String otp;
