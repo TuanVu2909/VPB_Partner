@@ -48,10 +48,14 @@ public class Card9PayServiceImpl extends BaseResponse<NinePayServiceImpl> {
     }
 
     public ResponseEntity<?> getAllByCustId(String cif) {
+        ArrayList<Card9PayEntity> list = (ArrayList<Card9PayEntity>) card9PayRepository.findByCustId(cif);
+
+
         return response(toResult(card9PayRepository.findByCustId(cif)));
     }
 
     public ResponseEntity<?> findByDate(String sDate, String eDate, String cif) {
+
         Date sDateF = null;
         Date eDateF = null;
         try {

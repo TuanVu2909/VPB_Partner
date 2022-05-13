@@ -98,13 +98,15 @@ public class NinePayController {
 
 
     @GetMapping("/9pay/get-trans-by-custid")
+    @Transactional(readOnly = true)
     public ResponseEntity<?> transBycustId(HttpServletRequest httpServletRequest,
                                            @RequestHeader("requestId") String requestId, @RequestParam("cif") String cId)
             throws BusinessException, UnsupportedEncodingException {
         log.info("[" + requestId + "] << check-trans-info-by-cif >>");
-        return card9PayService.getAllByCustId(cId);
+        return card9PayService.findByDate("01-01-2000","01-01-3000",cId);
 
     }
+
 
     @PostMapping("/9pay/pay-card")
     @Transactional(readOnly = true)
