@@ -35,4 +35,14 @@ public interface UserOnlineRepository extends JpaRepository<UserOnline, String> 
 	@Query(value = "select count(*) from useronline u, cfmast c where c.custid = ?1 and u.custid = c.custid and exists(select (1) from account_mapping a where a.custid = c.custid and pid = '17')", nativeQuery = true)
 	int checkAccountMappingExist(String custId);
 
+	@Transactional
+	@Modifying
+	@Query(value = "update useronline set last_change = sysdate, numberoffail = numberoffail + 1 where custid = ?1", nativeQuery = true)
+	void updateNumberFail(String custId);
+
+	@Transactional
+	@Modifying
+	@Query(value = "update useronline set last_change = sysdate, numberoffail = 0 where custid = ?1", nativeQuery = true)
+	void resetFail(String custId);
+
 }
