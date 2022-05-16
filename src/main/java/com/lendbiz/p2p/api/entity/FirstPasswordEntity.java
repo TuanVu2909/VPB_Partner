@@ -28,4 +28,7 @@ public class FirstPasswordEntity {
     @Column(name = "KEY")
     private String key;
 
+    @Column(name = "FULLNAME")
+    private String fullName;
+
 }
