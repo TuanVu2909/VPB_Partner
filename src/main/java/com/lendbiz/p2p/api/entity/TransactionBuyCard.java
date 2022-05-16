@@ -24,5 +24,6 @@ public class TransactionBuyCard {
     private String product_name;
     private String product_des;
     private String service_name;
+    private String category_id;
     Card9PayDetails[] card9PayDetailsList;
 }

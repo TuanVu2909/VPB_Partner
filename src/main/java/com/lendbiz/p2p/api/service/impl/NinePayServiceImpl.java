@@ -256,7 +256,7 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
             throw new BusinessException(ErrorCode.FAILED_TO_EXECUTE, ErrorCode.FAILED_TO_EXECUTE_DESCRIPTION);
         }
     }
-
+static Integer PRODUCT_9PAY_ID = 0;
     @Override
     public ResponseEntity<?> buyCard(Input9Pay input9Pay) {
 
@@ -276,7 +276,16 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
         map.add("partner_id", PARTNER_KEY);
         map.add("product_id", input9Pay.getProductId());
         map.add("quantity", input9Pay.getQuantity());
+
+        try {
+            PRODUCT_9PAY_ID = Integer.parseInt(input9Pay.getProductId());
+        } catch(NumberFormatException e){
+            throw new BusinessException("103", "Mã sản phẩm không đúng");
+        }
         if (input9Pay.getPhone() != null) {
+            if ( PRODUCT_9PAY_ID < 179 ){
+                throw new BusinessException("103", "Mã sản phẩm không đúng");
+            }
             map.add("phone", input9Pay.getPhone());
         } else {
             input9Pay.setPhone("");

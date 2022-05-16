@@ -51,6 +51,8 @@ public class Card9PayEntity_v2 {
     private String product_des;
     @Column(name = "S_NAME")
     private String service_name;
+    @Column(name = "CATEGORY_ID")
+    private String category_id;
     @Column(name = "PHONE_RECEIVED")
     private String phone;
 
