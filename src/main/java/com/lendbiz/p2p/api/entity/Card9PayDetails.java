@@ -14,4 +14,5 @@ public class Card9PayDetails {
     private String card_seri;
     private String card_code;
     private String expired_at;
+    private int used;
 }

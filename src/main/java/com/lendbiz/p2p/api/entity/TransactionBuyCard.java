@@ -9,7 +9,6 @@ import javax.persistence.*;
 import java.sql.Date;
 import java.util.ArrayList;
 
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,5 +24,6 @@ public class TransactionBuyCard {
     private String product_des;
     private String service_name;
     private String category_id;
+    private int used;
     Card9PayDetails[] card9PayDetailsList;
 }

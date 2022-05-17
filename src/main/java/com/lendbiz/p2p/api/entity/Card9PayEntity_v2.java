@@ -21,6 +21,7 @@ import lombok.ToString;
                 @StoredProcedureParameter(name = "p_sdate", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "p_edate", mode = ParameterMode.IN, type = String.class), }) //
 })
+
 @Getter
 @Setter
 public class Card9PayEntity_v2 {
@@ -55,5 +56,7 @@ public class Card9PayEntity_v2 {
     private String category_id;
     @Column(name = "PHONE_RECEIVED")
     private String phone;
+    @Column(name = "USED")
+    private int used;
 
 }
