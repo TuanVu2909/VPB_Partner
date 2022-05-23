@@ -23,6 +23,8 @@ public interface UserService {
 	// ReqJoin
 	public ResponseEntity<?> register(ReqJoinRequest reqJoinRequest);
 
+	public ResponseEntity<?> resendOtp(ReqJoinRequest reqJoinRequest);
+
 	public ResponseEntity<?> verifyAcc(VerifyAccountInput input);
 
 	public ResponseEntity<?> getUserInfo(String mobile);
@@ -40,6 +42,8 @@ public interface UserService {
 	public ResponseEntity<?> getPortfolioInvest(String custId);
 
 	public ResponseEntity<?> getAccountNotifications(String custId);
+
+	public ResponseEntity<?> updateNotifications(UpdateNotificationsRequest request);
 
 	public ResponseEntity<?> getStatements(String custId);
 
@@ -90,12 +94,17 @@ public interface UserService {
 	public ResponseEntity<?> createFundInvestOptionally(GmFundNavRequest request);
 
 	public ResponseEntity<?> getFundInvest(String cid);
+
 	public ResponseEntity<?> endBear(String cid, String documentNo);
+
 	public ResponseEntity<?> getFundInvestDetail(String cid, String packageId);
 
 	public ResponseEntity<?> savePkgFundInfo(PkgSumFundRequest request);
+
 	public ResponseEntity<?> getPkgFundInfo();
+
 	public ResponseEntity<?> genTransferCode(String cif);
+
 	String checkSession(String session);
 
 }

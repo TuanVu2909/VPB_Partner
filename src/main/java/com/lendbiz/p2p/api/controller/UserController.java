@@ -71,6 +71,16 @@ public class UserController {
 
     }
 
+    @PostMapping("/resend-otp")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> resendOtp(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId, @RequestBody ReqJoinRequest reqJoinRequest)
+            throws BusinessException {
+        log.info("[" + requestId + "] << resend-otp >>");
+        return userService.resendOtp(reqJoinRequest);
+
+    }
+
     @PostMapping("/verify-account")
     @Transactional(readOnly = true)
     public ResponseEntity<?> verifyAccount(HttpServletRequest httpServletRequest,
@@ -157,6 +167,15 @@ public class UserController {
             throws BusinessException {
         log.info("[" + requestId + "] << getAccountNotifications >>");
         return userService.getAccountNotifications(cif);
+    }
+
+    @PostMapping("/update-notifications")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> updateNoti(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId, @RequestBody UpdateNotificationsRequest updateRequest)
+            throws BusinessException {
+        log.info("[" + requestId + "] << update-notifications >>");
+        return userService.updateNotifications(updateRequest);
     }
 
     @GetMapping("/get-account-statements")

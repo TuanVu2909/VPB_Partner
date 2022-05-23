@@ -22,5 +22,8 @@ public class UpdateAccountRequest {
     private String idExp;
     private String dob;
     private String address;
+    private String bankName;
+    private String bankAccount;
+    private String bankAccountName;
 
 }

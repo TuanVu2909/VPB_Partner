@@ -42,5 +42,7 @@ public class PortfolioInvest {
     private String pName;
     @Column(name = "COLOR")
     private String color;
+    @Column(name = "STATUS_INVEST")
+    private int status;
 
 }

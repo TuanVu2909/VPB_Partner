@@ -15,5 +15,8 @@ public interface UpdateAccountRepository extends JpaRepository<UpdateAccountEnti
             @Param("p_idCode") String idCode, @Param("p_sex") String sex,
             @Param("p_dob") String dob, @Param("p_address") String address,
             @Param("p_id_exp") String idExp, @Param("p_id_date") String idDate,
-            @Param("p_idPlace") String idPlace);
+            @Param("p_idPlace") String idPlace,
+            @Param("p_bankName") String bankName,
+            @Param("p_bankAccount") String bankAccount,
+            @Param("p_bankAccountName") String bankAccountName);
 }

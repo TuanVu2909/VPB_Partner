@@ -26,7 +26,10 @@ import lombok.ToString;
                 @StoredProcedureParameter(name = "p_id_exp", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "p_id_date", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "p_idPlace", mode = ParameterMode.IN, type = String.class),
-                @StoredProcedureParameter(name = "p_custId", mode = ParameterMode.IN, type = String.class) }) //
+                @StoredProcedureParameter(name = "p_custId", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "p_bankAccount", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "p_bankAccountName", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "p_bankName", mode = ParameterMode.IN, type = String.class) }) //
 })
 public class UpdateAccountEntity {
 

@@ -39,6 +39,7 @@ import com.lendbiz.p2p.api.request.PkgSumFundRequest;
 import com.lendbiz.p2p.api.request.ReqJoinRequest;
 import com.lendbiz.p2p.api.request.SetAccountPasswordRequest;
 import com.lendbiz.p2p.api.request.UpdateAccountRequest;
+import com.lendbiz.p2p.api.request.UpdateNotificationsRequest;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.response.PkgFundDetail;
 import com.lendbiz.p2p.api.response.PkgFundResponse;
@@ -206,6 +207,17 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     }
 
     @Override
+    public ResponseEntity<?> resendOtp(ReqJoinRequest reqJoinRequest) {
+
+        try {
+            return response(toResult(otpRepository.resendOtp(reqJoinRequest.getMobile())));
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, e.getMessage());
+        }
+
+    }
+
+    @Override
     public ResponseEntity<?> verifyAcc(VerifyAccountInput input) {
         try {
             return response(toResult(verifyAccountRepository.verify(input.getCustId(), input.getVerifyCode())));
@@ -258,7 +270,10 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             entity = accountRepository.updateAccount(updateRequest.getCustId(), updateRequest.getFullName(),
                     updateRequest.getIdCode(), updateRequest.getSex(), updateRequest.getDob(),
                     updateRequest.getAddress(), updateRequest.getIdExp(), updateRequest.getIdDate(),
-                    updateRequest.getIdPlace());
+                    updateRequest.getIdPlace(),
+                    updateRequest.getBankName(),
+                    updateRequest.getBankAccount(),
+                    updateRequest.getBankAccountName());
         } catch (Exception e) {
             throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
         }
@@ -325,6 +340,18 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             if (list.size() == 0)
                 throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
             return response(toResult(list));
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, e.getMessage());
+        }
+
+    }
+
+    @Override
+    public ResponseEntity<?> updateNotifications(UpdateNotificationsRequest request) {
+        try {
+
+            return response(toResult(accountNotificationsRepository.updateNotifications(request.getStatus(),
+                    request.getCustId(), request.getId())));
         } catch (Exception e) {
             throw new BusinessException(Constants.FAIL, e.getMessage());
         }

@@ -16,6 +16,7 @@ import javax.persistence.*;
                 @StoredProcedureParameter(name = "pv_custId", mode = ParameterMode.IN, type = String.class) }) //
 })
 
+@Table(name = "BG_NOTIFICATIONS")
 public class NotificationsEntity {
     @Id
     @Column(name = "ID")
