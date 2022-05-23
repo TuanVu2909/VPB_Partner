@@ -279,7 +279,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             }
             return response(toResult(notify));
         } catch (Exception e) {
-            throw new BusinessException(Constants.FAIL, "data connection failed");
+            throw new BusinessException(Constants.FAIL, e.getMessage());
         }
     }
 
