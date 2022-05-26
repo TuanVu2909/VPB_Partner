@@ -533,7 +533,12 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 insuranceRequest.getPv_insuredPersonAddress(),
                 insuranceRequest.getPv_ParentInsuranceCode(),
                 insuranceRequest.getPv_InsuredRelationId(),
-                insuranceRequest.getPv_insuredPersonNationality())));
+                insuranceRequest.getPv_insuredPersonNationality(),
+                insuranceRequest.getPv_isOutPatientFee(),
+                insuranceRequest.getPv_isAccidentFee(),
+                insuranceRequest.getPv_isLifeFee(),
+                insuranceRequest.getPv_isDentistryFee(),
+                insuranceRequest.getPv_isPregnantFee())));
 
     }
 

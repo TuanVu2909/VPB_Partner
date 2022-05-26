@@ -1,5 +1,6 @@
 package com.lendbiz.p2p.api.entity;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -122,6 +123,13 @@ import java.util.Date;
                 @StoredProcedureParameter(name = "pv_insuredPersonNationality", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "pv_ParentInsuranceCode", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "pv_InsuredRelationId", mode = ParameterMode.IN, type = String.class),
+
+
+                @StoredProcedureParameter(name = "pv_isOutPatientFee", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_isAccidentFee", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_isLifeFee", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_isDentistryFee", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_isPregnantFee", mode = ParameterMode.IN, type = String.class)
 
         }),
 })

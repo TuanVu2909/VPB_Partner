@@ -1,7 +1,12 @@
 package com.lendbiz.p2p.api.service;
 
+import com.lendbiz.p2p.api.entity.Premium;
+import com.lendbiz.p2p.api.request.CreatePolicyPartnerRq;
 import org.springframework.http.ResponseEntity;
 
 public interface InsuranceService {
-    public ResponseEntity<?> premium();
+    public ResponseEntity<?> premium(Premium premium);
+    public ResponseEntity<?> createPolicy_Partner(CreatePolicyPartnerRq rq);
+    public ResponseEntity<?> getInsurancePackagePrice(String pkgId, String age);
+    public ResponseEntity<?> getInsuranceAdditionPrice(String pkgId, String age);
 }

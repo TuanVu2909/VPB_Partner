@@ -18,8 +18,5 @@ public class AccountInput {
     private String pv_refId;
     private String coin;
     private String doc_no;
-
-
-
-
+    
 }
