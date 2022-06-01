@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 public interface InsuranceService {
     public ResponseEntity<?> premium(Premium premium);
     public ResponseEntity<?> createPolicy_Partner(CreatePolicyPartnerRq rq);
+    public ResponseEntity<?> getByGycbhNumber(String gycbhNumber);
     public ResponseEntity<?> getInsurancePackagePrice(String pkgId, String age);
+    public ResponseEntity<?> downloadFileOder(String gid, String type);
     public ResponseEntity<?> getInsuranceAdditionPrice(String pkgId, String age);
 }

@@ -37,6 +37,11 @@ public class InsuranceController {
             throws BusinessException, UnsupportedEncodingException {
         return insuranceService.premium(rq);
     }
+    @GetMapping("/ins/get-by-gycbhNumber")
+    public ResponseEntity<?> getByGycbhNumber(HttpServletRequest httpServletRequest, @RequestParam String gId)
+            throws BusinessException, UnsupportedEncodingException {
+        return insuranceService.getByGycbhNumber(gId);
+    }
     @GetMapping("/ins/get-insurance-price")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getInsurancePackagePrice(HttpServletRequest httpServletRequest, @RequestParam("pid") String pid,
@@ -44,6 +49,14 @@ public class InsuranceController {
             throws BusinessException, UnsupportedEncodingException {
         return insuranceService.getInsurancePackagePrice(pid,age);
     }
+    @GetMapping("/ins/download-file-oder")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> downloadFileOder(HttpServletRequest httpServletRequest, @RequestParam("gid") String gid,
+                                                      @RequestParam("type")String type)
+            throws BusinessException, UnsupportedEncodingException {
+        return insuranceService.downloadFileOder(gid,type);
+    }
+
     @GetMapping("/ins/get-insurance-addition-price")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getInsuranceAdditionPrice(HttpServletRequest httpServletRequest, @RequestParam("pid") String pid,
