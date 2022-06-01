@@ -112,8 +112,13 @@ public interface NotifyRepo extends JpaRepository<NotifyEntity, String> {
             , @Param("pv_insuredPersonAddress") String pv_insuredPersonAddress
             , @Param("pv_ParentInsuranceCode") String pv_ParentInsuranceCode
             , @Param("pv_InsuredRelationId") String pv_InsuredRelationId
-
             , @Param("pv_insuredPersonNationality") String pv_insuredPersonNationality
+
+            , @Param("pv_isOutPatientFee") String pv_isOutPatientFee
+            , @Param("pv_isAccidentFee") String pv_isAccidentFee
+            , @Param("pv_isLifeFee") String pv_isLifeFee
+            , @Param("pv_isDentistryFee") String pv_isDentistryFee
+            , @Param("pv_isPregnantFee") String pv_isPregnantFee
 
     );
 

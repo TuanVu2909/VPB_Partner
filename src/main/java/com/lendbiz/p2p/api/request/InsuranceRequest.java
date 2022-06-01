@@ -42,9 +42,13 @@ public class InsuranceRequest {
     private String pv_insuredPersonAddress;
     private String pv_ParentInsuranceCode;
     private String pv_InsuredRelationId;
-
-
     private String pv_insuredPersonNationality;
+
+    private String pv_isOutPatientFee;
+    private String pv_isAccidentFee;
+    private String pv_isLifeFee;
+    private String pv_isDentistryFee;
+    private String pv_isPregnantFee;
 
 
 }
