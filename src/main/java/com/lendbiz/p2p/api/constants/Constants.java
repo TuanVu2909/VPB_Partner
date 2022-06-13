@@ -53,8 +53,8 @@ public class Constants {
 	public static final String USER_NAME_CLIENT = "lendbiz";
 
 	// url
-	public static final String GET_OTP_HEAD_VALUE_2 ="eyJ4NXQiOiJOVGRtWmpNNFpEazNOalkwWXpjNU1tWm1PRGd3TVRFM01XWXdOREU1TVdSbFpEZzROemM0WkE9PSIsImtpZCI6ImdhdGV3YXlfY2VydGlmaWNhdGVfYWxpYXMiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbkBjYXJib24uc3VwZXIiLCJhcHBsaWNhdGlvbiI6eyJvd25lciI6ImFkbWluIiwidGllclF1b3RhVHlwZSI6bnVsbCwidGllciI6IlVubGltaXRlZCIsIm5hbWUiOiJITUFDLU9UUCIsImlkIjoxMiwidXVpZCI6Ijc2ZDkyMGViLTUxZTAtNDY4ZS1iMDgwLTY2ZjIyMGU5NmE3ZiJ9LCJpc3MiOiJodHRwczpcL1wvMTcyLjE2LjEyMC4xMDA6OTQ0M1wvb2F1dGgyXC90b2tlbiIsInRpZXJJbmZvIjp7IlVubGltaXRlZCI6eyJ0aWVyUXVvdGFUeXBlIjoicmVxdWVzdENvdW50IiwiZ3JhcGhRTE1heENvbXBsZXhpdHkiOjAsImdyYXBoUUxNYXhEZXB0aCI6MCwic3RvcE9uUXVvdGFSZWFjaCI6dHJ1ZSwic3Bpa2VBcnJlc3RMaW1pdCI6MCwic3Bpa2VBcnJlc3RVbml0IjpudWxsfX0sImtleXR5cGUiOiJQUk9EVUNUSU9OIiwicGVybWl0dGVkUmVmZXJlciI6IiIsInN1YnNjcmliZWRBUElzIjpbeyJzdWJzY3JpYmVyVGVuYW50RG9tYWluIjoiY2FyYm9uLnN1cGVyIiwibmFtZSI6IkhNQUMtT1RQIiwiY29udGV4dCI6IlwvaG1hYy1vdHBcL3YxIiwicHVibGlzaGVyIjoiYWRtaW4iLCJ2ZXJzaW9uIjoidjEiLCJzdWJzY3JpcHRpb25UaWVyIjoiVW5saW1pdGVkIn1dLCJwZXJtaXR0ZWRJUCI6IiIsImlhdCI6MTY0MTQ1OTU1MCwianRpIjoiYzJhODc0M2QtMjM0OS00OWRiLWE5MmEtMDkyZGYyM2Y5ZDMyIn0=.qLuFfswSsJ5av79AzYR3L4ELtEw-oT6AcAMQiJEXEYjHbAtisTYlq8kW9mdMDhSdYB0kIrnNZtbYO6MtqdHeNIrgiCWowrgJ8frFrwLbWpvWPuiIbTjgEhI2OXAudQw5U-fCTCLUI4MmWGK48ZgcJ3q3wAFg5P3s9Bkcw-ykh_CQKt3c0SCTMsEJ_3hdoUiW_qT4qkjfr7bgKaaFuEMPsTATVhh46BUUQ3HkNJcqP45UxEa6NgyzyPMIJQjhJhp66Ca_aRCpJ0hbqlIln5LUTz6ZhTw7pOFpFhstwQg30iwqTOz5589AhrKz3elXoAT7xC6FZpMfsRgIeF_dMXkZAA==";
-	public static final String VERIFY_OTP_URL ="https://api-m.digital-id.vn/hmac-otp/v1/verification";
+	public static final String GET_OTP_HEAD_VALUE_2 = "eyJ4NXQiOiJOVGRtWmpNNFpEazNOalkwWXpjNU1tWm1PRGd3TVRFM01XWXdOREU1TVdSbFpEZzROemM0WkE9PSIsImtpZCI6ImdhdGV3YXlfY2VydGlmaWNhdGVfYWxpYXMiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbkBjYXJib24uc3VwZXIiLCJhcHBsaWNhdGlvbiI6eyJvd25lciI6ImFkbWluIiwidGllclF1b3RhVHlwZSI6bnVsbCwidGllciI6IlVubGltaXRlZCIsIm5hbWUiOiJITUFDLU9UUCIsImlkIjoxMiwidXVpZCI6Ijc2ZDkyMGViLTUxZTAtNDY4ZS1iMDgwLTY2ZjIyMGU5NmE3ZiJ9LCJpc3MiOiJodHRwczpcL1wvMTcyLjE2LjEyMC4xMDA6OTQ0M1wvb2F1dGgyXC90b2tlbiIsInRpZXJJbmZvIjp7IlVubGltaXRlZCI6eyJ0aWVyUXVvdGFUeXBlIjoicmVxdWVzdENvdW50IiwiZ3JhcGhRTE1heENvbXBsZXhpdHkiOjAsImdyYXBoUUxNYXhEZXB0aCI6MCwic3RvcE9uUXVvdGFSZWFjaCI6dHJ1ZSwic3Bpa2VBcnJlc3RMaW1pdCI6MCwic3Bpa2VBcnJlc3RVbml0IjpudWxsfX0sImtleXR5cGUiOiJQUk9EVUNUSU9OIiwicGVybWl0dGVkUmVmZXJlciI6IiIsInN1YnNjcmliZWRBUElzIjpbeyJzdWJzY3JpYmVyVGVuYW50RG9tYWluIjoiY2FyYm9uLnN1cGVyIiwibmFtZSI6IkhNQUMtT1RQIiwiY29udGV4dCI6IlwvaG1hYy1vdHBcL3YxIiwicHVibGlzaGVyIjoiYWRtaW4iLCJ2ZXJzaW9uIjoidjEiLCJzdWJzY3JpcHRpb25UaWVyIjoiVW5saW1pdGVkIn1dLCJwZXJtaXR0ZWRJUCI6IiIsImlhdCI6MTY0MTQ1OTU1MCwianRpIjoiYzJhODc0M2QtMjM0OS00OWRiLWE5MmEtMDkyZGYyM2Y5ZDMyIn0=.qLuFfswSsJ5av79AzYR3L4ELtEw-oT6AcAMQiJEXEYjHbAtisTYlq8kW9mdMDhSdYB0kIrnNZtbYO6MtqdHeNIrgiCWowrgJ8frFrwLbWpvWPuiIbTjgEhI2OXAudQw5U-fCTCLUI4MmWGK48ZgcJ3q3wAFg5P3s9Bkcw-ykh_CQKt3c0SCTMsEJ_3hdoUiW_qT4qkjfr7bgKaaFuEMPsTATVhh46BUUQ3HkNJcqP45UxEa6NgyzyPMIJQjhJhp66Ca_aRCpJ0hbqlIln5LUTz6ZhTw7pOFpFhstwQg30iwqTOz5589AhrKz3elXoAT7xC6FZpMfsRgIeF_dMXkZAA==";
+	public static final String VERIFY_OTP_URL = "https://api-m.digital-id.vn/hmac-otp/v1/verification";
 
 	public static final String GET_OTP_URl_2 = "https://api-m.digital-id.vn/hmac-otp/v1/generation";
 	public static final String BASIC_AUTHEN_STRING = "Od7JOvkfEnhqswRfFW607TVBYS8a:TkIosoGyd8uPgeiB8Clh_Ec31pYa";
@@ -95,13 +95,19 @@ public class Constants {
 
 	// metadate api use register face
 	public static final String METADATA = "{\"source\":\"24a00f5d-e625-4bc4-8384-c906848c03f3\"}";
-	// 9pay  api card
-	public static final String NINE_PAY_PRODUCTS ="https://stg-api-console.9pay.mobi/service/wh/products";
-	public static final String NINE_PAY_CARD  ="https://stg-api-console.9pay.mobi/service/wh/order/card";
-	public static final String NINE_PAY_INFO_TRANS ="https://stg-api-console.9pay.mobi/service/wh/order/check-info";
-	public static final String NINE_PAY_BALANCE ="https://stg-api-console.9pay.mobi/service/account/balance";
-
+	// 9pay api card
+	public static final String NINE_PAY_PRODUCTS = "https://stg-api-console.9pay.mobi/service/wh/products";
+	public static final String NINE_PAY_CARD = "https://stg-api-console.9pay.mobi/service/wh/order/card";
+	public static final String NINE_PAY_INFO_TRANS = "https://stg-api-console.9pay.mobi/service/wh/order/check-info";
+	public static final String NINE_PAY_BALANCE = "https://stg-api-console.9pay.mobi/service/account/balance";
 
 	public static final String SIGN_IMAGE_DEFAULT = "default_docs\\success.png";
 	public static final String THRESHOLD = "0.65";
+
+	// MBBANK
+	public static final String HMAC_KEY = "MIIBITANBgkqhkiG9w0BAQEFAAOCAQ4AMIIBCQKCAQB6YVmCUs3wrl75QXvThV9MNBlEBM1aDmPizdwbatDsmN/ANFU8fs8wz4TaS7nvLOy1xveIHxgAU1v1Q6aN133AIJBBAcyngseGgjyXcrBVpQyH3BWtvMRN756mrtbyrI43NXhUjmmWYlUiI8KFFrGiOkgiF62cVMiZFiW4QSE96sDTxOMoiA8+bu5MB5Jf48CffhbSDAffIW+lqbg+syjrvbTWKvKK0j2U9dI2UVQ4sAgZDYAcFcIYlAQzCatxz3PuC/Kx/WFLG7Ck/bJYm6Qtei3h9WfSv0htBuW39LFLhYQsOZjeuwU7jcR8+iOObt8djcM2X09CXzetrHmiZ6kLAgMBAAE=";
+
+	public static final String MB_GET_TOKEN_URL = "https://api-sandbox.mbbank.com.vn/oauth2/v1/token";
+	public static final String MB_GET_NAME_URL = "https://api-sandbox.mbbank.com.vn/ms/onbehalfpayment/v1.0/onbehalfpayment/v1.0/account/credit/name";
+	public static final String MBBANK_BASIC_AUTHEN_STRING = "fCo4Qbh30U3wTIzDBVnHhB1HNIOG9VXN:znHr7LLGtxaPNGaj";
 }
