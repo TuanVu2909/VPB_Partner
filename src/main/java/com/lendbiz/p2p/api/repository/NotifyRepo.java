@@ -2,8 +2,11 @@ package com.lendbiz.p2p.api.repository;
 
 import com.lendbiz.p2p.api.entity.NotifyEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -51,6 +54,13 @@ public interface NotifyRepo extends JpaRepository<NotifyEntity, String> {
             , @Param("pv_amt") String pv_amt
             , @Param("pv_packageId") String pv_packageId);
 
+    @Procedure("NotifyEntity.withdrawMoney")
+    NotifyEntity withdrawMoney(@Param("pv_custId") String pv_custId
+            , @Param("pv_amt") String pv_amt);
+
+    @Procedure("NotifyEntity.paymentInsurance")
+    NotifyEntity paymentInsurance(@Param("pv_insuranceId") String pv_insuranceId);
+
     @Procedure("NotifyEntity.insert_trans9pay")
     NotifyEntity insert_trans9pay(@Param("cid") String pv_custId
             , @Param("tid") String tid
@@ -80,6 +90,11 @@ public interface NotifyRepo extends JpaRepository<NotifyEntity, String> {
             , @Param("pv_amt13") String pv_amt13
             , @Param("pv_amt14") String pv_amt14 );
 
+    @Transactional
+    @Modifying
+    @Query(value = "update baoviet_angia_insurance set status =?1 where REQUIREID =?2", nativeQuery = true)
+    void updateRisk(String status,String rID);
+
 
     @Procedure("NotifyEntity.createInsurance")
     NotifyEntity createInsurance(@Param("pv_custId") String pv_custId
@@ -101,11 +116,11 @@ public interface NotifyRepo extends JpaRepository<NotifyEntity, String> {
             , @Param("pv_isNormal") String pv_isNormal
 
             , @Param("pv_isConfirm") String pv_isConfirm
+            , @Param("pv_requireId") String pv_requireId
             , @Param("pv_insuredPersonFullName") String pv_insuredPersonFullName
             , @Param("pv_insuredPersonBirthDate")  String pv_insuredPersonBirthDate
             , @Param("pv_insuredPersonGender") String pv_insuredPersonGender
-
-
+                                 
             , @Param("pv_insuredPersonIdNumber") String pv_insuredPersonIdNumber
             , @Param("pv_insuredPersonMobile") String pv_insuredPersonMobile
             , @Param("pv_insuredPersonEmail") String pv_insuredPersonEmail

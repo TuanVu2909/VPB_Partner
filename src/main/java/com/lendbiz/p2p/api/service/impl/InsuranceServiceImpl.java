@@ -6,11 +6,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
-import com.lendbiz.p2p.api.entity.InsurancePrice;
-import com.lendbiz.p2p.api.entity.Premium;
+import com.lendbiz.p2p.api.entity.*;
 import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.repository.CfMastRepository;
 import com.lendbiz.p2p.api.repository.InsurancePriceRepository;
+import com.lendbiz.p2p.api.repository.Insurance_infoRepository;
+import com.lendbiz.p2p.api.repository.NotifyRepo;
 import com.lendbiz.p2p.api.request.CreatePolicyPartnerRq;
+import com.lendbiz.p2p.api.request.InsuranceRequest;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.service.InsuranceService;
 import org.json.JSONException;
@@ -23,20 +26,30 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class InsuranceServiceImpl extends BaseResponse<InsuranceService> implements InsuranceService {
     static String BV_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZW5kYml6QGJhb3ZpZXQuY29tLnZuIiwiYXV0aCI6IlBFUk1fQUdSRUVNRU5UX0NSRUFURSxQRVJNX0FHUkVFTUVOVF9ERUxFVEUsUEVSTV9BR1JFRU1FTlRfRURJVCxQRVJNX0FHUkVFTUVOVF9WSUVXLFBFUk1fQ0FSVF9DUkVBVEUsUEVSTV9DQVJUX0RFTEVURSxQRVJNX0NBUlRfRURJVCxQRVJNX0NBUlRfVklFVyxQRVJNX0NPTlRBQ1RfQ1JFQVRFLFBFUk1fQ09OVEFDVF9ERUxFVEUsUEVSTV9DT05UQUNUX0VESVQsUEVSTV9DT05UQUNUX1ZJRVcsUEVSTV9QQVlfQ0hVWUVOX1RIVSxQRVJNX1BBWV9LSEFDSF9IQU5HX1RULFBFUk1fUEFZX1RIQU5IVE9BTl9TQVUsUEVSTV9QQVlfVk5QQVksUEVSTV9QUk9EVUNUX0JWR19DUkVBVEUsUEVSTV9QUk9EVUNUX0JWR19ERUxFVEUsUEVSTV9QUk9EVUNUX0JWR19FRElULFBFUk1fUFJPRFVDVF9CVkdfVklFVyxQRVJNX1JFUE9SVF9DT01NSVNTSU9OX1ZJRVcsUEVSTV9SRVBPUlRfSU5DT01FX1ZJRVcsUEVSTV9SRVBPUlRfTFYxLFBFUk1fUkVQT1JUX1RSQU5TRkVSX1ZJRVcsUk9MRV9BRE1JTixST0xFX0FHRU5DWSxST0xFX1JFUE9SVF9BR0VOQ1kiLCJleHAiOjE2NTYyMTUyNjF9.HuZm7Q65BwL3yXb9-r5klKbYoTDzoKR0wPi5xsOcLkyrpgRn5Ihf0sf63KvYM_S_zvS_PSaqDblLIryhYHpxkQ";
     static String BV_PREMIUM_URI = "https://agency-api-dev1.baoviet.com.vn/api/agency/product/bvg/premium";
     static String BV_PARTNER_URI = "https://agency-api-dev1.baoviet.com.vn/api/agency/product/bvg/createPolicy-Partner";
-    static String BV_ODER_DOWNLOAD_URI ="https://agency-api-dev1.baoviet.com.vn/api/agency/document/download-file-agreement";
+    static String BV_ODER_DOWNLOAD_URI = "https://agency-api-dev1.baoviet.com.vn/api/agency/document/download-file-agreement";
     static String BV_ODER_INFO_URI = "https://agency-api-dev1.baoviet.com.vn/api/agency/product/agreement/get-by-gycbhNumber";
     @Autowired
     private RestTemplate restTemplate;
-@Autowired
+    @Autowired
     InsurancePriceRepository insurancePriceRepository;
+    @Autowired
+    NotifyRepo notifyRepo;
+    @Autowired
+    CfMastRepository cfMastRepository;
+    @Autowired
+    Insurance_infoRepository insurance_infoRepository;
+
     @Override
     public ResponseEntity<?> premium(Premium premium) {
         HttpHeaders headers = new HttpHeaders();
@@ -74,7 +87,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             JsonNode root;
             root = mapper.readTree(responseEntityStr.getBody());
             return response(toResult(root));
-        }catch (JSONException err){
+        } catch (JSONException err) {
             throw new BusinessException("111", "Parse JSON fail");
         } catch (JsonMappingException e) {
             e.printStackTrace();
@@ -87,12 +100,11 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
     @Override
     public ResponseEntity<?> getByGycbhNumber(String gycbhNumber) {
         try {
-          ;
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Bearer " + BV_TOKEN);
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("gycbhNumber",gycbhNumber);
+            jsonObject.put("gycbhNumber", gycbhNumber);
 
             HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(), headers);
             ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(BV_ODER_INFO_URI, request, String.class);
@@ -100,19 +112,19 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             JsonNode root;
             root = mapper.readTree(responseEntityStr.getBody());
             return response(toResult(root));
-        }catch (JSONException err){
+        } catch (JSONException err) {
             throw new BusinessException("111", "Parse JSON fail");
         } catch (JsonMappingException e) {
             e.printStackTrace();
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        e.printStackTrace();
         }
         return null;
-    }
+        }
 
     @Override
     public ResponseEntity<?> getInsurancePackagePrice(String pkgId, String age) {
-        ArrayList<InsurancePrice> list = (ArrayList<InsurancePrice>) insurancePriceRepository.getInsurancePackagePrice(pkgId,age);
+        ArrayList<InsurancePrice> list = (ArrayList<InsurancePrice>) insurancePriceRepository.getInsurancePackagePrice(pkgId, age);
         if (list.size() == 0)
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         return response(toResult(list));
@@ -126,15 +138,15 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Bearer " + BV_TOKEN);
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("gycbhNumber",gid);
-            jsonObject.put("type",type);
+            jsonObject.put("gycbhNumber", gid);
+            jsonObject.put("type", type);
             HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(), headers);
             ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(BV_ODER_DOWNLOAD_URI, request, String.class);
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root;
             root = mapper.readTree(responseEntityStr.getBody());
             return response(toResult(root));
-        }catch (JSONException err){
+        } catch (JSONException err) {
             throw new BusinessException("111", "Parse JSON fail");
         } catch (JsonMappingException e) {
             e.printStackTrace();
@@ -146,10 +158,270 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
 
     @Override
     public ResponseEntity<?> getInsuranceAdditionPrice(String pkgId, String age) {
-        List<InsurancePrice> list = insurancePriceRepository.getInsurancePackagePrice(pkgId,age);
+        List<InsurancePrice> list = insurancePriceRepository.getInsurancePackagePrice(pkgId, age);
         if (list.size() == 0)
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         return response(toResult(list));
+    }
+
+    @Override
+    public ResponseEntity<?> createInsurance(InsuranceRequest insuranceRequest) {
+
+        Optional<CfMast> cfMast = cfMastRepository.findByCustid(insuranceRequest.getPv_custId());
+        CreatePolicyPartnerRq request = new CreatePolicyPartnerRq("", "", "", "", "",
+                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "");
+
+        request.setGuaranteeCard("0");
+        request.setSoNguoiThamGia("1");
+        request.setContactAddress("71 nsl");
+        request.setContactCategoryType("PERSON");
+        request.setContactCode("15606");
+        request.setContactDob(insuranceRequest.getPv_beneficiaryBirthDate());
+        request.setContactEmail(cfMast.get().getEmail());
+        request.setContactIdNumber(insuranceRequest.getPv_beneficiaryIdNumber());
+        request.setContactName(insuranceRequest.getPv_beneficiaryFullName());
+        request.setContactPhone(cfMast.get().getPhone());
+        request.setDepartmentId("A000009455");
+        request.setDiscount("0");
+        request.setHasGks("false");
+        request.setHasNguoinhantien("false");
+        request.setHasNguoithuhuong("false");
+        request.setHasTThoadonGTG("false");
+
+        request.setIsShowDgrr("false");
+        request.setInsuranceTarget("Reuse");
+        InvoiceInfo invoiceInfo = new InvoiceInfo();
+        invoiceInfo.setCheck("0");
+        request.setInvoiceInfo(invoiceInfo);
+        request.setLineId("BVG");
+        ListBvgAddBaseVM listBvgAddBaseVM = new ListBvgAddBaseVM();
+        listBvgAddBaseVM.setChuongTrinhBh("3");
+        listBvgAddBaseVM.setDiscount("0");
+        listBvgAddBaseVM.setHasExtracare("false");
+        listBvgAddBaseVM.setHasNguoithuhuong("false");
+        ImgGks imgGks = new ImgGks("", "", "", "");
+        listBvgAddBaseVM.setImgGks(imgGks);
+        listBvgAddBaseVM.setNgoaitruChk(insuranceRequest.getPv_isOutPatientFee());
+        listBvgAddBaseVM.setNgoaitruPhi("0");
+        listBvgAddBaseVM.setNguoidbhCmnd(insuranceRequest.getPv_insuredPersonIdNumber());
+        listBvgAddBaseVM.setNguoidbhGioitinh(insuranceRequest.getPv_insuredPersonGender());
+        listBvgAddBaseVM.setNguoidbhName(insuranceRequest.getPv_insuredPersonFullName());
+        listBvgAddBaseVM.setNguoidbhNgaysinh(insuranceRequest.getPv_insuredPersonBirthDate());
+        switch (insuranceRequest.getPv_InsuredRelationId()) {
+            case "1":
+                listBvgAddBaseVM.setNguoidbhQuanhe("31");
+                break;
+            case "2":
+                listBvgAddBaseVM.setNguoidbhQuanhe("32");
+                break;
+            case "3":
+                listBvgAddBaseVM.setNguoidbhQuanhe("33");
+                break;
+            case "4":
+                listBvgAddBaseVM.setNguoidbhQuanhe("34");
+                break;
+            default:
+                listBvgAddBaseVM.setNguoidbhQuanhe("30");
+                break;
+        }
+
+        listBvgAddBaseVM.setNhakhoaChk(insuranceRequest.getPv_isDentistryFee());
+        listBvgAddBaseVM.setNhakhoaChk("0");
+        listBvgAddBaseVM.setNhakhoaPhi("0");
+        listBvgAddBaseVM.setPercentID("0");
+        listBvgAddBaseVM.setQlChinhPhi("2600000");
+        listBvgAddBaseVM.setSmcnChk(insuranceRequest.getPv_isLifeFee());
+        listBvgAddBaseVM.setSmcnChk("0");
+        listBvgAddBaseVM.setSmcnPhi("0");
+        listBvgAddBaseVM.setSmcnSotienbh("0");
+        listBvgAddBaseVM.setSmcnSotienbhTemp("0");
+        listBvgAddBaseVM.setTanggiamPhi("0");
+        listBvgAddBaseVM.setIsShowPersonList("1");
+        listBvgAddBaseVM.setThaisanChk("0");
+        listBvgAddBaseVM.setThaisanPhi("0");
+        listBvgAddBaseVM.setTncnChk("0");
+        listBvgAddBaseVM.setTncnPhi("0");
+
+        listBvgAddBaseVM.setTncnSotienbh("0");
+        listBvgAddBaseVM.setTncnSotienbhTemp("0");
+        listBvgAddBaseVM.setTongPhiBH("2600000");
+        listBvgAddBaseVM.setTuoi("26");
+
+        listBvgAddBaseVM.setSerial("WwhpI6Jy");
+        listBvgAddBaseVM.setInsuranceTarget("New");
+        listBvgAddBaseVM.setLoading("0");
+        listBvgAddBaseVM.setPersonOrder("1");
+        listBvgAddBaseVM.setCheckReuse("0");
+        listBvgAddBaseVM.setCanhBao("false");
+        listBvgAddBaseVM.setCollapse("false");
+        listBvgAddBaseVM.setLaNYCBH("true");
+        listBvgAddBaseVM.setInsuredName(insuranceRequest.getPv_insuredPersonFullName());
+        listBvgAddBaseVM.setIdPasswport(insuranceRequest.getPv_insuredPersonIdNumber());
+        listBvgAddBaseVM.setRelationship(listBvgAddBaseVM.getNguoidbhQuanhe());
+        QuocTich quocTich = new QuocTich();
+        quocTich.setQuocTichCode("12");
+        quocTich.setQuocTichName("Việt Nam");
+        listBvgAddBaseVM.setQuocTich(quocTich);
+        listBvgAddBaseVM.setSex("1");
+        ListBvgAddBaseVM[] list = new ListBvgAddBaseVM[1];
+        list[0] = listBvgAddBaseVM;
+        request.setListBvgAddBaseVM(list);
+        request.setNguoiycCmnd(insuranceRequest.getPv_beneficiaryIdNumber());
+        request.setNguoiycName(insuranceRequest.getPv_beneficiaryFullName());
+        request.setNguoiycNgaysinh(insuranceRequest.getPv_beneficiaryBirthDate());
+        request.setPercentID("0");
+        request.setTtskCheck("0");
+        request.setQ1("0");
+        request.setQ2("0");
+        request.setQ3("0");
+        request.setReceiveMethod("1");
+        ReceiverUser receiverUser = new ReceiverUser();
+        receiverUser.setAddress(cfMast.get().getAddress());
+        receiverUser.setEmail(cfMast.get().getEmail());
+        receiverUser.setMobile(cfMast.get().getMobileSms());
+        receiverUser.setEmailHide(cfMast.get().getEmail());
+        receiverUser.setMobileHide(cfMast.get().getMobileSms());
+        receiverUser.setName(cfMast.get().getFullName());
+        receiverUser.setNgaySinh(insuranceRequest.getPv_beneficiaryBirthDate());
+        AddressDistrictData addressDistrictData = new AddressDistrictData("00000000", "Địa chỉ khác, Khác", "Khác");
+        receiverUser.setAddressDistrictData(addressDistrictData);
+        request.setReceiverUser(receiverUser);
+        SaleToEmp saleToEmp = new SaleToEmp("", "");
+        request.setSaleToEmp(saleToEmp);
+        request.setStatusPolicy("90");
+        request.setTanggiamPhi("0");
+        request.setThoihanbhTu(insuranceRequest.getPv_startDate());
+        request.setThoihanbhDen(java.time.LocalDate.now().plusMonths(12).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            String date = insuranceRequest.getPv_startDate();
+            //convert String to LocalDate
+            LocalDate localDate = LocalDate.parse(date, formatter);
+            request.setThoihanbhDen(localDate.plusMonths(12).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        } catch (Exception e) {
+            throw new BusinessException("99", e.getMessage());
+        }
+        System.out.println(request.getThoihanbhDen());
+        request.setConfirmMethod("0");
+        request.setGycFiles(new Object[1]);
+        request.setTotalPremium("260000");
+        request.setInceptionDate(request.getThoihanbhTu());
+        request.setExpiredDate(request.getThoihanbhDen());
+        request.setKenhPhanPhoi("MSB_CN");
+        request.setContactCif("CIF_TUNA");
+        request.setCheckTtskNdbh("0");
+        request.setTongPhiBH("0");
+
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Bearer " + BV_TOKEN);
+            JSONObject jsonObject = new JSONObject(request);
+            System.out.println(jsonObject);
+            HttpEntity<String> requestHttp = new HttpEntity<String>(jsonObject.toString(), headers);
+            ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(BV_PARTNER_URI, requestHttp, String.class);
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root;
+            root = mapper.readTree(responseEntityStr.getBody());
+            insuranceRequest.setPv_requireId(root.get("gycbhNumber").asText());
+            notifyRepo.createInsurance(insuranceRequest.getPv_custId(),
+                    insuranceRequest.getPv_packageId(),
+                    insuranceRequest.getPv_startDate(),
+                    insuranceRequest.getPv_fee(),
+                    insuranceRequest.getPv_beneficiaryFullName(),
+                    insuranceRequest.getPv_beneficiaryBirthDate(),
+                    insuranceRequest.getPv_beneficiaryIdNumber(),
+                    insuranceRequest.getPv_RelationId(),
+                    insuranceRequest.getPv_isSick(),
+                    insuranceRequest.getPv_isTreatedIn3Years(),
+                    insuranceRequest.getPv_isTreatedNext12Months(),
+                    insuranceRequest.getPv_isTreatedSpecialIn3Years(),
+                    insuranceRequest.getPv_isRejectInsurance(),
+                    insuranceRequest.getPv_isNormal(),
+                    insuranceRequest.getPv_isConfirm(),
+                    insuranceRequest.getPv_requireId(),
+                    insuranceRequest.getPv_insuredPersonFullName(),
+                    insuranceRequest.getPv_insuredPersonBirthDate(),
+                    insuranceRequest.getPv_insuredPersonGender(),
+                    insuranceRequest.getPv_insuredPersonIdNumber(),
+                    insuranceRequest.getPv_insuredPersonMobile(),
+                    insuranceRequest.getPv_insuredPersonEmail(),
+                    insuranceRequest.getPv_insuredPersonAddress(),
+                    insuranceRequest.getPv_ParentInsuranceCode(),
+                    insuranceRequest.getPv_InsuredRelationId(),
+                    insuranceRequest.getPv_insuredPersonNationality(),
+                    insuranceRequest.getPv_isOutPatientFee(),
+                    insuranceRequest.getPv_isAccidentFee(),
+                    insuranceRequest.getPv_isLifeFee(),
+                    insuranceRequest.getPv_isDentistryFee(),
+                    insuranceRequest.getPv_isPregnantFee());
+            return response(toResult(root));
+        } catch (JSONException err) {
+            throw new BusinessException("111", "Parse JSON fail");
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+
+
+//        return response(toResult(createPolicy_Partner(request, insuranceRequest.getPv_custId())));
+    }
+
+    @Override
+    public ResponseEntity<?> paymentInsurance(String pv_insuranceId) {
+        NotifyEntity notify = notifyRepo.paymentInsurance(pv_insuranceId);
+        if (!notify.getPStatus().equals("01")) {
+            throw new BusinessException(notify.getPStatus(), notify.getDes());
+        }
+        return response(toResult(notify));
+    }
+
+    @Override
+    public ResponseEntity<?> withdrawMoney(String cid, String amt) {
+        NotifyEntity notify = notifyRepo.withdrawMoney(cid, amt);
+        if (!notify.getPStatus().equals("01")) {
+            throw new BusinessException(notify.getPStatus(), notify.getDes());
+        }
+        return response(toResult(notify));
+    }
+
+    @Override
+    public ResponseEntity<?> updateRisk(String rID) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Bearer " + BV_TOKEN);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("gycbhNumber", rID);
+            HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(), headers);
+            ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(BV_ODER_INFO_URI, request, String.class);
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root;
+            root = mapper.readTree(responseEntityStr.getBody());
+            String policyId = root.get("statusPolicyId").asText();
+            if (policyId.equals("99"))
+            {
+                notifyRepo.updateRisk("-1",rID);
+            }
+            else if (policyId.equals("100"))
+            {
+                notifyRepo.updateRisk("1",rID);
+            }
+
+            return response(toResult("success"));
+        } catch (JSONException err) {
+            throw new BusinessException("111", "Parse JSON fail");
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return response(toResult("ok"));
     }
 
 

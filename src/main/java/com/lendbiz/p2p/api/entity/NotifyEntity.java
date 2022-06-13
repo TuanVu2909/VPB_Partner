@@ -75,6 +75,16 @@ import java.util.Date;
                 @StoredProcedureParameter(name = "pv_documentNo", mode = ParameterMode.IN, type = String.class),
 
         }),
+        @NamedStoredProcedureQuery(name = "NotifyEntity.withdrawMoney", procedureName = "pck_gm.withdrawMoney", resultClasses = NotifyEntity.class, parameters = { //
+                @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
+                @StoredProcedureParameter(name = "pv_custId", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_amt", mode = ParameterMode.IN, type = String.class),
+
+        }),
+        @NamedStoredProcedureQuery(name = "NotifyEntity.paymentInsurance", procedureName = "pck_gm.paymentInsurance", resultClasses = NotifyEntity.class, parameters = { //
+                @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
+                @StoredProcedureParameter(name = "pv_insuranceId", mode = ParameterMode.IN, type = String.class),
+        }),
         @NamedStoredProcedureQuery(name = "NotifyEntity.createFundInvestOptionally", procedureName = "pck_gm.createFundInvestOptionally", resultClasses = NotifyEntity.class, parameters = { //
                 @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
                 @StoredProcedureParameter(name = "pv_custId", mode = ParameterMode.IN, type = String.class),
@@ -112,6 +122,7 @@ import java.util.Date;
 
                 @StoredProcedureParameter(name = "pv_isNormal", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "pv_isConfirm", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_requireId", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "pv_insuredPersonFullName", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "pv_insuredPersonBirthDate", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "pv_insuredPersonGender", mode = ParameterMode.IN, type = String.class),
