@@ -9,8 +9,6 @@ import lombok.*;
 @Getter
 @Setter
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @ToString
 public class CreatePolicyPartnerRq {
     private String note;
@@ -41,7 +39,7 @@ public class CreatePolicyPartnerRq {
     private String insuranceTarget;
     private InvoiceInfo invoiceInfo;
     private String lineId;
-    private  ListBvgAddBaseVM[]  listBvgAddBaseVM;
+    private ListBvgAddBaseVM[] listBvgAddBaseVM;
     private String nguoinhanCmnd;
     private String nguoinhanName;
     private String nguoinhanQuanhe;
@@ -83,13 +81,53 @@ public class CreatePolicyPartnerRq {
     private ContactAddressDistrictData contactAddressDistrictData;
     private String tongPhiBH;
     private String checkTtskNdbh;
+    public void setContactAddressDistrictData() {
+        this.contactAddressDistrictData = new ContactAddressDistrictData();
+    }
 
+    public CreatePolicyPartnerRq() {
+    }
+
+    public CreatePolicyPartnerRq(String note, String agreementId, String checkOTP, String riskAssessmentStatus, String statusPolicyId, String gycbhId, String urnCanBo, String gycbhNumber, String nguoinhanCmnd, String nguoinhanName, String nguoinhanQuanhe, String nguointDiachi, String nguointDienthoai, String nguointEmail, String nguointNgaysinh, String oldGycbhNumber, String showGiamDinh, String tanggiamPhiNoidung, String urlPolicy, String conversationContent, String nguoithCmnd, String nguoithQuanhe, String nguoidbhCmnd, String nguoidbhQuanhe) {
+        this.note = note;
+        this.agreementId = agreementId;
+        this.checkOTP = checkOTP;
+        this.riskAssessmentStatus = riskAssessmentStatus;
+        this.statusPolicyId = statusPolicyId;
+        this.gycbhId = gycbhId;
+        this.urnCanBo = urnCanBo;
+        this.gycbhNumber = gycbhNumber;
+        this.nguoinhanCmnd = nguoinhanCmnd;
+        this.nguoinhanName = nguoinhanName;
+        this.nguoinhanQuanhe = nguoinhanQuanhe;
+        this.nguointDiachi = nguointDiachi;
+        this.nguointDienthoai = nguointDienthoai;
+        this.nguointEmail = nguointEmail;
+        this.nguointNgaysinh = nguointNgaysinh;
+        this.oldGycbhNumber = oldGycbhNumber;
+        this.showGiamDinh = showGiamDinh;
+        this.tanggiamPhiNoidung = tanggiamPhiNoidung;
+        this.urlPolicy = urlPolicy;
+        this.conversationContent = conversationContent;
+        this.nguoithCmnd = nguoithCmnd;
+        this.nguoithQuanhe = nguoithQuanhe;
+        this.nguoidbhCmnd = nguoidbhCmnd;
+        this.nguoidbhQuanhe = nguoidbhQuanhe;
+    }
 }
+
 @Data
 @Getter
 @Setter
-class  ContactAddressDistrictData {
+class ContactAddressDistrictData {
     private String pkPostcode;
     private String pkDistrict;
     private String pkProvince;
+
+    public ContactAddressDistrictData() {
+        this.pkPostcode = "00000000";
+        this.pkDistrict = "Địa chỉ khác, Khác";
+        this.pkProvince = "Khác";
+    }
+
 }

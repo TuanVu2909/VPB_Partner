@@ -31,15 +31,7 @@ import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.*;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.*;
-import com.lendbiz.p2p.api.request.BearRequest;
-import com.lendbiz.p2p.api.request.GmFundNavRequest;
-import com.lendbiz.p2p.api.request.InsuranceRequest;
-import com.lendbiz.p2p.api.request.LoginRequest;
-import com.lendbiz.p2p.api.request.PkgSumFundRequest;
-import com.lendbiz.p2p.api.request.ReqJoinRequest;
-import com.lendbiz.p2p.api.request.SetAccountPasswordRequest;
-import com.lendbiz.p2p.api.request.UpdateAccountRequest;
-import com.lendbiz.p2p.api.request.UpdateNotificationsRequest;
+import com.lendbiz.p2p.api.request.*;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.response.PkgFundDetail;
 import com.lendbiz.p2p.api.response.PkgFundResponse;
@@ -534,9 +526,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> createInsurance(InsuranceRequest insuranceRequest) {
-
-        // return response(toResult(pkgFilterRepo.createInsurance(insuranceRequest)));
-        return response(toResult(notifyRepo.createInsurance(insuranceRequest.getPv_custId(),
+       NotifyEntity notify =  notifyRepo.createInsurance(insuranceRequest.getPv_custId(),
                 insuranceRequest.getPv_packageId(),
                 insuranceRequest.getPv_startDate(),
                 insuranceRequest.getPv_fee(),
@@ -551,6 +541,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 insuranceRequest.getPv_isRejectInsurance(),
                 insuranceRequest.getPv_isNormal(),
                 insuranceRequest.getPv_isConfirm(),
+                insuranceRequest.getPv_requireId(),
                 insuranceRequest.getPv_insuredPersonFullName(),
                 insuranceRequest.getPv_insuredPersonBirthDate(),
                 insuranceRequest.getPv_insuredPersonGender(),
@@ -565,7 +556,17 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 insuranceRequest.getPv_isAccidentFee(),
                 insuranceRequest.getPv_isLifeFee(),
                 insuranceRequest.getPv_isDentistryFee(),
-                insuranceRequest.getPv_isPregnantFee())));
+                insuranceRequest.getPv_isPregnantFee());
+        CreatePolicyPartnerRq request  = new CreatePolicyPartnerRq();
+        request.setGuaranteeCard("0");
+        request.setSoNguoiThamGia("1");
+        request.setContactAddress("71 nsl");
+        request.setContactCategoryType("PERSON");
+        request.setContactCode("15606");
+        request.setContactDob(insuranceRequest.getPv_beneficiaryBirthDate());
+        request.setContactEmail("1");
+
+        return response(toResult(notify));
 
     }
 

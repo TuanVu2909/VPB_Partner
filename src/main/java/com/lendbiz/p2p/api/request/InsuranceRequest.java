@@ -27,7 +27,7 @@ public class InsuranceRequest {
     private String pv_isTreatedNext12Months;
     private String pv_isTreatedSpecialIn3Years;
 
-
+    private String  pv_requireId;
     private String pv_isRejectInsurance;
     private String pv_isNormal;
     private String pv_isConfirm ;
