@@ -305,7 +305,7 @@ public class UserController {
             MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
             MyResponse response = new MyResponse();
             response.setData(token);
-            response.setMessage("ok");
+            response.setMessage("SUCCESSFUL!");
             response.setStatus("00");
             return new ResponseEntity<>(response, HttpStatus.OK);
         }catch (Exception e){

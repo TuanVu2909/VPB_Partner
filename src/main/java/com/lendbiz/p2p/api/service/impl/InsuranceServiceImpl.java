@@ -402,7 +402,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             root = mapper.readTree(responseEntityStr.getBody());
             String policyId = root.get("statusPolicyId").asText();
             notifyRepo.updateRisk(policyId, rID);
-            return response(toResult("success"));
+            return response(toResult("Thông báo được gửi thành công"));
         } catch (JSONException err) {
             throw new BusinessException("111", "Parse JSON fail");
         } catch (JsonMappingException e) {
@@ -411,7 +411,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             e.printStackTrace();
         }
 
-        return response(toResult("ok"));
+        return response(toResult("Thông báo được gửi thành công"));
     }
 
     @Override
