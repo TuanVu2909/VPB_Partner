@@ -10,6 +10,6 @@ public class GetBankNameRequest {
     private String accountNumber;
     private String cardNumber;
     private String bankCode;
-    private AddInfo[] addInfo;
+    private AddInfoList[] addInfo;
     private String checksum;
 }

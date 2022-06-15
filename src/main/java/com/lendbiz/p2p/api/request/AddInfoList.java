@@ -7,7 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class AddInfo {
+public class AddInfoList {
     private String name;
     private String value;
+    private String type;
 }
