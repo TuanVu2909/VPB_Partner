@@ -61,10 +61,10 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.csrf().disable().authorizeRequests().antMatchers("/lendbiz/auth/** ")
-                .permitAll().antMatchers("/lendbiz/api/bv/**").hasRole("USER")
-                .antMatchers("/lendbiz/api/9pay/**").hasRole("PARTNER")
-                .antMatchers("/lendbiz/api/**").hasRole("ADMIN")
+        http.csrf().disable().authorizeRequests().antMatchers("/lendbiz/** ")
+                .permitAll().antMatchers("/partner/api/**").hasRole("PARTNER")
+//                .antMatchers("/lendbiz/api/9pay/**").hasRole("PARTNER")
+//                .antMatchers("/lendbiz/api/**").hasRole("ADMIN")
                 .and().exceptionHandling()
                 .authenticationEntryPoint(entryPoint)
                 .and().sessionManagement()

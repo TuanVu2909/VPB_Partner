@@ -298,15 +298,24 @@ public class UserController {
 
     @PostMapping("/auth/signin")
     public ResponseEntity<?> signin(@RequestBody SignInReq req) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(req.getUsername(),req.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = provider.crateToken(authentication);
-        MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
-        MyResponse response = new MyResponse();
-        response.setData(token);
-        response.setMessage("ok");
-        response.setStatus("200");
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(req.getUsername(),req.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String token = provider.crateToken(authentication);
+            MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
+            MyResponse response = new MyResponse();
+            response.setData(token);
+            response.setMessage("ok");
+            response.setStatus("00");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e){
+            MyResponse response = new MyResponse();
+            response.setStatus("99");
+            response.setMessage("Tài khoản hoặc mật khẩu không đúng");
+            return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+        }
+
+
     }
 
     @PostMapping("/api/update-ref")

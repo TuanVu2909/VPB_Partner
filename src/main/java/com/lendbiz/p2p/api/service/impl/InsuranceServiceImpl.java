@@ -8,10 +8,7 @@ import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.*;
 import com.lendbiz.p2p.api.exception.BusinessException;
-import com.lendbiz.p2p.api.repository.CfMastRepository;
-import com.lendbiz.p2p.api.repository.InsurancePriceRepository;
-import com.lendbiz.p2p.api.repository.Insurance_infoRepository;
-import com.lendbiz.p2p.api.repository.NotifyRepo;
+import com.lendbiz.p2p.api.repository.*;
 import com.lendbiz.p2p.api.request.CreatePolicyPartnerRq;
 import com.lendbiz.p2p.api.request.InsuranceRequest;
 import com.lendbiz.p2p.api.response.BaseResponse;
@@ -49,6 +46,8 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
     CfMastRepository cfMastRepository;
     @Autowired
     Insurance_infoRepository insurance_infoRepository;
+    @Autowired
+    InsuranceListRepository insuranceListRepository;
 
     @Override
     public ResponseEntity<?> premium(Premium premium) {
@@ -117,10 +116,10 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
         } catch (JsonMappingException e) {
             e.printStackTrace();
         } catch (JsonProcessingException e) {
-        e.printStackTrace();
+            e.printStackTrace();
         }
         return null;
-        }
+    }
 
     @Override
     public ResponseEntity<?> getInsurancePackagePrice(String pkgId, String age) {
@@ -367,7 +366,6 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
         return null;
 
 
-
 //        return response(toResult(createPolicy_Partner(request, insuranceRequest.getPv_custId())));
     }
 
@@ -403,15 +401,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             JsonNode root;
             root = mapper.readTree(responseEntityStr.getBody());
             String policyId = root.get("statusPolicyId").asText();
-            if (policyId.equals("99"))
-            {
-                notifyRepo.updateRisk("-1",rID);
-            }
-            else if (policyId.equals("100"))
-            {
-                notifyRepo.updateRisk("1",rID);
-            }
-
+            notifyRepo.updateRisk(policyId, rID);
             return response(toResult("success"));
         } catch (JSONException err) {
             throw new BusinessException("111", "Parse JSON fail");
@@ -424,5 +414,12 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
         return response(toResult("ok"));
     }
 
+    @Override
+    public ResponseEntity<?> getInsuranceList(String cid) {
+        ArrayList<InsuranceList> list = (ArrayList<InsuranceList>) insuranceListRepository.getInsuranceList(cid);
+        if (list.size() == 0)
+            throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+        return response(toResult(list));
+    }
 
 }
