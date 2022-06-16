@@ -107,7 +107,9 @@ public class Constants {
 	// MBBANK
 	public static final String HMAC_KEY = "MIIBITANBgkqhkiG9w0BAQEFAAOCAQ4AMIIBCQKCAQB6YVmCUs3wrl75QXvThV9MNBlEBM1aDmPizdwbatDsmN/ANFU8fs8wz4TaS7nvLOy1xveIHxgAU1v1Q6aN133AIJBBAcyngseGgjyXcrBVpQyH3BWtvMRN756mrtbyrI43NXhUjmmWYlUiI8KFFrGiOkgiF62cVMiZFiW4QSE96sDTxOMoiA8+bu5MB5Jf48CffhbSDAffIW+lqbg+syjrvbTWKvKK0j2U9dI2UVQ4sAgZDYAcFcIYlAQzCatxz3PuC/Kx/WFLG7Ck/bJYm6Qtei3h9WfSv0htBuW39LFLhYQsOZjeuwU7jcR8+iOObt8djcM2X09CXzetrHmiZ6kLAgMBAAE=";
 
+	public static final String MB_TRANSFER = "https://api-sandbox.mbbank.com.vn/ms/funds-partner/transfer-fund/v1.0/make-transfer-partner";
 	public static final String MB_GET_TOKEN_URL = "https://api-sandbox.mbbank.com.vn/oauth2/v1/token";
 	public static final String MB_GET_NAME_URL = "https://api-sandbox.mbbank.com.vn/ms/onbehalfpayment/v1.0/onbehalfpayment/v1.0/account/credit/name";
+	public static final String MB_CONVERT_ID_CARD = "https://mbcardtest.mbbank.com.vn:8446/mbcardgw/internet/cardinfo/v1_0/generatetoken";
 	public static final String MBBANK_BASIC_AUTHEN_STRING = "fCo4Qbh30U3wTIzDBVnHhB1HNIOG9VXN:znHr7LLGtxaPNGaj";
 }

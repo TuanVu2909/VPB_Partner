@@ -230,7 +230,7 @@ public class Utils {
     }
 
 
-    public static HashMap<String, String> crateMessage(HashMap<String, String> map) {
+    public static HashMap<String, String> createMessage(HashMap<String, String> map) {
         String date = LocalDate.now().toString();
         HashMap<String, String> rq9Pay = new HashMap<>();
         date = date.replace("-", "");
@@ -259,7 +259,7 @@ public class Utils {
     ;
 
     public static String[] getSignatureNinePay(HashMap<String, String> map) {
-        HashMap<String, String> createMessRqId = crateMessage(map);
+        HashMap<String, String> createMessRqId = createMessage(map);
         String rqId = createMessRqId.get("rqId");
         String messageString = createMessRqId.get("mess");
         String publicKeyB64 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6cEUTrHSw9ZHfirrMZ8Lq2SkdGhZuEzxTr5DYi989G/ulDdNGgSHrpIB58JEtAsCSxdme7YgO3C8aZWpuOqWN07Wh+XBK/4imZPlhDt5h9InOHK90m6zVAOE6V4JFtE3k05Nz7p9RMxoizHTjZSQEvj13bK9WeCjFPAppBgvOJZJKrWHkuu2mrF4o9lD4bIoyIZbdjC8ynzarS4GIk+hXIiOs5+rff76bZiVX0hApGmnEtPs3IaD4wOCfBJFiOEKzkX7xgZPrYkn26KivPhO5/4ozRZXZKHM25dXRtQD7OnQBXhaLdVmRN4XnqctrTUxsFazcCLZAvg3CkqbH+2MuQIDAQAB";

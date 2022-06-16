@@ -11,14 +11,19 @@ import com.lendbiz.p2p.api.entity.InsurancePrice;
 import com.lendbiz.p2p.api.entity.Premium;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.InsurancePriceRepository;
+import com.lendbiz.p2p.api.request.ConvertIdCardRequest;
 import com.lendbiz.p2p.api.request.CreatePolicyPartnerRq;
 import com.lendbiz.p2p.api.request.GetBankNameRequest;
+import com.lendbiz.p2p.api.request.TransferMBRequest;
 import com.lendbiz.p2p.api.response.BaseResponse;
+import com.lendbiz.p2p.api.response.MBIDCardResponse;
 import com.lendbiz.p2p.api.response.MbAccessToken;
 import com.lendbiz.p2p.api.service.InsuranceService;
 import com.lendbiz.p2p.api.service.MbbankTransferService;
+import com.lendbiz.p2p.api.utils.MbUltils;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,6 +149,99 @@ public class MbbankTransferServiceImpl extends BaseResponse<MbbankTransferServic
         HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(),
                 headers);
         ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(Constants.MB_GET_NAME_URL, request,
+                String.class);
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root;
+        try {
+            root = mapper.readTree(responseEntityStr.getBody());
+            return response(toResult(root));
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String convertIdCard(ConvertIdCardRequest convertRequest) {
+
+        JSONObject jsonObject = new JSONObject(convertRequest);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        // headers.set("Authorization", "Bearer " + token());
+        headers.set("user", Constants.LENDBIZ);
+        try {
+            headers.set("hmac", MbUltils.hmacGenerator(jsonObject.toString()));
+        } catch (Exception e1) {
+            throw new BusinessException(Constants.ERROR, "Fail generate HMAC!");
+        }
+
+        System.out.println(jsonObject.toString());
+
+        HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(),
+                headers);
+        ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(Constants.MB_CONVERT_ID_CARD, request,
+                String.class);
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root;
+        try {
+            MBIDCardResponse result = new MBIDCardResponse();
+            root = mapper.readTree(responseEntityStr.getBody());
+            result = mapper.readValue(root.toString(), MBIDCardResponse.class);
+            return result.getCardID();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<?> transfer(TransferMBRequest transferRequest) {
+
+        String transactionId = "QQCH" + RandomStringUtils.randomNumeric(8);
+
+        // transferRequest.setBankCode("970406");
+        // transferRequest.setDebitName("CONG TY CO PHAN LENDBIZ VIETNAM");
+        // transferRequest.setDebitResourceNumber("0001604822947");
+        // transferRequest.setDebitType("ACCOUNT");
+        transferRequest.setObject("dn");
+        transferRequest.setRemark("LENDBIZ-CHUYENTIEN-" + transactionId);
+        transferRequest.setServiceType("CHI_HO");
+        // transferRequest.setTransferAmount("1500000");
+        // transferRequest.setTransferFee("0");
+        transferRequest.setCustomerType("DOANH_NGHIEP");
+        transferRequest.setCustomerLevel(1);
+
+        if (transferRequest.getCreditType().equalsIgnoreCase("CARD")) {
+            String idCard = convertIdCard(
+                    new ConvertIdCardRequest(transactionId, transferRequest.getCreditResourceNumber()));
+
+            System.out.println("idCard: " + idCard);
+            transferRequest.setCreditResourceNumber(idCard);
+        }
+
+        String signatureKey = transferRequest.getDebitResourceNumber() + transferRequest.getDebitName()
+                + transferRequest.getCreditResourceNumber() + transferRequest.getCreditName()
+                + transferRequest.getTransferAmount();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + token());
+        headers.set("clientMessageId", transactionId);
+        headers.set("signature", MbUltils.generateSha256Rsa(signatureKey));
+        headers.set("transactionId", transactionId);
+
+        JSONObject jsonObject = new JSONObject(transferRequest);
+
+        System.out.println(jsonObject.toString());
+
+        HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(),
+                headers);
+        ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(Constants.MB_TRANSFER, request,
                 String.class);
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root;
