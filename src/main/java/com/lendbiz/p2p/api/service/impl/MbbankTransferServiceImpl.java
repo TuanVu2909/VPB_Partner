@@ -1,5 +1,7 @@
 package com.lendbiz.p2p.api.service.impl;
 
+import java.util.UUID;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -7,24 +9,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.constants.JsonMapper;
-import com.lendbiz.p2p.api.entity.InsurancePrice;
-import com.lendbiz.p2p.api.entity.Premium;
 import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.producer.ProducerMessage;
 import com.lendbiz.p2p.api.repository.InsurancePriceRepository;
 import com.lendbiz.p2p.api.request.ConvertIdCardRequest;
-import com.lendbiz.p2p.api.request.CreatePolicyPartnerRq;
 import com.lendbiz.p2p.api.request.GetBankNameRequest;
+import com.lendbiz.p2p.api.request.MbTransHistoryRequest;
 import com.lendbiz.p2p.api.request.TransferMBRequest;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.response.MBIDCardResponse;
 import com.lendbiz.p2p.api.response.MbAccessToken;
-import com.lendbiz.p2p.api.service.InsuranceService;
 import com.lendbiz.p2p.api.service.MbbankTransferService;
 import com.lendbiz.p2p.api.utils.MbUltils;
 
+import lombok.extern.log4j.Log4j2;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -36,21 +37,17 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 @Service
+@Log4j2
 public class MbbankTransferServiceImpl extends BaseResponse<MbbankTransferService> implements MbbankTransferService {
-    static String BV_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZW5kYml6QGJhb3ZpZXQuY29tLnZuIiwiYXV0aCI6IlBFUk1fQUdSRUVNRU5UX0NSRUFURSxQRVJNX0FHUkVFTUVOVF9ERUxFVEUsUEVSTV9BR1JFRU1FTlRfRURJVCxQRVJNX0FHUkVFTUVOVF9WSUVXLFBFUk1fQ0FSVF9DUkVBVEUsUEVSTV9DQVJUX0RFTEVURSxQRVJNX0NBUlRfRURJVCxQRVJNX0NBUlRfVklFVyxQRVJNX0NPTlRBQ1RfQ1JFQVRFLFBFUk1fQ09OVEFDVF9ERUxFVEUsUEVSTV9DT05UQUNUX0VESVQsUEVSTV9DT05UQUNUX1ZJRVcsUEVSTV9QQVlfQ0hVWUVOX1RIVSxQRVJNX1BBWV9LSEFDSF9IQU5HX1RULFBFUk1fUEFZX1RIQU5IVE9BTl9TQVUsUEVSTV9QQVlfVk5QQVksUEVSTV9QUk9EVUNUX0JWR19DUkVBVEUsUEVSTV9QUk9EVUNUX0JWR19ERUxFVEUsUEVSTV9QUk9EVUNUX0JWR19FRElULFBFUk1fUFJPRFVDVF9CVkdfVklFVyxQRVJNX1JFUE9SVF9DT01NSVNTSU9OX1ZJRVcsUEVSTV9SRVBPUlRfSU5DT01FX1ZJRVcsUEVSTV9SRVBPUlRfTFYxLFBFUk1fUkVQT1JUX1RSQU5TRkVSX1ZJRVcsUk9MRV9BRE1JTixST0xFX0FHRU5DWSxST0xFX1JFUE9SVF9BR0VOQ1kiLCJleHAiOjE2NTYyMTUyNjF9.HuZm7Q65BwL3yXb9-r5klKbYoTDzoKR0wPi5xsOcLkyrpgRn5Ihf0sf63KvYM_S_zvS_PSaqDblLIryhYHpxkQ";
-    static String BV_PREMIUM_URI = "https://agency-api-dev1.baoviet.com.vn/api/agency/product/bvg/premium";
-    static String BV_PARTNER_URI = "https://agency-api-dev1.baoviet.com.vn/api/agency/product/bvg/createPolicy-Partner";
-    static String BV_ODER_DOWNLOAD_URI = "https://agency-api-dev1.baoviet.com.vn/api/agency/document/download-file-agreement";
-    static String BV_ODER_INFO_URI = "https://agency-api-dev1.baoviet.com.vn/api/agency/product/agreement/get-by-gycbhNumber";
+
     @Autowired
     private RestTemplate restTemplate;
     @Autowired
     InsurancePriceRepository insurancePriceRepository;
+
+    @Autowired
+    private ProducerMessage producerMessage;
 
     @Override
     public ResponseEntity<?> getToken() {
@@ -200,60 +197,109 @@ public class MbbankTransferServiceImpl extends BaseResponse<MbbankTransferServic
     }
 
     @Override
-    public ResponseEntity<?> transfer(TransferMBRequest transferRequest) {
-
-        String transactionId = "QQCH" + RandomStringUtils.randomNumeric(8);
-
-        // transferRequest.setBankCode("970406");
-        // transferRequest.setDebitName("CONG TY CO PHAN LENDBIZ VIETNAM");
-        // transferRequest.setDebitResourceNumber("0001604822947");
-        // transferRequest.setDebitType("ACCOUNT");
-        transferRequest.setObject("dn");
-        transferRequest.setRemark("LENDBIZ-CHUYENTIEN-" + transactionId);
-        transferRequest.setServiceType("CHI_HO");
-        // transferRequest.setTransferAmount("1500000");
-        // transferRequest.setTransferFee("0");
-        transferRequest.setCustomerType("DOANH_NGHIEP");
-        transferRequest.setCustomerLevel(1);
-
-        if (transferRequest.getCreditType().equalsIgnoreCase("CARD")) {
-            String idCard = convertIdCard(
-                    new ConvertIdCardRequest(transactionId, transferRequest.getCreditResourceNumber()));
-
-            System.out.println("idCard: " + idCard);
-            transferRequest.setCreditResourceNumber(idCard);
-        }
-
-        String signatureKey = transferRequest.getDebitResourceNumber() + transferRequest.getDebitName()
-                + transferRequest.getCreditResourceNumber() + transferRequest.getCreditName()
-                + transferRequest.getTransferAmount();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer " + token());
-        headers.set("clientMessageId", transactionId);
-        headers.set("signature", MbUltils.generateSha256Rsa(signatureKey));
-        headers.set("transactionId", transactionId);
-
-        JSONObject jsonObject = new JSONObject(transferRequest);
-
-        System.out.println(jsonObject.toString());
-
-        HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(),
-                headers);
-        ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(Constants.MB_TRANSFER, request,
-                String.class);
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode root;
+    public ResponseEntity<?> transfer(String requestId, TransferMBRequest transferRequest) {
+        JSONObject jsonObjectLogs = new JSONObject();
+        MbTransHistoryRequest requestLogs = new MbTransHistoryRequest();
+        String originalCreditNumber = transferRequest.getCreditResourceNumber();
         try {
+            String transactionId = "QQCH" + RandomStringUtils.randomNumeric(8);
+
+            // transferRequest.setBankCode("970406");
+            // transferRequest.setDebitName("CONG TY CO PHAN LENDBIZ VIETNAM");
+            // transferRequest.setDebitResourceNumber("0001604822947");
+            // transferRequest.setDebitType("ACCOUNT");
+            transferRequest.setObject("dn");
+            transferRequest.setRemark("LENDBIZ-CHUYENTIEN-" + transactionId);
+            transferRequest.setServiceType("CHI_HO");
+            // transferRequest.setTransferAmount("1500000");
+            // transferRequest.setTransferFee("0");
+            transferRequest.setCustomerType("DOANH_NGHIEP");
+            transferRequest.setCustomerLevel(1);
+
+            if (transferRequest.getCreditType().equalsIgnoreCase("CARD")) {
+                String idCard = convertIdCard(
+                        new ConvertIdCardRequest(transactionId, transferRequest.getCreditResourceNumber()));
+
+                System.out.println("idCard: " + idCard);
+                transferRequest.setCreditResourceNumber(idCard);
+            }
+
+            String signatureKey = transferRequest.getDebitResourceNumber() + transferRequest.getDebitName()
+                    + transferRequest.getCreditResourceNumber() + transferRequest.getCreditName()
+                    + transferRequest.getTransferAmount();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Bearer " + token());
+            headers.set("clientMessageId", transactionId);
+            headers.set("signature", MbUltils.generateSha256Rsa(signatureKey));
+            headers.set("transactionId", transactionId);
+
+            JSONObject jsonObject = new JSONObject(transferRequest);
+            System.out.println(jsonObject.toString());
+            HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(),
+                    headers);
+
+            String tranType = "6001";
+            if (transferRequest.getDebitType().equalsIgnoreCase("ACCOUNT")
+                    && transferRequest.getCreditType().equalsIgnoreCase("ACCOUNT")
+                    && transferRequest.getTransferType().equalsIgnoreCase("INHOUSE")) {
+                tranType = "6001";
+            } else if (transferRequest.getDebitType().equalsIgnoreCase("ACCOUNT")
+                    && transferRequest.getCreditType().equalsIgnoreCase("CARD")
+                    && transferRequest.getTransferType().equalsIgnoreCase("INHOUSE")) {
+                tranType = "6002";
+
+            } else {
+                tranType = "6003";
+            }
+            // Save log
+            requestLogs.setAmount(transferRequest.getTransferAmount());
+            requestLogs.setTranType(tranType);
+            requestLogs.setRequestId(requestId);
+            requestLogs.setBankTransId(transactionId);
+            requestLogs.setFt("");
+            requestLogs.setTranDate("setTranDate");
+            requestLogs.setCurrency("VND");
+            requestLogs.setTranDetail("LENDBIZ-CHUYENTIEN-" + transactionId);
+            requestLogs.setStatus(0);
+            requestLogs.setDebitSourceName(transferRequest.getDebitName());
+            requestLogs.setDebitSourceNumber(transferRequest.getDebitResourceNumber());
+            requestLogs.setCreditSourceName(transferRequest.getCreditName());
+            requestLogs.setCreditSourceNumber(transferRequest.getCreditResourceNumber());
+            requestLogs.setCreditFastName("creditFastName");
+            requestLogs.setCreditFastBankName("creditFastName");
+            requestLogs.setCreditIdCard(originalCreditNumber);
+            requestLogs.setChannel("channel");
+            requestLogs.setChannelName("channelName");
+            requestLogs.setReconcileStatus(0);
+            requestLogs.setAddInfo("addInfo");
+            requestLogs.setRequestType(0);
+            jsonObjectLogs = new JSONObject(requestLogs);
+            // Send request log to kafka server
+            producerMessage.sendMessage(jsonObjectLogs.toString());
+            // End log
+
+            ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(Constants.MB_TRANSFER, request,
+                    String.class);
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root;
             root = mapper.readTree(responseEntityStr.getBody());
+            // Save success log
+            requestLogs.setStatus(0);
+            requestLogs.setRequestType(1);
+            requestLogs.setFt(root.get("data").get("ftNumber").textValue());
+            jsonObjectLogs = new JSONObject(requestLogs);
+            producerMessage.sendMessage(jsonObjectLogs.toString());
             return response(toResult(root));
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+            requestLogs.setRequestType(1);
+            requestLogs.setStatus(99);
+            jsonObjectLogs = new JSONObject(requestLogs);
+            producerMessage.sendMessage(jsonObjectLogs.toString());
+            throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
         }
-        return null;
     }
 
     // @Override

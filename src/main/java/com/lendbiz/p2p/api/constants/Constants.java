@@ -112,4 +112,12 @@ public class Constants {
 	public static final String MB_GET_NAME_URL = "https://api-sandbox.mbbank.com.vn/ms/onbehalfpayment/v1.0/onbehalfpayment/v1.0/account/credit/name";
 	public static final String MB_CONVERT_ID_CARD = "https://mbcardtest.mbbank.com.vn:8446/mbcardgw/internet/cardinfo/v1_0/generatetoken";
 	public static final String MBBANK_BASIC_AUTHEN_STRING = "fCo4Qbh30U3wTIzDBVnHhB1HNIOG9VXN:znHr7LLGtxaPNGaj";
+
+	public interface KAFKA {
+		public static final String TOPIC_LOGS_MB = "topic_mb_logs";
+		public static final String GROUP_MB_ID = "group_mb_id";
+
+		public static final String TOPIC_LOGS_3GANG = "topic_3gang_logs";
+		public static final String GROUP_3GANG_ID = "group_3gang_id";
+	}
 }
