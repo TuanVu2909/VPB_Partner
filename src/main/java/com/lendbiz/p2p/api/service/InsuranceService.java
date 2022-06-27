@@ -16,4 +16,5 @@ public interface InsuranceService {
     public ResponseEntity<?> paymentInsurance(String pv_insuranceId);
     public ResponseEntity<?> withdrawMoney(String cid, String amt);
     public ResponseEntity<?> updateRisk( String rId);
+    public ResponseEntity<?> getInsuranceList( String cid);
 }
