@@ -35,6 +35,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
 
     private String getJwt(HttpServletRequest request) {
+        String tokenParam = request.getParameter("token");
+        if (tokenParam!= null){
+            return tokenParam;
+        }
         String athHeader = request.getHeader("Authorization");
         if (athHeader != null && athHeader.startsWith("Bearer")) {
             return athHeader.replace("Bearer", "");
