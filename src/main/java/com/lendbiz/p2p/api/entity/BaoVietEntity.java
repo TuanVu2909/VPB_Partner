@@ -15,7 +15,11 @@ import javax.persistence.*;
                 @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
         }) //
 })
-public class BaoVietEntity {
+public class 
+
+
+
+BaoVietEntity {
 
         @Id
         @Column(name = "ID")
