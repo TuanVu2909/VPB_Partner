@@ -2,7 +2,6 @@ package com.lendbiz.p2p.api.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.lendbiz.p2p.api.service.MbbankTransferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
