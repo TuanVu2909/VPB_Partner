@@ -2,11 +2,7 @@ package com.lendbiz.p2p.api.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.lendbiz.p2p.api.request.ConvertIdCardRequest;
-import com.lendbiz.p2p.api.request.GetBankNameRequest;
-import com.lendbiz.p2p.api.request.TransferMBRequest;
 import com.lendbiz.p2p.api.service.MbbankTransferService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,6 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.lendbiz.p2p.api.request.TransferMBRequest;
+import com.lendbiz.p2p.api.service.MbbankTransferService;
 
 import lombok.extern.log4j.Log4j2;
 
