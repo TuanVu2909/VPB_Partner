@@ -6,19 +6,30 @@ import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.lendbiz.p2p.api.configs.JwtProvider;
 import com.lendbiz.p2p.api.entity.AccountInput;
+import com.lendbiz.p2p.api.entity.User3GEntity;
 import com.lendbiz.p2p.api.entity.PkgFundInfoEntity;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.model.MyUserDetails;
+import com.lendbiz.p2p.api.repository.ProductGMRepository;
 import com.lendbiz.p2p.api.model.Mail;
 import com.lendbiz.p2p.api.request.*;
 import com.lendbiz.p2p.api.response.InfoIdentity;
+import com.lendbiz.p2p.api.response.MyResponse;
 import com.lendbiz.p2p.api.service.MailService;
 import com.lendbiz.p2p.api.service.SavisService;
+import com.lendbiz.p2p.api.service.User3GService;
 import com.lendbiz.p2p.api.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +43,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lombok.extern.log4j.Log4j2;
 
+import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 /***********************************************************************
  *
  * @package：com.lendbiz.p2p.api.controller，@class-name：UserController.java
@@ -44,7 +59,6 @@ import lombok.extern.log4j.Log4j2;
 @RestController
 @RequestMapping("/lendbiz")
 @Log4j2
-@CrossOrigin(origins = "*")
 public class UserController {
 
     @Autowired
@@ -52,6 +66,12 @@ public class UserController {
 
     @Autowired
     SavisService savisService;
+    @Autowired
+    JwtProvider provider;
+    @Autowired
+    User3GService user3GService;
+    @Autowired
+    AuthenticationManager authenticationManager;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(HttpServletRequest httpServletRequest, @RequestHeader("requestId") String requestId,
@@ -259,7 +279,46 @@ public class UserController {
         return savisService.callPredict(idFile, identity, idType);
     }
 
-    @PostMapping("/update-ref")
+
+    //Authorization
+
+
+    @PostMapping("/auth/signup")
+    public ResponseEntity<?> createUser3G(@RequestBody User3GEntity user) {
+
+       MyResponse response = new MyResponse();
+
+        response.setData("Đăng ký thành công");
+        response.setMessage("success");
+        response.setStatus("200");
+        user3GService.create(user);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+    @PostMapping("/auth/signin")
+    public ResponseEntity<?> signin(@RequestBody SignInReq req) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(req.getUsername(),req.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String token = provider.crateToken(authentication);
+            MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
+            MyResponse response = new MyResponse();
+            response.setData(token);
+            response.setMessage("SUCCESSFUL!");
+            response.setStatus("00");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e){
+            MyResponse response = new MyResponse();
+            response.setStatus("99");
+            response.setMessage("Tài khoản hoặc mật khẩu không đúng");
+            return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+        }
+
+
+    }
+
+    @PostMapping("/api/update-ref")
     @Transactional(readOnly = true)
     public ResponseEntity<?> updateReferenceId(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
@@ -290,7 +349,6 @@ public class UserController {
         return userService.changeCoin(input);
 
     }
-
     @PostMapping("/verify-face")
     public ResponseEntity<?> verifyFace(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestHeader("custid") String session,
@@ -338,7 +396,6 @@ public class UserController {
 
         return userService.getRelation();
     }
-
     @PostMapping("/create-ins")
     @Transactional(readOnly = true)
     public ResponseEntity<?> createInsurance(HttpServletRequest httpServletRequest,

@@ -4,26 +4,45 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.sql.DataSource;
 
 @EnableWebSecurity
 public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
 
-    @Bean
-    public RestAuthenticationEntryPoint restServicesEntryPoint() {
-        return new RestAuthenticationEntryPoint();
-    }
+//    @Bean
+//    public RestAuthenticationEntryPoint restServicesEntryPoint() {
+//        return new RestAuthenticationEntryPoint();
+//    }
 
     @Bean
     public CustomAccessDeniedHandler customAccessDeniedHandler() {
         return new CustomAccessDeniedHandler();
     }
+    @Autowired
+    DataSource dataSource;
+    @Autowired
+    UserDetailsService userDetailsService;
+    @Autowired
+    JwtEntryPoint entryPoint;
 
+    @Bean
+    public JwtFilter jwtFilter(){
+        return new JwtFilter();
+    }
     // @Bean
     // public PasswordEncoder passwordEncoder() {
     // return new PasswordEncoder() {
@@ -39,24 +58,32 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
     // };
     // }
 
-    @Bean
-    public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.antMatcher("/api/**").httpBasic().authenticationEntryPoint(restServicesEntryPoint()).and()
-                .cors()
-                .and()
-                .csrf()
-                .disable()
-                .authorizeRequests()
-                .antMatchers("/api/get-session").permitAll() // Cho phép tất cả mọi người truy cập vào địa chỉ này
-                .antMatchers("/api/random").access("hasRole('ROLE_USER')")
-                .antMatchers("/api/random1").access("hasRole('ROLE_ADMIN')")
-                .anyRequest().authenticated()
-                .and();
+
+        http.csrf().disable().authorizeRequests().antMatchers("/lendbiz/** ")
+                .permitAll().antMatchers("/partner/api/**").hasAnyRole("PARTNER","ADMIN")
+//                .antMatchers("/lendbiz/api/9pay/**").hasRole("PARTNER")
+//                .antMatchers("/lendbiz/api/**").hasRole("ADMIN")
+                .and().exceptionHandling()
+                .authenticationEntryPoint(entryPoint)
+                .and().sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+    }
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService);
+    }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+
+        return NoOpPasswordEncoder.getInstance();
+    }
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManager() throws Exception {
+        return super.authenticationManager();
     }
 
     public static String getMd5(String input) {

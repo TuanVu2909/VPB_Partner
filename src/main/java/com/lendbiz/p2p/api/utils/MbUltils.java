@@ -10,7 +10,9 @@ import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.Properties;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -21,6 +23,17 @@ import javax.crypto.spec.SecretKeySpec;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.exception.BusinessException;
+
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.KTable;
+import org.apache.kafka.streams.kstream.Materialized;
+import org.apache.kafka.streams.kstream.Produced;
+import org.apache.kafka.streams.state.KeyValueStore;
 
 public class MbUltils {
 
@@ -104,7 +117,23 @@ public class MbUltils {
     public static void main(String[] args)
             throws NoSuchPaddingException, IllegalBlockSizeException,
             BadPaddingException, InvalidKeySpecException, IOException {
-        generateSha256Rsa("0001604822947CONG TY CO PHAN LENDBIZ VIETNAM0129837294NGUYEN VAN TEST1500000");
+        Properties props = new Properties();
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "wordcount-application");
+        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka-broker1:9092");
+        props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+        props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+
+        StreamsBuilder builder = new StreamsBuilder();
+        KStream<String, String> textLines = builder.stream("TextLinesTopic");
+        KTable<String, Long> wordCounts = textLines
+                .flatMapValues(textLine -> Arrays.asList(textLine.toLowerCase().split("\\W+")))
+                .groupBy((key, word) -> word)
+                .count(Materialized.<String, Long, KeyValueStore<Bytes, byte[]>>as("counts-store"));
+        wordCounts.toStream().to("WordsWithCountsTopic", Produced.with(Serdes.String(), Serdes.Long()));
+
+        KafkaStreams streams = new KafkaStreams(builder.build(), props);
+        streams.start();
+
     }
 
 }

@@ -23,11 +23,13 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.lendbiz.p2p.api.producer.ProducerMessage;
 import com.lendbiz.p2p.api.repository.PackageFilterRepository;
 import com.lendbiz.p2p.api.request.InsertLogRequest;
 import com.lendbiz.p2p.api.service.LoggingService;
 import com.lendbiz.p2p.api.utils.StringUtil;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,6 +41,9 @@ public class LoggingServiceImpl implements LoggingService {
 
     @Autowired
     PackageFilterRepository pkgFilterRepo;
+
+    @Autowired
+    private ProducerMessage producerMessage;
 
     String requestId;
     String sessionId;
@@ -72,9 +77,13 @@ public class LoggingServiceImpl implements LoggingService {
             stringBuilder.append("body=[" + body + "]");
         }
 
-        // InsertLogRequest insertLogRequest = new InsertLogRequest(requestId, sessionId, httpServletRequest.getRequestURI(),
-        //         0, httpServletRequest.getLocalAddr(), 0, null, body.toString(), null);
+        InsertLogRequest insertLogRequest = new InsertLogRequest(requestId, sessionId,
+                httpServletRequest.getRequestURI(),
+                0, httpServletRequest.getLocalAddr(), 0, null, body.toString(), null);
 
+        JSONObject jsonObjectLogs = new JSONObject(insertLogRequest);
+
+        producerMessage.sendLogs3Gang(jsonObjectLogs.toString());
         // pkgFilterRepo.insertLogs(insertLogRequest);
 
         log.info(stringBuilder.toString());
@@ -99,10 +108,16 @@ public class LoggingServiceImpl implements LoggingService {
         stringBuilder.append("responseHeaders=[").append(buildHeadersMap(httpServletResponse)).append("]");
         stringBuilder.append("responseBody=[").append(body).append("] ");
 
-        // InsertLogRequest insertLogRequest = new InsertLogRequest(requestId, sessionId, httpServletRequest.getRequestURI(),
-        //         0, httpServletRequest.getLocalAddr(), 1, String.valueOf(httpServletResponse.getStatus()), null, body.toString());
+        InsertLogRequest insertLogRequest = new InsertLogRequest(requestId,
+                sessionId, httpServletRequest.getRequestURI(),
+                0, httpServletRequest.getLocalAddr(), 1,
+                String.valueOf(httpServletResponse.getStatus()), null, body.toString());
 
         // pkgFilterRepo.insertLogs(insertLogRequest);
+
+        JSONObject jsonObjectLogs = new JSONObject(insertLogRequest);
+
+        producerMessage.sendLogs3Gang(jsonObjectLogs.toString());
 
         log.info(stringBuilder.toString());
     }

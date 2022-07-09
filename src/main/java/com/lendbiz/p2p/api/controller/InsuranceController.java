@@ -92,13 +92,14 @@ public class InsuranceController {
         log.info("[" + requestId + "] << paymentInsurance >>");
         return insuranceService.withdrawMoney(cid,amt);
     }
-    @GetMapping("/insurance/baoviet-notify")
+    @GetMapping("/insurance/get-insuranceList")
     @Transactional(readOnly = true)
-    public ResponseEntity<?> notifyBv(HttpServletRequest httpServletRequest,
-                                          @RequestParam("pn") String pn,@RequestParam("type") String type,@RequestParam("key") String key)
+    public ResponseEntity<?> getInsuranceList(HttpServletRequest httpServletRequest,
+                                           @RequestHeader("requestId") String requestId,@RequestParam("cid") String cid)
             throws BusinessException {
-        pn = pn.replace(";","");
-        return insuranceService.updateRisk(pn);
+        log.info("[" + requestId + "] << getInsuranceList >>");
+        return insuranceService.getInsuranceList(cid);
     }
+
 
 }

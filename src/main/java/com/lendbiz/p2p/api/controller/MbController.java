@@ -36,8 +36,8 @@ public class MbController {
     @PostMapping("/transfer")
     public ResponseEntity<?> getToken(HttpServletRequest httpServletRequest,
             @RequestBody TransferMBRequest request) {
-
-        return mbbankTransferService.transfer(request);
+        String requestId = httpServletRequest.getHeader("RequestId");
+        return mbbankTransferService.transfer(requestId, request);
     }
 
 }
