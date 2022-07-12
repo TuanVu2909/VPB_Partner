@@ -13,6 +13,7 @@ import com.lendbiz.p2p.api.request.CreatePolicyPartnerRq;
 import com.lendbiz.p2p.api.request.InsuranceRequest;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.service.InsuranceService;
+import com.lendbiz.p2p.api.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -155,9 +156,12 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
         return null;
     }
 
+    @Autowired
+    InsuranceAdditionPriceRepository insuranceAdditionPriceRepository;
+
     @Override
     public ResponseEntity<?> getInsuranceAdditionPrice(String pkgId, String age) {
-        List<InsurancePrice> list = insurancePriceRepository.getInsurancePackagePrice(pkgId, age);
+        List<InsuranceAdditionPrice> list = insuranceAdditionPriceRepository.getInsuranceAdditionPrice(pkgId, age);
         if (list.size() == 0)
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         return response(toResult(list));
@@ -165,11 +169,13 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
 
     @Override
     public ResponseEntity<?> createInsurance(InsuranceRequest insuranceRequest) {
-
+       String age =String.valueOf(Utils.getAge(insuranceRequest.getPv_beneficiaryBirthDate())) ;
+        List<InsuranceAdditionPrice> listAdd = insuranceAdditionPriceRepository.getInsuranceAdditionPrice(insuranceRequest.getPv_packageId(), age);
+        InsurancePrice insurancePrice = insurancePriceRepository.getInsurancePackagePrice(insuranceRequest.getPv_packageId(),age).get(0);
         Optional<CfMast> cfMast = cfMastRepository.findByCustid(insuranceRequest.getPv_custId());
         CreatePolicyPartnerRq request = new CreatePolicyPartnerRq("", "", "", "", "",
                 "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "");
-
+long sumPrice = Long.parseLong(insurancePrice.getPrice());
         request.setGuaranteeCard("0");
         request.setSoNguoiThamGia("1");
         request.setContactAddress("71 nsl");
@@ -188,20 +194,26 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
         request.setHasTThoadonGTG("false");
 
         request.setIsShowDgrr("false");
-        request.setInsuranceTarget("Reuse");
+        request.setInsuranceTarget("New");
         InvoiceInfo invoiceInfo = new InvoiceInfo();
         invoiceInfo.setCheck("0");
         request.setInvoiceInfo(invoiceInfo);
         request.setLineId("BVG");
         ListBvgAddBaseVM listBvgAddBaseVM = new ListBvgAddBaseVM();
-        listBvgAddBaseVM.setChuongTrinhBh("3");
+
+        listBvgAddBaseVM.setChuongTrinhBh(insuranceRequest.getPv_packageId());
         listBvgAddBaseVM.setDiscount("0");
         listBvgAddBaseVM.setHasExtracare("false");
         listBvgAddBaseVM.setHasNguoithuhuong("false");
         ImgGks imgGks = new ImgGks("", "", "", "");
         listBvgAddBaseVM.setImgGks(imgGks);
+
         listBvgAddBaseVM.setNgoaitruChk(insuranceRequest.getPv_isOutPatientFee());
-        listBvgAddBaseVM.setNgoaitruPhi("0");
+        listBvgAddBaseVM.setNgoaitruPhi(listAdd.get(0).getPrice());
+        if (insuranceRequest.getPv_isOutPatientFee().equals("0"))
+        {
+            listBvgAddBaseVM.setNgoaitruPhi("0");
+        }
         listBvgAddBaseVM.setNguoidbhCmnd(insuranceRequest.getPv_insuredPersonIdNumber());
         listBvgAddBaseVM.setNguoidbhGioitinh(insuranceRequest.getPv_insuredPersonGender());
         listBvgAddBaseVM.setNguoidbhName(insuranceRequest.getPv_insuredPersonFullName());
@@ -225,25 +237,42 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
         }
 
         listBvgAddBaseVM.setNhakhoaChk(insuranceRequest.getPv_isDentistryFee());
-        listBvgAddBaseVM.setNhakhoaChk("0");
-        listBvgAddBaseVM.setNhakhoaPhi("0");
+//        listBvgAddBaseVM.setNhakhoaChk("0");
+        listBvgAddBaseVM.setNhakhoaPhi(listAdd.get(2).getPrice());
+        if (insuranceRequest.getPv_isDentistryFee().equals("0"))
+        {
+            listBvgAddBaseVM.setNhakhoaPhi("0");
+        }
         listBvgAddBaseVM.setPercentID("0");
         listBvgAddBaseVM.setQlChinhPhi("2600000");
         listBvgAddBaseVM.setSmcnChk(insuranceRequest.getPv_isLifeFee());
-        listBvgAddBaseVM.setSmcnChk("0");
-        listBvgAddBaseVM.setSmcnPhi("0");
-        listBvgAddBaseVM.setSmcnSotienbh("0");
+        float lifeFee = Float.parseFloat(listAdd.get(3).getPrice());
+//        listBvgAddBaseVM.setSmcnChk("0");
+         lifeFee = sumPrice* lifeFee;
+        listBvgAddBaseVM.setSmcnPhi(String.valueOf(lifeFee));
+        listBvgAddBaseVM.setSmcnSotienbh("100000000");
+        if (insuranceRequest.getPv_isLifeFee().equals("0"))
+        {
+            listBvgAddBaseVM.setSmcnPhi("0");
+            listBvgAddBaseVM.setSmcnSotienbh("0");
+        }
         listBvgAddBaseVM.setSmcnSotienbhTemp("0");
         listBvgAddBaseVM.setTanggiamPhi("0");
         listBvgAddBaseVM.setIsShowPersonList("1");
         listBvgAddBaseVM.setThaisanChk("0");
         listBvgAddBaseVM.setThaisanPhi("0");
-        listBvgAddBaseVM.setTncnChk("0");
-        listBvgAddBaseVM.setTncnPhi("0");
-
-        listBvgAddBaseVM.setTncnSotienbh("0");
+        listBvgAddBaseVM.setTncnChk(insuranceRequest.getPv_isAccidentFee());
+        float accident = Float.parseFloat(listAdd.get(1).getPrice());
+        accident = accident* sumPrice;
+        listBvgAddBaseVM.setTncnPhi(String.valueOf(accident));
+        listBvgAddBaseVM.setTncnSotienbh("1000000000");
+        if (insuranceRequest.getPv_isAccidentFee().equals("0"))
+        {
+            listBvgAddBaseVM.setTncnPhi("0");
+              listBvgAddBaseVM.setTncnSotienbh("0");
+        }
         listBvgAddBaseVM.setTncnSotienbhTemp("0");
-        listBvgAddBaseVM.setTongPhiBH("2600000");
+        listBvgAddBaseVM.setTongPhiBH(String.valueOf(sumPrice));
         listBvgAddBaseVM.setTuoi("26");
 
         listBvgAddBaseVM.setSerial("WwhpI6Jy");

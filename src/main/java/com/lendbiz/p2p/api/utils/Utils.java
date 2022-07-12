@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Year;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -85,6 +86,23 @@ public class Utils {
         return new String(valueEncoded);
     }
 
+public static long test(){
+    LocalDate start = LocalDate.of( 2010 , 1 , 1 ) ;
+    LocalDate stop = LocalDate.now( ZoneId.of( "America/Montreal" ) );
+    long years = java.time.temporal.ChronoUnit.YEARS.between( start , stop );
+    return years;
+}
+
+    public static long getAge(String date){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        //convert String to LocalDate
+        LocalDate localDate = LocalDate.parse(date, formatter);
+        LocalDate start = localDate; ;
+        LocalDate stop = LocalDate.now( ZoneId.of( "America/Montreal" ) );
+        long years = java.time.temporal.ChronoUnit.YEARS.between( start , stop );
+        return years;
+    }
     /**
      * @param inputStringDate
      * @return
@@ -180,7 +198,7 @@ public class Utils {
     }
 
     public static void main(String[] args) {
-        System.out.println(getDate());
+        System.out.println(getAge("06/12/2011"));
     }
 
     public static String getDate() {
