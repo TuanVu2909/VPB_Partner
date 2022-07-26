@@ -9,8 +9,16 @@ import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.*;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.*;
+import com.lendbiz.p2p.api.request.CreatePolicyPartnerRequest;
 import com.lendbiz.p2p.api.request.CreatePolicyPartnerRq;
 import com.lendbiz.p2p.api.request.InsuranceRequest;
+import com.lendbiz.p2p.api.request.baovietEntity.AddressDistrictData;
+import com.lendbiz.p2p.api.request.baovietEntity.ImgGks;
+import com.lendbiz.p2p.api.request.baovietEntity.InvoiceInfo;
+import com.lendbiz.p2p.api.request.baovietEntity.ListBvgAddBaseVM;
+import com.lendbiz.p2p.api.request.baovietEntity.QuocTich;
+import com.lendbiz.p2p.api.request.baovietEntity.ReceiverUser;
+import com.lendbiz.p2p.api.request.baovietEntity.SaleToEmp;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.service.InsuranceService;
 import com.lendbiz.p2p.api.utils.Utils;
@@ -82,7 +90,8 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             JSONObject jsonObject = new JSONObject(rq);
             System.out.println(jsonObject);
             HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(), headers);
-            ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(BV_PARTNER_URI, request, String.class);
+            ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(BV_PARTNER_URI, request,
+                    String.class);
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root;
             root = mapper.readTree(responseEntityStr.getBody());
@@ -107,7 +116,8 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             jsonObject.put("gycbhNumber", gycbhNumber);
 
             HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(), headers);
-            ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(BV_ODER_INFO_URI, request, String.class);
+            ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(BV_ODER_INFO_URI, request,
+                    String.class);
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root;
             root = mapper.readTree(responseEntityStr.getBody());
@@ -124,7 +134,8 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
 
     @Override
     public ResponseEntity<?> getInsurancePackagePrice(String pkgId, String age) {
-        ArrayList<InsurancePrice> list = (ArrayList<InsurancePrice>) insurancePriceRepository.getInsurancePackagePrice(pkgId, age);
+        ArrayList<InsurancePrice> list = (ArrayList<InsurancePrice>) insurancePriceRepository
+                .getInsurancePackagePrice(pkgId, age);
         if (list.size() == 0)
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         return response(toResult(list));
@@ -141,7 +152,8 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             jsonObject.put("gycbhNumber", gid);
             jsonObject.put("type", type);
             HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(), headers);
-            ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(BV_ODER_DOWNLOAD_URI, request, String.class);
+            ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(BV_ODER_DOWNLOAD_URI, request,
+                    String.class);
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root;
             root = mapper.readTree(responseEntityStr.getBody());
@@ -169,140 +181,168 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
 
     @Override
     public ResponseEntity<?> createInsurance(InsuranceRequest insuranceRequest) {
-       String age =String.valueOf(Utils.getAge(insuranceRequest.getPv_beneficiaryBirthDate())) ;
-        List<InsuranceAdditionPrice> listAdd = insuranceAdditionPriceRepository.getInsuranceAdditionPrice(insuranceRequest.getPv_packageId(), age);
-        InsurancePrice insurancePrice = insurancePriceRepository.getInsurancePackagePrice(insuranceRequest.getPv_packageId(),age).get(0);
+        String age = String.valueOf(Utils.getAge(insuranceRequest.getPv_beneficiaryBirthDate()));
+        List<InsuranceAdditionPrice> listAdd = insuranceAdditionPriceRepository
+                .getInsuranceAdditionPrice(insuranceRequest.getPv_packageId(), age);
+        InsurancePrice insurancePrice = insurancePriceRepository
+                .getInsurancePackagePrice(insuranceRequest.getPv_packageId(), age).get(0);
         Optional<CfMast> cfMast = cfMastRepository.findByCustid(insuranceRequest.getPv_custId());
-        CreatePolicyPartnerRq request = new CreatePolicyPartnerRq("", "", "", "", "",
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "");
-long sumPrice = Long.parseLong(insurancePrice.getPrice());
+        CreatePolicyPartnerRequest request = new CreatePolicyPartnerRequest();
+        long sumPrice = Long.parseLong(insurancePrice.getPrice());
         request.setGuaranteeCard("0");
-        request.setSoNguoiThamGia("1");
+        request.setSoNguoiThamGia(1);
         request.setContactAddress("71 nsl");
         request.setContactCategoryType("PERSON");
         request.setContactCode("15606");
         request.setContactDob(insuranceRequest.getPv_beneficiaryBirthDate());
         request.setContactEmail(cfMast.get().getEmail());
-        request.setContactIdNumber(insuranceRequest.getPv_beneficiaryIdNumber());
+        request.setContactIDNumber(insuranceRequest.getPv_beneficiaryIdNumber());
         request.setContactName(insuranceRequest.getPv_beneficiaryFullName());
         request.setContactPhone(cfMast.get().getPhone());
-        request.setDepartmentId("A000009455");
-        request.setDiscount("0");
-        request.setHasGks("false");
-        request.setHasNguoinhantien("false");
-        request.setHasNguoithuhuong("false");
-        request.setHasTThoadonGTG("false");
+        request.setDepartmentID("A000009455");
+        request.setDiscount(0);
+        request.setHasGks(false);
+        request.setHasNguoinhantien(false);
+        request.setHasNguoithuhuong(false);
+        request.setHasTThoadonGTG(false);
 
         request.setIsShowDgrr("false");
         request.setInsuranceTarget("New");
+        // InvoiceInfo invoiceInfo = new InvoiceInfo();
         InvoiceInfo invoiceInfo = new InvoiceInfo();
         invoiceInfo.setCheck("0");
         request.setInvoiceInfo(invoiceInfo);
-        request.setLineId("BVG");
+        request.setLineID("BVG");
+        // ListBvgAddBaseVM listBvgAddBaseVM = new ListBvgAddBaseVM();
         ListBvgAddBaseVM listBvgAddBaseVM = new ListBvgAddBaseVM();
 
-        listBvgAddBaseVM.setChuongTrinhBh(insuranceRequest.getPv_packageId());
-        listBvgAddBaseVM.setDiscount("0");
-        listBvgAddBaseVM.setHasExtracare("false");
-        listBvgAddBaseVM.setHasNguoithuhuong("false");
-        ImgGks imgGks = new ImgGks("", "", "", "");
+        // listBvgAddBaseVM.setChuongTrinhBh(insuranceRequest.getPv_packageId());
+        listBvgAddBaseVM.setChuongTrinhBh("3");
+        listBvgAddBaseVM.setDiscount(0);
+        listBvgAddBaseVM.setHasExtracare(false);
+        listBvgAddBaseVM.setHasNguoithuhuong(false);
+        // ImgGks imgGks = new ImgGks("", "", "", "");
+        ImgGks imgGks = new ImgGks();
         listBvgAddBaseVM.setImgGks(imgGks);
 
-        listBvgAddBaseVM.setNgoaitruChk(insuranceRequest.getPv_isOutPatientFee());
-        listBvgAddBaseVM.setNgoaitruPhi(listAdd.get(0).getPrice());
-        if (insuranceRequest.getPv_isOutPatientFee().equals("0"))
-        {
-            listBvgAddBaseVM.setNgoaitruPhi("0");
+        // listBvgAddBaseVM.setNgoaitruChk(insuranceRequest.getPv_isOutPatientFee());
+        listBvgAddBaseVM.setNgoaitruChk("0");
+        // listBvgAddBaseVM.setNgoaitruPhi(Long.parseLong(listAdd.get(0).getPrice()));
+        listBvgAddBaseVM.setNgoaitruPhi(0);
+        if (insuranceRequest.getPv_isOutPatientFee().equals("0")) {
+            listBvgAddBaseVM.setNgoaitruPhi(0);
         }
-        listBvgAddBaseVM.setNguoidbhCmnd(insuranceRequest.getPv_insuredPersonIdNumber());
-        listBvgAddBaseVM.setNguoidbhGioitinh(insuranceRequest.getPv_insuredPersonGender());
-        listBvgAddBaseVM.setNguoidbhName(insuranceRequest.getPv_insuredPersonFullName());
-        listBvgAddBaseVM.setNguoidbhNgaysinh(insuranceRequest.getPv_insuredPersonBirthDate());
-        switch (insuranceRequest.getPv_InsuredRelationId()) {
-            case "1":
-                listBvgAddBaseVM.setNguoidbhQuanhe("31");
-                break;
-            case "2":
-                listBvgAddBaseVM.setNguoidbhQuanhe("32");
-                break;
-            case "3":
-                listBvgAddBaseVM.setNguoidbhQuanhe("33");
-                break;
-            case "4":
-                listBvgAddBaseVM.setNguoidbhQuanhe("34");
-                break;
-            default:
-                listBvgAddBaseVM.setNguoidbhQuanhe("30");
-                break;
-        }
+        // listBvgAddBaseVM.setNguoidbhCmnd(insuranceRequest.getPv_insuredPersonIdNumber());
+        // listBvgAddBaseVM.setNguoidbhGioitinh(insuranceRequest.getPv_insuredPersonGender());
+        // listBvgAddBaseVM.setNguoidbhName(insuranceRequest.getPv_insuredPersonFullName());
+        // listBvgAddBaseVM.setNguoidbhNgaysinh(insuranceRequest.getPv_insuredPersonBirthDate());
+        listBvgAddBaseVM.setNguoidbhCmnd("1234567112");
+        listBvgAddBaseVM.setNguoidbhGioitinh("1");
+        listBvgAddBaseVM.setNguoidbhName("Nguyễn Thị Huệ");
+        listBvgAddBaseVM.setNguoidbhNgaysinh("19/05/1995");
+        // switch (insuranceRequest.getPv_InsuredRelationId()) {
+        // case "1":
+        // listBvgAddBaseVM.setNguoidbhQuanhe("31");
+        // break;
+        // case "2":
+        // listBvgAddBaseVM.setNguoidbhQuanhe("32");
+        // break;
+        // case "3":
+        // listBvgAddBaseVM.setNguoidbhQuanhe("33");
+        // break;
+        // case "4":
+        // listBvgAddBaseVM.setNguoidbhQuanhe("34");
+        // break;
+        // default:
+        // listBvgAddBaseVM.setNguoidbhQuanhe("30");
+        // break;
+        // }
+        listBvgAddBaseVM.setNguoidbhQuanhe("30");
 
-        listBvgAddBaseVM.setNhakhoaChk(insuranceRequest.getPv_isDentistryFee());
-//        listBvgAddBaseVM.setNhakhoaChk("0");
-        listBvgAddBaseVM.setNhakhoaPhi(listAdd.get(2).getPrice());
-        if (insuranceRequest.getPv_isDentistryFee().equals("0"))
-        {
-            listBvgAddBaseVM.setNhakhoaPhi("0");
-        }
-        listBvgAddBaseVM.setPercentID("0");
-        listBvgAddBaseVM.setQlChinhPhi("2600000");
-        listBvgAddBaseVM.setSmcnChk(insuranceRequest.getPv_isLifeFee());
-        float lifeFee = Float.parseFloat(listAdd.get(3).getPrice());
-//        listBvgAddBaseVM.setSmcnChk("0");
-         lifeFee = sumPrice* lifeFee;
-        listBvgAddBaseVM.setSmcnPhi(String.valueOf(lifeFee));
-        listBvgAddBaseVM.setSmcnSotienbh("100000000");
-        if (insuranceRequest.getPv_isLifeFee().equals("0"))
-        {
-            listBvgAddBaseVM.setSmcnPhi("0");
-            listBvgAddBaseVM.setSmcnSotienbh("0");
-        }
+        // listBvgAddBaseVM.setNhakhoaChk(insuranceRequest.getPv_isDentistryFee());
+        listBvgAddBaseVM.setNhakhoaChk("0");
+        // listBvgAddBaseVM.setNhakhoaPhi(Float.parseFloat(listAdd.get(2).getPrice()));
+        // if (insuranceRequest.getPv_isDentistryFee().equals("0")) {
+        // listBvgAddBaseVM.setNhakhoaPhi(0);
+        // }
+        listBvgAddBaseVM.setNhakhoaPhi(0);
+        listBvgAddBaseVM.setPercentID(0);
+        listBvgAddBaseVM.setQlChinhPhi(2600000);
+        // listBvgAddBaseVM.setSmcnChk(insuranceRequest.getPv_isLifeFee());
+        listBvgAddBaseVM.setSmcnChk("0");
+        Float lifeFee = Float.parseFloat(listAdd.get(3).getPrice());
+        // listBvgAddBaseVM.setSmcnChk("0");
+        lifeFee = sumPrice * lifeFee;
+        // listBvgAddBaseVM.setSmcnPhi(lifeFee);
+        listBvgAddBaseVM.setSmcnPhi(0);
+        listBvgAddBaseVM.setSmcnSotienbh("0");
+        // if (insuranceRequest.getPv_isLifeFee().equals("0")) {
+        // listBvgAddBaseVM.setSmcnPhi(0);
+        // listBvgAddBaseVM.setSmcnSotienbh("0");
+        // }
+        listBvgAddBaseVM.setSmcnPhi(0);
+        listBvgAddBaseVM.setSmcnSotienbh("0");
         listBvgAddBaseVM.setSmcnSotienbhTemp("0");
-        listBvgAddBaseVM.setTanggiamPhi("0");
+        listBvgAddBaseVM.setTanggiamPhi(0);
         listBvgAddBaseVM.setIsShowPersonList("1");
         listBvgAddBaseVM.setThaisanChk("0");
-        listBvgAddBaseVM.setThaisanPhi("0");
+        listBvgAddBaseVM.setThaisanPhi(0);
         listBvgAddBaseVM.setTncnChk(insuranceRequest.getPv_isAccidentFee());
         float accident = Float.parseFloat(listAdd.get(1).getPrice());
-        accident = accident* sumPrice;
-        listBvgAddBaseVM.setTncnPhi(String.valueOf(accident));
-        listBvgAddBaseVM.setTncnSotienbh("1000000000");
-        if (insuranceRequest.getPv_isAccidentFee().equals("0"))
-        {
-            listBvgAddBaseVM.setTncnPhi("0");
-              listBvgAddBaseVM.setTncnSotienbh("0");
-        }
+        accident = accident * sumPrice;
+        listBvgAddBaseVM.setTncnPhi(accident);
+        // listBvgAddBaseVM.setTncnSotienbh("1000000000");
+        listBvgAddBaseVM.setTncnSotienbh("0");
+        // if (insuranceRequest.getPv_isAccidentFee().equals("0")) {
+        // listBvgAddBaseVM.setTncnPhi(0);
+        // listBvgAddBaseVM.setTncnSotienbh("0");
+        // }
+        listBvgAddBaseVM.setTncnPhi(0);
+        listBvgAddBaseVM.setTncnSotienbh("0");
         listBvgAddBaseVM.setTncnSotienbhTemp("0");
-        listBvgAddBaseVM.setTongPhiBH(String.valueOf(sumPrice));
-        listBvgAddBaseVM.setTuoi("26");
+        // listBvgAddBaseVM.setTongPhiBH(sumPrice);
+        listBvgAddBaseVM.setTongPhiBH(2600000);
+        listBvgAddBaseVM.setTuoi(26);
 
         listBvgAddBaseVM.setSerial("WwhpI6Jy");
         listBvgAddBaseVM.setInsuranceTarget("New");
-        listBvgAddBaseVM.setLoading("0");
-        listBvgAddBaseVM.setPersonOrder("1");
+        listBvgAddBaseVM.setLoading(0);
+        listBvgAddBaseVM.setPersonOrder(1);
         listBvgAddBaseVM.setCheckReuse("0");
-        listBvgAddBaseVM.setCanhBao("false");
-        listBvgAddBaseVM.setCollapse("false");
-        listBvgAddBaseVM.setLaNYCBH("true");
-        listBvgAddBaseVM.setInsuredName(insuranceRequest.getPv_insuredPersonFullName());
-        listBvgAddBaseVM.setIdPasswport(insuranceRequest.getPv_insuredPersonIdNumber());
-        listBvgAddBaseVM.setRelationship(listBvgAddBaseVM.getNguoidbhQuanhe());
+        listBvgAddBaseVM.setCanhBao(false);
+        listBvgAddBaseVM.setCollapse(false);
+        listBvgAddBaseVM.setLaNYCBH(true);
+        // listBvgAddBaseVM.setInsuredName(insuranceRequest.getPv_insuredPersonFullName());
+        listBvgAddBaseVM.setInsuredName("Nguyễn Thị Huệ");
+
+        // listBvgAddBaseVM.setIdPasswport(insuranceRequest.getPv_insuredPersonIdNumber());
+        listBvgAddBaseVM.setIdPasswport("1234567112");
+        // listBvgAddBaseVM.setRelationship(listBvgAddBaseVM.getNguoidbhQuanhe());
+        listBvgAddBaseVM.setRelationship("30");
+
+        // QuocTich quocTich = new QuocTich();
         QuocTich quocTich = new QuocTich();
         quocTich.setQuocTichCode("12");
         quocTich.setQuocTichName("Việt Nam");
         listBvgAddBaseVM.setQuocTich(quocTich);
         listBvgAddBaseVM.setSex("1");
+        // ListBvgAddBaseVM[] list = new ListBvgAddBaseVM[1];
         ListBvgAddBaseVM[] list = new ListBvgAddBaseVM[1];
         list[0] = listBvgAddBaseVM;
         request.setListBvgAddBaseVM(list);
-        request.setNguoiycCmnd(insuranceRequest.getPv_beneficiaryIdNumber());
-        request.setNguoiycName(insuranceRequest.getPv_beneficiaryFullName());
-        request.setNguoiycNgaysinh(insuranceRequest.getPv_beneficiaryBirthDate());
-        request.setPercentID("0");
+        // request.setNguoiycCmnd(insuranceRequest.getPv_beneficiaryIdNumber());
+        // request.setNguoiycName(insuranceRequest.getPv_beneficiaryFullName());
+        // request.setNguoiycNgaysinh(insuranceRequest.getPv_beneficiaryBirthDate());
+        request.setNguoiycCmnd("1234567112");
+        request.setNguoiycName("Nguyễn Thị Huệ");
+        request.setNguoiycNgaysinh("19/05/1995");
+        request.setPercentID(0);
         request.setTtskCheck("0");
         request.setQ1("0");
         request.setQ2("0");
         request.setQ3("0");
         request.setReceiveMethod("1");
+        // ReceiverUser receiverUser = new ReceiverUser();
         ReceiverUser receiverUser = new ReceiverUser();
         receiverUser.setAddress(cfMast.get().getAddress());
         receiverUser.setEmail(cfMast.get().getEmail());
@@ -311,35 +351,38 @@ long sumPrice = Long.parseLong(insurancePrice.getPrice());
         receiverUser.setMobileHide(cfMast.get().getMobileSms());
         receiverUser.setName(cfMast.get().getFullName());
         receiverUser.setNgaySinh(insuranceRequest.getPv_beneficiaryBirthDate());
+        // AddressDistrictData addressDistrictData = new AddressDistrictData("00000000",
+        // "Địa chỉ khác, Khác", "Khác");
         AddressDistrictData addressDistrictData = new AddressDistrictData("00000000", "Địa chỉ khác, Khác", "Khác");
         receiverUser.setAddressDistrictData(addressDistrictData);
         request.setReceiverUser(receiverUser);
+        // SaleToEmp saleToEmp = new SaleToEmp("", "");
         SaleToEmp saleToEmp = new SaleToEmp("", "");
         request.setSaleToEmp(saleToEmp);
-        request.setStatusPolicy("90");
-        request.setTanggiamPhi("0");
+        request.setStatusPolicy("");
+        request.setTanggiamPhi(0);
         request.setThoihanbhTu(insuranceRequest.getPv_startDate());
-        request.setThoihanbhDen(java.time.LocalDate.now().plusMonths(12).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        request.setThoihanbhDen(
+                java.time.LocalDate.now().plusMonths(12).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             String date = insuranceRequest.getPv_startDate();
-            //convert String to LocalDate
+            // convert String to LocalDate
             LocalDate localDate = LocalDate.parse(date, formatter);
             request.setThoihanbhDen(localDate.plusMonths(12).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         } catch (Exception e) {
             throw new BusinessException("99", e.getMessage());
         }
         System.out.println(request.getThoihanbhDen());
-        request.setConfirmMethod("0");
+        request.setConfirmMethod(0);
         request.setGycFiles(new Object[1]);
-        request.setTotalPremium("260000");
+        request.setTotalPremium(2600000);
         request.setInceptionDate(request.getThoihanbhTu());
         request.setExpiredDate(request.getThoihanbhDen());
         request.setKenhPhanPhoi("MSB_CN");
         request.setContactCif("CIF_TUNA");
         request.setCheckTtskNdbh("0");
-        request.setTongPhiBH("0");
-
+        request.setTongPhiBH(0);
 
         try {
             HttpHeaders headers = new HttpHeaders();
@@ -348,7 +391,8 @@ long sumPrice = Long.parseLong(insurancePrice.getPrice());
             JSONObject jsonObject = new JSONObject(request);
             System.out.println(jsonObject);
             HttpEntity<String> requestHttp = new HttpEntity<String>(jsonObject.toString(), headers);
-            ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(BV_PARTNER_URI, requestHttp, String.class);
+            ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(BV_PARTNER_URI, requestHttp,
+                    String.class);
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root;
             root = mapper.readTree(responseEntityStr.getBody());
@@ -394,8 +438,8 @@ long sumPrice = Long.parseLong(insurancePrice.getPrice());
         }
         return null;
 
-
-//        return response(toResult(createPolicy_Partner(request, insuranceRequest.getPv_custId())));
+        // return response(toResult(createPolicy_Partner(request,
+        // insuranceRequest.getPv_custId())));
     }
 
     @Override
@@ -425,7 +469,8 @@ long sumPrice = Long.parseLong(insurancePrice.getPrice());
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("gycbhNumber", rID);
             HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(), headers);
-            ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(BV_ODER_INFO_URI, request, String.class);
+            ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(BV_ODER_INFO_URI, request,
+                    String.class);
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root;
             root = mapper.readTree(responseEntityStr.getBody());

@@ -81,6 +81,7 @@ public class CreatePolicyPartnerRq {
     private ContactAddressDistrictData contactAddressDistrictData;
     private String tongPhiBH;
     private String checkTtskNdbh;
+    
     public void setContactAddressDistrictData() {
         this.contactAddressDistrictData = new ContactAddressDistrictData();
     }
