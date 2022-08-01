@@ -279,14 +279,12 @@ public class UserController {
         return savisService.callPredict(idFile, identity, idType);
     }
 
-
-    //Authorization
-
+    // Authorization
 
     @PostMapping("/auth/signup")
     public ResponseEntity<?> createUser3G(@RequestBody User3GEntity user) {
 
-       MyResponse response = new MyResponse();
+        MyResponse response = new MyResponse();
 
         response.setData("Đăng ký thành công");
         response.setMessage("success");
@@ -295,11 +293,11 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-
     @PostMapping("/auth/signin")
     public ResponseEntity<?> signin(@RequestBody SignInReq req) {
         try {
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(req.getUsername(),req.getPassword()));
+            Authentication authentication = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(req.getUsername(), req.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String token = provider.crateToken(authentication);
             MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
@@ -308,13 +306,12 @@ public class UserController {
             response.setMessage("SUCCESSFUL!");
             response.setStatus("00");
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
+        } catch (Exception e) {
             MyResponse response = new MyResponse();
             response.setStatus("99");
             response.setMessage("Tài khoản hoặc mật khẩu không đúng");
-            return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
-
 
     }
 
@@ -349,6 +346,7 @@ public class UserController {
         return userService.changeCoin(input);
 
     }
+
     @PostMapping("/verify-face")
     public ResponseEntity<?> verifyFace(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestHeader("custid") String session,
@@ -396,6 +394,7 @@ public class UserController {
 
         return userService.getRelation();
     }
+
     @PostMapping("/create-ins")
     @Transactional(readOnly = true)
     public ResponseEntity<?> createInsurance(HttpServletRequest httpServletRequest,
@@ -514,11 +513,12 @@ public class UserController {
     @GetMapping("/gen-transfercode")
     @Transactional(readOnly = true)
     public ResponseEntity<?> genTransferCode(HttpServletRequest httpServletRequest,
-            @RequestHeader("requestId") String requestId, @RequestParam("cid") String cid)
+            @RequestHeader("requestId") String requestId, @RequestParam("cid") String cid,
+            @RequestParam("amt") String amount)
             throws BusinessException {
         log.info("[" + requestId + "] << genTransferCode >>");
 
-        return userService.genTransferCode(cid);
+        return userService.genTransferCode(amount, cid);
     }
 
     @GetMapping("/get-fund-invest-detail")

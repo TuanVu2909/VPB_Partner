@@ -526,10 +526,10 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> createInsurance(InsuranceRequest insuranceRequest) {
-       NotifyEntity notify =  notifyRepo.createInsurance(insuranceRequest.getPv_custId(),
+        NotifyEntity notify = notifyRepo.createInsurance(insuranceRequest.getPv_custId(),
                 insuranceRequest.getPv_packageId(),
                 insuranceRequest.getPv_startDate(),
-                insuranceRequest.getPv_fee(),
+                String.valueOf(insuranceRequest.getPv_fee()),
                 insuranceRequest.getPv_beneficiaryFullName(),
                 insuranceRequest.getPv_beneficiaryBirthDate(),
                 insuranceRequest.getPv_beneficiaryIdNumber(),
@@ -557,7 +557,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 insuranceRequest.getPv_isLifeFee(),
                 insuranceRequest.getPv_isDentistryFee(),
                 insuranceRequest.getPv_isPregnantFee());
-        CreatePolicyPartnerRq request  = new CreatePolicyPartnerRq();
+        CreatePolicyPartnerRq request = new CreatePolicyPartnerRq();
         request.setGuaranteeCard("0");
         request.setSoNguoiThamGia("1");
         request.setContactAddress("71 nsl");
@@ -726,12 +726,16 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         return response(toResult(list3));
     }
 
+    @Autowired
+    TestDepositRepo testRepo;
+
     @Override
-    public ResponseEntity<?> genTransferCode(String cif) {
+    public ResponseEntity<?> genTransferCode(String amount, String cif) {
         TransferCodeEntity entity = transFerCodeRepo.genTransferCode(cif);
         if (entity == null) {
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         }
+        testRepo.insertApiTrans(amount, entity.getTransferCode());
         return response(toResult(entity));
     }
 

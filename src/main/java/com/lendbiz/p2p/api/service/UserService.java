@@ -103,7 +103,7 @@ public interface UserService {
 
 	public ResponseEntity<?> getPkgFundInfo();
 
-	public ResponseEntity<?> genTransferCode(String cif);
+	public ResponseEntity<?> genTransferCode(String amount, String cif);
 
 	String checkSession(String session);
 
