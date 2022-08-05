@@ -105,13 +105,13 @@ public class Constants {
 	public static final String THRESHOLD = "0.65";
 
 	// MBBANK
-	public static final String HMAC_KEY = "MIIBITANBgkqhkiG9w0BAQEFAAOCAQ4AMIIBCQKCAQB6YVmCUs3wrl75QXvThV9MNBlEBM1aDmPizdwbatDsmN/ANFU8fs8wz4TaS7nvLOy1xveIHxgAU1v1Q6aN133AIJBBAcyngseGgjyXcrBVpQyH3BWtvMRN756mrtbyrI43NXhUjmmWYlUiI8KFFrGiOkgiF62cVMiZFiW4QSE96sDTxOMoiA8+bu5MB5Jf48CffhbSDAffIW+lqbg+syjrvbTWKvKK0j2U9dI2UVQ4sAgZDYAcFcIYlAQzCatxz3PuC/Kx/WFLG7Ck/bJYm6Qtei3h9WfSv0htBuW39LFLhYQsOZjeuwU7jcR8+iOObt8djcM2X09CXzetrHmiZ6kLAgMBAAE=";
+	public static final String HMAC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgcaKR79S/g+e+kCvGBAa957NCgAnuS4IEIUcAgoDfOSfTRaXeMHYnCD6b8apuoxAF7rA0/oLXJM0flhztNSpzW8oHVBksO5wZlFnT0U5eftfWixxoZHRJHPIQlcoXHAPt6oUiKqIpAnMdYP269gPZDiW75k9D6FfxosymXqVWO9F6yUbYU/REbQl8sn5H04q9IKeIW5MOtmMFGrGxZKecjW+a/Km3FIPfl4INM01rOJRWTCCfq0GimaYdy9JYcaNxM1QBqmy1UdyxAE9MKN4QsQqL3xLZDxt1ykcsLgF1BaF3OT7s4btZp88y0AuJ7LObVxS1wHevatvJl5f5DLq0QIDAQAB";
 
-	public static final String MB_TRANSFER = "https://api-sandbox.mbbank.com.vn/ms/funds-partner/transfer-fund/v1.0/make-transfer-partner";
-	public static final String MB_GET_TOKEN_URL = "https://api-sandbox.mbbank.com.vn/oauth2/v1/token";
-	public static final String MB_GET_NAME_URL = "https://api-sandbox.mbbank.com.vn/ms/onbehalfpayment/v1.0/onbehalfpayment/v1.0/account/credit/name";
-	public static final String MB_CONVERT_ID_CARD = "https://mbcardtest.mbbank.com.vn:8446/mbcardgw/internet/cardinfo/v1_0/generatetoken";
-	public static final String MBBANK_BASIC_AUTHEN_STRING = "fCo4Qbh30U3wTIzDBVnHhB1HNIOG9VXN:znHr7LLGtxaPNGaj";
+	public static final String MB_TRANSFER = "https://api-public.mbbank.com.vn/ms/funds-partner/transfer-fund/v1.0/make-transfer-partner";
+	public static final String MB_GET_TOKEN_URL = "https://api-public.mbbank.com.vn/oauth2/v1/token";
+	public static final String MB_GET_NAME_URL = "https://api-public.mbbank.com.vn/ms/onbehalfpayment/v1.0/onbehalfpayment/v1.0/account/credit/name";
+	public static final String MB_CONVERT_ID_CARD = "https://mbcard.mbbank.com.vn:8446/mbcardgw/internet/cardinfo/v1_0/generatetoken";
+	public static final String MBBANK_BASIC_AUTHEN_STRING = "CNyagnuEbAZuUiI6qNFmFDYGPK14cNdt:iWpKiQT787zW2TMq";
 
 	public interface KAFKA {
 		public static final String TOPIC_LOGS_MB = "topic_mb_logs";
