@@ -24,7 +24,7 @@ import java.util.Date;
                 @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
                 @StoredProcedureParameter(name = "pv_custId", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "pv_pid", mode = ParameterMode.IN, type = String.class),
-                @StoredProcedureParameter(name = "pv_rate", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_rate", mode = ParameterMode.IN, type = Float.class),
                 @StoredProcedureParameter(name = "pv_term", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "pv_amt", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "pv_contractId", mode = ParameterMode.IN, type = String.class),

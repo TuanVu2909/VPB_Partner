@@ -23,9 +23,13 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.producer.ProducerMessage;
 import com.lendbiz.p2p.api.repository.PackageFilterRepository;
 import com.lendbiz.p2p.api.request.InsertLogRequest;
+import com.lendbiz.p2p.api.response.ErrorInfo;
 import com.lendbiz.p2p.api.service.LoggingService;
 import com.lendbiz.p2p.api.utils.StringUtil;
 
@@ -34,9 +38,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 
 @Component
-@Log
+@Log4j2
 public class LoggingServiceImpl implements LoggingService {
 
     @Autowired
@@ -77,13 +82,18 @@ public class LoggingServiceImpl implements LoggingService {
             stringBuilder.append("body=[" + body + "]");
         }
 
-        InsertLogRequest insertLogRequest = new InsertLogRequest(requestId, sessionId,
-                httpServletRequest.getRequestURI(),
-                0, httpServletRequest.getLocalAddr(), 0, null, body.toString(), null);
+        try {
+            InsertLogRequest insertLogRequest = new InsertLogRequest(requestId, sessionId,
+                    httpServletRequest.getRequestURI(),
+                    0, httpServletRequest.getLocalAddr(), 0, null, body.toString(), null, null);
 
-        JSONObject jsonObjectLogs = new JSONObject(insertLogRequest);
+            JSONObject jsonObjectLogs = new JSONObject(insertLogRequest);
 
-        producerMessage.sendLogs3Gang(jsonObjectLogs.toString());
+            producerMessage.sendLogs3Gang(jsonObjectLogs.toString());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+
         // pkgFilterRepo.insertLogs(insertLogRequest);
 
         log.info(stringBuilder.toString());
@@ -108,16 +118,29 @@ public class LoggingServiceImpl implements LoggingService {
         stringBuilder.append("responseHeaders=[").append(buildHeadersMap(httpServletResponse)).append("]");
         stringBuilder.append("responseBody=[").append(body).append("] ");
 
-        InsertLogRequest insertLogRequest = new InsertLogRequest(requestId,
-                sessionId, httpServletRequest.getRequestURI(),
-                0, httpServletRequest.getLocalAddr(), 1,
-                String.valueOf(httpServletResponse.getStatus()), null, body.toString());
+        InsertLogRequest insertLogRequest;
+        String errorCode = "";
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root;
+
+            JSONObject bodyJson = new JSONObject(body);
+            root = mapper.readTree(bodyJson.toString());
+            errorCode = root.get("status").asText();
+
+            insertLogRequest = new InsertLogRequest(requestId,
+                    sessionId, httpServletRequest.getRequestURI(),
+                    0, httpServletRequest.getLocalAddr(), 1,
+                    String.valueOf(httpServletResponse.getStatus()), null,
+                    body.toString(), errorCode);
+            JSONObject jsonObjectLogs = new JSONObject(insertLogRequest);
+            producerMessage.sendLogs3Gang(jsonObjectLogs.toString());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+
+        }
 
         // pkgFilterRepo.insertLogs(insertLogRequest);
-
-        JSONObject jsonObjectLogs = new JSONObject(insertLogRequest);
-
-        producerMessage.sendLogs3Gang(jsonObjectLogs.toString());
 
         log.info(stringBuilder.toString());
     }

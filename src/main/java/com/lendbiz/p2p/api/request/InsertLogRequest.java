@@ -22,5 +22,6 @@ public class InsertLogRequest {
    private String responseStatus;
    private String requestBody;
    private String responseBody;
+   private String businessError;
 
 }

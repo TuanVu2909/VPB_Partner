@@ -9,5 +9,5 @@ import org.springframework.data.repository.query.Param;
 public interface RegisterRepository extends JpaRepository<RegisterEntity, String> {
 
     @Procedure("RegisterEntity.register")
-    RegisterEntity register(@Param("pv_mobile") String mobile);
+    RegisterEntity register(@Param("pv_mobile") String mobile, @Param("pv_deviceId") String deviceId);
 }

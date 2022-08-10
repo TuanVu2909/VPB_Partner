@@ -14,17 +14,17 @@ import com.lendbiz.p2p.api.entity.UserOnline;
 @Repository
 public interface UserOnlineRepository extends JpaRepository<UserOnline, String> {
 
-	@Query(value = "SELECT *  FROM useronline u, cfmast c" +
+	@Query(value = "SELECT *  FROM bg_account u, cfmast c" +
 			" WHERE u.custid = c.custid AND u.sesstionid = ?1" +
 			" AND SYSDATE - u.last_change < 1800/(24*60*60)", nativeQuery = true)
 	Optional<UserOnline> findBySession(String session);
 
-	@Query(value = "SELECT DEVICEID FROM useronline u" +
+	@Query(value = "SELECT DEVICEID FROM bg_account u" +
 			" WHERE u.custid = ?1" +
 			" AND SYSDATE - u.last_change < 1800/(24*60*60)", nativeQuery = true)
 	String findDeviceId(String custId);
 
-	@Query(value = "SELECT * FROM useronline u, cfmast c, allcode a_sex WHERE c.sex=" +
+	@Query(value = "SELECT * FROM bg_account u, cfmast c, allcode a_sex WHERE c.sex=" +
 			"a_sex.cdval AND a_sex.cdname='SEX' " +
 			"AND u.custid = c.custid" +
 			" AND (TRIM(u.username) = TRIM(?1) or " +
@@ -32,17 +32,27 @@ public interface UserOnlineRepository extends JpaRepository<UserOnline, String> 
 			"c.mobilesms = trim(?1))", nativeQuery = true)
 	UserOnline getUserOnline(String username);
 
-	@Query(value = "select count(*) from useronline u, cfmast c where c.custid = ?1 and u.custid = c.custid and exists(select (1) from account_mapping a where a.custid = c.custid and pid = '17')", nativeQuery = true)
+	@Query(value = "select count(*) from bg_account u, cfmast c where c.custid = ?1 and u.custid = c.custid and exists(select (1) from account_mapping a where a.custid = c.custid and pid = '17')", nativeQuery = true)
 	int checkAccountMappingExist(String custId);
 
 	@Transactional
 	@Modifying
-	@Query(value = "update useronline set last_change = sysdate, numberoffail = numberoffail + 1 where custid = ?1", nativeQuery = true)
+	@Query(value = "update bg_account set last_change = sysdate, numberoffail = numberoffail + 1 where custid = ?1", nativeQuery = true)
 	void updateNumberFail(String custId);
 
 	@Transactional
 	@Modifying
-	@Query(value = "update useronline set last_change = sysdate, numberoffail = 0 where custid = ?1", nativeQuery = true)
+	@Query(value = "update bg_account set last_change = sysdate, numberoffail = 0 where custid = ?1", nativeQuery = true)
 	void resetFail(String custId);
+
+	@Transactional
+	@Modifying
+	@Query(value = "update bg_account set biostate = ?1, deviceid = ?3 where custid = ?2", nativeQuery = true)
+	void updateDeviceIdBioState(int state, String custId, String deviceId);
+
+	@Transactional
+	@Modifying
+	@Query(value = "update bg_account set biostate = ?1 where custid = ?2", nativeQuery = true)
+	int updateOnlyBioState(int state, String custId);
 
 }

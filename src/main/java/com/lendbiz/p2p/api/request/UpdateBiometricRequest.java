@@ -6,14 +6,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Setter
-@Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 @ToString
-public class ReqJoinRequest {
+@NoArgsConstructor
+public class UpdateBiometricRequest {
 
-    private String mobile;
-    private String deviceId;
+    private String custId;
+    private int state;
 
 }

@@ -106,7 +106,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     BankRepository bankRepository;
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    PasswordEncoder passwordEncoder;
     @Autowired
     BaoVietRepo baoVietRepo;
     @Autowired
@@ -166,6 +166,10 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 pkgFilterRepo.reqJoin(reqJoinRequest);
             }
 
+            if (!loginRequest.getDeviceId().equalsIgnoreCase(user.getDeviceId())) {
+                userOnlineRepo.updateDeviceIdBioState(0, user.getCustId(), loginRequest.getDeviceId());
+            }
+
         }
 
         return response(toResult(user.getCustId()));
@@ -186,7 +190,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         } else {
             // List<Object> response = (ArrayList) pkgFilterRepo.reqJoin(reqJoinRequest);
             // return response(toResult(response.get(0)));
-            RegisterEntity regEntity = registerRepository.register(reqJoinRequest.getMobile());
+            RegisterEntity regEntity = registerRepository.register(reqJoinRequest.getMobile(),
+                    reqJoinRequest.getDeviceId());
 
             if (regEntity.getErrorCode() == 1) {
                 throw new BusinessException(Constants.FAIL, regEntity.getCustId());
@@ -213,6 +218,15 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     public ResponseEntity<?> verifyAcc(VerifyAccountInput input) {
         try {
             return response(toResult(verifyAccountRepository.verify(input.getCustId(), input.getVerifyCode())));
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, ErrorCode.ERROR_500_DESCRIPTION);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> updateBioState(UpdateBiometricRequest request) {
+        try {
+            return response(toResult(userOnlineRepo.updateOnlyBioState(request.getState(), request.getCustId())));
         } catch (Exception e) {
             throw new BusinessException(Constants.FAIL, ErrorCode.ERROR_500_DESCRIPTION);
         }
@@ -248,6 +262,9 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         try {
             entity = firstPasswordRepository.firstPassword(setAccountPasswordRequest.getCustId(),
                     passwordEncoder.encode(setAccountPasswordRequest.getPassword()));
+
+            System.out.println("passwordEncoder.encode(setAccountPasswordRequest.getPassword()): "
+                    + passwordEncoder.encode(setAccountPasswordRequest.getPassword()));
         } catch (Exception e) {
             throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
         }
@@ -278,7 +295,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         try {
             NotifyEntity notify = notifyRepo.createBear(input.getCustId(), input.getProductId(),
                     input.getTerm(),
-                    input.getRate(),
+                    Float.valueOf(input.getRate()),
                     input.getAmt(),
                     input.getContractId(), input.getPayType());
             if (!notify.getPStatus().equals("01")) {

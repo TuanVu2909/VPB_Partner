@@ -27,6 +27,8 @@ public interface UserService {
 
 	public ResponseEntity<?> verifyAcc(VerifyAccountInput input);
 
+	public ResponseEntity<?> updateBioState(UpdateBiometricRequest request);
+
 	public ResponseEntity<?> getUserInfo(String mobile);
 
 	public ResponseEntity<?> setAccountPassword(SetAccountPasswordRequest setAccountPasswordRequest);

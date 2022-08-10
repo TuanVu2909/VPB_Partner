@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lendbiz.p2p.api.request.GetBankNameRequest;
 import com.lendbiz.p2p.api.request.TransferMBRequest;
 import com.lendbiz.p2p.api.service.MbbankTransferService;
 
@@ -38,6 +39,13 @@ public class MbController {
             @RequestBody TransferMBRequest request) {
         String requestId = httpServletRequest.getHeader("RequestId");
         return mbbankTransferService.transfer(requestId, request);
+    }
+
+    @PostMapping("/getAccountName")
+    public ResponseEntity<?> getAccountName(HttpServletRequest httpServletRequest,
+            @RequestBody GetBankNameRequest request) {
+        String requestId = httpServletRequest.getHeader("RequestId");
+        return mbbankTransferService.getBankName(requestId, request);
     }
 
 }

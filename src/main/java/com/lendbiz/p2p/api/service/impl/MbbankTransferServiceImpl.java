@@ -133,7 +133,7 @@ public class MbbankTransferServiceImpl extends BaseResponse<MbbankTransferServic
     }
 
     @Override
-    public ResponseEntity<?> getBankName(GetBankNameRequest getBankNameRequest) {
+    public ResponseEntity<?> getBankName(String requestId, GetBankNameRequest getBankNameRequest) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
