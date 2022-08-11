@@ -140,7 +140,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         // List<Object> response;
 
         UserOnline user = userOnlineRepo.getUserOnline(loginRequest.getUsername());
-        if (user.getNumberOffail() > 5) {
+        if (user.getNumberOffail() > 3) {
 
             Date now = new Date();
             long diff = (now.getTime() - user.getLastChange().getTime()) / 1000 / 60;
