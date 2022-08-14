@@ -138,11 +138,20 @@ public class UserController {
 
     @PostMapping("/update-account-info")
     @Transactional(readOnly = true)
-    public ResponseEntity<?> upDateAccountInfo(HttpServletRequest httpServletRequest,
+    public ResponseEntity<?> updateAccountInfo(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId,
             @RequestBody UpdateAccountRequest updateAccountRequest)
             throws BusinessException {
         return userService.updateAccountInfo(updateAccountRequest);
+    }
+
+    @PostMapping("/update-bank-account-info")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> updateBankAccountInfo(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId,
+            @RequestBody UpdateAccountRequest updateAccountRequest)
+            throws BusinessException {
+        return userService.updateBankAccountInfo(updateAccountRequest);
     }
 
     @PostMapping("/update-biometric-state")

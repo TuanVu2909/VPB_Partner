@@ -35,6 +35,8 @@ public interface UserService {
 
 	public ResponseEntity<?> updateAccountInfo(UpdateAccountRequest updateRequest);
 
+	public ResponseEntity<?> updateBankAccountInfo(UpdateAccountRequest updateRequest);
+
 	public ResponseEntity<?> createBear(AccountInput input);
 
 	public ResponseEntity<?> getAccountAsset(String custId);

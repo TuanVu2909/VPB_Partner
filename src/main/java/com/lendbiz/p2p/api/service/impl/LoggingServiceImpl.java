@@ -90,6 +90,7 @@ public class LoggingServiceImpl implements LoggingService {
             JSONObject jsonObjectLogs = new JSONObject(insertLogRequest);
 
             producerMessage.sendLogs3Gang(jsonObjectLogs.toString());
+
         } catch (Exception e) {
             log.error(e.getMessage());
         }

@@ -20,10 +20,10 @@ import org.springframework.http.ResponseEntity;
  ***********************************************************************/
 public interface ConfigService {
 
+	public ResponseEntity<?> getCurrentDate();
+
 	public ResponseEntity<?> getProductField();
 
 	public ResponseEntity<?> getProductConfig();
-
-
 
 }

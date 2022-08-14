@@ -274,12 +274,27 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> updateAccountInfo(UpdateAccountRequest updateRequest) {
-        FirstPasswordEntity entity;
+        UpdateAccountEntity entity;
         try {
             entity = accountRepository.updateAccount(updateRequest.getCustId(), updateRequest.getFullName(),
                     updateRequest.getIdCode(), updateRequest.getSex(), updateRequest.getDob(),
                     updateRequest.getAddress(), updateRequest.getIdExp(), updateRequest.getIdDate(),
                     updateRequest.getIdPlace(),
+                    updateRequest.getBankName(),
+                    updateRequest.getBankAccount(),
+                    updateRequest.getBankAccountName());
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
+        }
+
+        return response(toResult(entity));
+    }
+
+    @Override
+    public ResponseEntity<?> updateBankAccountInfo(UpdateAccountRequest updateRequest) {
+        UpdateAccountEntity entity;
+        try {
+            entity = accountRepository.updateBankAccount(updateRequest.getCustId(),
                     updateRequest.getBankName(),
                     updateRequest.getBankAccount(),
                     updateRequest.getBankAccountName());
