@@ -41,7 +41,7 @@ public class MailServiceImpl extends BaseResponse<MailService> implements MailSe
             // mimeMessageHelper.setFrom(new InternetAddress(mail.getMailFrom(),
             // "3Gang.com.vn"));
 
-            mimeMessageHelper.setFrom("cskh@Lendbiz.vn");
+            mimeMessageHelper.setFrom("cskh@3gang.vn");
             mimeMessageHelper.setTo(mail.getMailTo());
             mimeMessageHelper.setText(mail.getMailContent());
 

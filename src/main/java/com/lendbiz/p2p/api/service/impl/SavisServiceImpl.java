@@ -144,10 +144,19 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
         }
 
         if (type == 3) {
-            if (identity.getDateIssued() == null) {
+            if (identity.getType() != 3 && identity.getType() != 5 && identity.getType() != 4) {
                 throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_IDENTITY_DESCRIPTION);
             }
+            // if (identity.getDateIssued() == null) {
+            // throw new BusinessException(ErrorCode.FAILED_IDENTITY,
+            // ErrorCode.FAILED_IDENTITY_DESCRIPTION);
+            // }
         } else {
+
+            if (identity.getType() == 3 || identity.getType() == 5) {
+                throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_IDENTITY_DESCRIPTION);
+            }
+
             if (identity.getIdNo() == null) {
                 throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_IDENTITY_DESCRIPTION);
             } else {
