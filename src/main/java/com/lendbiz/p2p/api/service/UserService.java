@@ -1,6 +1,7 @@
 package com.lendbiz.p2p.api.service;
 
 import com.lendbiz.p2p.api.entity.AccountInput;
+import com.lendbiz.p2p.api.entity.GetEndRateRequest;
 import com.lendbiz.p2p.api.entity.PkgFundInfoEntity;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.request.*;
@@ -100,6 +101,8 @@ public interface UserService {
 	public ResponseEntity<?> getFundInvest(String cid);
 
 	public ResponseEntity<?> endBear(String cid, String documentNo);
+
+	public ResponseEntity<?> getEndRate(GetEndRateRequest request);
 
 	public ResponseEntity<?> getFundInvestDetail(String cid, String packageId);
 

@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.lendbiz.p2p.api.configs.JwtProvider;
 import com.lendbiz.p2p.api.entity.AccountInput;
+import com.lendbiz.p2p.api.entity.GetEndRateRequest;
 import com.lendbiz.p2p.api.entity.User3GEntity;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.exception.BusinessException;
@@ -179,6 +180,15 @@ public class UserController {
             throws BusinessException {
         log.info("[" + requestId + "] << end bear >>");
         return userService.endBear(accountInput.getCustId(), accountInput.getDoc_no());
+    }
+
+    @PostMapping("/end-rate-cal")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getEndRate(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId, @RequestBody GetEndRateRequest request)
+            throws BusinessException {
+        log.info("[" + requestId + "] << end rate info >>");
+        return userService.getEndRate(request);
     }
 
     @GetMapping("/get-account-asset")

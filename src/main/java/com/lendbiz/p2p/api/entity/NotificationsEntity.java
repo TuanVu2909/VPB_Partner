@@ -36,6 +36,6 @@ public class NotificationsEntity {
     @Column(name = "AMOUNT")
     private String amount;
     @Column(name = "INVESTID")
-    private int investId;
+    private String investId;
 
 }

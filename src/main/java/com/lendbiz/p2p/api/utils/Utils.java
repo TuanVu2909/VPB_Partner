@@ -86,23 +86,25 @@ public class Utils {
         return new String(valueEncoded);
     }
 
-public static long test(){
-    LocalDate start = LocalDate.of( 2010 , 1 , 1 ) ;
-    LocalDate stop = LocalDate.now( ZoneId.of( "America/Montreal" ) );
-    long years = java.time.temporal.ChronoUnit.YEARS.between( start , stop );
-    return years;
-}
-
-    public static long getAge(String date){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-        //convert String to LocalDate
-        LocalDate localDate = LocalDate.parse(date, formatter);
-        LocalDate start = localDate; ;
-        LocalDate stop = LocalDate.now( ZoneId.of( "America/Montreal" ) );
-        long years = java.time.temporal.ChronoUnit.YEARS.between( start , stop );
+    public static long test() {
+        LocalDate start = LocalDate.of(2010, 1, 1);
+        LocalDate stop = LocalDate.now(ZoneId.of("America/Montreal"));
+        long years = java.time.temporal.ChronoUnit.YEARS.between(start, stop);
         return years;
     }
+
+    public static long getAge(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        // convert String to LocalDate
+        LocalDate localDate = LocalDate.parse(date, formatter);
+        LocalDate start = localDate;
+        ;
+        LocalDate stop = LocalDate.now(ZoneId.of("America/Montreal"));
+        long years = java.time.temporal.ChronoUnit.YEARS.between(start, stop);
+        return years;
+    }
+
     /**
      * @param inputStringDate
      * @return
@@ -171,6 +173,14 @@ public static long test(){
         }
     }
 
+    public static final Date convertStringToDate3Gang(String value) {
+        try {
+            return new SimpleDateFormat("dd-MM-yyyy").parse(value);
+        } catch (ParseException e) {
+            throw new BusinessException("08", "Can not convert date from string");
+        }
+    }
+
     public static final String convertDateToString(Date date) {
         try {
             Date dt = new Date(date.getTime());
@@ -223,7 +233,6 @@ public static long test(){
 
     private static final Charset ASCII = Charset.forName("US-ASCII");
 
-
     public static String decrypt(String base64Cipher) {
 
         byte[] cipherBytes = java.util.Base64.getDecoder().decode(base64Cipher);
@@ -240,13 +249,12 @@ public static long test(){
             byte[] bytes = Hex.decodeHex(Hex.encodeHexString(result).toCharArray());
             String resultString = new String(bytes, "UTF-8");
             upToNCharacters = resultString.substring(0, Math.min(resultString.length(), 15));
-//            System.out.println("card_code : " + upToNCharacters);
+            // System.out.println("card_code : " + upToNCharacters);
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.NO_DATA, e.getMessage());
         }
         return upToNCharacters;
     }
-
 
     public static HashMap<String, String> createMessage(HashMap<String, String> map) {
         String date = LocalDate.now().toString();
@@ -308,7 +316,6 @@ public static long test(){
             throw new BusinessException(ErrorCode.SIGN_FAIL, ErrorCode.SIGN_FAIL_DESCRIPTION);
         }
 
-
     }
 
     public static BearResponse getProductInfo(BearRequest bearRequest) {
@@ -320,59 +327,61 @@ public static long test(){
         bearResponse.setTerm(bearRequest.getTerm());
         bearResponse.setPid(bearRequest.getPid());
         bearResponse.setPayType(bearRequest.getPayType());
-//        switch (bearRequest.getPid()) {
-//            case "13":
-//                if (monthValue == 6) {
-//                    if (moneyVal < 5000000 && moneyVal >= 1000000) {
-//                        rate = "5.1";
-//                    } else if (moneyVal >= 5000000 && moneyVal < 10000000) {
-//                        rate = "5.6";
-//                    } else if (moneyVal >= 10000000) {
-//                        rate = "6.6";
-//                    } else {
-//                        rate = "0.0";
-//                    }
-//                } else if (monthValue == 12) {
-//                    if (moneyVal < 5000000 && moneyVal >= 1000000) {
-//                        rate = "7.7";
-//                    } else if (moneyVal >= 5000000 && moneyVal < 10000000) {
-//                        rate = "8.2";
-//                    } else if (moneyVal >= 10000000) {
-//                        rate = "8.7";
-//                    } else {
-//                        rate = "0.0";
-//                    }
-//                }
-//                break;
-//            case "14":
-//
-//                switch (bearRequest.getTerm()) {
-//                    case "1":
-//                        rate = "5.5";
-//                        break;
-//                    case "3":
-//                        rate = "6.5";
-//                        break;
-//                    case "6":
-//                        rate = "7.5";
-//                        if (bearRequest.getPayType().equals("1"))
-//                            rate = "7.0";
-//                        break;
-//                    case "12":
-//                        rate = "8.5";
-//                        if (bearRequest.getPayType().equals("1"))
-//                            rate = "8.0";
-//                        break;
-//                    default:
-//                        rate = "0.0";
-//                }
-//
-//                break;
-//            case "15":
-//                rate = "4.3";
-//        }
-        LocalDate startDate = LocalDate.parse(java.time.LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        LocalDate endDate = LocalDate.parse(java.time.LocalDate.now().plusMonths(monthValue).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        // switch (bearRequest.getPid()) {
+        // case "13":
+        // if (monthValue == 6) {
+        // if (moneyVal < 5000000 && moneyVal >= 1000000) {
+        // rate = "5.1";
+        // } else if (moneyVal >= 5000000 && moneyVal < 10000000) {
+        // rate = "5.6";
+        // } else if (moneyVal >= 10000000) {
+        // rate = "6.6";
+        // } else {
+        // rate = "0.0";
+        // }
+        // } else if (monthValue == 12) {
+        // if (moneyVal < 5000000 && moneyVal >= 1000000) {
+        // rate = "7.7";
+        // } else if (moneyVal >= 5000000 && moneyVal < 10000000) {
+        // rate = "8.2";
+        // } else if (moneyVal >= 10000000) {
+        // rate = "8.7";
+        // } else {
+        // rate = "0.0";
+        // }
+        // }
+        // break;
+        // case "14":
+        //
+        // switch (bearRequest.getTerm()) {
+        // case "1":
+        // rate = "5.5";
+        // break;
+        // case "3":
+        // rate = "6.5";
+        // break;
+        // case "6":
+        // rate = "7.5";
+        // if (bearRequest.getPayType().equals("1"))
+        // rate = "7.0";
+        // break;
+        // case "12":
+        // rate = "8.5";
+        // if (bearRequest.getPayType().equals("1"))
+        // rate = "8.0";
+        // break;
+        // default:
+        // rate = "0.0";
+        // }
+        //
+        // break;
+        // case "15":
+        // rate = "4.3";
+        // }
+        LocalDate startDate = LocalDate
+                .parse(java.time.LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        LocalDate endDate = LocalDate.parse(
+                java.time.LocalDate.now().plusMonths(monthValue).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
         float rateValue = Float.parseFloat(rate);
         float amtFloat = (float) moneyVal;
@@ -390,11 +399,11 @@ public static long test(){
 
         float profitPerMonth = yearProfit / 12;
 
-//        float totalByMonth = moneyVal + monthlyProfit;
+        // float totalByMonth = moneyVal + monthlyProfit;
         float profit = profitPerDay * daysBetween;
         float total = moneyVal + profit;
         float monthlyProfit = profit / term;
-        if (bearRequest.getPayType().equals("1")){
+        if (bearRequest.getPayType().equals("1")) {
             bearResponse.setMonthlyProfit(String.valueOf((long) monthlyProfit));
         }
 

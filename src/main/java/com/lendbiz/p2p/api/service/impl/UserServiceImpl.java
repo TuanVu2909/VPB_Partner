@@ -102,6 +102,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     NotifyRepo notifyRepo;
     @Autowired
+    GetRateRepository getRateRepository;
+    @Autowired
     TransFerCodeRepo transFerCodeRepo;
     @Autowired
     BankRepository bankRepository;
@@ -697,6 +699,19 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             throw new BusinessException(notify.getPStatus(), notify.getDes());
         }
         return response(toResult(notify));
+    }
+
+    @Override
+    public ResponseEntity<?> getEndRate(GetEndRateRequest request) {
+        try {
+            GetEndRateEntity rate = getRateRepository.getRateCal(request.getAmount(), request.getPayType(),
+                    request.getStartDate());
+
+            return response(toResult(rate));
+
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, e.getMessage());
+        }
     }
 
     @Override
