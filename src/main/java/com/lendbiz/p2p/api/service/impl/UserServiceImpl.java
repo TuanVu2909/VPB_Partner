@@ -15,6 +15,9 @@
  */
 package com.lendbiz.p2p.api.service.impl;
 
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
@@ -24,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Scanner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.Constants;
@@ -805,6 +809,66 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
         return response(toResult(pkgFilterRepo.getTransHistory(customerId)));
 
+    }
+
+    @Autowired
+    PushRepository pushRepository;
+
+    public String createNotificationOneSignal(NotificationsPushEntity request) {
+        String jsonResponse = "";
+        try {
+            URL url = new URL("https://onesignal.com/api/v1/notifications");
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setUseCaches(false);
+            con.setDoOutput(true);
+            con.setDoInput(true);
+
+            con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+            con.setRequestProperty("Authorization", "Basic ODVmMjdlMGUtODFlYS00OWZmLTg2NmQtMzlkMDg4YjNmODdl");
+            con.setRequestMethod("POST");
+
+            // CreateNotificationOneSignalRequest requestObj = new
+            // CreateNotificationOneSignalRequest();
+            // requestObj.setIncludePlayerIds(request.getDeviceId());
+
+            String strJsonBody = "{" + "\"app_id\": \"7e2a68dd-6d4b-41a4-baad-482d3078030c\","
+                    + "\"include_player_ids\": [\"" + request.getDeviceId() + "\"],"
+                    + "\"data\": {\"id\": \"" + request.getId() + "\", \"investid\": \"" + request.getInvestId()
+                    + "\", \"custid\": \"" + request.getCustId() + "\", \"type\": \"" + request.getType() + "\"},"
+                    + "\"headings\": {\"en\": \""
+                    + request.getTitle() + "\"},"
+                    + "\"contents\": {\"en\": \""
+                    + request.getMessage() + "\"}" + "}";
+
+            System.out.println("strJsonBody:\n" + strJsonBody);
+
+            byte[] sendBytes = strJsonBody.getBytes("UTF-8");
+            con.setFixedLengthStreamingMode(sendBytes.length);
+
+            OutputStream outputStream = con.getOutputStream();
+            outputStream.write(sendBytes);
+
+            int httpResponse = con.getResponseCode();
+            System.out.println("httpResponse: " + httpResponse);
+
+            if (httpResponse >= HttpURLConnection.HTTP_OK && httpResponse < HttpURLConnection.HTTP_BAD_REQUEST) {
+                Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
+                jsonResponse = scanner.useDelimiter("/A").hasNext() ? scanner.next() : "";
+                scanner.close();
+            } else {
+                Scanner scanner = new Scanner(con.getErrorStream(), "UTF-8");
+                jsonResponse = scanner.useDelimiter("/A").hasNext() ? scanner.next() : "";
+                scanner.close();
+            }
+            pushRepository.updateNotifications(1, request.getCustId(), request.getId());
+            System.out.println("jsonResponse:\n" + jsonResponse);
+
+        } catch (Throwable t) {
+            pushRepository.updateNotifications(99, request.getCustId(), request.getId());
+            t.printStackTrace();
+        }
+
+        return jsonResponse;
     }
 
 }
