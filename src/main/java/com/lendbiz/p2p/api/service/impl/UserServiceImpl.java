@@ -142,43 +142,63 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     VerifyAccountRepository verifyAccountRepository;
 
     @Override
+    public ResponseEntity<?> checkExistedAccount(LoginRequest loginRequest) {
+        // List<Object> response;
+        UserOnline user = userOnlineRepo.getUserOnline(loginRequest.getUsername());
+        if (user != null) {
+            return response(toResult(user.getCustId()));
+        } else {
+            throw new BusinessException(ErrorCode.FAIL_LOGIN, ErrorCode.FAIL_LOGIN_DESCRIPTION);
+        }
+
+    }
+
+    @Override
     public ResponseEntity<?> login(LoginRequest loginRequest) {
         // List<Object> response;
 
         UserOnline user = userOnlineRepo.getUserOnline(loginRequest.getUsername());
-        if (user.getNumberOffail() > 3) {
+        if (user != null) {
+            if (user.getNumberOffail() > 4) {
 
-            Date now = new Date();
-            long diff = (now.getTime() - user.getLastChange().getTime()) / 1000 / 60;
+                Date now = new Date();
+                long diff = (now.getTime() - user.getLastChange().getTime()) / 1000 / 60;
 
-            System.out.println(diff);
+                System.out.println(diff);
 
-            if (diff <= 2) {
-                throw new BusinessException(ErrorCode.ACCOUNT_LOCKED,
-                        ErrorCode.ACCOUNT_LOCKED_DESCRIPTION);
+                if (diff <= 15) {
+                    throw new BusinessException(ErrorCode.ACCOUNT_LOCKED,
+                            ErrorCode.ACCOUNT_LOCKED_DESCRIPTION);
+                } else {
+                    userOnlineRepo.resetFail(user.getCustId());
+                }
+
+            }
+
+            if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPwd())) {
+                userOnlineRepo.updateNumberFail(user.getCustId());
+                if (user.getNumberOffail() == 4) {
+                    throw new BusinessException(ErrorCode.ACCOUNT_LOCKED,
+                            ErrorCode.ACCOUNT_LOCKED_DESCRIPTION);
+                }
+                throw new BusinessException(ErrorCode.FAIL_PASSWORD_LOGIN, ErrorCode.FAIL_PASSWORD_LOGIN_DESCRIPTION);
             } else {
-                userOnlineRepo.resetFail(user.getCustId());
+                if (userOnlineRepo.checkAccountMappingExist(user.getCustId()) == 0) {
+                    ReqJoinRequest reqJoinRequest = new ReqJoinRequest();
+                    reqJoinRequest.setMobile(loginRequest.getUsername());
+                    pkgFilterRepo.reqJoin(reqJoinRequest);
+                }
+
+                if (!loginRequest.getDeviceId().equalsIgnoreCase(user.getDeviceId())) {
+                    userOnlineRepo.updateDeviceIdBioState(0, user.getCustId(), loginRequest.getDeviceId());
+                }
+
             }
 
-        }
-
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPwd())) {
-            userOnlineRepo.updateNumberFail(user.getCustId());
-            throw new BusinessException(ErrorCode.FAIL_LOGIN, ErrorCode.FAIL_LOGIN_DESCRIPTION);
+            return response(toResult(user.getCustId()));
         } else {
-            if (userOnlineRepo.checkAccountMappingExist(user.getCustId()) == 0) {
-                ReqJoinRequest reqJoinRequest = new ReqJoinRequest();
-                reqJoinRequest.setMobile(loginRequest.getUsername());
-                pkgFilterRepo.reqJoin(reqJoinRequest);
-            }
-
-            if (!loginRequest.getDeviceId().equalsIgnoreCase(user.getDeviceId())) {
-                userOnlineRepo.updateDeviceIdBioState(0, user.getCustId(), loginRequest.getDeviceId());
-            }
-
+            throw new BusinessException(ErrorCode.FAIL_LOGIN, ErrorCode.FAIL_LOGIN_DESCRIPTION);
         }
-
-        return response(toResult(user.getCustId()));
 
     }
 

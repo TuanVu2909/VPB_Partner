@@ -81,6 +81,15 @@ public class UserController {
     @Autowired
     private LoggingService loggingGetRequest;
 
+    @PostMapping("/check-existed-account")
+    public ResponseEntity<?> checkExistedAccount(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId,
+            @RequestBody LoginRequest loginRequest) {
+        log.info("[" + requestId + "] << checkExistedAccount >>");
+
+        return userService.checkExistedAccount(loginRequest);
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(HttpServletRequest httpServletRequest, @RequestHeader("requestId") String requestId,
             @RequestBody LoginRequest loginRequest) {

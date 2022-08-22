@@ -19,6 +19,8 @@ import org.springframework.http.ResponseEntity;
  ***********************************************************************/
 public interface UserService {
 
+	public ResponseEntity<?> checkExistedAccount(LoginRequest loginRequest);
+
 	public ResponseEntity<?> login(LoginRequest loginRequest);
 
 	// ReqJoin
