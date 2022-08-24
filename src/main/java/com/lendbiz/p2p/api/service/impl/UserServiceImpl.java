@@ -728,15 +728,37 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     public ResponseEntity<?> getEndRate(GetEndRateRequest request) {
         try {
-            GetEndRateEntity rate = getRateRepository.getRateCal(request.getAmount(), request.getPayType(),
-                    request.getStartDate());
+            if (request.getCalType() == 1) {
+                float rate = getRateRepository.callIntNoTerm(request.getAmount(), request.getPayType(),
+                        Utils.convertStringToSqlDate(request.getStartDate()));
 
-            return response(toResult(rate));
+                return response(toResult(rate));
+            } else {
+                float res = getRateRepository.callInt(request.getInvestId());
+
+                return response(toResult(res));
+            }
 
         } catch (Exception e) {
             throw new BusinessException(Constants.FAIL, e.getMessage());
         }
     }
+
+    // @Override
+    // public ResponseEntity<?> getEndRate(GetEndRateRequest request) {
+    // try {
+    // // GetEndRateEntity rate = getRateRepository.getRateCal(request.getAmount(),
+    // // request.getPayType(),
+    // // request.getStartDate());
+
+    // float res = getRateRepository.callInt(7517);
+
+    // return response(toResult(res));
+
+    // } catch (Exception e) {
+    // throw new BusinessException(Constants.FAIL, e.getMessage());
+    // }
+    // }
 
     @Override
     public ResponseEntity<?> getFundInvestDetail(String cid, String packageId) {

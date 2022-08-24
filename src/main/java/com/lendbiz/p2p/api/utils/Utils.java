@@ -282,7 +282,17 @@ public class Utils {
 
     }
 
-    ;
+    public static java.sql.Date convertStringToSqlDate(String date) {
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        java.util.Date parsed;
+        try {
+            parsed = format.parse(date);
+            return new java.sql.Date(parsed.getTime());
+        } catch (ParseException e) {
+            throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
+        }
+
+    }
 
     public static String[] getSignatureNinePay(HashMap<String, String> map) {
         HashMap<String, String> createMessRqId = createMessage(map);

@@ -12,8 +12,10 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class GetEndRateRequest {
+    private int calType; // 1 no term else other
     private float amount;
     private String payType;
     private String startDate;
+    private int investId;
 
 }

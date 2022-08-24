@@ -340,7 +340,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
         // SaleToEmp saleToEmp = new SaleToEmp("", "");
         SaleToEmp saleToEmp = new SaleToEmp("", "");
         request.setSaleToEmp(saleToEmp);
-        request.setStatusPolicy("90");
+        request.setStatusPolicy("100");
         request.setTanggiamPhi(0);
         request.setThoihanbhTu(insuranceRequest.getPv_startDate());
         request.setThoihanbhDen(
