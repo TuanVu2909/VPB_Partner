@@ -27,6 +27,7 @@ public interface UserOnlineRepository extends JpaRepository<UserOnline, String> 
 	@Query(value = "SELECT * FROM bg_account u, cfmast c, allcode a_sex WHERE c.sex=" +
 			"a_sex.cdval AND a_sex.cdname='SEX' " +
 			"AND u.custid = c.custid" +
+			" AND c.status != 'P'" +
 			" AND (TRIM(u.username) = TRIM(?1) or " +
 			"	  c.phone = trim(?1) or c.mobile = trim(?1) or " +
 			"c.mobilesms = trim(?1))", nativeQuery = true)

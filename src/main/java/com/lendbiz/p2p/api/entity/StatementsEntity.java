@@ -32,6 +32,8 @@ public class StatementsEntity {
     private String description;
     @Column(name = "TXTYPE")
     private String type;
+    @Column(name = "TRANCODE")
+    private int tranCode;
     @Column(name = "TITLE")
     private String title;
 

@@ -183,6 +183,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 }
                 throw new BusinessException(ErrorCode.FAIL_PASSWORD_LOGIN, ErrorCode.FAIL_PASSWORD_LOGIN_DESCRIPTION);
             } else {
+                userOnlineRepo.resetFail(user.getCustId());
                 if (userOnlineRepo.checkAccountMappingExist(user.getCustId()) == 0) {
                     ReqJoinRequest reqJoinRequest = new ReqJoinRequest();
                     reqJoinRequest.setMobile(loginRequest.getUsername());

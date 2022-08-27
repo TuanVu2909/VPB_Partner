@@ -98,6 +98,6 @@ public class ErrorCode {
     public static final String ACCOUNT_LOCKED_DESCRIPTION = "Tài khoản bị khoá do bạn nhập sai mật khẩu quá 5 lần! Vui lòng thử lại sau 15 phút!";
 
     public static final String FAIL_PASSWORD_LOGIN = "102";
-    public static final String FAIL_PASSWORD_LOGIN_DESCRIPTION = "Sai mật khẩu";
+    public static final String FAIL_PASSWORD_LOGIN_DESCRIPTION = "Tài khoản hoặc mật khẩu không đúng";
 
 }
