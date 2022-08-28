@@ -44,6 +44,8 @@ public class PortfolioInvest {
     private String color;
     @Column(name = "ENDRATE")
     private double endRate;
+    @Column(name = "ENDAMOUNT")
+    private double endAmount;
     @Column(name = "INTEREST")
     private long interest;
     @Column(name = "ENDINTEREST")
