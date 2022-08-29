@@ -30,6 +30,7 @@ import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.model.Mail;
 import com.lendbiz.p2p.api.model.MyUserDetails;
 import com.lendbiz.p2p.api.request.BearRequest;
+import com.lendbiz.p2p.api.request.CashOutRequest;
 import com.lendbiz.p2p.api.request.GmFundNavRequest;
 import com.lendbiz.p2p.api.request.InsuranceRequest;
 import com.lendbiz.p2p.api.request.LoginRequest;
@@ -646,6 +647,15 @@ public class UserController {
             @RequestBody VerifyEmailRequest request)
             throws BusinessException {
         return mailService.verifyEmail(request);
+    }
+
+    @PostMapping("/withdraw")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> withdraw(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId, @RequestBody CashOutRequest request)
+            throws BusinessException {
+        log.info("[" + requestId + "] << withdraw >>");
+        return userService.withdraw(request);
     }
 
 }

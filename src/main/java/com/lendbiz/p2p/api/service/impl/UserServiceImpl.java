@@ -34,6 +34,7 @@ import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.*;
 import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.producer.ProducerMessage;
 import com.lendbiz.p2p.api.repository.*;
 import com.lendbiz.p2p.api.request.*;
 import com.lendbiz.p2p.api.response.BaseResponse;
@@ -43,6 +44,7 @@ import com.lendbiz.p2p.api.service.UserService;
 import com.lendbiz.p2p.api.utils.StringUtil;
 import com.lendbiz.p2p.api.utils.Utils;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -140,6 +142,9 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Autowired
     VerifyAccountRepository verifyAccountRepository;
+
+    @Autowired
+    private ProducerMessage producerMessage;
 
     @Override
     public ResponseEntity<?> checkExistedAccount(LoginRequest loginRequest) {
@@ -419,7 +424,6 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         } catch (Exception e) {
             throw new BusinessException(Constants.FAIL, e.getMessage());
         }
-
     }
 
     @Override
@@ -912,6 +916,18 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         }
 
         return jsonResponse;
+    }
+
+    @Override
+    public ResponseEntity<?> withdraw(CashOutRequest request) {
+        try {
+            JSONObject jsonObject = new JSONObject(request);
+            producerMessage.sendCashOu3Gang(jsonObject.toString());
+            return response(toResult("OK"));
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
+        }
+
     }
 
 }

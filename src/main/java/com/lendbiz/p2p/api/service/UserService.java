@@ -114,6 +114,8 @@ public interface UserService {
 
 	public ResponseEntity<?> genTransferCode(String amount, String cif);
 
+	public ResponseEntity<?> withdraw(CashOutRequest request);
+
 	String checkSession(String session);
 
 }

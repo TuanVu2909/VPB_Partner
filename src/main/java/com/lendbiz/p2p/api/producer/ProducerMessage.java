@@ -23,4 +23,9 @@ public class ProducerMessage {
         log.info(String.format("#### -> Producing message logs 3 Gang  -> %s", smsJsonData));
         this.kafkaTemplate.send(Constants.KAFKA.TOPIC_LOGS_3GANG, smsJsonData);
     }
+
+    public void sendCashOu3Gang(String smsJsonData) {
+        log.info(String.format("#### -> Producing message cash out 3 Gang  -> %s", smsJsonData));
+        this.kafkaTemplate.send(Constants.KAFKA.TOPIC_CASH_OUT_3GANG, smsJsonData);
+    }
 }
