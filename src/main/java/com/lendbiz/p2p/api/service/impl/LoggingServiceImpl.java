@@ -103,29 +103,33 @@ public class LoggingServiceImpl implements LoggingService {
     @Override
     public void logResponse(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
             Object body) {
+
         StringBuilder stringBuilder = new StringBuilder();
 
         String errorInfo = "";
 
-        if (!StringUtil.isEmty(httpServletRequest.getHeader("RequestId"))) {
-            requestId = httpServletRequest.getHeader("RequestId");
-        } else
-            requestId = "Unknown";
-
-        stringBuilder.append("[" + requestId + "]");
-        stringBuilder.append("RESPONSE ");
-        stringBuilder.append("method=[").append(httpServletRequest.getMethod()).append("] ");
-        stringBuilder.append("path=[").append(httpServletRequest.getRequestURI()).append("] ");
-        stringBuilder.append("responseHeaders=[").append(buildHeadersMap(httpServletResponse)).append("]");
-        stringBuilder.append("responseBody=[").append(body).append("] ");
-
-        InsertLogRequest insertLogRequest;
-        String errorCode = "";
         try {
+            JSONObject bodyJson = new JSONObject(body);
+
+            if (!StringUtil.isEmty(httpServletRequest.getHeader("RequestId"))) {
+                requestId = httpServletRequest.getHeader("RequestId");
+            } else
+                requestId = "Unknown";
+
+            stringBuilder.append("[" + requestId + "]");
+            stringBuilder.append("RESPONSE ");
+            stringBuilder.append("method=[").append(httpServletRequest.getMethod()).append("] ");
+            stringBuilder.append("path=[").append(httpServletRequest.getRequestURI()).append("] ");
+            stringBuilder.append("responseHeaders=[").append(buildHeadersMap(httpServletResponse)).append("]");
+            stringBuilder.append("responseBody=[").append(bodyJson.toString()).append("] ");
+
+            InsertLogRequest insertLogRequest;
+            String errorCode = "";
+
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root;
 
-            JSONObject bodyJson = new JSONObject(body);
+        
             root = mapper.readTree(bodyJson.toString());
             errorCode = root.get("status").asText();
 
@@ -133,7 +137,7 @@ public class LoggingServiceImpl implements LoggingService {
                     sessionId, httpServletRequest.getRequestURI(),
                     0, httpServletRequest.getLocalAddr(), 1,
                     String.valueOf(httpServletResponse.getStatus()), null,
-                    body.toString(), errorCode);
+                    bodyJson.toString(), errorCode);
             JSONObject jsonObjectLogs = new JSONObject(insertLogRequest);
             producerMessage.sendLogs3Gang(jsonObjectLogs.toString());
         } catch (Exception e) {
