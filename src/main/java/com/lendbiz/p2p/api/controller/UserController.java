@@ -388,13 +388,25 @@ public class UserController {
 
     }
 
-    @PostMapping("/api/update-ref")
-    @Transactional(readOnly = true)
+    @PostMapping("/update-ref")
+    @Transactional(readOnly = false)
     public ResponseEntity<?> updateReferenceId(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
             throws BusinessException, UnsupportedEncodingException {
         log.info("[" + requestId + "] << check-updateReferenceId >>");
         return userService.updateReferenceId(accountInput);
+
+    }
+
+    @GetMapping("/get-ref-list")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getRefList(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId, @RequestParam("cif") String cId)
+            throws BusinessException, UnsupportedEncodingException {
+        log.info("[" + requestId + "] << get-ref-list >>");
+        String requestString = "cif=" + cId;
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
+        return userService.getRefList(cId);
 
     }
 

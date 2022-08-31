@@ -144,6 +144,9 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     VerifyAccountRepository verifyAccountRepository;
 
     @Autowired
+    GetReferenceRepo getReferenceRepo;
+
+    @Autowired
     private ProducerMessage producerMessage;
 
     @Override
@@ -556,11 +559,21 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> updateReferenceId(AccountInput input) {
-        NotifyEntity notify = notifyRepo.updateReferenceId(input.getCustId(), input.getPv_refId());
+        NotifyEntity notify = notifyRepo.updateReferenceId(input.getCustId(), input.getRefId());
         if (!notify.getPStatus().equals("01")) {
             throw new BusinessException(notify.getPStatus(), notify.getDes());
         }
         return response(toResult(notify));
+    }
+
+    @Override
+    public ResponseEntity<?> getRefList(String cif) {
+        try {
+            ArrayList<ReferenceIdentity> list = getReferenceRepo.getReferenceId(cif);
+            return response(toResult(list));
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, e.getMessage());
+        }
     }
 
     @Override

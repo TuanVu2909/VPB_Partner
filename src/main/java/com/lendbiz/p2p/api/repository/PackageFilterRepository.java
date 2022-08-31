@@ -438,7 +438,7 @@ public class PackageFilterRepository {
 
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("pv_custId", accountInput.getCustId());
-        params.addValue("pv_refId", accountInput.getPv_refId());
+        params.addValue("pv_refId", accountInput.getRefId());
         Map<String, Object> map = jdbcCall.execute(params);
         Map.Entry<String, Object> entry = map.entrySet().iterator().next();
 

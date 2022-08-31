@@ -72,6 +72,8 @@ public interface UserService {
 
 	public ResponseEntity<?> getCoin(String cif);
 
+	public ResponseEntity<?> getRefList(String cif);
+
 	public ResponseEntity<?> changeCoin(AccountInput input);
 
 	public ResponseEntity<?> updateReferenceId(AccountInput input);
