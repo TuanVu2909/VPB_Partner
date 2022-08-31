@@ -570,7 +570,12 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     public ResponseEntity<?> getRefList(String cif) {
         try {
             ArrayList<ReferenceIdentity> list = getReferenceRepo.getReferenceId(cif);
-            return response(toResult(list));
+            int count = getReferenceRepo.checkRefExisted(cif);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("list", list);
+            map.put("count", count);
+            return response(toResult(map));
         } catch (Exception e) {
             throw new BusinessException(Constants.FAIL, e.getMessage());
         }
