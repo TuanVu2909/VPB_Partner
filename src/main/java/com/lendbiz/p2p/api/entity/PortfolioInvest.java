@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@ToString
+// @ToString
 @NamedStoredProcedureQueries({ //
         @NamedStoredProcedureQuery(name = "PortfolioInvest.getPortfolio", procedureName = "pkg_api.GET_PORTFOLIO", resultClasses = PortfolioInvest.class, parameters = { //
                 @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),

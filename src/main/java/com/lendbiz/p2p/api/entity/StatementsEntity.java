@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@ToString
+// @ToString
 @NamedStoredProcedureQueries({ //
         @NamedStoredProcedureQuery(name = "StatementsEntity.getStatements", procedureName = "pkg_api.GET_STATEMENTS", resultClasses = StatementsEntity.class, parameters = { //
                 @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
