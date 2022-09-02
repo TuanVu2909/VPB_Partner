@@ -14,6 +14,6 @@ import lombok.ToString;
 public class CashOutRequest {
 
    private String custId;
-   private float amount;
+   private double amount;
 
 }

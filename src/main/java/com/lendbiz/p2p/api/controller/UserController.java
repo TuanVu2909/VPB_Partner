@@ -1,8 +1,13 @@
 package com.lendbiz.p2p.api.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -22,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.lendbiz.p2p.api.configs.JwtProvider;
+import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.AccountInput;
 import com.lendbiz.p2p.api.entity.GetEndRateRequest;
 import com.lendbiz.p2p.api.entity.User3GEntity;
@@ -45,6 +52,7 @@ import com.lendbiz.p2p.api.request.UpdateNotificationsRequest;
 import com.lendbiz.p2p.api.request.VerifyEmailRequest;
 import com.lendbiz.p2p.api.response.InfoIdentity;
 import com.lendbiz.p2p.api.response.MyResponse;
+import com.lendbiz.p2p.api.service.FilesStorageService;
 import com.lendbiz.p2p.api.service.LoggingService;
 import com.lendbiz.p2p.api.service.MailService;
 import com.lendbiz.p2p.api.service.SavisService;
@@ -668,6 +676,81 @@ public class UserController {
             throws BusinessException {
         log.info("[" + requestId + "] << withdraw >>");
         return userService.withdraw(request);
+    }
+
+    @GetMapping("/image/{img}/{type}")
+    public void showImage(HttpServletResponse response, @PathVariable String img, @PathVariable String type)
+            throws IOException {
+        response.setContentType("image/png");
+
+        String urlImage = "";
+
+        InputStream inputStream = null;
+
+        urlImage = "images/" + img + "." + type;
+
+        File file = new File(urlImage);
+        try {
+            inputStream = new FileInputStream(file);
+            int nRead;
+            while ((nRead = inputStream.read()) != -1) {
+                response.getWriter().write(nRead);
+            }
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        }
+    }
+
+    @GetMapping("/avatar/{custid}/{source}/{imgname}/{type}")
+    public void showImageMan(HttpServletResponse response, @PathVariable String custid, @PathVariable String source, @PathVariable String imgname, @PathVariable String type)
+            throws IOException {
+        response.setContentType("image/png");
+
+        String urlImage = "";
+
+        InputStream inputStream = null;
+
+        urlImage = "images/" + custid +  "/" + source + "/" + imgname + "." + type;
+
+        System.out.println(urlImage);
+
+        File file = new File(urlImage);
+        try {
+            inputStream = new FileInputStream(file);
+            int nRead;
+            while ((nRead = inputStream.read()) != -1) {
+                response.getWriter().write(nRead);
+            }
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        }
+    }
+
+    @Autowired
+    FilesStorageService fileService;
+
+    @PostMapping("/upload-file")
+    public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file,
+            @RequestParam("cusId") String cusId) {
+
+        String key = "avatar";
+        log.info("[API UPLOAD] request param key:{} id", key, cusId);
+        try {
+            return fileService.uploadFile(file, key, cusId);
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
+        }
+
     }
 
 }

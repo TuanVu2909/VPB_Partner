@@ -15,9 +15,14 @@
  */
 package com.lendbiz.p2p.api.service.impl;
 
+import java.io.File;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
@@ -28,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.Constants;
@@ -44,6 +50,8 @@ import com.lendbiz.p2p.api.service.UserService;
 import com.lendbiz.p2p.api.utils.StringUtil;
 import com.lendbiz.p2p.api.utils.Utils;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.xpath.operations.Number;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -272,6 +280,21 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         try {
             UserInfoEntity user = userInfoRepository.getUserInfo(mobile);
             BankAccountEntity bank = bankAccountRepository.getUserBankAccount(mobile);
+            String urlAvatar = "";
+            String directPathAvatar = "images/" + user.getCustid() + "/avatar/";
+
+            try {
+                File folder = new File(directPathAvatar);
+                for (final File fileEntry : folder.listFiles()) {
+                    if (fileEntry.isDirectory()) {
+                        urlAvatar = "";
+                    } else {
+                        urlAvatar = "https://bagang.lendbiz.vn/lendbiz/avatar/" + user.getCustid() + "/avatar/" + FilenameUtils.removeExtension(fileEntry.getName()) + "/" + FilenameUtils.getExtension(fileEntry.getName());
+                    }
+                }
+            } catch (Exception e) {
+                logger.info(e.getMessage());
+            }
 
             if (bank == null) {
                 bank = new BankAccountEntity();
@@ -283,6 +306,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             Map<String, Object> map = new HashMap<>();
             map.put("user", user);
             map.put("bank", bank);
+            map.put("avatar", urlAvatar);
 
             return response(toResult(map));
 
