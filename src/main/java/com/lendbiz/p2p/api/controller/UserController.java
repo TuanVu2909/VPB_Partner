@@ -443,12 +443,12 @@ public class UserController {
 
     @PostMapping("/verify-face")
     public ResponseEntity<?> verifyFace(HttpServletRequest httpServletRequest,
-            @RequestHeader("requestId") String requestId, @RequestHeader("custid") String session,
+            @RequestHeader("requestId") String requestId,
             @RequestParam("front_file") MultipartFile frontFile, @RequestParam("selfie_file") MultipartFile selfieFile)
             throws BusinessException {
 
         // String custId = userService.checkSession(session);
-        return savisService.callCheckSelfie(frontFile, selfieFile, session);
+        return savisService.callCheckSelfie(frontFile, selfieFile);
     }
 
     @PostMapping("/product-info")

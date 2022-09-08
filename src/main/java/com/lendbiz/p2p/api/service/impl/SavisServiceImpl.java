@@ -293,7 +293,7 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
     }
 
     @Override
-    public ResponseEntity<?> callCheckSelfie(MultipartFile frontId, MultipartFile selfie, String custId) {
+    public ResponseEntity<?> callCheckSelfie(MultipartFile frontId, MultipartFile selfie) {
         logger.info("---------Start call face_general---------------");
         final String uri = Constants.ESIGN_FACE_GENERAL;
         boolean isMatching = false;

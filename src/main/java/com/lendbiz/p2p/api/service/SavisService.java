@@ -19,7 +19,7 @@ public interface SavisService {
 
 	public ResponseEntity<?> callPredict(MultipartFile file, InfoIdentity identity, int type);
 
-	ResponseEntity<?> callCheckSelfie(MultipartFile frontId, MultipartFile selfie, String custId);
+	ResponseEntity<?> callCheckSelfie(MultipartFile frontId, MultipartFile selfie);
 
 	Optional<UserRegisterResponse> callRegisterKyc(MultipartFile frontId);
 

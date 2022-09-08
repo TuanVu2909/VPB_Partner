@@ -34,6 +34,7 @@ import com.lendbiz.p2p.api.repository.C9payProductRepo;
 import com.lendbiz.p2p.api.repository.PackageFilterRepository;
 import com.lendbiz.p2p.api.repository.Products9payRepository;
 import com.lendbiz.p2p.api.request.Create9PayRequest;
+import com.lendbiz.p2p.api.request.IpnRequest;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.response.Card9PayResponse;
 import com.lendbiz.p2p.api.response.NinePayResponse;
@@ -69,7 +70,7 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
 
     private static final String END_POINT = "https://sand-payment.9pay.vn";
 
-    private static final String BASE_URL = "https://uat.lendbiz.vn/mobile/lendbiz/9pay/success";
+    private static final String BASE_URL = "https://3gang.vn";
 
     private static final String PARTNER_KEY = "L6WPKJXN4Y";
 
@@ -191,7 +192,15 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
         byte[] decodedBytes = Base64.getDecoder().decode(byteArrray);
         String decodedString = new String(decodedBytes);
 
+        System.out.println(decodedString);
+
         return response(toResult(decodedString));
+    }
+
+    public static void main(String[] args) throws UnsupportedEncodingException {
+        NinePayServiceImpl n = new NinePayServiceImpl();
+        n.decode9Payment(
+                "eyJhbW91bnQiOjEwMDAwMDAsImFtb3VudF9mb3JlaWduIjpudWxsLCJhbW91bnRfb3JpZ2luYWwiOm51bGwsImFtb3VudF9yZXF1ZXN0IjoxMDAwMDAwLCJiYW5rIjpudWxsLCJjYXJkX2JyYW5kIjoiVkNCIiwiY2FyZF9pbmZvIjp7InRva2VuIjoiNDcxZjQ3NzNhYmMzYWRjYjNlMWUwNzBlOWQ5ZWRkNTUiLCJjYXJkX25hbWUiOiJOR1VZRU4gVkFOIEEiLCJoYXNoX2NhcmQiOiI1NTA0Yjk4MDhjZGFiZTdiZGQxZDg1YjQwMzkyMGIyNSIsImNhcmRfYnJhbmQiOiJWQ0IiLCJjYXJkX251bWJlciI6Ijk3MDQwMHh4eHh4eDAwMTgifSwiY3JlYXRlZF9hdCI6IjIwMjItMDktMDNUMDQ6NTU6MTguMDAwMDAwWiIsImN1cnJlbmN5IjoiVk5EIiwiZGVzY3JpcHRpb24iOiJmbHNsZmxhIiwiZXJyb3JfY29kZSI6bnVsbCwiZXhjX3JhdGUiOm51bGwsImZhaWx1cmVfcmVhc29uIjpudWxsLCJmb3JlaWduX2N1cnJlbmN5IjpudWxsLCJpbnZvaWNlX25vIjoiQlBaNmM2SXZlVyIsImxhbmciOiJ2aSIsIm1ldGhvZCI6IkFUTV9DQVJEIiwicGF5bWVudF9ubyI6MzA5OTY1OTI3Njg4LCJzdGF0dXMiOjUsInRlbm9yIjpudWxsfQ");
     }
 
     @Autowired
@@ -228,25 +237,27 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
             try {
                 root = mapper.readTree(responseEntityStr.getBody());
                 if (root.get("success").toString().equals("false")) {
-                    throw new BusinessException(root.get("error").get("code").toString(), root.get("error").get("message").toString());
+                    throw new BusinessException(root.get("error").get("code").toString(),
+                            root.get("error").get("message").toString());
                 }
-                ProductResponse[] myObjects = mapper.readValue(root.get("data").get("products").toString(), ProductResponse[].class);
+                ProductResponse[] myObjects = mapper.readValue(root.get("data").get("products").toString(),
+                        ProductResponse[].class);
                 if (myObjects.length == 0) {
                     throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
                 }
-//                ArrayList<Product9PayCardEntity> arrayList = new ArrayList<>();
-//                for (int i = 0; i < myObjects.length; i++) {
-//                    Product9PayCardEntity entity = new Product9PayCardEntity();
-//                    entity.setId(myObjects[i].getId());
-//                    entity.setDes(myObjects[i].getDescription());
-//                    entity.setName(myObjects[i].getName());
-//                    entity.setPrice(myObjects[i].getPrice());
-//                    entity.setService_id(myObjects[i].getService().getId());
-//                    entity.setProvider_id(myObjects[i].getProvider().getId());
-//                    arrayList.add(entity);
-//                }
-//                Iterable<Product9PayCardEntity> list = arrayList;
-//                c9payProductRepo.saveAll(list);
+                // ArrayList<Product9PayCardEntity> arrayList = new ArrayList<>();
+                // for (int i = 0; i < myObjects.length; i++) {
+                // Product9PayCardEntity entity = new Product9PayCardEntity();
+                // entity.setId(myObjects[i].getId());
+                // entity.setDes(myObjects[i].getDescription());
+                // entity.setName(myObjects[i].getName());
+                // entity.setPrice(myObjects[i].getPrice());
+                // entity.setService_id(myObjects[i].getService().getId());
+                // entity.setProvider_id(myObjects[i].getProvider().getId());
+                // arrayList.add(entity);
+                // }
+                // Iterable<Product9PayCardEntity> list = arrayList;
+                // c9payProductRepo.saveAll(list);
                 return response(toResult(myObjects));
             } catch (JsonProcessingException e) {
                 throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
@@ -256,7 +267,9 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
             throw new BusinessException(ErrorCode.FAILED_TO_EXECUTE, ErrorCode.FAILED_TO_EXECUTE_DESCRIPTION);
         }
     }
-static Integer PRODUCT_9PAY_ID = 0;
+
+    static Integer PRODUCT_9PAY_ID = 0;
+
     @Override
     public ResponseEntity<?> buyCard(Input9Pay input9Pay) {
 
@@ -279,11 +292,11 @@ static Integer PRODUCT_9PAY_ID = 0;
 
         try {
             PRODUCT_9PAY_ID = Integer.parseInt(input9Pay.getProductId());
-        } catch(NumberFormatException e){
+        } catch (NumberFormatException e) {
             throw new BusinessException("103", "Mã sản phẩm không đúng");
         }
         if (input9Pay.getPhone() != null) {
-            if ( PRODUCT_9PAY_ID < 179 ){
+            if (PRODUCT_9PAY_ID < 179) {
                 throw new BusinessException("103", "Mã sản phẩm không đúng");
             }
             map.add("phone", input9Pay.getPhone());
@@ -303,11 +316,13 @@ static Integer PRODUCT_9PAY_ID = 0;
         // mapping response
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root;
-//            String x = "W3sicHJpY2UiOjEwMDAwMCwiZGlzY291bnQiOjAsImFtb3VudCI6MTAwMDAwLCJjYXJkX3NlcmkiOiI2NTM4NjUxMTUxNDQ2MTcyIiwiY2FyZF9jb2RlIjoiSURHK0JoY1JaSHpZdWptNVVDRDFKVXNqM2pKV3dwOVIwRHN1YkxhS3dLOD0iLCJleHBpcmVkX2F0IjoiMjAyMi0wNS0wNiAxNjoyMjowMCJ9LHsicHJpY2UiOjEwMDAwMCwiZGlzY291bnQiOjAsImFtb3VudCI6MTAwMDAwLCJjYXJkX3NlcmkiOiIwNDg4MTQ3ODE5MzkxOTUwIiwiY2FyZF9jb2RlIjoib0s0OVBjb1AyMHJzRUxEMDAwem4zaFFQSzNyYkJLWlpCcGxtVGJyeU5JQT0iLCJleHBpcmVkX2F0IjoiMjAyMi0wNS0wNiAxNjoyMjowMCJ9LHsicHJpY2UiOjEwMDAwMCwiZGlzY291bnQiOjAsImFtb3VudCI6MTAwMDAwLCJjYXJkX3NlcmkiOiI2MDk2NjU5NjAwNjc1MDkyIiwiY2FyZF9jb2RlIjoiblIwZVRXWklLbXlTWCtvMlpSZXFINTlOcDJsWXJJNm9HVkJRMnNXQ1F5QT0iLCJleHBpcmVkX2F0IjoiMjAyMi0wNS0wNiAxNjoyMjowMCJ9XQ==";
+        // String x =
+        // "W3sicHJpY2UiOjEwMDAwMCwiZGlzY291bnQiOjAsImFtb3VudCI6MTAwMDAwLCJjYXJkX3NlcmkiOiI2NTM4NjUxMTUxNDQ2MTcyIiwiY2FyZF9jb2RlIjoiSURHK0JoY1JaSHpZdWptNVVDRDFKVXNqM2pKV3dwOVIwRHN1YkxhS3dLOD0iLCJleHBpcmVkX2F0IjoiMjAyMi0wNS0wNiAxNjoyMjowMCJ9LHsicHJpY2UiOjEwMDAwMCwiZGlzY291bnQiOjAsImFtb3VudCI6MTAwMDAwLCJjYXJkX3NlcmkiOiIwNDg4MTQ3ODE5MzkxOTUwIiwiY2FyZF9jb2RlIjoib0s0OVBjb1AyMHJzRUxEMDAwem4zaFFQSzNyYkJLWlpCcGxtVGJyeU5JQT0iLCJleHBpcmVkX2F0IjoiMjAyMi0wNS0wNiAxNjoyMjowMCJ9LHsicHJpY2UiOjEwMDAwMCwiZGlzY291bnQiOjAsImFtb3VudCI6MTAwMDAwLCJjYXJkX3NlcmkiOiI2MDk2NjU5NjAwNjc1MDkyIiwiY2FyZF9jb2RlIjoiblIwZVRXWklLbXlTWCtvMlpSZXFINTlOcDJsWXJJNm9HVkJRMnNXQ1F5QT0iLCJleHBpcmVkX2F0IjoiMjAyMi0wNS0wNiAxNjoyMjowMCJ9XQ==";
         try {
             root = mapper.readTree(responseEntityStr.getBody());
             if (root.get("success").toString().equals("false")) {
-                throw new BusinessException(root.get("error").get("code").toString(), root.get("error").get("message").toString());
+                throw new BusinessException(root.get("error").get("code").toString(),
+                        root.get("error").get("message").toString());
             }
 
             Card9PayResponse response = mapper.readValue(root.get("data").toString(), Card9PayResponse.class);
@@ -366,7 +381,6 @@ static Integer PRODUCT_9PAY_ID = 0;
         fieldMap.put("type", "3");
         fieldMap.put("content_id", cId);
 
-
         String[] rq9Pay = Utils.getSignatureNinePay(fieldMap);
         map.add("request_id", rq9Pay[0]);
         map.add("partner_id", PARTNER_KEY);
@@ -388,14 +402,16 @@ static Integer PRODUCT_9PAY_ID = 0;
         try {
             root = mapper.readTree(responseEntityStr.getBody());
             if (root.get("success").toString().equals("false")) {
-                throw new BusinessException(root.get("error").get("code").toString(), root.get("error").get("message").toString());
+                throw new BusinessException(root.get("error").get("code").toString(),
+                        root.get("error").get("message").toString());
             }
             Card9PayResponse response = mapper.readValue(root.get("data").toString(), Card9PayResponse.class);
             byte[] dc = Base64.getDecoder().decode(response.getCards());
             String data = new String(dc, "UTF-8");
-//                System.out.println(data);
-//                Card9PayDetails[] card9PayDetailsList = mapper.readValue(data,Card9PayDetails[].class);
-//                Card9PayDetails card9PayDetails = card9PayDetailsList[0];
+            // System.out.println(data);
+            // Card9PayDetails[] card9PayDetailsList =
+            // mapper.readValue(data,Card9PayDetails[].class);
+            // Card9PayDetails card9PayDetails = card9PayDetailsList[0];
             return response(toResult(response));
         } catch (JsonProcessingException | UnsupportedEncodingException e) {
             throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
@@ -412,7 +428,6 @@ static Integer PRODUCT_9PAY_ID = 0;
         String date = Utils.getDate();
         fieldMap.put("type", "4");
         fieldMap.put("rq_time", date);
-
 
         String[] rq9Pay = Utils.getSignatureNinePay(fieldMap);
         map.add("request_id", rq9Pay[0]);
@@ -433,7 +448,8 @@ static Integer PRODUCT_9PAY_ID = 0;
         try {
             root = mapper.readTree(responseEntityStr.getBody());
             if (root.get("success").toString().equals("false")) {
-                throw new BusinessException(root.get("error").get("code").toString(), root.get("error").get("message").toString());
+                throw new BusinessException(root.get("error").get("code").toString(),
+                        root.get("error").get("message").toString());
             }
             System.out.println(root.get("data").get("balance_info").get(0).toString());
             String response = root.get("data").get("balance_info").get(0).get("balance").asText();
@@ -444,6 +460,12 @@ static Integer PRODUCT_9PAY_ID = 0;
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public ResponseEntity<?> ipn(IpnRequest request) {
+        return response(toResult(request.getResult()));
+
     }
 
 }
