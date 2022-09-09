@@ -72,21 +72,20 @@ import com.lendbiz.p2p.api.utils.Utils;
 @Service("ninepay")
 public class NinePayServiceImpl extends BaseResponse<NinePayService> implements NinePayService {
 
-    // private static final String MERCHANT_KEY = "QMVnnQ"; // test
+    private static final String MERCHANT_KEY = "QMVnnQ"; // test
 
-    private static final String MERCHANT_KEY = "7PTbhe";
+    // private static final String MERCHANT_KEY = "7PTbhe";
 
-    // private static final String MERCHANT_SECRET_KEY = "lwQqFFFEnoLEoeXztZfASxfExvNJEliz1En"; // test
+    private static final String MERCHANT_SECRET_KEY = "lwQqFFFEnoLEoeXztZfASxfExvNJEliz1En"; // test
 
-    private static final String MERCHANT_SECRET_KEY =
-    "8R1TUYSufCv6WDrlFncR8ZHkPAeiFcD9o5a"; // product
+    // private static final String MERCHANT_SECRET_KEY =
+    // "8R1TUYSufCv6WDrlFncR8ZHkPAeiFcD9o5a"; // product
 
-    private static final String END_POINT = "https://payment.9pay.vn";
+    private static final String END_POINT = "https://sand-payment.9pay.vn";
 
     private static final String BASE_URL = "https://3gang.vn";
 
-    // private static final String PARTNER_KEY = "L6WPKJXN4Y";
-    private static final String PARTNER_KEY = "QDKZYOKPER";
+    private static final String PARTNER_KEY = "L6WPKJXN4Y";
 
     @Autowired
     private RestTemplate restTemplate;

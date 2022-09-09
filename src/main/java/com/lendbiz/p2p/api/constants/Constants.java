@@ -96,10 +96,10 @@ public class Constants {
 	// metadate api use register face
 	public static final String METADATA = "{\"source\":\"24a00f5d-e625-4bc4-8384-c906848c03f3\"}";
 	// 9pay api card
-	public static final String NINE_PAY_PRODUCTS = "https://api-console.9pay.vn/service/wh/products";
-	public static final String NINE_PAY_CARD = "https://api-console.9pay.vn/service/wh/order/card";
-	public static final String NINE_PAY_INFO_TRANS = "https://api-console.9pay.vn/service/wh/order/check-info";
-	public static final String NINE_PAY_BALANCE = "https://api-console.9pay.vn/service/account/balance";
+	public static final String NINE_PAY_PRODUCTS = "https://stg-api-console.9pay.mobi/service/wh/products";
+	public static final String NINE_PAY_CARD = "https://stg-api-console.9pay.mobi/service/wh/order/card";
+	public static final String NINE_PAY_INFO_TRANS = "https://stg-api-console.9pay.mobi/service/wh/order/check-info";
+	public static final String NINE_PAY_BALANCE = "https://stg-api-console.9pay.mobi/service/account/balance";
 
 	public static final String SIGN_IMAGE_DEFAULT = "default_docs\\success.png";
 	public static final String THRESHOLD = "0.75";
@@ -108,19 +108,19 @@ public class Constants {
 	public static final String HMAC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgcaKR79S/g+e+kCvGBAa957NCgAnuS4IEIUcAgoDfOSfTRaXeMHYnCD6b8apuoxAF7rA0/oLXJM0flhztNSpzW8oHVBksO5wZlFnT0U5eftfWixxoZHRJHPIQlcoXHAPt6oUiKqIpAnMdYP269gPZDiW75k9D6FfxosymXqVWO9F6yUbYU/REbQl8sn5H04q9IKeIW5MOtmMFGrGxZKecjW+a/Km3FIPfl4INM01rOJRWTCCfq0GimaYdy9JYcaNxM1QBqmy1UdyxAE9MKN4QsQqL3xLZDxt1ykcsLgF1BaF3OT7s4btZp88y0AuJ7LObVxS1wHevatvJl5f5DLq0QIDAQAB";
 
 	public static final String MB_TRANSFER = "https://api-public.mbbank.com.vn/ms/funds-partner/transfer-fund/v1.0/make-transfer-partner";
-	public static final String MB_GET_TOKEN_URL = "https://api-public.mbbank.com.vn/oauth2/v1/token";
-	public static final String MB_GET_NAME_URL = "https://api-public.mbbank.com.vn/ms/onbehalfpayment/v1.0/onbehalfpayment/v1.0/account/credit/name";
-	public static final String MB_CONVERT_ID_CARD = "https://mbcard.mbbank.com.vn:8446/mbcardgw/internet/cardinfo/v1_0/generatetoken";
+	public static final String MB_GET_TOKEN_URL = "https://api-sandbox.mbbank.com.vn/oauth2/v1/token";
+	public static final String MB_GET_NAME_URL = "https://api-sandbox.mbbank.com.vn/ms/onbehalfpayment/v1.0/onbehalfpayment/v1.0/account/credit/name";
+	public static final String MB_CONVERT_ID_CARD = "https://mbcardtest.mbbank.com.vn:8446/mbcardgw/internet/cardinfo/v1_0/generatetoken";
 	public static final String MBBANK_BASIC_AUTHEN_STRING = "CNyagnuEbAZuUiI6qNFmFDYGPK14cNdt:iWpKiQT787zW2TMq";
 
 	public interface KAFKA {
-		public static final String TOPIC_LOGS_MB = "topic_mb_logs";
-		public static final String GROUP_MB_ID = "group_mb_id";
+		public static final String TOPIC_LOGS_MB = "topic_mb_logs_test";
+		public static final String GROUP_MB_ID = "group_mb_id_test";
 
-		public static final String TOPIC_LOGS_3GANG = "topic_3gang_logs";
-		public static final String GROUP_3GANG_ID = "group_3gang_id";
+		public static final String TOPIC_LOGS_3GANG = "topic_3gang_logs_test";
+		public static final String GROUP_3GANG_ID = "group_3gang_id_test";
 
-		public static final String TOPIC_CASH_OUT_3GANG = "topic_cash_out";
-        public static final String GROUP_CASH_OUT_3GANG_ID = "group_cash_out_id";
+		public static final String TOPIC_CASH_OUT_3GANG = "topic_cash_out_test";
+        public static final String GROUP_CASH_OUT_3GANG_ID = "group_cash_out_id_test";
 	}
 }
