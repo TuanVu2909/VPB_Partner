@@ -6,7 +6,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.lendbiz.p2p.api.entity.TestDepositEntity;
 
-public interface TestDepositRepo extends JpaRepository<TestDepositEntity, String> {
+public interface NinePayDepositRepo extends JpaRepository<TestDepositEntity, String> {
 
     @Procedure("TestDepositEntity.insertApiTrans")
     TestDepositEntity insertApiTrans(@Param("p_amount") String amount, @Param("p_code") String code);

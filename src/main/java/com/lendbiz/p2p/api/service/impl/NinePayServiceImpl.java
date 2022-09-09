@@ -16,32 +16,16 @@
 package com.lendbiz.p2p.api.service.impl;
 
 import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Random;
+import java.util.TreeMap;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lendbiz.p2p.api.constants.Constants;
-import com.lendbiz.p2p.api.constants.ErrorCode;
-import com.lendbiz.p2p.api.entity.*;
-import com.lendbiz.p2p.api.exception.BusinessException;
-import com.lendbiz.p2p.api.repository.C9payProductRepo;
-import com.lendbiz.p2p.api.repository.PackageFilterRepository;
-import com.lendbiz.p2p.api.repository.Products9payRepository;
-import com.lendbiz.p2p.api.request.Create9PayRequest;
-import com.lendbiz.p2p.api.request.IpnRequest;
-import com.lendbiz.p2p.api.response.BaseResponse;
-import com.lendbiz.p2p.api.response.Card9PayResponse;
-import com.lendbiz.p2p.api.response.NinePayResponse;
-import com.lendbiz.p2p.api.response.ProductResponse;
-import com.lendbiz.p2p.api.service.NinePayService;
-
-import com.lendbiz.p2p.api.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -51,6 +35,30 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lendbiz.p2p.api.constants.Constants;
+import com.lendbiz.p2p.api.constants.ErrorCode;
+import com.lendbiz.p2p.api.entity.Card9PayDetails;
+import com.lendbiz.p2p.api.entity.Card9PayEntity;
+import com.lendbiz.p2p.api.entity.Input9Pay;
+import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.repository.C9payProductRepo;
+import com.lendbiz.p2p.api.repository.NinePayDepositRepo;
+import com.lendbiz.p2p.api.repository.PackageFilterRepository;
+import com.lendbiz.p2p.api.repository.Products9payRepository;
+import com.lendbiz.p2p.api.repository.TransFerCodeRepo;
+import com.lendbiz.p2p.api.request.Create9PayRequest;
+import com.lendbiz.p2p.api.request.IpnRequest;
+import com.lendbiz.p2p.api.response.BaseResponse;
+import com.lendbiz.p2p.api.response.Card9PayResponse;
+import com.lendbiz.p2p.api.response.ProductResponse;
+import com.lendbiz.p2p.api.response.The9PayIPNResponse;
+import com.lendbiz.p2p.api.service.NinePayService;
+import com.lendbiz.p2p.api.utils.Utils;
 
 /***********************************************************************
  *
@@ -64,15 +72,21 @@ import org.springframework.web.client.RestTemplate;
 @Service("ninepay")
 public class NinePayServiceImpl extends BaseResponse<NinePayService> implements NinePayService {
 
-    private static final String MERCHANT_KEY = "QMVnnQ";
+    // private static final String MERCHANT_KEY = "QMVnnQ"; // test
 
-    private static final String MERCHANT_SECRET_KEY = "lwQqFFFEnoLEoeXztZfASxfExvNJEliz1En";
+    private static final String MERCHANT_KEY = "7PTbhe";
 
-    private static final String END_POINT = "https://sand-payment.9pay.vn";
+    // private static final String MERCHANT_SECRET_KEY = "lwQqFFFEnoLEoeXztZfASxfExvNJEliz1En"; // test
+
+    private static final String MERCHANT_SECRET_KEY =
+    "8R1TUYSufCv6WDrlFncR8ZHkPAeiFcD9o5a"; // product
+
+    private static final String END_POINT = "https://payment.9pay.vn";
 
     private static final String BASE_URL = "https://3gang.vn";
 
-    private static final String PARTNER_KEY = "L6WPKJXN4Y";
+    // private static final String PARTNER_KEY = "L6WPKJXN4Y";
+    private static final String PARTNER_KEY = "QDKZYOKPER";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -200,7 +214,7 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
     public static void main(String[] args) throws UnsupportedEncodingException {
         NinePayServiceImpl n = new NinePayServiceImpl();
         n.decode9Payment(
-                "eyJhbW91bnQiOjEwMDAwMDAsImFtb3VudF9mb3JlaWduIjpudWxsLCJhbW91bnRfb3JpZ2luYWwiOm51bGwsImFtb3VudF9yZXF1ZXN0IjoxMDAwMDAwLCJiYW5rIjpudWxsLCJjYXJkX2JyYW5kIjoiVkNCIiwiY2FyZF9pbmZvIjp7InRva2VuIjoiNDcxZjQ3NzNhYmMzYWRjYjNlMWUwNzBlOWQ5ZWRkNTUiLCJjYXJkX25hbWUiOiJOR1VZRU4gVkFOIEEiLCJoYXNoX2NhcmQiOiI1NTA0Yjk4MDhjZGFiZTdiZGQxZDg1YjQwMzkyMGIyNSIsImNhcmRfYnJhbmQiOiJWQ0IiLCJjYXJkX251bWJlciI6Ijk3MDQwMHh4eHh4eDAwMTgifSwiY3JlYXRlZF9hdCI6IjIwMjItMDktMDNUMDQ6NTU6MTguMDAwMDAwWiIsImN1cnJlbmN5IjoiVk5EIiwiZGVzY3JpcHRpb24iOiJmbHNsZmxhIiwiZXJyb3JfY29kZSI6bnVsbCwiZXhjX3JhdGUiOm51bGwsImZhaWx1cmVfcmVhc29uIjpudWxsLCJmb3JlaWduX2N1cnJlbmN5IjpudWxsLCJpbnZvaWNlX25vIjoiQlBaNmM2SXZlVyIsImxhbmciOiJ2aSIsIm1ldGhvZCI6IkFUTV9DQVJEIiwicGF5bWVudF9ubyI6MzA5OTY1OTI3Njg4LCJzdGF0dXMiOjUsInRlbm9yIjpudWxsfQ");
+                "eyJhbW91bnQiOjEwMDAwLCJhbW91bnRfZm9yZWlnbiI6bnVsbCwiYW1vdW50X29yaWdpbmFsIjpudWxsLCJhbW91bnRfcmVxdWVzdCI6MTAwMDAsImJhbmsiOm51bGwsImNhcmRfYnJhbmQiOiJWSVNBIiwiY2FyZF9pbmZvIjp7InRva2VuIjoiYTAxNTQ2ZTc5MDMzNDcwZTZkMjU4ODQ0ZWU3N2Y4NzIiLCJjYXJkX25hbWUiOiJIT0FORyBUSEFOSCBUVSIsImhhc2hfY2FyZCI6IjVhZWU2ZDVlOWNlZTI1N2NhZTBjZGU2N2NjNTlmYjY5IiwiY2FyZF9icmFuZCI6IlZJU0EiLCJjYXJkX251bWJlciI6IjQyMjA3NXh4eHh4eDkxNTkifSwiY3JlYXRlZF9hdCI6IjIwMjItMDktMDhUMDE6MTY6NTQuMDAwMDAwWiIsImN1cnJlbmN5IjoiVk5EIiwiZGVzY3JpcHRpb24iOiJwcm9kLW9jYiIsImVycm9yX2NvZGUiOiI0MDAiLCJleGNfcmF0ZSI6bnVsbCwiZmFpbHVyZV9yZWFzb24iOm51bGwsImZvcmVpZ25fY3VycmVuY3kiOm51bGwsImludm9pY2Vfbm8iOiIwZDZQZVZpeFZQIiwibGFuZyI6InZpIiwibWV0aG9kIjoiQ1JFRElUX0NBUkQiLCJwYXltZW50X25vIjozMTA1MDIxMTU4NTEsInN0YXR1cyI6NSwidGVub3IiOm51bGx9");
     }
 
     @Autowired
@@ -462,9 +476,34 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
         return null;
     }
 
+    @Autowired
+    NinePayDepositRepo ninePayDepositRepo;
+
+    @Autowired
+    TransFerCodeRepo transFerCodeRepo;
+
     @Override
     public ResponseEntity<?> ipn(IpnRequest request) {
-        return response(toResult(request.getResult()));
+
+        ObjectMapper mapper = new ObjectMapper();
+        The9PayIPNResponse result = new The9PayIPNResponse();
+        JsonNode root;
+        try {
+            byte[] decodedBytes = Base64.getDecoder().decode(request.getResult());
+            String decodedString = new String(decodedBytes);
+
+            root = mapper.readTree(decodedString);
+            result = mapper.readValue(root.toString(), The9PayIPNResponse.class);
+
+            if (result.getStatus() == 5) {
+                ninePayDepositRepo.insertApiTrans(String.valueOf(result.getAmount()), result.getDescription());
+            }
+
+        } catch (JsonProcessingException e) {
+            logger.info(e.getMessage());
+        }
+
+        return response(toResult(result.getStatus()));
 
     }
 

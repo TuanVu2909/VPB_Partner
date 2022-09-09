@@ -226,13 +226,13 @@ public class NinePayController {
     }
 
     @PostMapping("/9pay/ipn")
-    public String ipn(HttpServletRequest httpServletRequest,
-            @RequestBody IpnRequest request) throws UnsupportedEncodingException {
+    public ResponseEntity<?> ipn(HttpServletRequest httpServletRequest,
+            IpnRequest request) throws UnsupportedEncodingException {
 
         log.info(request.getResult());
         log.info(request.getChecksum());
 
-        return request.getResult();
+        return ninepayService.ipn(request);
     }
 
 }

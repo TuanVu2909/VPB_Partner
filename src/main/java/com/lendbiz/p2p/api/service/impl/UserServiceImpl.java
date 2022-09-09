@@ -867,7 +867,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     }
 
     @Autowired
-    TestDepositRepo testRepo;
+    NinePayDepositRepo ninePayDepositRepo;
 
     @Override
     public ResponseEntity<?> genTransferCode(String amount, String cif) {
@@ -875,7 +875,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         if (entity == null) {
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         }
-        testRepo.insertApiTrans(amount, entity.getTransferCode());
+        // ninePayDepositRepo.insertApiTrans(amount, entity.getTransferCode());
         return response(toResult(entity));
     }
 

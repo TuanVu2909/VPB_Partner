@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Setter
 @ToString
 @NamedStoredProcedureQueries({ //
-                @NamedStoredProcedureQuery(name = "TestDepositEntity.insertApiTrans", resultClasses = TestDepositEntity.class, procedureName = "pkg_api.prc_test_deposit", parameters = { //
+                @NamedStoredProcedureQuery(name = "TestDepositEntity.insertApiTrans", resultClasses = TestDepositEntity.class, procedureName = "pkg_api.PRC_9PAY_SUCCESS", parameters = { //
                                 @StoredProcedureParameter(name = "p_amount", mode = ParameterMode.IN, type = String.class),
                                 @StoredProcedureParameter(name = "p_code", mode = ParameterMode.IN, type = String.class)
                 }) //
