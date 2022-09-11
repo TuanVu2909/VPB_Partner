@@ -25,5 +25,6 @@ public class UpdateAccountRequest {
     private String bankName;
     private String bankAccount;
     private String bankAccountName;
+    private String bankCode;
 
 }

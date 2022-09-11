@@ -277,10 +277,10 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     }
 
     @Override
-    public ResponseEntity<?> getUserInfo(String mobile) {
+    public ResponseEntity<?> getUserInfo(String custId) {
         try {
-            UserInfoEntity user = userInfoRepository.getUserInfo(mobile);
-            BankAccountEntity bank = bankAccountRepository.getUserBankAccount(mobile);
+            UserInfoEntity user = userInfoRepository.getUserInfo(custId);
+            BankAccountEntity bank = bankAccountRepository.getUserBankAccount(custId);
             String urlAvatar = "";
             String directPathAvatar = "images/" + user.getCustid() + "/avatar/";
 
@@ -342,7 +342,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     updateRequest.getIdPlace(),
                     updateRequest.getBankName(),
                     updateRequest.getBankAccount(),
-                    updateRequest.getBankAccountName());
+                    updateRequest.getBankAccountName(),
+                    updateRequest.getBankCode());
         } catch (Exception e) {
             throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
         }
@@ -357,7 +358,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             entity = accountRepository.updateBankAccount(updateRequest.getCustId(),
                     updateRequest.getBankName(),
                     updateRequest.getBankAccount(),
-                    updateRequest.getBankAccountName());
+                    updateRequest.getBankAccountName(),
+                    updateRequest.getBankCode());
         } catch (Exception e) {
             throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
         }

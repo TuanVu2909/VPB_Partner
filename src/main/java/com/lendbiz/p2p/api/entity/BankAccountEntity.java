@@ -23,4 +23,8 @@ public class BankAccountEntity {
 
     @Column(name = "BANKACNAME")
     private String bankAcName;
+
+
+    @Column(name = "BANKCODE")
+    private String bankCode;
 }
