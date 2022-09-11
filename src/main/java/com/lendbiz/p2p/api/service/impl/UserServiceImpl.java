@@ -203,6 +203,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 if (userOnlineRepo.checkAccountMappingExist(user.getCustId()) == 0) {
                     ReqJoinRequest reqJoinRequest = new ReqJoinRequest();
                     reqJoinRequest.setMobile(loginRequest.getUsername());
+                    reqJoinRequest.setDeviceId(loginRequest.getDeviceId());
                     pkgFilterRepo.reqJoin(reqJoinRequest);
                 }
 
