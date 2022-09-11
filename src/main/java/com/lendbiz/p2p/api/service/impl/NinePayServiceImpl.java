@@ -76,10 +76,10 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
 
     private static final String MERCHANT_KEY = "7PTbhe";
 
-    // private static final String MERCHANT_SECRET_KEY = "lwQqFFFEnoLEoeXztZfASxfExvNJEliz1En"; // test
+    // private static final String MERCHANT_SECRET_KEY =
+    // "lwQqFFFEnoLEoeXztZfASxfExvNJEliz1En"; // test
 
-    private static final String MERCHANT_SECRET_KEY =
-    "8R1TUYSufCv6WDrlFncR8ZHkPAeiFcD9o5a"; // product
+    private static final String MERCHANT_SECRET_KEY = "8R1TUYSufCv6WDrlFncR8ZHkPAeiFcD9o5a"; // product
 
     private static final String END_POINT = "https://payment.9pay.vn";
 
@@ -213,8 +213,35 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
 
     public static void main(String[] args) throws UnsupportedEncodingException {
         NinePayServiceImpl n = new NinePayServiceImpl();
-        n.decode9Payment(
-                "eyJhbW91bnQiOjEwMDAwLCJhbW91bnRfZm9yZWlnbiI6bnVsbCwiYW1vdW50X29yaWdpbmFsIjpudWxsLCJhbW91bnRfcmVxdWVzdCI6MTAwMDAsImJhbmsiOm51bGwsImNhcmRfYnJhbmQiOiJWSVNBIiwiY2FyZF9pbmZvIjp7InRva2VuIjoiYTAxNTQ2ZTc5MDMzNDcwZTZkMjU4ODQ0ZWU3N2Y4NzIiLCJjYXJkX25hbWUiOiJIT0FORyBUSEFOSCBUVSIsImhhc2hfY2FyZCI6IjVhZWU2ZDVlOWNlZTI1N2NhZTBjZGU2N2NjNTlmYjY5IiwiY2FyZF9icmFuZCI6IlZJU0EiLCJjYXJkX251bWJlciI6IjQyMjA3NXh4eHh4eDkxNTkifSwiY3JlYXRlZF9hdCI6IjIwMjItMDktMDhUMDE6MTY6NTQuMDAwMDAwWiIsImN1cnJlbmN5IjoiVk5EIiwiZGVzY3JpcHRpb24iOiJwcm9kLW9jYiIsImVycm9yX2NvZGUiOiI0MDAiLCJleGNfcmF0ZSI6bnVsbCwiZmFpbHVyZV9yZWFzb24iOm51bGwsImZvcmVpZ25fY3VycmVuY3kiOm51bGwsImludm9pY2Vfbm8iOiIwZDZQZVZpeFZQIiwibGFuZyI6InZpIiwibWV0aG9kIjoiQ1JFRElUX0NBUkQiLCJwYXltZW50X25vIjozMTA1MDIxMTU4NTEsInN0YXR1cyI6NSwidGVub3IiOm51bGx9");
+        // n.decode9Payment(
+        // "eyJhbW91bnQiOjEwMDAwLCJhbW91bnRfZm9yZWlnbiI6bnVsbCwiYW1vdW50X29yaWdpbmFsIjpudWxsLCJhbW91bnRfcmVxdWVzdCI6MTAwMDAsImJhbmsiOm51bGwsImNhcmRfYnJhbmQiOiJWSVNBIiwiY2FyZF9pbmZvIjp7InRva2VuIjoiYTAxNTQ2ZTc5MDMzNDcwZTZkMjU4ODQ0ZWU3N2Y4NzIiLCJjYXJkX25hbWUiOiJIT0FORyBUSEFOSCBUVSIsImhhc2hfY2FyZCI6IjVhZWU2ZDVlOWNlZTI1N2NhZTBjZGU2N2NjNTlmYjY5IiwiY2FyZF9icmFuZCI6IlZJU0EiLCJjYXJkX251bWJlciI6IjQyMjA3NXh4eHh4eDkxNTkifSwiY3JlYXRlZF9hdCI6IjIwMjItMDktMDhUMDE6MTY6NTQuMDAwMDAwWiIsImN1cnJlbmN5IjoiVk5EIiwiZGVzY3JpcHRpb24iOiJwcm9kLW9jYiIsImVycm9yX2NvZGUiOiI0MDAiLCJleGNfcmF0ZSI6bnVsbCwiZmFpbHVyZV9yZWFzb24iOm51bGwsImZvcmVpZ25fY3VycmVuY3kiOm51bGwsImludm9pY2Vfbm8iOiIwZDZQZVZpeFZQIiwibGFuZyI6InZpIiwibWV0aG9kIjoiQ1JFRElUX0NBUkQiLCJwYXltZW50X25vIjozMTA1MDIxMTU4NTEsInN0YXR1cyI6NSwidGVub3IiOm51bGx9");
+
+        ObjectMapper mapper = new ObjectMapper();
+        The9PayIPNResponse result = new The9PayIPNResponse();
+        JsonNode root;
+        try {
+            String s = "eyJhbW91bnQiOjUwMDAwLCJhbW91bnRfZm9yZWlnbiI6bnVsbCwiYW1vdW50X29yaWdpbmFsIjpudWxsLCJhbW91bnRfcmVxdWVzdCI6NTAwMDAsImJhbmsiOm51bGwsImNhcmRfYnJhbmQiOiJWSVNBIiwiY2FyZF9pbmZvIjp7InRva2VuIjoiNDM0Njc2YWNjMmZjZWNkYWZjZDhhZjg3NzljN2VjMDUiLCJjYXJkX25hbWUiOiJIT0FORyBUSEFOSCBUVSIsImhhc2hfY2FyZCI6ImFhZGU1YmUwNGZhNjhmMTViNmY4ODVmMGY4OWYzYzc3IiwiY2FyZF9icmFuZCI6IlZJU0EiLCJjYXJkX251bWJlciI6IjQyMjE1MHh4eHh4eDQ1OTIifSwiY3JlYXRlZF9hdCI6IjIwMjItMDktMDlUMDQ6MjI6MTAuMDAwMDAwWiIsImN1cnJlbmN5IjoiVk5EIiwiZGVzY3JpcHRpb24iOiIwNDY3ODMxNzA5MDkyMDIyMDYwOTQzIiwiZXJyb3JfY29kZSI6IjQwMCIsImV4Y19yYXRlIjpudWxsLCJmYWlsdXJlX3JlYXNvbiI6bnVsbCwiZm9yZWlnbl9jdXJyZW5jeSI6bnVsbCwiaW52b2ljZV9ubyI6ImY4N0RpZkR0MmoiLCJsYW5nIjoidmkiLCJtZXRob2QiOiJDUkVESVRfQ0FSRCIsInBheW1lbnRfbm8iOjMxMDYyNjk0Nzg1MCwic3RhdHVzIjo1LCJ0ZW5vciI6bnVsbH0";
+            byte[] decodedBytes = Base64.getDecoder().decode(s);
+            String decodedString = new String(decodedBytes);
+
+            root = mapper.readTree(decodedString);
+            result = mapper.readValue(root.toString(), The9PayIPNResponse.class);
+
+            System.out.println(decodedString);
+
+            if (result.getStatus() == 5) {
+                String amountAfterChargeFee = "0";
+                if (result.getMethod().equalsIgnoreCase("CREDIT_1CARD")) {
+                    amountAfterChargeFee = String.valueOf(result.getAmount() - (result.getAmount() * 0.0235));
+                } else {
+                    amountAfterChargeFee = String.valueOf(result.getAmount() - (result.getAmount() * 0.0075));
+                }
+                System.out.println(amountAfterChargeFee);
+            }
+
+        } catch (JsonProcessingException e) {
+            // logger.info(e.getMessage());
+        }
     }
 
     @Autowired
@@ -496,7 +523,14 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
             result = mapper.readValue(root.toString(), The9PayIPNResponse.class);
 
             if (result.getStatus() == 5) {
-                ninePayDepositRepo.insertApiTrans(String.valueOf(result.getAmount()), result.getDescription());
+                String amountAfterChargeFee = "0";
+                if (result.getMethod().equalsIgnoreCase("CREDIT_1CARD")) {
+                    amountAfterChargeFee = String.valueOf(result.getAmount() - (result.getAmount() * 0.0235));
+                } else {
+                    amountAfterChargeFee = String.valueOf(result.getAmount() - (result.getAmount() * 0.0075));
+                }
+                ninePayDepositRepo.insertApiTrans(amountAfterChargeFee,
+                        result.getDescription() + " " + request.getResult());
             }
 
         } catch (JsonProcessingException e) {

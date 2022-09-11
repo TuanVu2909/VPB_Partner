@@ -20,6 +20,7 @@ import com.lendbiz.p2p.api.repository.PackageFilterRepository;
 import com.lendbiz.p2p.api.repository.ProductGMRepository;
 import com.lendbiz.p2p.api.request.Create9PayRequest;
 import com.lendbiz.p2p.api.request.IpnRequest;
+import com.lendbiz.p2p.api.service.LoggingService;
 import com.lendbiz.p2p.api.service.NinePayService;
 
 import com.lendbiz.p2p.api.service.UserService;
@@ -225,12 +226,17 @@ public class NinePayController {
 
     }
 
+    @Autowired
+    private LoggingService loggingGetRequest;
+    
     @PostMapping("/9pay/ipn")
     public ResponseEntity<?> ipn(HttpServletRequest httpServletRequest,
             IpnRequest request) throws UnsupportedEncodingException {
 
         log.info(request.getResult());
         log.info(request.getChecksum());
+
+        loggingGetRequest.logRequest(httpServletRequest, "result: " + request.getResult());
 
         return ninepayService.ipn(request);
     }
