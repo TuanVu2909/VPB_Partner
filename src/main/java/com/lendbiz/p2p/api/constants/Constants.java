@@ -120,7 +120,7 @@ public class Constants {
 		public static final String TOPIC_LOGS_3GANG = "topic_3gang_logs";
 		public static final String GROUP_3GANG_ID = "group_3gang_id";
 
-		public static final String TOPIC_CASH_OUT_3GANG = "topic_cash_out";
-        public static final String GROUP_CASH_OUT_3GANG_ID = "group_cash_out_id";
+		public static final String TOPIC_CASH_OUT_3GANG = "topic_cash_out_new";
+        public static final String GROUP_CASH_OUT_3GANG_ID = "group_cash_out_id_new";
 	}
 }
