@@ -100,4 +100,6 @@ public class ErrorCode {
     public static final String FAIL_PASSWORD_LOGIN = "102";
     public static final String FAIL_PASSWORD_LOGIN_DESCRIPTION = "Tài khoản hoặc mật khẩu không đúng";
 
+    public static final String MOBILE_EXISTED = "Số điện thoại đã được sử dụng";
+
 }

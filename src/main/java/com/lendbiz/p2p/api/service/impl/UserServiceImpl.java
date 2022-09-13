@@ -290,7 +290,9 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     if (fileEntry.isDirectory()) {
                         urlAvatar = "";
                     } else {
-                        urlAvatar = "https://bagang.lendbiz.vn/lendbiz/avatar/" + user.getCustid() + "/avatar/" + FilenameUtils.removeExtension(fileEntry.getName()) + "/" + FilenameUtils.getExtension(fileEntry.getName());
+                        urlAvatar = "https://bagang.lendbiz.vn/lendbiz/avatar/" + user.getCustid() + "/avatar/"
+                                + FilenameUtils.removeExtension(fileEntry.getName()) + "/"
+                                + FilenameUtils.getExtension(fileEntry.getName());
                     }
                 }
             } catch (Exception e) {
