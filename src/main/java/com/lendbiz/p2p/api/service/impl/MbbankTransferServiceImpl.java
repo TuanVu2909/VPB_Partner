@@ -209,7 +209,7 @@ public class MbbankTransferServiceImpl extends BaseResponse<MbbankTransferServic
             // transferRequest.setDebitResourceNumber("0001604822947");
             // transferRequest.setDebitType("ACCOUNT");
             transferRequest.setObject("dn");
-            transferRequest.setRemark("LENDBIZ-CHUYENTIEN-" + transactionId);
+            transferRequest.setRemark("3GANG-CHUYENTIEN-" + transactionId);
             transferRequest.setServiceType("CHI_HO");
             // transferRequest.setTransferAmount("1500000");
             // transferRequest.setTransferFee("0");
@@ -249,7 +249,7 @@ public class MbbankTransferServiceImpl extends BaseResponse<MbbankTransferServic
             requestLogs.setFt("");
             requestLogs.setTranDate("setTranDate");
             requestLogs.setCurrency("VND");
-            requestLogs.setTranDetail("LENDBIZ-CHUYENTIEN-" + transactionId);
+            requestLogs.setTranDetail("3GANG-CHUYENTIEN-" + transactionId);
             requestLogs.setStatus(0);
             requestLogs.setDebitSourceName(transferRequest.getDebitName());
             requestLogs.setDebitSourceNumber(transferRequest.getDebitResourceNumber());

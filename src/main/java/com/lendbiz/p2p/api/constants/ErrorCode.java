@@ -102,4 +102,7 @@ public class ErrorCode {
 
     public static final String MOBILE_EXISTED = "Số điện thoại đã được sử dụng";
 
+    public static final String VERSION_OUTDATED = "511";
+    public static final String VERSION_OUTDATED_DESCRIPTION = "Version outdated";
+
 }
