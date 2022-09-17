@@ -209,7 +209,7 @@ public class MbbankTransferServiceImpl extends BaseResponse<MbbankTransferServic
             // transferRequest.setDebitResourceNumber("0001604822947");
             // transferRequest.setDebitType("ACCOUNT");
             transferRequest.setObject("dn");
-            transferRequest.setRemark("LENDBIZ-CHUYENTIEN-" + transactionId);
+            transferRequest.setRemark("3GANG-CHUYENTIEN-" + transactionId);
             transferRequest.setServiceType("CHI_HO");
             // transferRequest.setTransferAmount("1500000");
             // transferRequest.setTransferFee("0");
@@ -227,18 +227,6 @@ public class MbbankTransferServiceImpl extends BaseResponse<MbbankTransferServic
             String signatureKey = transferRequest.getDebitResourceNumber() + transferRequest.getDebitName()
                     + transferRequest.getCreditResourceNumber() + transferRequest.getCreditName()
                     + transferRequest.getTransferAmount();
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer " + token());
-            headers.set("clientMessageId", transactionId);
-            headers.set("signature", MbUltils.generateSha256Rsa(signatureKey));
-            headers.set("transactionId", transactionId);
-
-            JSONObject jsonObject = new JSONObject(transferRequest);
-            System.out.println(jsonObject.toString());
-            HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(),
-                    headers);
 
             String tranType = "6001";
             if (transferRequest.getDebitType().equalsIgnoreCase("ACCOUNT")
@@ -261,7 +249,7 @@ public class MbbankTransferServiceImpl extends BaseResponse<MbbankTransferServic
             requestLogs.setFt("");
             requestLogs.setTranDate("setTranDate");
             requestLogs.setCurrency("VND");
-            requestLogs.setTranDetail("LENDBIZ-CHUYENTIEN-" + transactionId);
+            requestLogs.setTranDetail("3GANG-CHUYENTIEN-" + transactionId);
             requestLogs.setStatus(0);
             requestLogs.setDebitSourceName(transferRequest.getDebitName());
             requestLogs.setDebitSourceNumber(transferRequest.getDebitResourceNumber());
@@ -280,6 +268,18 @@ public class MbbankTransferServiceImpl extends BaseResponse<MbbankTransferServic
             producerMessage.sendMessage(jsonObjectLogs.toString());
             // End log
 
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Bearer " + token());
+            headers.set("clientMessageId", transactionId);
+            headers.set("signature", MbUltils.generateSha256Rsa(signatureKey));
+            headers.set("transactionId", transactionId);
+
+            JSONObject jsonObject = new JSONObject(transferRequest);
+            System.out.println(jsonObject.toString());
+            HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(),
+                    headers);
+
             ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(Constants.MB_TRANSFER, request,
                     String.class);
             ObjectMapper mapper = new ObjectMapper();
@@ -296,9 +296,11 @@ public class MbbankTransferServiceImpl extends BaseResponse<MbbankTransferServic
             logger.info(e.getMessage());
             requestLogs.setRequestType(1);
             requestLogs.setStatus(99);
+            requestLogs.setTranDetail(e.getMessage());
             jsonObjectLogs = new JSONObject(requestLogs);
             producerMessage.sendMessage(jsonObjectLogs.toString());
-            throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
+            // throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
+            return null;
         }
     }
 

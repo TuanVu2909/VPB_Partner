@@ -99,6 +99,15 @@ public class UserController {
         return userService.checkExistedAccount(loginRequest);
     }
 
+    @GetMapping("/check-version")
+    public ResponseEntity<?> checkVersionOutdated(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId,
+            @RequestParam String version) {
+        log.info("[" + requestId + "] << version >>");
+
+        return userService.checkVersion3GangOutdated(version);
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(HttpServletRequest httpServletRequest, @RequestHeader("requestId") String requestId,
             @RequestBody LoginRequest loginRequest) {
@@ -357,7 +366,7 @@ public class UserController {
 
         // String custId = userService.checkSession(session);
         InfoIdentity identity = new InfoIdentity();
-        return savisService.callPredict(idFile, identity, idType);
+        return savisService.callPredict(idFile, identity, idType, session);
     }
 
     // Authorization
@@ -443,12 +452,12 @@ public class UserController {
 
     @PostMapping("/verify-face")
     public ResponseEntity<?> verifyFace(HttpServletRequest httpServletRequest,
-            @RequestHeader("requestId") String requestId,
+            @RequestHeader("requestId") String requestId, @RequestHeader("session") String session,
             @RequestParam("front_file") MultipartFile frontFile, @RequestParam("selfie_file") MultipartFile selfieFile)
             throws BusinessException {
 
         // String custId = userService.checkSession(session);
-        return savisService.callCheckSelfie(frontFile, selfieFile);
+        return savisService.callCheckSelfie(frontFile, selfieFile, session);
     }
 
     @PostMapping("/product-info")

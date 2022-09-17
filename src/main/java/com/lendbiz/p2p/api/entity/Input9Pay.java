@@ -12,4 +12,6 @@ public class Input9Pay {
     private String quantity;
     private String cif;
     private String phone;
+    private double totalAmount;
+
 }

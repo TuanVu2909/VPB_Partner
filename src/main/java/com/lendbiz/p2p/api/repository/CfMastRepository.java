@@ -30,8 +30,8 @@ public interface CfMastRepository extends CrudRepository<CfMast, String> {
 	CfMast getUserInfo(String custId);
 
 	// get cfmast vs truong hop la nha dau tu
-	@Query(value = "select * from cfmast where idcode = ?1 and status = 'A'", nativeQuery = true)
-	List<CfMast> findByIdCode(String idCode);
+	@Query(value = "select * from cfmast where idcode = ?1 and status = 'A' and mobilesms != ?2", nativeQuery = true)
+	List<CfMast> findByIdCode(String idCode, String mobile);
 
 	@Transactional
 	@Modifying

@@ -29,13 +29,15 @@ import lombok.ToString;
                 @StoredProcedureParameter(name = "p_custId", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "p_bankAccount", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "p_bankAccountName", mode = ParameterMode.IN, type = String.class),
-                @StoredProcedureParameter(name = "p_bankName", mode = ParameterMode.IN, type = String.class) }), //
+                @StoredProcedureParameter(name = "p_bankName", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "p_bankCode", mode = ParameterMode.IN, type = String.class) }), //
 
         @NamedStoredProcedureQuery(name = "UpdateAccountEntity.updateBankAccount", procedureName = "PKG_API.PRC_UPDATE_BANK_INFO", resultClasses = UpdateAccountEntity.class, parameters = { //
                 @StoredProcedureParameter(name = "p_custId", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "p_bankAccount", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "p_bankAccountName", mode = ParameterMode.IN, type = String.class),
-                @StoredProcedureParameter(name = "p_bankName", mode = ParameterMode.IN, type = String.class) })
+                @StoredProcedureParameter(name = "p_bankName", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "p_bankCode", mode = ParameterMode.IN, type = String.class) })
 
 })
 public class UpdateAccountEntity {

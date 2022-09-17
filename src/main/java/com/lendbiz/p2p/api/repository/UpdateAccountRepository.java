@@ -18,12 +18,14 @@ public interface UpdateAccountRepository extends JpaRepository<UpdateAccountEnti
             @Param("p_idPlace") String idPlace,
             @Param("p_bankName") String bankName,
             @Param("p_bankAccount") String bankAccount,
-            @Param("p_bankAccountName") String bankAccountName);
+            @Param("p_bankAccountName") String bankAccountName,
+            @Param("p_bankCode") String bankCode);
 
     @Procedure("UpdateAccountEntity.updateBankAccount")
     UpdateAccountEntity updateBankAccount(
             @Param("p_custId") String custId,
             @Param("p_bankName") String bankName,
             @Param("p_bankAccount") String bankAccount,
-            @Param("p_bankAccountName") String bankAccountName);
+            @Param("p_bankAccountName") String bankAccountName,
+            @Param("p_bankCode") String bankCode);
 }

@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,6 +16,7 @@ import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.constants.JsonMapper;
 import com.lendbiz.p2p.api.entity.Otp;
 import com.lendbiz.p2p.api.model.SavisResponse.IdentityFromSavisResponse;
+import com.lendbiz.p2p.api.producer.ProducerMessage;
 import com.lendbiz.p2p.api.repository.CfMastRepository;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.request.SavisVerifyOtpRequest;
@@ -32,6 +35,7 @@ import com.lendbiz.p2p.api.utils.StringUtil;
 import com.lendbiz.p2p.api.utils.Utils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
@@ -60,11 +64,52 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
     @Autowired
     OtpServiceImpl otpService;
 
+    @Autowired
+    private ProducerMessage producerMessage;
+
+    public void saveFileKafka(MultipartFile file, String mobile, int type) {
+        try {
+            byte[] fileContent = Base64.encodeBase64(file.getBytes());
+            String data = new String(fileContent, "UTF-8");
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("mobile", mobile);
+            map.put("file", data);
+            map.put("fileName", type + "_" + file.getOriginalFilename());
+
+            JSONObject jsonObjectLogs = new JSONObject(map);
+            producerMessage.sendSaveIdCard(jsonObjectLogs.toString());
+
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+        }
+    }
+
     @Override
-    public ResponseEntity<?> callPredict(MultipartFile file, InfoIdentity identity, int type) {
+    public ResponseEntity<?> callPredict(MultipartFile file, InfoIdentity identity, int type, String mobile) {
         logger.info("---------Start call predict---------------");
         // JSONObject sObj;
         // Object temp;
+
+        saveFileKafka(file, mobile, type);
+
+        try {
+            byte[] fileContent = Base64.encodeBase64(file.getBytes());
+            String result = new String(fileContent);
+            System.out.println(result);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("mobile", mobile);
+            map.put("file", result);
+            map.put("fileName", file.getOriginalFilename());
+
+            JSONObject jsonObjectLogs = new JSONObject(map);
+            producerMessage.sendSaveIdCard(jsonObjectLogs.toString());
+
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+        }
+
         final String uri = Constants.ESIGN_PREDICT;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -160,7 +205,7 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
             if (identity.getIdNo() == null) {
                 throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_IDENTITY_DESCRIPTION);
             } else {
-                if (cfMastRepo.findByIdCode(identity.getIdNo()).size() > 0) {
+                if (cfMastRepo.findByIdCode(identity.getIdNo(), mobile).size() > 0) {
                     throw new BusinessException(ErrorCode.USER_EXISTED, ErrorCode.USER_EXISTED_DESCRIPTION);
                 }
             }
@@ -293,8 +338,11 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
     }
 
     @Override
-    public ResponseEntity<?> callCheckSelfie(MultipartFile frontId, MultipartFile selfie) {
+    public ResponseEntity<?> callCheckSelfie(MultipartFile frontId, MultipartFile selfie, String mobile) {
         logger.info("---------Start call face_general---------------");
+
+        saveFileKafka(selfie, mobile, 0);
+
         final String uri = Constants.ESIGN_FACE_GENERAL;
         boolean isMatching = false;
         HttpHeaders headers = new HttpHeaders();

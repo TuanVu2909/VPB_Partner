@@ -237,7 +237,7 @@ public class Utils {
 
         byte[] cipherBytes = java.util.Base64.getDecoder().decode(base64Cipher);
         byte[] iv = "1234123412341234".getBytes(ASCII);
-        byte[] keyBytes = "wU6JlogmAFU0MQEF4FXhEISiTauXC9eZ".getBytes(ASCII);
+        byte[] keyBytes = "D8WkvpZwr3Gj4lGAU3MFFoh1y4b2xx9Q".getBytes(ASCII);
         SecretKey aesKey = new SecretKeySpec(keyBytes, "AES");
         Cipher cipher = null;
         String upToNCharacters = "";

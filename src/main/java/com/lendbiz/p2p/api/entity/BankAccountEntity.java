@@ -15,12 +15,15 @@ import lombok.ToString;
 public class BankAccountEntity {
 
     @Id
-    @Column(name = "BANKACC")
+    @Column(name = "BANK_ACCOUNT_NUMBER")
     private String bankAccount;
 
-    @Column(name = "BANKNAME")
+    @Column(name = "BANK_NAME")
     private String bankName;
 
-    @Column(name = "BANKACNAME")
+    @Column(name = "BANK_ACCOUNT_NAME")
     private String bankAcName;
+
+    @Column(name = "BANK_CODE")
+    private String bankCode;
 }

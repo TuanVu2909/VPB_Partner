@@ -157,6 +157,49 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     private ProducerMessage producerMessage;
 
+    public String getCustId(List<CfMast> lstCfmast) {
+        List<CfMast> newLstCfmast = new ArrayList<>();
+        String custId = null;
+        if (lstCfmast.size() > 1) {
+            lstCfmast.forEach((n) -> {
+                try {
+                    if (n.getStatus().equalsIgnoreCase("A")) {
+                        newLstCfmast.add(n);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            });
+
+            if (newLstCfmast.size() > 0) {
+                custId = newLstCfmast.get(0).getCustid();
+            } else {
+                custId = lstCfmast.get(0).getCustid();
+            }
+
+        } else if (lstCfmast.size() == 1) {
+            custId = lstCfmast.get(0).getCustid();
+        }
+        return custId;
+    }
+
+    @Autowired
+    Version3GangRepository version3GangRepository;
+
+    @Override
+    public ResponseEntity<?> checkVersion3GangOutdated(String version) {
+        // List<Object> response;
+        Version3Gang verConfig = version3GangRepository.getVersion();
+
+        if (verConfig.getVersion().equalsIgnoreCase(version)) {
+            return response(toResult(verConfig.getVersion() + " " + version));
+        } else {
+            throw new BusinessException(ErrorCode.VERSION_OUTDATED, ErrorCode.VERSION_OUTDATED_DESCRIPTION);
+        }
+
+    }
+
     @Override
     public ResponseEntity<?> checkExistedAccount(LoginRequest loginRequest) {
         // List<Object> response;
@@ -171,9 +214,11 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> login(LoginRequest loginRequest) {
-        // List<Object> response;
+        List<CfMast> lstCfmast = cfMastRepository.findByMobileSms(loginRequest.getUsername());
 
-        UserOnline user = userOnlineRepo.getUserOnline(loginRequest.getUsername());
+        String custId = getCustId(lstCfmast);
+
+        UserOnline user = userOnlineRepo.getUserOnline(custId);
         if (user != null) {
             if (user.getNumberOffail() > 4) {
 
@@ -203,7 +248,9 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 if (userOnlineRepo.checkAccountMappingExist(user.getCustId()) == 0) {
                     ReqJoinRequest reqJoinRequest = new ReqJoinRequest();
                     reqJoinRequest.setMobile(loginRequest.getUsername());
-                    pkgFilterRepo.reqJoin(reqJoinRequest);
+                    reqJoinRequest.setDeviceId(loginRequest.getDeviceId());
+                    registerRepository.register(reqJoinRequest.getMobile(),
+                            reqJoinRequest.getDeviceId(), custId);
                 }
 
                 if (!loginRequest.getDeviceId().equalsIgnoreCase(user.getDeviceId())) {
@@ -221,20 +268,56 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> register(ReqJoinRequest reqJoinRequest) {
-
+        CfMast cfmast;
         List<CfMast> lstCfmast = cfMastRepository.findByMobileSms(reqJoinRequest.getMobile());
-        if (lstCfmast.size() > 0 && lstCfmast.get(0).getStatus().equalsIgnoreCase("P")) {
-            try {
-                return response(toResult(otpRepository.resendOtp(reqJoinRequest.getMobile())));
-            } catch (Exception e) {
-                throw new BusinessException(Constants.FAIL, e.getMessage());
-            }
+        String custId = getCustId(lstCfmast);
+        if (custId != null) {
+            cfmast = cfMastRepository.findByCustid(custId).get();
+            if (cfmast.getStatus().equalsIgnoreCase("P")) {
+                try {
 
+                    if (userOnlineRepo.checkAccountMappingExist(custId) == 0) {
+
+                        return response(
+                                toResult(registerRepository.register(reqJoinRequest.getMobile(),
+                                        reqJoinRequest.getDeviceId(), custId)));
+
+                    } else {
+                        ResendOtpEntity resOtp = otpRepository.resendOtp(reqJoinRequest.getMobile(),
+                                custId);
+                        RegisterEntity regResendOtp = new RegisterEntity();
+                        regResendOtp.setAccountStatus(cfmast.getStatus());
+                        regResendOtp.setCode(resOtp.getCode());
+                        regResendOtp.setCustId(custId);
+                        regResendOtp.setErrorCode(0);
+                        return response(
+                                toResult(regResendOtp));
+                    }
+
+                } catch (Exception e) {
+                    throw new BusinessException(Constants.FAIL, e.getMessage());
+                }
+
+            } else {
+                // List<Object> response = (ArrayList) pkgFilterRepo.reqJoin(reqJoinRequest);
+                // return response(toResult(response.get(0)));
+                // String custId = getCustId(lstCfmast);
+                RegisterEntity regEntity = registerRepository.register(reqJoinRequest.getMobile(),
+                        reqJoinRequest.getDeviceId(), custId);
+
+                if (regEntity.getErrorCode() == 1) {
+                    throw new BusinessException(Constants.FAIL, regEntity.getCustId());
+                } else {
+                    return response(toResult(regEntity));
+                }
+
+            }
         } else {
             // List<Object> response = (ArrayList) pkgFilterRepo.reqJoin(reqJoinRequest);
             // return response(toResult(response.get(0)));
+            // String custId = getCustId(lstCfmast);
             RegisterEntity regEntity = registerRepository.register(reqJoinRequest.getMobile(),
-                    reqJoinRequest.getDeviceId());
+                    reqJoinRequest.getDeviceId(), custId);
 
             if (regEntity.getErrorCode() == 1) {
                 throw new BusinessException(Constants.FAIL, regEntity.getCustId());
@@ -248,9 +331,16 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> resendOtp(ReqJoinRequest reqJoinRequest) {
-
+        List<CfMast> lstCfmast = cfMastRepository.findByMobileSms(reqJoinRequest.getMobile());
+        String custId = getCustId(lstCfmast);
         try {
-            return response(toResult(otpRepository.resendOtp(reqJoinRequest.getMobile())));
+            ResendOtpEntity entity = otpRepository.resendOtp(reqJoinRequest.getMobile(), custId);
+
+            if (entity.getCode().equals("0")) {
+                throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
+            }
+
+            return response(toResult(entity));
         } catch (Exception e) {
             throw new BusinessException(Constants.FAIL, e.getMessage());
         }
@@ -276,10 +366,10 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     }
 
     @Override
-    public ResponseEntity<?> getUserInfo(String mobile) {
+    public ResponseEntity<?> getUserInfo(String custId) {
         try {
-            UserInfoEntity user = userInfoRepository.getUserInfo(mobile);
-            BankAccountEntity bank = bankAccountRepository.getUserBankAccount(mobile);
+            UserInfoEntity user = userInfoRepository.getUserInfo(custId);
+            BankAccountEntity bank = bankAccountRepository.getUserBankAccount(custId);
             String urlAvatar = "";
             String directPathAvatar = "images/" + user.getCustid() + "/avatar/";
 
@@ -289,7 +379,9 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     if (fileEntry.isDirectory()) {
                         urlAvatar = "";
                     } else {
-                        urlAvatar = "https://bagang.lendbiz.vn/lendbiz/avatar/" + user.getCustid() + "/avatar/" + FilenameUtils.removeExtension(fileEntry.getName()) + "/" + FilenameUtils.getExtension(fileEntry.getName());
+                        urlAvatar = "https://bagang.lendbiz.vn/lendbiz/avatar/" + user.getCustid() + "/avatar/"
+                                + FilenameUtils.removeExtension(fileEntry.getName()) + "/"
+                                + FilenameUtils.getExtension(fileEntry.getName());
                     }
                 }
             } catch (Exception e) {
@@ -341,7 +433,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     updateRequest.getIdPlace(),
                     updateRequest.getBankName(),
                     updateRequest.getBankAccount(),
-                    updateRequest.getBankAccountName());
+                    updateRequest.getBankAccountName(),
+                    updateRequest.getBankCode());
         } catch (Exception e) {
             throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
         }
@@ -356,7 +449,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             entity = accountRepository.updateBankAccount(updateRequest.getCustId(),
                     updateRequest.getBankName(),
                     updateRequest.getBankAccount(),
-                    updateRequest.getBankAccountName());
+                    updateRequest.getBankAccountName(),
+                    updateRequest.getBankCode());
         } catch (Exception e) {
             throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
         }
@@ -920,7 +1014,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             // CreateNotificationOneSignalRequest();
             // requestObj.setIncludePlayerIds(request.getDeviceId());
 
-            String strJsonBody = "{" + "\"app_id\": \"7e2a68dd-6d4b-41a4-baad-482d3078030c\","
+            String strJsonBody = "{" + "\"app_id\": \"e4446f23-9222-4e5d-b51e-ac5ea0f4d956\","
                     + "\"include_player_ids\": [\"" + request.getDeviceId() + "\"],"
                     + "\"data\": {\"id\": \"" + request.getId() + "\", \"investid\": \"" + request.getInvestId()
                     + "\", \"custid\": \"" + request.getCustId() + "\", \"type\": \"" + request.getType() + "\"},"
