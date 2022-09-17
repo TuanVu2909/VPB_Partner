@@ -256,12 +256,12 @@ public class MbbankTransferServiceImpl extends BaseResponse<MbbankTransferServic
             requestLogs.setCreditSourceName(transferRequest.getCreditName());
             requestLogs.setCreditSourceNumber(transferRequest.getCreditResourceNumber());
             requestLogs.setCreditFastName("creditFastName");
-            requestLogs.setCreditFastBankName("creditFastName");
+            requestLogs.setCreditFastBankName(transferRequest.getBankCode());
             requestLogs.setCreditIdCard(originalCreditNumber);
             requestLogs.setChannel("channel");
             requestLogs.setChannelName("channelName");
             requestLogs.setReconcileStatus(0);
-            requestLogs.setAddInfo("addInfo");
+            requestLogs.setAddInfo(transferRequest.getAddInfoList()[0].getValue());
             requestLogs.setRequestType(0);
             jsonObjectLogs = new JSONObject(requestLogs);
             // Send request log to kafka server
