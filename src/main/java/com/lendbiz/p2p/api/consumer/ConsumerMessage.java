@@ -1,5 +1,8 @@
 package com.lendbiz.p2p.api.consumer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -15,6 +18,7 @@ import com.lendbiz.p2p.api.entity.WithdrawEntity;
 import com.lendbiz.p2p.api.repository.BankAccountRepository;
 import com.lendbiz.p2p.api.repository.CfMastRepository;
 import com.lendbiz.p2p.api.repository.WithdrawRepo;
+import com.lendbiz.p2p.api.request.AddInfoList;
 import com.lendbiz.p2p.api.request.CashOutRequest;
 import com.lendbiz.p2p.api.request.TransferMBRequest;
 import com.lendbiz.p2p.api.service.MbbankTransferService;
@@ -72,6 +76,12 @@ public class ConsumerMessage {
 
                 transRequest.setTransferAmount(String.valueOf((int) cashoutRequest.getAmount()));
                 transRequest.setTransferType(transferType);
+                AddInfoList addInfo = new AddInfoList("requestId", withdraw.getDes(), "1");
+                AddInfoList[] lstAddInfo = new AddInfoList[] {
+                        addInfo
+                };
+
+                transRequest.setAddInfoList(lstAddInfo);
                 System.out.println((int) cashoutRequest.getAmount());
                 // transRequest.set
                 mbbankTransferService.transfer(String.valueOf(System.currentTimeMillis()),

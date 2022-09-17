@@ -120,10 +120,10 @@ public class Constants {
 		public static final String TOPIC_LOGS_3GANG = "topic_3gang_logs_test";
 		public static final String GROUP_3GANG_ID = "group_3gang_id_test";
 
-		public static final String TOPIC_CASH_OUT_3GANG = "topic_cash_out_new";
-		public static final String GROUP_CASH_OUT_3GANG_ID = "group_cash_out_id_new";
+		public static final String TOPIC_CASH_OUT_3GANG = "topic_cash_out_new_test";
+		public static final String GROUP_CASH_OUT_3GANG_ID = "group_cash_out_id_new_test";
 
-		public static final String TOPIC_SAVE_ID_CARD = "topic_save_id_card";
-		public static final String GROUP_SAVE_ID_CARD = "group_save_id_card";
+		public static final String TOPIC_SAVE_ID_CARD = "topic_save_id_card_test";
+		public static final String GROUP_SAVE_ID_CARD = "group_save_id_card_test";
 	}
 }
