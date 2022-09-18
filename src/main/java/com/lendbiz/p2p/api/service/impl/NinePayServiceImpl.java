@@ -76,20 +76,21 @@ import com.lendbiz.p2p.api.utils.Utils;
 @Service("ninepay")
 public class NinePayServiceImpl extends BaseResponse<NinePayService> implements NinePayService {
 
-    private static final String MERCHANT_KEY = "QMVnnQ"; // test
+    // private static final String MERCHANT_KEY = "QMVnnQ"; // test
 
-    // private static final String MERCHANT_KEY = "7PTbhe";
-
-    private static final String MERCHANT_SECRET_KEY = "lwQqFFFEnoLEoeXztZfASxfExvNJEliz1En"; // test
+    private static final String MERCHANT_KEY = "7PTbhe";
 
     // private static final String MERCHANT_SECRET_KEY =
-    // "8R1TUYSufCv6WDrlFncR8ZHkPAeiFcD9o5a"; // product
+    // "lwQqFFFEnoLEoeXztZfASxfExvNJEliz1En"; // test
 
-    private static final String END_POINT = "https://sand-payment.9pay.vn";
+    private static final String MERCHANT_SECRET_KEY = "8R1TUYSufCv6WDrlFncR8ZHkPAeiFcD9o5a"; // product
+
+    private static final String END_POINT = "https://payment.9pay.vn";
 
     private static final String BASE_URL = "https://3gang.vn";
 
-    private static final String PARTNER_KEY = "L6WPKJXN4Y";
+    // private static final String PARTNER_KEY = "L6WPKJXN4Y";
+    private static final String PARTNER_KEY = "QDKZYOKPER";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -263,10 +264,13 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
         fieldMap.put("type", "1");
         fieldMap.put("service_id", serviceId);
         String[] rq9Pay = Utils.getSignatureNinePay(fieldMap);
+
         map.add("request_id", rq9Pay[0]);
         map.add("partner_id", PARTNER_KEY);
         map.add("service_id", serviceId);
         map.add("signature", rq9Pay[1]);
+
+        System.out.println(rq9Pay[1]);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
@@ -294,14 +298,14 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
                 }
                 ArrayList<Product9PayCardEntity> arrayList = new ArrayList<>();
                 for (int i = 0; i < myObjects.length; i++) {
-                Product9PayCardEntity entity = new Product9PayCardEntity();
-                entity.setId(myObjects[i].getId());
-                entity.setDes(myObjects[i].getDescription());
-                entity.setName(myObjects[i].getName());
-                entity.setPrice(myObjects[i].getPrice());
-                entity.setService_id(myObjects[i].getService().getId());
-                entity.setProvider_id(myObjects[i].getProvider().getId());
-                arrayList.add(entity);
+                    Product9PayCardEntity entity = new Product9PayCardEntity();
+                    entity.setId(myObjects[i].getId());
+                    entity.setDes(myObjects[i].getDescription());
+                    entity.setName(myObjects[i].getName());
+                    entity.setPrice(myObjects[i].getPrice());
+                    entity.setService_id(myObjects[i].getService().getId());
+                    entity.setProvider_id(myObjects[i].getProvider().getId());
+                    arrayList.add(entity);
                 }
                 Iterable<Product9PayCardEntity> list = arrayList;
                 c9payProductRepo.saveAll(list);
@@ -323,7 +327,7 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
     @Override
     public ResponseEntity<?> buyCard(Input9Pay input9Pay) {
 
-        if (input9Pay.getTotalAmount() > 0) {
+        if (input9Pay.getTotalAmount() > 0 && checkBalanceBeforePay(input9Pay.getTotalAmount())) {
             WithdrawEntity withdraw = withdrawRepo.subtractBalance(input9Pay.getCif(),
                     (int) input9Pay.getTotalAmount(), "11");
 
@@ -488,14 +492,14 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
         HashMap<String, String> fieldMap = new HashMap<>();
         String date = Utils.getDate();
-        fieldMap.put("type", "4");
+        fieldMap.put("rqId", String.valueOf(System.currentTimeMillis()));
         fieldMap.put("rq_time", date);
 
-        String[] rq9Pay = Utils.getSignatureNinePay(fieldMap);
-        map.add("request_id", rq9Pay[0]);
+        String rq9Pay = Utils.getSignatureNinePayBalance(fieldMap);
+        map.add("request_id", fieldMap.get("rqId"));
         map.add("partner_id", PARTNER_KEY);
         map.add("request_time", date);
-        map.add("signature", rq9Pay[1]);
+        map.add("signature", rq9Pay);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
         ResponseEntity<String> responseEntityStr;
@@ -514,7 +518,7 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
                         root.get("error").get("message").toString());
             }
             System.out.println(root.get("data").get("balance_info").get(0).toString());
-            String response = root.get("data").get("balance_info").get(0).get("balance").asText();
+            String response = root.get("data").get("balance_info").get(2).get("balance").asText();
             return response(toResult(response));
         } catch (JsonMappingException e) {
             e.printStackTrace();
@@ -522,6 +526,48 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
             e.printStackTrace();
         }
         return null;
+    }
+
+    public boolean checkBalanceBeforePay(double totalBuyAmount) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        HashMap<String, String> fieldMap = new HashMap<>();
+        String date = Utils.getDate();
+        fieldMap.put("rqId", String.valueOf(System.currentTimeMillis()));
+        fieldMap.put("rq_time", date);
+
+        String rq9Pay = Utils.getSignatureNinePayBalance(fieldMap);
+        map.add("request_id", fieldMap.get("rqId"));
+        map.add("partner_id", PARTNER_KEY);
+        map.add("request_time", date);
+        map.add("signature", rq9Pay);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+        ResponseEntity<String> responseEntityStr;
+        try {
+            responseEntityStr = restTemplate.postForEntity(Constants.NINE_PAY_BALANCE, request, String.class);
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, e.getMessage());
+        }
+        // mapping response
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root;
+        try {
+            root = mapper.readTree(responseEntityStr.getBody());
+            if (root.get("success").toString().equals("false")) {
+                throw new BusinessException(root.get("error").get("code").toString(),
+                        root.get("error").get("message").toString());
+            }
+            System.out.println(root.get("data").get("balance_info").get(0).toString());
+            String response = root.get("data").get("balance_info").get(2).get("balance").asText();
+            return Double.parseDouble(response) > totalBuyAmount;
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     @Autowired
