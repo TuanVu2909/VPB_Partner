@@ -409,17 +409,22 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> setAccountPassword(SetAccountPasswordRequest setAccountPasswordRequest) {
-        FirstPasswordEntity entity;
-        try {
-            entity = firstPasswordRepository.firstPassword(setAccountPasswordRequest.getCustId(),
-                    passwordEncoder.encode(setAccountPasswordRequest.getPassword()));
+        FirstPasswordEntity entity = new FirstPasswordEntity();
+        List<CfMast> lstCfmast = cfMastRepository.findByMobileSms(setAccountPasswordRequest.getCustId());
+        String custId = getCustId(lstCfmast);
+        if (custId != null) {
+            try {
+                entity = firstPasswordRepository.firstPassword(custId,
+                        passwordEncoder.encode(setAccountPasswordRequest.getPassword()));
 
-            System.out.println("passwordEncoder.encode(setAccountPasswordRequest.getPassword()): "
-                    + passwordEncoder.encode(setAccountPasswordRequest.getPassword()));
-        } catch (Exception e) {
+                System.out.println("passwordEncoder.encode(setAccountPasswordRequest.getPassword()): "
+                        + passwordEncoder.encode(setAccountPasswordRequest.getPassword()));
+            } catch (Exception e) {
+                throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
+            }
+        } else {
             throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
         }
-
         return response(toResult(entity));
     }
 
