@@ -1,5 +1,12 @@
 package com.lendbiz.p2p.api.utils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.security.*;
@@ -16,7 +23,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import com.google.gson.Gson;
+import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
+import com.lendbiz.p2p.api.entity.BankAccountEntity;
+import com.lendbiz.p2p.api.entity.CfMast;
 import com.lendbiz.p2p.api.exception.BusinessException;
 
 import com.lendbiz.p2p.api.request.BearRequest;
@@ -26,10 +36,24 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.docx4j.openpackaging.exceptions.Docx4JException;
+import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
+import org.docx4j.wml.ContentAccessor;
+import org.docx4j.wml.Text;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 
 /***********************************************************************
  *
@@ -205,10 +229,6 @@ public class Utils {
         } catch (Exception e) {
             return null;
         }
-    }
-
-    public static void main(String[] args) {
-        System.out.println(getAge("06/12/2011"));
     }
 
     public static String getDate() {
@@ -474,6 +494,233 @@ public class Utils {
         bearResponse.setEndDate(
                 java.time.LocalDate.now().plusMonths(monthValue).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         return bearResponse;
+    }
+
+    public static void main(String[] args) {
+
+    }
+
+    public static ByteArrayResource convertFile(MultipartFile sourceFile) {
+        ByteArrayResource resource = null;
+        try {
+            resource = new ByteArrayResource(sourceFile.getBytes()) {
+                @Override
+                public String getFilename() {
+                    return sourceFile.getOriginalFilename();
+                }
+            };
+        } catch (IOException e) {
+            throw new BusinessException(ErrorCode.FAILED_TO_FILE, ErrorCode.FAILED_TO_FILE_DESCRIPTION);
+        }
+
+        return resource;
+    }
+
+    public static void fillDataToContract(CfMast cfmast, BankAccountEntity bank, String urlInputDocx,
+            String urlOutputDocx) throws Docx4JException, IOException, JAXBException {
+        String filePath = urlInputDocx;
+
+        Utils docx4j = new Utils();
+        WordprocessingMLPackage template = docx4j.getTemplate(filePath);
+
+        Date date = new Date();
+        // Choose time zone in which you want to interpret your Date
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
+        cal.setTime(date);
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+
+        List<Object> texts = getAllElementFromObject(template.getMainDocumentPart(), Text.class);
+        searchAndReplace(texts, new HashMap<String, String>() {
+            private static final long serialVersionUID = 1L;
+
+            {
+                // this.put("[Họ tên]", contractId);
+
+                // this.put("${DAY}", String.valueOf(day));
+                // this.put("${MONTH}", String.valueOf(month));
+                // this.put("${YEAR}", String.valueOf(year));
+
+                // this.put("${FULL_NAME}", cfmast.getFullName().toUpperCase());
+                // this.put("${ID}", cfmast.getIdCode());
+                // this.put("${IDDATE}", String.valueOf(cfmast.getIdDate()));
+                // this.put("${IDPLACE}", cfmast.getIdPlace());
+                // this.put("${ADDRESS}", cfmast.getAddress());
+                // this.put("${PHONE}", cfmast.getMobileSms());
+                // this.put("${EMAIL}", cfmast.getEmail());
+                // this.put("${BANKACC}", cfmast.getBankacctNo());
+                // this.put("${BANKCODE}", cfmast.getBankCode());
+                this.put("${docno}", "3GANG" + UUID.randomUUID().toString());
+
+                this.put("${date}", String.valueOf(day));
+                this.put("${month}", String.valueOf(month));
+                this.put("${year}", String.valueOf(year));
+
+                this.put("${fullname}", cfmast.getFullName());
+                this.put("${idcode}", cfmast.getIdCode());
+                this.put("${idplace}", cfmast.getIdPlace());
+                this.put("${iddate}", String.valueOf(cfmast.getIdDate()));
+                this.put("${phone}", cfmast.getMobileSms());
+                this.put("${address}", cfmast.getAddress());
+                this.put("${curraddress}", cfmast.getAddress());
+                this.put("${email}", cfmast.getEmail());
+                this.put("${bankno}", bank.getBankAccount());
+                this.put("${bankname}", bank.getBankName());
+
+            }
+
+            @Override
+            public String get(Object key) {
+                return super.get(key);
+            }
+        });
+
+        docx4j.writeDocxToStream(template, urlOutputDocx);
+    }
+
+    private void writeDocxToStream(WordprocessingMLPackage template, String target)
+            throws IOException, Docx4JException {
+        File f = new File(target);
+        template.save(f);
+    }
+
+    public static void searchAndReplace(List<Object> texts, Map<String, String> values) {
+
+        // -- scan all expressions
+        // Will later contain all the expressions used though not used at the moment
+        List<String> els = new ArrayList<String>();
+
+        StringBuilder sb = new StringBuilder();
+        int PASS = 0;
+        int PREPARE = 1;
+        int READ = 2;
+        int mode = PASS;
+
+        // to nullify
+        List<int[]> toNullify = new ArrayList<int[]>();
+        int[] currentNullifyProps = new int[4];
+
+        for (int i = 0; i < texts.size(); i++) {
+            Object text = texts.get(i);
+            Text textElement = (Text) text;
+            String newVal = "";
+            String v = textElement.getValue();
+            StringBuilder textSofar = new StringBuilder();
+            int extra = 0;
+            char[] vchars = v.toCharArray();
+            for (int col = 0; col < vchars.length; col++) {
+                char c = vchars[col];
+                textSofar.append(c);
+                switch (c) {
+                    case '$': {
+                        mode = PREPARE;
+                        sb.append(c);
+                    }
+                        break;
+                    case '{': {
+                        if (mode == PREPARE) {
+                            sb.append(c);
+                            mode = READ;
+                            currentNullifyProps[0] = i;
+                            currentNullifyProps[1] = col + extra - 1;
+                        } else {
+                            if (mode == READ) {
+                                sb = new StringBuilder();
+                                mode = PASS;
+                            }
+                        }
+                    }
+                        break;
+                    case '}': {
+                        if (mode == READ) {
+                            mode = PASS;
+                            sb.append(c);
+                            els.add(sb.toString());
+                            newVal += textSofar.toString()
+                                    + (null == values.get(sb.toString()) ? sb.toString() : values.get(sb.toString()));
+                            textSofar = new StringBuilder();
+                            currentNullifyProps[2] = i;
+                            currentNullifyProps[3] = col + extra;
+                            toNullify.add(currentNullifyProps);
+                            currentNullifyProps = new int[4];
+                            extra += sb.toString().length();
+                            sb = new StringBuilder();
+                        } else if (mode == PREPARE) {
+                            mode = PASS;
+                            sb = new StringBuilder();
+                        }
+                    }
+                    default: {
+                        if (mode == READ)
+                            sb.append(c);
+                        else if (mode == PREPARE) {
+                            mode = PASS;
+                            sb = new StringBuilder();
+                        }
+                    }
+                }
+            }
+            newVal += textSofar.toString();
+            textElement.setValue(newVal);
+        }
+
+        if (toNullify.size() > 0)
+            for (int i = 0; i < texts.size(); i++) {
+                if (toNullify.size() == 0)
+                    break;
+                currentNullifyProps = toNullify.get(0);
+                Object text = texts.get(i);
+                Text textElement = (Text) text;
+                String v = textElement.getValue();
+                StringBuilder nvalSB = new StringBuilder();
+                char[] textChars = v.toCharArray();
+                for (int j = 0; j < textChars.length; j++) {
+                    char c = textChars[j];
+                    if (null == currentNullifyProps) {
+                        nvalSB.append(c);
+                        continue;
+                    }
+                    int floor = currentNullifyProps[0] * 100000 + currentNullifyProps[1];
+                    int ceil = currentNullifyProps[2] * 100000 + currentNullifyProps[3];
+                    int head = i * 100000 + j;
+                    if (!(head >= floor && head <= ceil)) {
+                        nvalSB.append(c);
+                    }
+
+                    if (j > currentNullifyProps[3] && i >= currentNullifyProps[2]) {
+                        toNullify.remove(0);
+                        if (toNullify.size() == 0) {
+                            currentNullifyProps = null;
+                            continue;
+                        }
+                        currentNullifyProps = toNullify.get(0);
+                    }
+                }
+                textElement.setValue(nvalSB.toString());
+            }
+    }
+
+    private WordprocessingMLPackage getTemplate(String name) throws Docx4JException, FileNotFoundException {
+        WordprocessingMLPackage template = WordprocessingMLPackage.load(new FileInputStream(new File(name)));
+        return template;
+    }
+
+    private static List<Object> getAllElementFromObject(Object obj, Class<?> toSearch) {
+        List<Object> result = new ArrayList<Object>();
+        if (obj instanceof JAXBElement)
+            obj = ((JAXBElement<?>) obj).getValue();
+
+        if (obj.getClass().equals(toSearch))
+            result.add(obj);
+        else if (obj instanceof ContentAccessor) {
+            List<?> children = ((ContentAccessor) obj).getContent();
+            for (Object child : children) {
+                result.addAll(getAllElementFromObject(child, toSearch));
+            }
+
+        }
+        return result;
     }
 
     public static String createOtpId() {

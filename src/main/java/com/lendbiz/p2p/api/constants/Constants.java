@@ -101,7 +101,7 @@ public class Constants {
 	public static final String NINE_PAY_INFO_TRANS = "https://api-console.9pay.vn/service/wh/order/check-info";
 	public static final String NINE_PAY_BALANCE = "https://api-console.9pay.vn/service/account/balance";
 
-	public static final String SIGN_IMAGE_DEFAULT = "default_docs\\success.png";
+	public static final String SIGN_IMAGE_DEFAULT = "images/condau.jpg";
 	public static final String THRESHOLD = "0.75";
 
 	// MBBANK

@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.lendbiz.p2p.api.configs.JwtProvider;
+import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.AccountInput;
 import com.lendbiz.p2p.api.entity.GetEndRateRequest;
@@ -58,6 +61,7 @@ import com.lendbiz.p2p.api.service.MailService;
 import com.lendbiz.p2p.api.service.SavisService;
 import com.lendbiz.p2p.api.service.User3GService;
 import com.lendbiz.p2p.api.service.UserService;
+import com.lendbiz.p2p.api.service.impl.UserServiceImpl;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -716,7 +720,8 @@ public class UserController {
     }
 
     @GetMapping("/avatar/{custid}/{source}/{imgname}/{type}")
-    public void showImageMan(HttpServletResponse response, @PathVariable String custid, @PathVariable String source, @PathVariable String imgname, @PathVariable String type)
+    public void showImageMan(HttpServletResponse response, @PathVariable String custid, @PathVariable String source,
+            @PathVariable String imgname, @PathVariable String type)
             throws IOException {
         response.setContentType("image/png");
 
@@ -724,7 +729,7 @@ public class UserController {
 
         InputStream inputStream = null;
 
-        urlImage = "images/" + custid +  "/" + source + "/" + imgname + "." + type;
+        urlImage = "images/" + custid + "/" + source + "/" + imgname + "." + type;
 
         System.out.println(urlImage);
 
@@ -760,6 +765,48 @@ public class UserController {
             throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
         }
 
+    }
+
+    @RequestMapping("/view/{typeContract}/{cid}/{contractId}")
+    public void showPDF(HttpServletResponse response, @PathVariable String typeContract, @PathVariable String cid,
+            @PathVariable String contractId) throws IOException {
+
+        response.setContentType("application/pdf");
+        String custId = cid;
+        String docId = contractId;
+        String urlPdf = "";
+
+        InputStream inputStream = null;
+        if (typeContract.equalsIgnoreCase("1")) {
+            urlPdf = "contracts/dieukhoandichvu/dk.pdf";
+        } else {
+            urlPdf = "contracts/hopdong/" + custId + "/" + docId + ".pdf";
+        }
+
+        File file = new File(urlPdf);
+        try {
+            inputStream = new FileInputStream(file);
+            int nRead;
+            while ((nRead = inputStream.read()) != -1) {
+                response.getWriter().write(nRead);
+            }
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        }
+    }
+
+    @Scheduled(initialDelay = 1 * 60, fixedDelay = 2 * 10000)
+    public void autoSign()
+            throws BusinessException {
+        String uuid = UUID.randomUUID().toString();
+        log.info("Start auto sign! ~>" + uuid);
+        userService.autoSignContract();
+        log.info("End auto sign!  ~>" + uuid);
     }
 
 }

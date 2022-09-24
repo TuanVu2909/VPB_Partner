@@ -2,6 +2,7 @@ package com.lendbiz.p2p.api.service.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -37,6 +38,9 @@ public class FilesStorageServiceImpl extends BaseResponse<FilesStorageService> i
 	private final String root = "images/";
 	private Path direct;
 
+	private final String rootContract = "contracts/";
+	private Path directContract;
+
 	@Override
 	public String init(String key, String custId) {
 		String url = root + custId + "/" + key;
@@ -65,10 +69,48 @@ public class FilesStorageServiceImpl extends BaseResponse<FilesStorageService> i
 	}
 
 	@Override
+	public String initContracts(String mobilesms) {
+		String url = rootContract + "/sign/" + mobilesms;
+
+		direct = Paths.get(url);
+
+		if (!Files.exists(direct)) {
+			try {
+				Files.createDirectories(direct);
+				log.info("Create path = " + direct + " successfully!");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				FileUtils.cleanDirectory(new File(url));
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return direct.toString();
+	}
+
+	@Override
 	public String save(MultipartFile file) {
 		try {
 			Files.copy(file.getInputStream(), this.direct.resolve(file.getOriginalFilename()));
 			return "OK";
+		} catch (Exception e) {
+			throw new BusinessException(ErrorCode.FAILED_SAVE_FILE,
+					ErrorCode.FAILED_SAVE_FILE_DESCRIPTION + e.getMessage());
+		}
+	}
+
+	@Override
+	public void saveContract(byte[] file, String path) {
+		try (FileOutputStream fos = new FileOutputStream(path)) {
+			fos.write(file);
+			// fos.close(); There is no more need for this line since you had created the
+			// instance of "fos" inside the try. And this will automatically close the
+			// OutputStream
 		} catch (Exception e) {
 			throw new BusinessException(ErrorCode.FAILED_SAVE_FILE,
 					ErrorCode.FAILED_SAVE_FILE_DESCRIPTION + e.getMessage());

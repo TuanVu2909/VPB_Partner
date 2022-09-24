@@ -644,17 +644,21 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
             multiValueMap.add("contactInfo", "khu Ä‘Ã´ thá»‹ Ä�áº¡i Kim");
         }
 
-        // try {
-        // File signImage = new File(Constants.SIGN_IMAGE_DEFAULT);
-        // FileInputStream input = new FileInputStream(signImage);
-        // MultipartFile imgMultiPartFile = new MockMultipartFile("sign_pdf",
-        // signImage.getName(), "text/plain",
-        // IOUtils.toByteArray(input));
-        // ByteArrayResource signature = convertFile(imgMultiPartFile);
-        // multiValueMap.add("image", signature);
-        // } catch (IOException e) {
-        // e.printStackTrace();
-        // }
+        if (signRequest.getType().equalsIgnoreCase("client")) {
+            multiValueMap.add("signedBy", signRequest.getSignedBy());
+        } else {
+            try {
+                File signImage = new File(Constants.SIGN_IMAGE_DEFAULT);
+                FileInputStream input = new FileInputStream(signImage);
+                MultipartFile imgMultiPartFile = new MockMultipartFile("sign_pdf",
+                        signImage.getName(), "text/plain",
+                        IOUtils.toByteArray(input));
+                ByteArrayResource signature = convertFile(imgMultiPartFile);
+                multiValueMap.add("imageData", signature);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(uri).queryParam("type", signRequest.getType());
 
