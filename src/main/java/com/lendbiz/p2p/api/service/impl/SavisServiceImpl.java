@@ -35,6 +35,7 @@ import com.lendbiz.p2p.api.utils.StringUtil;
 import com.lendbiz.p2p.api.utils.Utils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.text.WordUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -626,26 +627,23 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
                 signRequest.getIsLBC().equalsIgnoreCase("lbc") ? Constants.LBC_ALIAS : Constants.ALIAS);
         multiValueMap.add("isVisible", Constants.IS_VISIBLE);
 
-        if (signRequest.getType().equalsIgnoreCase("client")) {
-            multiValueMap.add("signedBy", signRequest.getSignedBy());
-        }
         multiValueMap.add("positions", generatePositionParam(signRequest.getPositions()));
 
         multiValueMap.add("detail", signRequest.getDetail());
         if (StringUtil.isEmty(signRequest.getReason())) {
-            multiValueMap.add("reason", "Ä�á»“ng Ã½ kÃ½ há»£p Ä‘á»“ng");
+            multiValueMap.add("reason", "Ký hợp đồng 3Gang");
         }
 
         if (StringUtil.isEmty(signRequest.getLocation())) {
-            multiValueMap.add("location", "HÃ  Ná»™i");
+            multiValueMap.add("location", "Hà Nội");
         }
 
         if (StringUtil.isEmty(signRequest.getContactInfo())) {
-            multiValueMap.add("contactInfo", "khu Ä‘Ã´ thá»‹ Ä�áº¡i Kim");
+            multiValueMap.add("contactInfo", "Khu độ thị Đại Kim");
         }
 
         if (signRequest.getType().equalsIgnoreCase("client")) {
-            multiValueMap.add("signedBy", signRequest.getSignedBy());
+            multiValueMap.add("signedBy", WordUtils.capitalize(signRequest.getSignedBy().toLowerCase()));
         } else {
             try {
                 File signImage = new File(Constants.SIGN_IMAGE_DEFAULT);

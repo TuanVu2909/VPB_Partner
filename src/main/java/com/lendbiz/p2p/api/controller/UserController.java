@@ -10,6 +10,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -767,20 +768,22 @@ public class UserController {
 
     }
 
-    @RequestMapping("/view/{typeContract}/{cid}/{contractId}")
-    public void showPDF(HttpServletResponse response, @PathVariable String typeContract, @PathVariable String cid,
-            @PathVariable String contractId) throws IOException {
+    public static void main(String[] args) {
+        System.out.println(WordUtils.capitalize("LÊ HOÀNG NGUYÊN".toLowerCase()));
+    }
+
+    @RequestMapping("/view/{typeContract}/{phone}")
+    public void showPDF(HttpServletResponse response, @PathVariable String typeContract, @PathVariable String phone)
+            throws IOException {
 
         response.setContentType("application/pdf");
-        String custId = cid;
-        String docId = contractId;
         String urlPdf = "";
 
         InputStream inputStream = null;
         if (typeContract.equalsIgnoreCase("1")) {
             urlPdf = "contracts/dieukhoandichvu/dk.pdf";
         } else {
-            urlPdf = "contracts/hopdong/" + custId + "/" + docId + ".pdf";
+            urlPdf = "contracts/sign/" + phone + "/signed_3gang.pdf";
         }
 
         File file = new File(urlPdf);
@@ -792,7 +795,19 @@ public class UserController {
             }
             inputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.info(e.getMessage());
+            urlPdf = "contracts/dieukhoandichvu/dk.pdf";
+            try {
+                File fileException = new File(urlPdf);
+                inputStream = new FileInputStream(fileException);
+                int nRead;
+                while ((nRead = inputStream.read()) != -1) {
+                    response.getWriter().write(nRead);
+                }
+                inputStream.close();
+            } catch (IOException ex) {
+                log.info(e.getMessage());
+            }
         } finally {
             if (inputStream != null) {
                 inputStream.close();
@@ -800,7 +815,7 @@ public class UserController {
         }
     }
 
-    @Scheduled(initialDelay = 1 * 60, fixedDelay = 2 * 10000)
+    @Scheduled(initialDelay = 1 * 60, fixedDelay = 2 * 5000)
     public void autoSign()
             throws BusinessException {
         String uuid = UUID.randomUUID().toString();

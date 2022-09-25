@@ -33,7 +33,6 @@ import java.util.UUID;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.text.WordUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -468,12 +467,13 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         try {
             UserInfoEntity user = userInfoRepository.getUserInfo(custId);
             BankAccountEntity bank = bankAccountRepository.getUserBankAccount(custId);
+            String userPhone = user.getMobileSms();
             String urlAvatar = "";
             String directPathAvatar = "images/" + user.getCustid() + "/avatar/";
             String lbcAccount = "4585326647075";
             String lbcName = "CONG TY CO PHAN LENDBIZ CAPITAL";
-            String ruleAgreementUrl = "https://bagang.lendbiz.vn/lendbiz/view/1/" + custId + "/123";
-            String contractUrl = "https://bagang.lendbiz.vn/lendbiz/view/2/" + custId + "/123456";
+            String ruleAgreementUrl = "https://bagang.lendbiz.vn/lendbiz/view/1/" + userPhone;
+            String contractUrl = "https://bagang.lendbiz.vn/lendbiz/view/2/" + userPhone;
 
             try {
                 File folder = new File(directPathAvatar);
@@ -1194,7 +1194,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     public void autoSignContract() {
         List<CfMast> lstCfmast = cfMastRepository.findAllActive();
         String inSourceDoc = "contracts/default/dkdv.docx";
-        String oututDocs = "contracts/default/output.docx";
+        String outputDocs = "contracts/default/output.docx";
         MultipartFile mckFile = null;
         String docNo = UUID.randomUUID().toString();
 
@@ -1210,79 +1210,92 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     bank = bankAccountRepository.getUserBankAccount(cfMast.getCustid());
                     if (bank == null) {
                         bank = new BankAccountEntity();
-                        bank.setBankAcName("");
-                        bank.setBankAccount("");
-                        bank.setBankCode("");
-                        bank.setBankName("");
+                        bank.setBankAccount("[Số tài khoản]");
+                        bank.setBankName("[Ngân hàng]");
                     }
                 } catch (Exception e) {
-                    bank.setBankAcName("");
-                    bank.setBankAccount("");
-                    bank.setBankCode("");
-                    bank.setBankName("");
+                    bank.setBankAccount("[Số tài khoản]");
+                    bank.setBankName("[Ngân hàng]");
                 }
 
-                oututDocs = "contracts/sign/" + cfMast.getMobileSms() + "/hopdong_output.docx";
-                Utils.fillDataToContract(cfMast, bank, inSourceDoc, oututDocs);
+                outputDocs = "contracts/sign/" + cfMast.getMobileSms() + "/hopdong_output.docx";
+                Utils.fillDataToContract(cfMast, bank, inSourceDoc, outputDocs);
 
-                File inputWord = new File(oututDocs);
+                File inputWord = new File(outputDocs);
                 FileInputStream inputStream = new FileInputStream(inputWord);
                 mckFile = new MockMultipartFile("hd", inputWord.getName(), "text/plain",
                         IOUtils.toByteArray(inputStream));
 
-            } catch (Exception e) {
+                logger.info("---------Start call converter---------------");
+                final String uri = "http://45.117.83.201:9013/esign/v1.0/convert-pdf";
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+                headers.set("requestId", docNo);
 
-                logger.info(e.getMessage());
-            }
+                MultiValueMap<String, Object> multiValueMap = new LinkedMultiValueMap<>();
+                ByteArrayResource contentsAsResource = Utils.convertFile(mckFile);
+                multiValueMap.add("file", contentsAsResource);
+                multiValueMap.add("output", docNo + ".pdf");
 
-            logger.info("---------Start call converter---------------");
-            final String uri = "http://45.117.83.201:9013/esign/v1.0/convert-pdf";
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-            headers.set("requestId", docNo);
+                HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(multiValueMap, headers);
+                ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(uri, request, String.class);
 
-            MultiValueMap<String, Object> multiValueMap = new LinkedMultiValueMap<>();
-            ByteArrayResource contentsAsResource = Utils.convertFile(mckFile);
-            multiValueMap.add("file", contentsAsResource);
-            multiValueMap.add("output", docNo + ".pdf");
-
-            HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(multiValueMap, headers);
-            ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(uri, request, String.class);
-
-            // mapping response
-            // OutputStream outputStream;
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode root;
-            if (responseEntityStr.getStatusCodeValue() == 200) {
-
-                try {
-                    root = mapper.readTree(responseEntityStr.getBody());
-                    byte[] data;
+                // mapping response
+                // OutputStream outputStream;
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode root;
+                if (responseEntityStr.getStatusCodeValue() == 200) {
                     try {
-                        data = root.get("data").binaryValue();
+                        root = mapper.readTree(responseEntityStr.getBody());
+                        byte[] data;
+                        try {
+                            data = root.get("data").binaryValue();
 
-                        org.apache.commons.io.FileUtils.writeByteArrayToFile(
-                                new File("contracts/sign/" + cfMast.getMobileSms() + "/hopdong_3gang.pdf"),
-                                data);
+                            org.apache.commons.io.FileUtils.writeByteArrayToFile(
+                                    new File("contracts/sign/" + cfMast.getMobileSms() + "/hopdong_3gang.pdf"),
+                                    data);
 
-                        // FileUtils.savePdf(pathOutput, data);
+                            // FileUtils.savePdf(pathOutput, data);
 
-                        signContract("contracts/sign/" + cfMast.getMobileSms() + "/hopdong_3gang.pdf",
-                                "contracts/sign/" + cfMast.getMobileSms() + "/signed_3gang.pdf", cfMast.getFullName());
+                            if (signContract("contracts/sign/" + cfMast.getMobileSms() + "/hopdong_3gang.pdf",
+                                    "contracts/sign/" + cfMast.getMobileSms() + "/signed_3gang.pdf",
+                                    cfMast)) {
+                                try {
+                                    File deleteInputFile = new File(
+                                            "contracts/sign/" + cfMast.getMobileSms() + "/hopdong_output.docx");
+                                    File deleteGeneratedFile = new File(
+                                            "contracts/sign/" + cfMast.getMobileSms() + "/hopdong_3gang.pdf");
+                                    deleteInputFile.delete();
+                                    deleteGeneratedFile.delete();
 
-                        contractInfoRepository.update(cfMast.getCustid(), 22);
+                                } catch (Exception e) {
+                                    logger.info(e.getMessage());
+                                }
 
-                        logger.info("Success generated contract PDF!");
+                                contractInfoRepository.update(cfMast.getCustid(), 22);
 
-                    } catch (IOException e) {
+                                logger.info("Success generated contract PDF!");
+                            } else {
+                                contractInfoRepository.update(cfMast.getCustid(), 20);
+                            }
 
-                        e.printStackTrace();
+                        } catch (IOException e) {
+                            contractInfoRepository.update(cfMast.getCustid(), 20);
+                            e.printStackTrace();
+                        }
+
+                    } catch (JsonProcessingException e) {
+                        contractInfoRepository.update(cfMast.getCustid(), 20);
+                        throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
                     }
 
-                } catch (JsonProcessingException e) {
-                    throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
+                } else {
+                    contractInfoRepository.update(cfMast.getCustid(), 20);
                 }
 
+            } catch (Exception e) {
+                contractInfoRepository.update(cfMast.getCustid(), 20);
+                logger.info(e.getMessage());
             }
 
         }
@@ -1291,7 +1304,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     SavisService savisService;
 
-    public Optional signContract(String sourcePdf, String ouputSigned, String userName) {
+    public boolean signContract(String sourcePdf, String outputSigned, CfMast cfMast) {
         logger.info("[" + sourcePdf + "] << signContract >>");
         try {
             ArrayList<String> positions = new ArrayList<String>();
@@ -1302,7 +1315,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
             MultipartFile contract = null;
             File pdf = null;
-            request.setSignedBy(WordUtils.capitalize(userName));
+            request.setSignedBy(cfMast.getFullName());
 
             // Chu ky thu 1 cua khach hang
             request.setPage("14");
@@ -1349,12 +1362,14 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             Optional<SignPdfResponse> otpSignResult = savisService.signContract(contract, signByLendBizRequest);
 
             logger.info("[Sign pdf] direct {}", direct);
-            filesStorageService.saveContract(otpSignResult.get().getData(), ouputSigned);
+            filesStorageService.saveContract(otpSignResult.get().getData(), outputSigned);
         } catch (Exception e) {
+            contractInfoRepository.update(cfMast.getCustid(), 20);
             logger.info(e.getMessage());
+            return false;
         }
 
-        return Optional.of(ouputSigned);
+        return true;
     }
 
 }

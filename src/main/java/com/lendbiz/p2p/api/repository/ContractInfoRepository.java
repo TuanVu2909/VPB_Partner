@@ -34,7 +34,7 @@ public interface ContractInfoRepository extends CrudRepository<ContractInfo, Str
     
     @Transactional
     @Modifying
-    @Query(value = "UPDATE CONTRACTS_INFO SET STATUS = :status, SIGNED_DATE = SYSDATE WHERE CUSTID = :cid", nativeQuery = true)
+    @Query(value = "UPDATE CONTRACTS_INFO SET STATUS = :status, SIGNED_DATE = SYSDATE WHERE CUSTID = :cid and CONTRACT_TYPE = '3GANG'", nativeQuery = true)
     void update(@Param("cid") String cid, @Param("status") int status);
 
     @Transactional

@@ -3,13 +3,16 @@ package com.lendbiz.p2p.api.utils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
-import java.security.*;
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.SecureRandom;
+import java.security.Signature;
+import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -20,19 +23,25 @@ import java.time.Year;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.TimeZone;
+import java.util.UUID;
 
-import com.google.gson.Gson;
-import com.lendbiz.p2p.api.constants.Constants;
-import com.lendbiz.p2p.api.constants.ErrorCode;
-import com.lendbiz.p2p.api.entity.BankAccountEntity;
-import com.lendbiz.p2p.api.entity.CfMast;
-import com.lendbiz.p2p.api.exception.BusinessException;
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 
-import com.lendbiz.p2p.api.request.BearRequest;
-import com.lendbiz.p2p.api.response.BearResponse;
-import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.text.WordUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -40,20 +49,16 @@ import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.wml.ContentAccessor;
 import org.docx4j.wml.Text;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.crypto.*;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
+import com.google.gson.Gson;
+import com.lendbiz.p2p.api.constants.ErrorCode;
+import com.lendbiz.p2p.api.entity.BankAccountEntity;
+import com.lendbiz.p2p.api.entity.CfMast;
+import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.request.BearRequest;
+import com.lendbiz.p2p.api.response.BearResponse;
 
 /***********************************************************************
  *
@@ -497,6 +502,22 @@ public class Utils {
     }
 
     public static void main(String[] args) {
+        String in = "contracts/default/dkdv.docx";
+        String out = "contracts/default/output.docx";
+        CfMast n = new CfMast();
+        BankAccountEntity b = new BankAccountEntity();
+        try {
+            fillDataToContract(n, b, in, out);
+        } catch (Docx4JException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (JAXBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
     }
 
@@ -516,7 +537,8 @@ public class Utils {
         return resource;
     }
 
-    public static void fillDataToContract(CfMast cfmast, BankAccountEntity bank, String urlInputDocx,
+    public static void fillDataToContract(CfMast cfmast, BankAccountEntity bank,
+            String urlInputDocx,
             String urlOutputDocx) throws Docx4JException, IOException, JAXBException {
         String filePath = urlInputDocx;
 
@@ -536,37 +558,28 @@ public class Utils {
             private static final long serialVersionUID = 1L;
 
             {
-                // this.put("[Họ tên]", contractId);
 
-                // this.put("${DAY}", String.valueOf(day));
-                // this.put("${MONTH}", String.valueOf(month));
-                // this.put("${YEAR}", String.valueOf(year));
-
-                // this.put("${FULL_NAME}", cfmast.getFullName().toUpperCase());
-                // this.put("${ID}", cfmast.getIdCode());
-                // this.put("${IDDATE}", String.valueOf(cfmast.getIdDate()));
-                // this.put("${IDPLACE}", cfmast.getIdPlace());
-                // this.put("${ADDRESS}", cfmast.getAddress());
-                // this.put("${PHONE}", cfmast.getMobileSms());
-                // this.put("${EMAIL}", cfmast.getEmail());
-                // this.put("${BANKACC}", cfmast.getBankacctNo());
-                // this.put("${BANKCODE}", cfmast.getBankCode());
-                this.put("${docno}", "3GANG" + UUID.randomUUID().toString());
+                this.put("${docno}", cfmast.getIdCode() + cfmast.getCustid());
 
                 this.put("${date}", String.valueOf(day));
                 this.put("${month}", String.valueOf(month));
                 this.put("${year}", String.valueOf(year));
 
-                this.put("${fullname}", cfmast.getFullName());
+                this.put("${fullname}",
+                        WordUtils.capitalize(cfmast.getFullName().toLowerCase()));
                 this.put("${idcode}", cfmast.getIdCode());
-                this.put("${idplace}", cfmast.getIdPlace());
-                this.put("${iddate}", String.valueOf(cfmast.getIdDate()));
+                this.put("${IDPLACE}",
+                        WordUtils.capitalize(cfmast.getIdPlace().toLowerCase()));
+                this.put("${iddate}", cfmast.getIdDate() != null ? String.valueOf(cfmast.getIdDate()) : "[Ngày cấp]" );
                 this.put("${phone}", cfmast.getMobileSms());
-                this.put("${address}", cfmast.getAddress());
-                this.put("${curraddress}", cfmast.getAddress());
-                this.put("${email}", cfmast.getEmail());
+                this.put("${address}",
+                        WordUtils.capitalize(cfmast.getAddress().toLowerCase()));
+                this.put("${curraddress}",
+                        WordUtils.capitalize(cfmast.getAddress().toLowerCase()));
+                this.put("${email}", cfmast.getEmail() != null ? cfmast.getEmail() : "[Email]");
                 this.put("${bankno}", bank.getBankAccount());
-                this.put("${bankname}", bank.getBankName());
+                this.put("${bankname}",
+                        WordUtils.capitalize(bank.getBankName().toLowerCase()));
 
             }
 
