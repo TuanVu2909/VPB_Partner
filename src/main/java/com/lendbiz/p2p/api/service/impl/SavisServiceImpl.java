@@ -133,7 +133,8 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
             try {
                 root = mapper.readTree(responseEntityStr.getBody());
 
-                int sideType = root.get("output").get(0).get("class_name").get("normalized").get("value").asInt();
+                // int sideType =
+                // root.get("output").get(0).get("class_name").get("normalized").get("value").asInt();
 
                 // String isReal = root.get("output").get(0).get("id") != null
                 // ?
@@ -190,16 +191,13 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
         }
 
         if (type == 3) {
-            if (identity.getType() != 3 && identity.getType() != 5 && identity.getType() != 4) {
+            if (identity.getType() != 1 && identity.getType() != 3 && identity.getType() != 5) {
                 throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_IDENTITY_DESCRIPTION);
             }
-            // if (identity.getDateIssued() == null) {
-            // throw new BusinessException(ErrorCode.FAILED_IDENTITY,
-            // ErrorCode.FAILED_IDENTITY_DESCRIPTION);
-            // }
-        } else {
 
-            if (identity.getType() == 3 || identity.getType() == 5) {
+        } else {
+            if (identity.getType() == 1 || identity.getType() == 3 || identity.getType() == 52
+                    || identity.getType() == 53 || identity.getType() == 5) {
                 throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_IDENTITY_DESCRIPTION);
             }
 
@@ -718,7 +716,7 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
         if (responseEntityStr.getStatusCodeValue() == 200) {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root;
-            logger.info("Start get token access: {}", responseEntityStr.getBody());
+            // logger.info("Start get token access: {}", responseEntityStr.getBody());
             try {
                 root = mapper.readTree(responseEntityStr.getBody());
                 AccesToken result = new AccesToken();

@@ -554,6 +554,10 @@ public class Utils {
         int day = cal.get(Calendar.DAY_OF_MONTH);
 
         List<Object> texts = getAllElementFromObject(template.getMainDocumentPart(), Text.class);
+
+        SimpleDateFormat sdf = new SimpleDateFormat(
+                "dd/MM/yyyy");
+
         searchAndReplace(texts, new HashMap<String, String>() {
             private static final long serialVersionUID = 1L;
 
@@ -568,9 +572,9 @@ public class Utils {
                 this.put("${fullname}",
                         WordUtils.capitalize(cfmast.getFullName().toLowerCase()));
                 this.put("${idcode}", cfmast.getIdCode());
-                this.put("${IDPLACE}",
-                        WordUtils.capitalize(cfmast.getIdPlace().toLowerCase()));
-                this.put("${iddate}", cfmast.getIdDate() != null ? String.valueOf(cfmast.getIdDate()) : "[Ngày cấp]" );
+                this.put("${IDPLACE}", cfmast.getIdDate() != null ? 
+                        WordUtils.capitalize(cfmast.getIdPlace().toLowerCase()) : "[Nơi cấp]");
+                this.put("${iddate}", cfmast.getIdDate() != null ? sdf.format(cfmast.getIdDate()) : "[Ngày cấp]");
                 this.put("${phone}", cfmast.getMobileSms());
                 this.put("${address}",
                         WordUtils.capitalize(cfmast.getAddress().toLowerCase()));
