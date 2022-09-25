@@ -1198,106 +1198,110 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         MultipartFile mckFile = null;
         String docNo = UUID.randomUUID().toString();
 
-        for (CfMast cfMast : lstCfmast) {
-            contractInfoRepository.update(cfMast.getCustid(), 21);
-        }
+        if (lstCfmast.size() > 0) {
+            logger.info("Start auto sign! ~>" + docNo);
 
-        for (CfMast cfMast : lstCfmast) {
-            BankAccountEntity bank = new BankAccountEntity();
-            try {
-                filesStorageService.initContracts(cfMast.getMobileSms());
+            for (CfMast cfMast : lstCfmast) {
+                contractInfoRepository.update(cfMast.getCustid(), 21);
+            }
+
+            for (CfMast cfMast : lstCfmast) {
+                BankAccountEntity bank = new BankAccountEntity();
                 try {
-                    bank = bankAccountRepository.getUserBankAccount(cfMast.getCustid());
-                    if (bank == null) {
-                        bank = new BankAccountEntity();
+                    filesStorageService.initContracts(cfMast.getMobileSms());
+                    try {
+                        bank = bankAccountRepository.getUserBankAccount(cfMast.getCustid());
+                        if (bank == null) {
+                            bank = new BankAccountEntity();
+                            bank.setBankAccount("[Số tài khoản]");
+                            bank.setBankName("[Ngân hàng]");
+                        }
+                    } catch (Exception e) {
                         bank.setBankAccount("[Số tài khoản]");
                         bank.setBankName("[Ngân hàng]");
                     }
-                } catch (Exception e) {
-                    bank.setBankAccount("[Số tài khoản]");
-                    bank.setBankName("[Ngân hàng]");
-                }
 
-                outputDocs = "contracts/sign/" + cfMast.getMobileSms() + "/hopdong_output.docx";
-                Utils.fillDataToContract(cfMast, bank, inSourceDoc, outputDocs);
+                    outputDocs = "contracts/sign/" + cfMast.getMobileSms() + "/hopdong_output.docx";
+                    Utils.fillDataToContract(cfMast, bank, inSourceDoc, outputDocs);
 
-                File inputWord = new File(outputDocs);
-                FileInputStream inputStream = new FileInputStream(inputWord);
-                mckFile = new MockMultipartFile("hd", inputWord.getName(), "text/plain",
-                        IOUtils.toByteArray(inputStream));
+                    File inputWord = new File(outputDocs);
+                    FileInputStream inputStream = new FileInputStream(inputWord);
+                    mckFile = new MockMultipartFile("hd", inputWord.getName(), "text/plain",
+                            IOUtils.toByteArray(inputStream));
 
-                logger.info("---------Start call converter---------------");
-                final String uri = "http://45.117.83.201:9013/esign/v1.0/convert-pdf";
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-                headers.set("requestId", docNo);
+                    logger.info("---------Start call converter---------------");
+                    final String uri = "http://45.117.83.201:9013/esign/v1.0/convert-pdf";
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+                    headers.set("requestId", docNo);
 
-                MultiValueMap<String, Object> multiValueMap = new LinkedMultiValueMap<>();
-                ByteArrayResource contentsAsResource = Utils.convertFile(mckFile);
-                multiValueMap.add("file", contentsAsResource);
-                multiValueMap.add("output", docNo + ".pdf");
+                    MultiValueMap<String, Object> multiValueMap = new LinkedMultiValueMap<>();
+                    ByteArrayResource contentsAsResource = Utils.convertFile(mckFile);
+                    multiValueMap.add("file", contentsAsResource);
+                    multiValueMap.add("output", docNo + ".pdf");
 
-                HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(multiValueMap, headers);
-                ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(uri, request, String.class);
+                    HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(multiValueMap, headers);
+                    ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(uri, request, String.class);
 
-                // mapping response
-                // OutputStream outputStream;
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode root;
-                if (responseEntityStr.getStatusCodeValue() == 200) {
-                    try {
-                        root = mapper.readTree(responseEntityStr.getBody());
-                        byte[] data;
+                    // mapping response
+                    // OutputStream outputStream;
+                    ObjectMapper mapper = new ObjectMapper();
+                    JsonNode root;
+                    if (responseEntityStr.getStatusCodeValue() == 200) {
                         try {
-                            data = root.get("data").binaryValue();
+                            root = mapper.readTree(responseEntityStr.getBody());
+                            byte[] data;
+                            try {
+                                data = root.get("data").binaryValue();
 
-                            org.apache.commons.io.FileUtils.writeByteArrayToFile(
-                                    new File("contracts/sign/" + cfMast.getMobileSms() + "/hopdong_3gang.pdf"),
-                                    data);
+                                org.apache.commons.io.FileUtils.writeByteArrayToFile(
+                                        new File("contracts/sign/" + cfMast.getMobileSms() + "/hopdong_3gang.pdf"),
+                                        data);
 
-                            // FileUtils.savePdf(pathOutput, data);
+                                // FileUtils.savePdf(pathOutput, data);
 
-                            if (signContract("contracts/sign/" + cfMast.getMobileSms() + "/hopdong_3gang.pdf",
-                                    "contracts/sign/" + cfMast.getMobileSms() + "/signed_3gang.pdf",
-                                    cfMast)) {
-                                try {
-                                    File deleteInputFile = new File(
-                                            "contracts/sign/" + cfMast.getMobileSms() + "/hopdong_output.docx");
-                                    File deleteGeneratedFile = new File(
-                                            "contracts/sign/" + cfMast.getMobileSms() + "/hopdong_3gang.pdf");
-                                    deleteInputFile.delete();
-                                    deleteGeneratedFile.delete();
+                                if (signContract("contracts/sign/" + cfMast.getMobileSms() + "/hopdong_3gang.pdf",
+                                        "contracts/sign/" + cfMast.getMobileSms() + "/signed_3gang.pdf",
+                                        cfMast)) {
+                                    try {
+                                        File deleteInputFile = new File(
+                                                "contracts/sign/" + cfMast.getMobileSms() + "/hopdong_output.docx");
+                                        File deleteGeneratedFile = new File(
+                                                "contracts/sign/" + cfMast.getMobileSms() + "/hopdong_3gang.pdf");
+                                        deleteInputFile.delete();
+                                        deleteGeneratedFile.delete();
 
-                                } catch (Exception e) {
-                                    logger.info(e.getMessage());
+                                    } catch (Exception e) {
+                                        logger.info(e.getMessage());
+                                    }
+
+                                    contractInfoRepository.update(cfMast.getCustid(), 22);
+
+                                    logger.info("Success generated contract PDF!");
+                                } else {
+                                    contractInfoRepository.update(cfMast.getCustid(), 20);
                                 }
 
-                                contractInfoRepository.update(cfMast.getCustid(), 22);
-
-                                logger.info("Success generated contract PDF!");
-                            } else {
+                            } catch (IOException e) {
                                 contractInfoRepository.update(cfMast.getCustid(), 20);
+                                e.printStackTrace();
                             }
 
-                        } catch (IOException e) {
+                        } catch (JsonProcessingException e) {
                             contractInfoRepository.update(cfMast.getCustid(), 20);
-                            e.printStackTrace();
+                            throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
                         }
 
-                    } catch (JsonProcessingException e) {
+                    } else {
                         contractInfoRepository.update(cfMast.getCustid(), 20);
-                        throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
                     }
 
-                } else {
+                } catch (Exception e) {
                     contractInfoRepository.update(cfMast.getCustid(), 20);
+                    logger.info(e.getMessage());
                 }
-
-            } catch (Exception e) {
-                contractInfoRepository.update(cfMast.getCustid(), 20);
-                logger.info(e.getMessage());
             }
-
+            logger.info("End auto sign! ~>" + docNo);
         }
     }
 

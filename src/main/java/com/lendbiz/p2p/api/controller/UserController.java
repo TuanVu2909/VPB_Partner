@@ -818,10 +818,9 @@ public class UserController {
     @Scheduled(initialDelay = 1 * 60, fixedDelay = 2 * 5000)
     public void autoSign()
             throws BusinessException {
-        String uuid = UUID.randomUUID().toString();
-        log.info("Start auto sign! ~>" + uuid);
+
         userService.autoSignContract();
-        log.info("End auto sign!  ~>" + uuid);
+
     }
 
 }
