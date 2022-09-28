@@ -668,8 +668,8 @@ public class UserController {
         Mail mail = new Mail();
         mail.setMailFrom("tuht@lendbiz.vn");
         mail.setMailTo(request.getEmail());
-        mail.setMailSubject("3Gang Verification Email");
-        mail.setMailContent("Mã xác nhận của bạn là: " + request.getOtp());
+        mail.setMailSubject("[3Gang] Xác thực email");
+        mail.setMailContent("Mã xác thực email 3Gang của bạn là: " + request.getOtp());
 
         return mailService.sendEmail(mail, request);
     }

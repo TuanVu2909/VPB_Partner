@@ -17,6 +17,9 @@ public interface ContractInfoRepository extends CrudRepository<ContractInfo, Str
     @Query(value = "SELECT * FROM CONTRACTS_INFO WHERE CONTRACT_TYPE = '3GANG'", nativeQuery = true)
     Iterable<ContractInfo> getAll();
 
+    @Query(value = "SELECT count(*) FROM CONTRACTS_INFO WHERE CONTRACT_TYPE = '3GANG' and custid = :custId", nativeQuery = true)
+    int countByCustId(@Param("custId") String custId);
+
     @Query(value = "SELECT * FROM CONTRACTS_INFO WHERE SIGNED_DATE > SYSDATE - 1 AND PATH IS NOT NULL AND STATUS = 4 ORDER BY ID ASC", nativeQuery = true)
     List<ContractInfo> getAllNotProcessing();
 
@@ -31,7 +34,7 @@ public interface ContractInfoRepository extends CrudRepository<ContractInfo, Str
     @Modifying
     @Query(value = "UPDATE CONTRACTS_INFO SET STATUS = 1, PATH = :path, SIGNED_DATE = SYSDATE WHERE ID = :id", nativeQuery = true)
     void sign(@Param("id") String id, @Param("path") String path);
-    
+
     @Transactional
     @Modifying
     @Query(value = "UPDATE CONTRACTS_INFO SET STATUS = :status, SIGNED_DATE = SYSDATE WHERE CUSTID = :cid and CONTRACT_TYPE = '3GANG'", nativeQuery = true)

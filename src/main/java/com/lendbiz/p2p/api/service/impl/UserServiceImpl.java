@@ -547,9 +547,17 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     updateRequest.getBankAccountName(),
                     updateRequest.getBankCode());
 
-            contractInfoRepository.create(updateRequest.getCustId() + updateRequest.getIdCode(),
-                    updateRequest.getCustId(), "", "", "3GANG", "Hợp đồng",
-                    updateRequest.getCustId() + updateRequest.getIdCode());
+            if (entity.equals("1")) {
+                throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
+            } else {
+                if (contractInfoRepository.countByCustId(updateRequest.getCustId()) > 0) {
+                    contractInfoRepository.update(updateRequest.getCustId(), 20);
+                } else {
+                contractInfoRepository.create(updateRequest.getCustId() + updateRequest.getIdCode(),
+                        updateRequest.getCustId(), "", "", "3GANG", "Hợp đồng",
+                        updateRequest.getCustId() + updateRequest.getIdCode());}
+            }
+
         } catch (Exception e) {
             throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
         }
@@ -1322,11 +1330,11 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             request.setSignedBy(cfMast.getFullName());
 
             // Chu ky thu 1 cua khach hang
-            request.setPage("14");
+            request.setPage("8");
             request.setLlx("100");
-            request.setLly("620");
+            request.setLly("550");
             request.setUrx("250");
-            request.setUry("540");
+            request.setUry("470");
             request.setDetail("1,6");
             request.setReason("Đồng ý ký hợp đồng");
             request.setLocation("Việt Nam");
@@ -1337,11 +1345,11 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             request.setPositions(positions);
 
             // Chu ky thu 2 cua cong ty lendbiz
-            signByLendBizRequest.setPage("14");
+            signByLendBizRequest.setPage("8");
             signByLendBizRequest.setLlx("340");
-            signByLendBizRequest.setLly("620");
+            signByLendBizRequest.setLly("550");
             signByLendBizRequest.setUrx("500");
-            signByLendBizRequest.setUry("540");
+            signByLendBizRequest.setUry("470");
             signByLendBizRequest.setDetail("1,6");
             signByLendBizRequest.setReason("Đồng ý ký hợp đồng");
             signByLendBizRequest.setLocation("Việt Nam");
