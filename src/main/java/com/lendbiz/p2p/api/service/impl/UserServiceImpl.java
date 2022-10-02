@@ -17,6 +17,7 @@ package com.lendbiz.p2p.api.service.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -329,8 +330,6 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 Date now = new Date();
                 long diff = (now.getTime() - user.getLastChange().getTime()) / 1000 / 60;
 
-                System.out.println(diff);
-
                 if (diff <= 15) {
                     throw new BusinessException(ErrorCode.ACCOUNT_LOCKED,
                             ErrorCode.ACCOUNT_LOCKED_DESCRIPTION);
@@ -541,7 +540,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 entity = firstPasswordRepository.firstPassword(custId,
                         passwordEncoder.encode(setAccountPasswordRequest.getPassword()));
 
-                System.out.println("passwordEncoder.encode(setAccountPasswordRequest.getPassword()): "
+                logger.info("passwordEncoder.encode(setAccountPasswordRequest.getPassword()): "
                         + passwordEncoder.encode(setAccountPasswordRequest.getPassword()));
             } catch (Exception e) {
                 throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
@@ -1060,7 +1059,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             sDateF = sdf.parse(request.getFund_date());
 
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            logger.info(ex.getMessage());
         }
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         formatter = new SimpleDateFormat("dd-MMM-yyyy");
@@ -1165,7 +1164,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     + "\"contents\": {\"en\": \""
                     + request.getMessage() + "\"}" + "}";
 
-            System.out.println("strJsonBody:\n" + strJsonBody);
+            logger.info("strJsonBody:\n" + strJsonBody);
 
             byte[] sendBytes = strJsonBody.getBytes("UTF-8");
             con.setFixedLengthStreamingMode(sendBytes.length);
@@ -1174,8 +1173,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             outputStream.write(sendBytes);
 
             int httpResponse = con.getResponseCode();
-            System.out.println("httpResponse: " + httpResponse);
-            
+            logger.info("httpResponse: " + httpResponse);
 
             if (httpResponse >= HttpURLConnection.HTTP_OK && httpResponse < HttpURLConnection.HTTP_BAD_REQUEST) {
                 Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
@@ -1187,24 +1185,21 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 scanner.close();
             }
             pushRepository.updateNotifications(1, request.getCustId(), request.getId());
-            System.out.println("jsonResponse:\n" + jsonResponse);
+            logger.info("jsonResponse:\n" + jsonResponse);
 
-            FileInputStream serviceAccount = new FileInputStream("service-account-file.json");
+            try {
+                Firestore db = FirestoreClient.getFirestore();
+                HashMap<String, String> data = new HashMap<String, String>();
+                data.put("change", String.valueOf(System.currentTimeMillis()));
 
-            FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .build();
-    
-            FirebaseApp.initializeApp(options);
-            Firestore db = FirestoreClient.getFirestore();
-    
-            HashMap<String, String> data = new HashMap<String, String>();
-            data.put("change", String.valueOf(System.currentTimeMillis()));
-    
-            ApiFuture<WriteResult> future = db.collection("balance").document(request.getCustId())
-                    .set(data);
-    
-            System.out.println("successfully!");
+                ApiFuture<WriteResult> future = db.collection("balance").document(request.getCustId())
+                        .set(data);
+            } catch (Exception t) {
+                pushRepository.updateNotifications(101, request.getCustId(), request.getId());
+                logger.info("Error!" + t.getMessage());
+            }
+
+            logger.info("successfully!");
 
         } catch (Throwable t) {
             pushRepository.updateNotifications(99, request.getCustId(), request.getId());

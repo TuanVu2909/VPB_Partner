@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,15 +40,18 @@ public class PushController {
     @Autowired
     UserServiceImpl serviceImpl;
 
-    @GetMapping("/push-notification")
+    // @GetMapping("/push-notification")
     @Transactional(readOnly = true)
-    public ResponseEntity<?> getToken(HttpServletRequest httpServletRequest) {
-        String requestId = httpServletRequest.getHeader("RequestId");
+    // @Scheduled(initialDelay = 1 * 60, fixedDelay = 1 * 3 * 1000)
+    public void getToken() {
+
         List<NotificationsPushEntity> lstNoti = pushRepository.getOsNotifications();
         for (NotificationsPushEntity notificationsPushEntity : lstNoti) {
+            log.info("Start auto push");
             serviceImpl.createNotificationOneSignal(notificationsPushEntity);
         }
-        return null;
+        log.info("End auto push");
+
     }
 
 }
