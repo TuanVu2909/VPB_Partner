@@ -81,6 +81,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-text
 	implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
 
+	implementation 'com.google.firebase:firebase-admin:9.0.0'
 
 
 }

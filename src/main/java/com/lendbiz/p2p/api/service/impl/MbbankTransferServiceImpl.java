@@ -135,6 +135,8 @@ public class MbbankTransferServiceImpl extends BaseResponse<MbbankTransferServic
     @Override
     public ResponseEntity<?> getBankName(String requestId, GetBankNameRequest getBankNameRequest) {
 
+       if  (getBankNameRequest.getAccountNumber().startsWith("9704"))  throw new BusinessException(ErrorCode.NOT_ACCEPT_CARDNUMBER, ErrorCode.NOT_ACCEPT_CARDNUMBER_DESCRIPTION);
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Bearer " + token());

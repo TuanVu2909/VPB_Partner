@@ -51,6 +51,13 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.core.ApiFuture;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.WriteResult;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.cloud.FirestoreClient;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.AccountAssetEntity;
@@ -474,7 +481,13 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             String lbcName = "CONG TY CO PHAN LENDBIZ CAPITAL";
             String ruleAgreementUrl = "https://bagang.lendbiz.vn/lendbiz/view/1/" + userPhone;
             String contractUrl = "https://bagang.lendbiz.vn/lendbiz/view/2/" + userPhone;
-
+            String inviteFriendTitle = "40.000 VND";
+            String inviteFriendCash = "10.000 VND";
+            String inviteFriendDescription = "Mời bạn bè sử dụng 3Gang để cùng nhận thưởng. Với mỗi tài khoản được mở thành công và phát sinh giao dịch, bạn sẽ nhận được 40.000 VND. Đặc biệt, người được giới thiệu cũng nhận thêm 10.000 VND vào tài khoản 3Gang ngay sau khi phát sinh giao dịch tích lũy đầu tiên.";
+            String[] xuTitle = "Bạn sẽ nhận được sau một tháng kể từ ngày phát sinh giao dịch:|Nhà đầu tư có số dư tích lũy có kỳ hạn sẽ được tặng xu vào ngày sinh nhật với điều kiện:"
+                    .split("\\|");
+            String[] xuDescription = "+ 1 xu với mỗi 100.000 VND tích lũy có kỳ hạn.|+ 2 xu với mỗi 100.000 VND tích lũy có kỳ hạn vào ngày sinh nhật của bạn.|+ Nhận 20 xu nếu số dư tích lũy có kỳ hạn từ 1.000.000 – 10.000.000 VND|+ Nhận 100 xu nếu số dư tích lũy có kỳ hạn từ 10.000.000 – 50.000.000 VND|+ Nhận 200 xu nếu số dư tích lũy có kỳ hạn trên 50.000.000 VND"
+                    .split("\\|");
             try {
                 File folder = new File(directPathAvatar);
                 for (final File fileEntry : folder.listFiles()) {
@@ -505,6 +518,11 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             map.put("lbcName", lbcName);
             map.put("ruleAgreementUrl", ruleAgreementUrl);
             map.put("contractUrl", contractUrl);
+            map.put("inviteFriendTitle", inviteFriendTitle);
+            map.put("inviteFriendCash", inviteFriendCash);
+            map.put("inviteFriendDescription", inviteFriendDescription);
+            map.put("xuTitle", xuTitle);
+            map.put("xuDescription", xuDescription);
 
             return response(toResult(map));
 
@@ -553,9 +571,10 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 if (contractInfoRepository.countByCustId(updateRequest.getCustId()) > 0) {
                     contractInfoRepository.update(updateRequest.getCustId(), 20);
                 } else {
-                contractInfoRepository.create(updateRequest.getCustId() + updateRequest.getIdCode(),
-                        updateRequest.getCustId(), "", "", "3GANG", "Hợp đồng",
-                        updateRequest.getCustId() + updateRequest.getIdCode());}
+                    contractInfoRepository.create(updateRequest.getCustId() + updateRequest.getIdCode(),
+                            updateRequest.getCustId(), "", "", "3GANG", "Hợp đồng",
+                            updateRequest.getCustId() + updateRequest.getIdCode());
+                }
             }
 
         } catch (Exception e) {
@@ -1156,6 +1175,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
             int httpResponse = con.getResponseCode();
             System.out.println("httpResponse: " + httpResponse);
+            
 
             if (httpResponse >= HttpURLConnection.HTTP_OK && httpResponse < HttpURLConnection.HTTP_BAD_REQUEST) {
                 Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
@@ -1168,6 +1188,23 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             }
             pushRepository.updateNotifications(1, request.getCustId(), request.getId());
             System.out.println("jsonResponse:\n" + jsonResponse);
+
+            FileInputStream serviceAccount = new FileInputStream("service-account-file.json");
+
+            FirebaseOptions options = new FirebaseOptions.Builder()
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .build();
+    
+            FirebaseApp.initializeApp(options);
+            Firestore db = FirestoreClient.getFirestore();
+    
+            HashMap<String, String> data = new HashMap<String, String>();
+            data.put("change", String.valueOf(System.currentTimeMillis()));
+    
+            ApiFuture<WriteResult> future = db.collection("balance").document(request.getCustId())
+                    .set(data);
+    
+            System.out.println("successfully!");
 
         } catch (Throwable t) {
             pushRepository.updateNotifications(99, request.getCustId(), request.getId());

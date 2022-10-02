@@ -190,6 +190,7 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
 
         }
 
+
         if (type == 3) {
             if (identity.getType() != 1 && identity.getType() != 3 && identity.getType() != 5) {
                 throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_IDENTITY_DESCRIPTION);
@@ -197,7 +198,7 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
 
         } else {
             if (identity.getType() == 1 || identity.getType() == 3 || identity.getType() == 52
-                    || identity.getType() == 53 || identity.getType() == 5) {
+                    || identity.getType() == 53 || identity.getType() == 5 || identity.getType() == 6) {
                 throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_IDENTITY_DESCRIPTION);
             }
 
