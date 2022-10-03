@@ -18,13 +18,14 @@ public class ApiApplication {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 
-		// FileInputStream serviceAccount = new FileInputStream("service-account-file.json");
+		// FileInputStream serviceAccount = new
+		// FileInputStream("service-account-file.json");
 
-		// FirebaseOptions options = new FirebaseOptions.Builder()
-		// 		.setCredentials(GoogleCredentials.fromStream(new FileInputStream("service-account-file.json")))
-		// 		.build();
+		FirebaseOptions options = new FirebaseOptions.Builder()
+				.setCredentials(GoogleCredentials.fromStream(new FileInputStream("service-account-file.json")))
+				.build();
 
-		// FirebaseApp.initializeApp(options);
+		FirebaseApp.initializeApp(options);
 
 		SpringApplication.run(ApiApplication.class, args);
 

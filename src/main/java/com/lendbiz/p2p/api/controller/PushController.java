@@ -40,7 +40,7 @@ public class PushController {
     @Autowired
     UserServiceImpl serviceImpl;
 
-    // @GetMapping("/push-notification")
+    @GetMapping("/push-notification")
     @Transactional(readOnly = true)
     // @Scheduled(initialDelay = 1 * 60, fixedDelay = 1 * 3 * 1000)
     public void getToken() {
