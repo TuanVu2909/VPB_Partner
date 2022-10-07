@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,6 +16,7 @@ import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.constants.JsonMapper;
 import com.lendbiz.p2p.api.entity.Otp;
 import com.lendbiz.p2p.api.model.SavisResponse.IdentityFromSavisResponse;
+import com.lendbiz.p2p.api.producer.ProducerMessage;
 import com.lendbiz.p2p.api.repository.CfMastRepository;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.request.SavisVerifyOtpRequest;
@@ -32,6 +35,8 @@ import com.lendbiz.p2p.api.utils.StringUtil;
 import com.lendbiz.p2p.api.utils.Utils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.text.WordUtils;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
@@ -60,11 +65,52 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
     @Autowired
     OtpServiceImpl otpService;
 
+    @Autowired
+    private ProducerMessage producerMessage;
+
+    public void saveFileKafka(MultipartFile file, String mobile, int type) {
+        try {
+            byte[] fileContent = Base64.encodeBase64(file.getBytes());
+            String data = new String(fileContent, "UTF-8");
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("mobile", mobile);
+            map.put("file", data);
+            map.put("fileName", type + "_" + file.getOriginalFilename());
+
+            JSONObject jsonObjectLogs = new JSONObject(map);
+            producerMessage.sendSaveIdCard(jsonObjectLogs.toString());
+
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+        }
+    }
+
     @Override
-    public ResponseEntity<?> callPredict(MultipartFile file, InfoIdentity identity, int type) {
+    public ResponseEntity<?> callPredict(MultipartFile file, InfoIdentity identity, int type, String mobile) {
         logger.info("---------Start call predict---------------");
         // JSONObject sObj;
         // Object temp;
+
+        saveFileKafka(file, mobile, type);
+
+        try {
+            byte[] fileContent = Base64.encodeBase64(file.getBytes());
+            String result = new String(fileContent);
+            System.out.println(result);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("mobile", mobile);
+            map.put("file", result);
+            map.put("fileName", file.getOriginalFilename());
+
+            JSONObject jsonObjectLogs = new JSONObject(map);
+            producerMessage.sendSaveIdCard(jsonObjectLogs.toString());
+
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+        }
+
         final String uri = Constants.ESIGN_PREDICT;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -87,7 +133,8 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
             try {
                 root = mapper.readTree(responseEntityStr.getBody());
 
-                int sideType = root.get("output").get(0).get("class_name").get("normalized").get("value").asInt();
+                // int sideType =
+                // root.get("output").get(0).get("class_name").get("normalized").get("value").asInt();
 
                 // String isReal = root.get("output").get(0).get("id") != null
                 // ?
@@ -143,24 +190,22 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
 
         }
 
+
         if (type == 3) {
-            if (identity.getType() != 3 && identity.getType() != 5 && identity.getType() != 4) {
+            if (identity.getType() != 1 && identity.getType() != 3 && identity.getType() != 5) {
                 throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_IDENTITY_DESCRIPTION);
             }
-            // if (identity.getDateIssued() == null) {
-            // throw new BusinessException(ErrorCode.FAILED_IDENTITY,
-            // ErrorCode.FAILED_IDENTITY_DESCRIPTION);
-            // }
-        } else {
 
-            if (identity.getType() == 3 || identity.getType() == 5) {
+        } else {
+            if (identity.getType() == 1 || identity.getType() == 3 || identity.getType() == 52
+                    || identity.getType() == 53 || identity.getType() == 5 || identity.getType() == 6) {
                 throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_IDENTITY_DESCRIPTION);
             }
 
             if (identity.getIdNo() == null) {
                 throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_IDENTITY_DESCRIPTION);
             } else {
-                if (cfMastRepo.findByIdCode(identity.getIdNo()).size() > 0) {
+                if (cfMastRepo.findByIdCode(identity.getIdNo(), mobile).size() > 0) {
                     throw new BusinessException(ErrorCode.USER_EXISTED, ErrorCode.USER_EXISTED_DESCRIPTION);
                 }
             }
@@ -293,8 +338,11 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
     }
 
     @Override
-    public ResponseEntity<?> callCheckSelfie(MultipartFile frontId, MultipartFile selfie) {
+    public ResponseEntity<?> callCheckSelfie(MultipartFile frontId, MultipartFile selfie, String mobile) {
         logger.info("---------Start call face_general---------------");
+
+        saveFileKafka(selfie, mobile, 0);
+
         final String uri = Constants.ESIGN_FACE_GENERAL;
         boolean isMatching = false;
         HttpHeaders headers = new HttpHeaders();
@@ -578,35 +626,36 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
                 signRequest.getIsLBC().equalsIgnoreCase("lbc") ? Constants.LBC_ALIAS : Constants.ALIAS);
         multiValueMap.add("isVisible", Constants.IS_VISIBLE);
 
-        if (signRequest.getType().equalsIgnoreCase("client")) {
-            multiValueMap.add("signedBy", signRequest.getSignedBy());
-        }
         multiValueMap.add("positions", generatePositionParam(signRequest.getPositions()));
 
         multiValueMap.add("detail", signRequest.getDetail());
         if (StringUtil.isEmty(signRequest.getReason())) {
-            multiValueMap.add("reason", "Ä�á»“ng Ã½ kÃ½ há»£p Ä‘á»“ng");
+            multiValueMap.add("reason", "Ký hợp đồng 3Gang");
         }
 
         if (StringUtil.isEmty(signRequest.getLocation())) {
-            multiValueMap.add("location", "HÃ  Ná»™i");
+            multiValueMap.add("location", "Hà Nội");
         }
 
         if (StringUtil.isEmty(signRequest.getContactInfo())) {
-            multiValueMap.add("contactInfo", "khu Ä‘Ã´ thá»‹ Ä�áº¡i Kim");
+            multiValueMap.add("contactInfo", "Khu độ thị Đại Kim");
         }
 
-        // try {
-        // File signImage = new File(Constants.SIGN_IMAGE_DEFAULT);
-        // FileInputStream input = new FileInputStream(signImage);
-        // MultipartFile imgMultiPartFile = new MockMultipartFile("sign_pdf",
-        // signImage.getName(), "text/plain",
-        // IOUtils.toByteArray(input));
-        // ByteArrayResource signature = convertFile(imgMultiPartFile);
-        // multiValueMap.add("image", signature);
-        // } catch (IOException e) {
-        // e.printStackTrace();
-        // }
+        if (signRequest.getType().equalsIgnoreCase("client")) {
+            multiValueMap.add("signedBy", WordUtils.capitalize(signRequest.getSignedBy().toLowerCase()));
+        } else {
+            try {
+                File signImage = new File(Constants.SIGN_IMAGE_DEFAULT);
+                FileInputStream input = new FileInputStream(signImage);
+                MultipartFile imgMultiPartFile = new MockMultipartFile("sign_pdf",
+                        signImage.getName(), "text/plain",
+                        IOUtils.toByteArray(input));
+                ByteArrayResource signature = convertFile(imgMultiPartFile);
+                multiValueMap.add("imageData", signature);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(uri).queryParam("type", signRequest.getType());
 
@@ -668,7 +717,7 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
         if (responseEntityStr.getStatusCodeValue() == 200) {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root;
-            logger.info("Start get token access: {}", responseEntityStr.getBody());
+            // logger.info("Start get token access: {}", responseEntityStr.getBody());
             try {
                 root = mapper.readTree(responseEntityStr.getBody());
                 AccesToken result = new AccesToken();

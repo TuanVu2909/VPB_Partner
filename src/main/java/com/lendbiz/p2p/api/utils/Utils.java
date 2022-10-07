@@ -1,8 +1,18 @@
 package com.lendbiz.p2p.api.utils;
 
-import java.io.UnsupportedEncodingException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.charset.Charset;
-import java.security.*;
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.SecureRandom;
+import java.security.Signature;
+import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -13,23 +23,42 @@ import java.time.Year;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.TimeZone;
+import java.util.UUID;
 
-import com.google.gson.Gson;
-import com.lendbiz.p2p.api.constants.ErrorCode;
-import com.lendbiz.p2p.api.exception.BusinessException;
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 
-import com.lendbiz.p2p.api.request.BearRequest;
-import com.lendbiz.p2p.api.response.BearResponse;
-import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.text.WordUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.docx4j.openpackaging.exceptions.Docx4JException;
+import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
+import org.docx4j.wml.ContentAccessor;
+import org.docx4j.wml.Text;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.crypto.*;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
+import com.google.gson.Gson;
+import com.lendbiz.p2p.api.constants.ErrorCode;
+import com.lendbiz.p2p.api.entity.BankAccountEntity;
+import com.lendbiz.p2p.api.entity.CfMast;
+import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.request.BearRequest;
+import com.lendbiz.p2p.api.response.BearResponse;
 
 /***********************************************************************
  *
@@ -207,10 +236,6 @@ public class Utils {
         }
     }
 
-    public static void main(String[] args) {
-        System.out.println(getAge("06/12/2011"));
-    }
-
     public static String getDate() {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -237,7 +262,7 @@ public class Utils {
 
         byte[] cipherBytes = java.util.Base64.getDecoder().decode(base64Cipher);
         byte[] iv = "1234123412341234".getBytes(ASCII);
-        byte[] keyBytes = "wU6JlogmAFU0MQEF4FXhEISiTauXC9eZ".getBytes(ASCII);
+        byte[] keyBytes = "D8WkvpZwr3Gj4lGAU3MFFoh1y4b2xx9Q".getBytes(ASCII);
         SecretKey aesKey = new SecretKeySpec(keyBytes, "AES");
         Cipher cipher = null;
         String upToNCharacters = "";
@@ -261,17 +286,17 @@ public class Utils {
         HashMap<String, String> rq9Pay = new HashMap<>();
         date = date.replace("-", "");
         String unId = UUID.randomUUID().toString();
-        String rqId = "L6WPKJXN4Y9P" + date + unId;
+        String rqId = "QDKZYOKPER9P" + date + unId;
         ;
         String messageString = "";
         if (map.get("type").equals("1")) {
-            messageString = rqId + "|L6WPKJXN4Y|" + map.get("service_id");
+            messageString = rqId + "|QDKZYOKPER|" + map.get("service_id");
         } else if (map.get("type").equals("2")) {
-            messageString = rqId + "|L6WPKJXN4Y|" + map.get("product_id") + "|" + map.get("qua");
+            messageString = rqId + "|QDKZYOKPER|" + map.get("product_id") + "|" + map.get("qua");
         } else if (map.get("type").equals("3")) {
-            messageString = rqId + "|L6WPKJXN4Y|TRANSACTION|" + map.get("content_id");
+            messageString = rqId + "|QDKZYOKPER|TRANSACTION|" + map.get("content_id");
         } else if (map.get("type").equals("4")) {
-            messageString = rqId + "|L6WPKJXN4Y|" + map.get("rq_time");
+            messageString = rqId + "|QDKZYOKPER|" + map.get("rq_time");
 
         }
 
@@ -279,6 +304,17 @@ public class Utils {
         rq9Pay.put("mess", messageString);
 
         return rq9Pay;
+
+    }
+
+    public static String createMessageBalance(String requestId, String requestTime) {
+        String date = LocalDate.now().toString();
+        date = date.replace("-", "");
+
+        String messageString = "";
+        messageString = requestId + "|QDKZYOKPER|" + requestTime;
+
+        return messageString;
 
     }
 
@@ -298,9 +334,12 @@ public class Utils {
         HashMap<String, String> createMessRqId = createMessage(map);
         String rqId = createMessRqId.get("rqId");
         String messageString = createMessRqId.get("mess");
-        String publicKeyB64 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6cEUTrHSw9ZHfirrMZ8Lq2SkdGhZuEzxTr5DYi989G/ulDdNGgSHrpIB58JEtAsCSxdme7YgO3C8aZWpuOqWN07Wh+XBK/4imZPlhDt5h9InOHK90m6zVAOE6V4JFtE3k05Nz7p9RMxoizHTjZSQEvj13bK9WeCjFPAppBgvOJZJKrWHkuu2mrF4o9lD4bIoyIZbdjC8ynzarS4GIk+hXIiOs5+rff76bZiVX0hApGmnEtPs3IaD4wOCfBJFiOEKzkX7xgZPrYkn26KivPhO5/4ozRZXZKHM25dXRtQD7OnQBXhaLdVmRN4XnqctrTUxsFazcCLZAvg3CkqbH+2MuQIDAQAB";
-
-        String private64 = "MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDpwRROsdLD1kd+KusxnwurZKR0aFm4TPFOvkNiL3z0b+6UN00aBIeukgHnwkS0CwJLF2Z7tiA7cLxplam46pY3TtaH5cEr/iKZk+WEO3mH0ic4cr3SbrNUA4TpXgkW0TeTTk3Pun1EzGiLMdONlJAS+PXdsr1Z4KMU8CmkGC84lkkqtYeS67aasXij2UPhsijIhlt2MLzKfNqtLgYiT6FciI6zn6t9/vptmJVfSECkaacS0+zchoPjA4J8EkWI4QrORfvGBk+tiSfboqK8+E7n/ijNFldkoczbl1dG1APs6dAFeFot1WZE3heepy2tNTGwVrNwItkC+DcKSpsf7Yy5AgMBAAECggEBAI2A9YMiAJ3OxJ6q6o+yYQUTOr7BQLbh1R4+7Vmtt63daIbO51y9q0lRV9ftcVuwYmYEt2Rifyace2JLWF/5mo/GqPXBbuvrvxRLRKCExHAlFtsEEsclfmd4beg7pbLrWgJRX6dFlHmmaA8DTbaiXYkurt/TSO70nqSZMgwFG+jbYSiFrNURUDG0fuCM/qVjs0cwquKJzHGxFIKD54SGkg0EH6Ch2iHFEcNHp+ZlA4oKdiGo9oyr1EiGjQwAgxV8f0li3xIwk5NYvAG032WPyOAZTQAmC+LPGhpS6WLk6VKdjs5720gmsy8kMFNckkPMTZGejzclHfWHaugpeMKw5dECgYEA9bzfyBmkhorNLSrqK6BsG3et09ixXEt26R1E/DMrub07HzAqgm+cLhsi3zIkHg0K89rwqNMP/zu74yAwj9TY8S1saLXNpaOn9M+ruJHRAebucEAGOMF0GmpsXeOCj3PBTW5MSAg9Mpt1X8J+uqyl6nlogY23arsQl6x7x+by9E0CgYEA84QXcO0SXsrz3I5GJ2xEHksv5kaYDWhLEhSGSsm4Xa86DCE7FKewaIwjZIkqFcGkUvsvpUhD4JVf3J4l2ATci6YxFxYVLPPXbyHE5hZuvIPP95J4VnymMj+7thSf/XFCxsu7Y1QwogslfzOHZ2QscGPcMVgl4Dt3x9c/Cfd3YB0CgYEAv7Wx/7HBoRT4LJymQ5LLxEIB4pvTAmX9RrAG+ZoSKr1uOk6hW1EnTvDsq6O6eZdDTCsqRQskF8LKOc8LE6rB9KWzRZ1P6kFa7qp1FXDs1ccLjZblQ7HomhMcp8KuQKvVykqaSDflRm3xi9t4crnuVpaQ6UFeLm3x6+IsTy/lqqECgYEAtQdtpbWYAoA96aia3pPNz/d1FGtGfjEaHcbETrTHKl4pePr7QM+ohRAo/4Q4lRPvZQD22phuXXauXQP0fjKfAfH6bH8uHsznSuZ/yczDZcFXyWRJsYHYy2I12ZZbmb2pNsAd/imIPe6rYXSdJG+D2cli2Av/nEKZOSb65h3h0MECgYAw9hv16CtTC1ygtK7QO7EohJUFtwlPBF98ysZ7hw8zPo5/USD648dPv8+eIvcGjdCB1I2H0FAmSD7WytqlZ22kYVO9yHbKOgCnaFO3RadSCBqL7nMRla55U7PjooFCjF6iQUC8UR4cp+EqZjRRx2kbhu2atqJ5/nCnS8lcejquEA==";
+        // String publicKeyB64 =
+        // "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6cEUTrHSw9ZHfirrMZ8Lq2SkdGhZuEzxTr5DYi989G/ulDdNGgSHrpIB58JEtAsCSxdme7YgO3C8aZWpuOqWN07Wh+XBK/4imZPlhDt5h9InOHK90m6zVAOE6V4JFtE3k05Nz7p9RMxoizHTjZSQEvj13bK9WeCjFPAppBgvOJZJKrWHkuu2mrF4o9lD4bIoyIZbdjC8ynzarS4GIk+hXIiOs5+rff76bZiVX0hApGmnEtPs3IaD4wOCfBJFiOEKzkX7xgZPrYkn26KivPhO5/4ozRZXZKHM25dXRtQD7OnQBXhaLdVmRN4XnqctrTUxsFazcCLZAvg3CkqbH+2MuQIDAQAB";
+        String publicKeyB64 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAguQ6CFi+oBnSctFYa25UIz/FcItO+yLR8HYL4Iz+zbn7WKEzELsd13Q6oXi8ksM5K5CJAKUDekcPqcfXelgK2WYlNrQwFKWa297pbWJfJhC7fh4AK5yJRgQ/jupsOdWAt68A5KhCUt4J/WcK/SiJBUpccVeiyU1Cc9q8v2O3EWcpXsgOFVa+84AAyBpLruwTBUhX7RI/PiZ14hFZN5AdGy0vn+J0pFYpMpQ9fx7tnXNagXzCf0jDxx94UobuzeZ21zEylXsBvIpG19BfD+6h2RoGlgMRJG3x4xBarQnCZOW3PTWpENOdXU5d5pDfOOpMf/wN2VviQbot4pJ0tjzSjQIDAQAB";
+        // String private64 =
+        // "MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDpwRROsdLD1kd+KusxnwurZKR0aFm4TPFOvkNiL3z0b+6UN00aBIeukgHnwkS0CwJLF2Z7tiA7cLxplam46pY3TtaH5cEr/iKZk+WEO3mH0ic4cr3SbrNUA4TpXgkW0TeTTk3Pun1EzGiLMdONlJAS+PXdsr1Z4KMU8CmkGC84lkkqtYeS67aasXij2UPhsijIhlt2MLzKfNqtLgYiT6FciI6zn6t9/vptmJVfSECkaacS0+zchoPjA4J8EkWI4QrORfvGBk+tiSfboqK8+E7n/ijNFldkoczbl1dG1APs6dAFeFot1WZE3heepy2tNTGwVrNwItkC+DcKSpsf7Yy5AgMBAAECggEBAI2A9YMiAJ3OxJ6q6o+yYQUTOr7BQLbh1R4+7Vmtt63daIbO51y9q0lRV9ftcVuwYmYEt2Rifyace2JLWF/5mo/GqPXBbuvrvxRLRKCExHAlFtsEEsclfmd4beg7pbLrWgJRX6dFlHmmaA8DTbaiXYkurt/TSO70nqSZMgwFG+jbYSiFrNURUDG0fuCM/qVjs0cwquKJzHGxFIKD54SGkg0EH6Ch2iHFEcNHp+ZlA4oKdiGo9oyr1EiGjQwAgxV8f0li3xIwk5NYvAG032WPyOAZTQAmC+LPGhpS6WLk6VKdjs5720gmsy8kMFNckkPMTZGejzclHfWHaugpeMKw5dECgYEA9bzfyBmkhorNLSrqK6BsG3et09ixXEt26R1E/DMrub07HzAqgm+cLhsi3zIkHg0K89rwqNMP/zu74yAwj9TY8S1saLXNpaOn9M+ruJHRAebucEAGOMF0GmpsXeOCj3PBTW5MSAg9Mpt1X8J+uqyl6nlogY23arsQl6x7x+by9E0CgYEA84QXcO0SXsrz3I5GJ2xEHksv5kaYDWhLEhSGSsm4Xa86DCE7FKewaIwjZIkqFcGkUvsvpUhD4JVf3J4l2ATci6YxFxYVLPPXbyHE5hZuvIPP95J4VnymMj+7thSf/XFCxsu7Y1QwogslfzOHZ2QscGPcMVgl4Dt3x9c/Cfd3YB0CgYEAv7Wx/7HBoRT4LJymQ5LLxEIB4pvTAmX9RrAG+ZoSKr1uOk6hW1EnTvDsq6O6eZdDTCsqRQskF8LKOc8LE6rB9KWzRZ1P6kFa7qp1FXDs1ccLjZblQ7HomhMcp8KuQKvVykqaSDflRm3xi9t4crnuVpaQ6UFeLm3x6+IsTy/lqqECgYEAtQdtpbWYAoA96aia3pPNz/d1FGtGfjEaHcbETrTHKl4pePr7QM+ohRAo/4Q4lRPvZQD22phuXXauXQP0fjKfAfH6bH8uHsznSuZ/yczDZcFXyWRJsYHYy2I12ZZbmb2pNsAd/imIPe6rYXSdJG+D2cli2Av/nEKZOSb65h3h0MECgYAw9hv16CtTC1ygtK7QO7EohJUFtwlPBF98ysZ7hw8zPo5/USD648dPv8+eIvcGjdCB1I2H0FAmSD7WytqlZ22kYVO9yHbKOgCnaFO3RadSCBqL7nMRla55U7PjooFCjF6iQUC8UR4cp+EqZjRRx2kbhu2atqJ5/nCnS8lcejquEA==";
+        String private64 = "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCC5DoIWL6gGdJy0VhrblQjP8Vwi077ItHwdgvgjP7NuftYoTMQux3XdDqheLySwzkrkIkApQN6Rw+px9d6WArZZiU2tDAUpZrb3ultYl8mELt+HgArnIlGBD+O6mw51YC3rwDkqEJS3gn9Zwr9KIkFSlxxV6LJTUJz2ry/Y7cRZyleyA4VVr7zgADIGkuu7BMFSFftEj8+JnXiEVk3kB0bLS+f4nSkVikylD1/Hu2dc1qBfMJ/SMPHH3hShu7N5nbXMTKVewG8ikbX0F8P7qHZGgaWAxEkbfHjEFqtCcJk5bc9NakQ051dTl3mkN846kx//A3ZW+JBui3iknS2PNKNAgMBAAECggEAeaLsByupYpD8kDTZjWSHDgbKTY84Q4uVO3gIC5IbjEVEPZX4JZkt3zYk8j+IRn7jlweHObEfbTeyZ53OMeS1mFgjRxXmBJntMlyR4lPjhjVQd6Abmmuq6gUyp3ZUQt6U8p3QH635jJbJA9MJVD+iLedvxuig359LnOxuMRHSY3l1A61xJ3kbPjFgoIU1LCEpO/y92XQmQwxTXGH/46JqV6wfOlnSkhQ5tyS/hNbcbKlPWT3Ec0oiG0G7aHcL4DQCXjA99d25blr1ka78jOX80hpnfVeq2QvrURTl9OMvg0+6e385oA+8u4GdXWJhfrxERlRsbVWL4nq2n04+JKzIxQKBgQDlUZ6aFJVZe1uhSDpycnd2iKGDMcP0gM4Rojph5mF58Hn758yNabExu5GT0ECl6ISwI7Vcc8atiGL31le/8TMyDBQaAw7j2R0klpyz1CHIgyoKftlcyc0IO2AuNToJbakMNJd+77gf8XMB+tnTIwlAMGn2b3ug/+tQuDnQUjSonwKBgQCSHuX8J+NYIXG5kPl8h1RRtkBEwXweYVjaLVjwPXib5ydOAVRmWVA0stO922F4sxAZbjsEzq2fxTu+nWOpQGn3o5pw31iR1bRqXIWJoc5hU/2FeteAfUlgEbSf/KWXEUJeaKmkv/cUtZIOcY+ZSBTUbaFnzgJ3K3oghmBNlil5UwKBgE+x5eS2cpD+hgGvEGDl1w6ivT7S9L7sZLFMJ+4OGqI+KKabEEO1D5exEA7GuTDvde2g+05+DfYRCBQJscVLFfe2quW/WlVlBvPIQ/1bI8KDkwDCxNeyakcKG4rzhI/yRGWxgVTkCqFPUCDIBRuTeYuNR8YVSGnThvwuiikT6KkRAoGBAIPkNe1jx7aeAXvhGwDHWlmjKuGkz7bQYZYVhojaw4ndnMGxO5Bin53hqHRfl9yNrEN4Fveg4mErc2D7yaBVDxFC8D1frB9+iSnUN4jir1l0qYqZNfm5nMiFUsdyEbmJD6IN0Mpvp8NenOZCpL5TrNGN3znGXr1YVhUTlcuSdf8XAoGAcsgjj/IU5H1ulkrJJHs/vTm2TWB+kejmpNy1wkR8DtxijKAGR2y9UcS8C22m3D6s5EXpNY35y1MVs5weZbH4gEdgNW/uO/M1oLS3FlC8oAShnA2gLvoyC07aVHMn/ASe4LfGOzYxOb41wR5BCdZe5N5PWgUC5+qD4t4SE99pLsc=";
         try {
             byte[] decoded = java.util.Base64.getDecoder().decode(publicKeyB64);
             KeyFactory kf = KeyFactory.getInstance("RSA");
@@ -321,7 +360,44 @@ public class Utils {
             String[] arrays = new String[2];
             arrays[0] = rqId;
             arrays[1] = sig;
+
+            System.out.println("result-rqId = " + rqId);
+            System.out.println("result-sig = " + sig);
             return arrays;
+        } catch (NoSuchAlgorithmException | SignatureException | InvalidKeyException | InvalidKeySpecException ex) {
+            throw new BusinessException(ErrorCode.SIGN_FAIL, ErrorCode.SIGN_FAIL_DESCRIPTION);
+        }
+
+    }
+
+    public static String getSignatureNinePayBalance(HashMap<String, String> map) {
+        String createMessRqId = createMessageBalance(map.get("rqId"), (map.get("rq_time")));
+        // String publicKeyB64 =
+        // "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6cEUTrHSw9ZHfirrMZ8Lq2SkdGhZuEzxTr5DYi989G/ulDdNGgSHrpIB58JEtAsCSxdme7YgO3C8aZWpuOqWN07Wh+XBK/4imZPlhDt5h9InOHK90m6zVAOE6V4JFtE3k05Nz7p9RMxoizHTjZSQEvj13bK9WeCjFPAppBgvOJZJKrWHkuu2mrF4o9lD4bIoyIZbdjC8ynzarS4GIk+hXIiOs5+rff76bZiVX0hApGmnEtPs3IaD4wOCfBJFiOEKzkX7xgZPrYkn26KivPhO5/4ozRZXZKHM25dXRtQD7OnQBXhaLdVmRN4XnqctrTUxsFazcCLZAvg3CkqbH+2MuQIDAQAB";
+        String publicKeyB64 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAguQ6CFi+oBnSctFYa25UIz/FcItO+yLR8HYL4Iz+zbn7WKEzELsd13Q6oXi8ksM5K5CJAKUDekcPqcfXelgK2WYlNrQwFKWa297pbWJfJhC7fh4AK5yJRgQ/jupsOdWAt68A5KhCUt4J/WcK/SiJBUpccVeiyU1Cc9q8v2O3EWcpXsgOFVa+84AAyBpLruwTBUhX7RI/PiZ14hFZN5AdGy0vn+J0pFYpMpQ9fx7tnXNagXzCf0jDxx94UobuzeZ21zEylXsBvIpG19BfD+6h2RoGlgMRJG3x4xBarQnCZOW3PTWpENOdXU5d5pDfOOpMf/wN2VviQbot4pJ0tjzSjQIDAQAB";
+        // String private64 =
+        // "MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDpwRROsdLD1kd+KusxnwurZKR0aFm4TPFOvkNiL3z0b+6UN00aBIeukgHnwkS0CwJLF2Z7tiA7cLxplam46pY3TtaH5cEr/iKZk+WEO3mH0ic4cr3SbrNUA4TpXgkW0TeTTk3Pun1EzGiLMdONlJAS+PXdsr1Z4KMU8CmkGC84lkkqtYeS67aasXij2UPhsijIhlt2MLzKfNqtLgYiT6FciI6zn6t9/vptmJVfSECkaacS0+zchoPjA4J8EkWI4QrORfvGBk+tiSfboqK8+E7n/ijNFldkoczbl1dG1APs6dAFeFot1WZE3heepy2tNTGwVrNwItkC+DcKSpsf7Yy5AgMBAAECggEBAI2A9YMiAJ3OxJ6q6o+yYQUTOr7BQLbh1R4+7Vmtt63daIbO51y9q0lRV9ftcVuwYmYEt2Rifyace2JLWF/5mo/GqPXBbuvrvxRLRKCExHAlFtsEEsclfmd4beg7pbLrWgJRX6dFlHmmaA8DTbaiXYkurt/TSO70nqSZMgwFG+jbYSiFrNURUDG0fuCM/qVjs0cwquKJzHGxFIKD54SGkg0EH6Ch2iHFEcNHp+ZlA4oKdiGo9oyr1EiGjQwAgxV8f0li3xIwk5NYvAG032WPyOAZTQAmC+LPGhpS6WLk6VKdjs5720gmsy8kMFNckkPMTZGejzclHfWHaugpeMKw5dECgYEA9bzfyBmkhorNLSrqK6BsG3et09ixXEt26R1E/DMrub07HzAqgm+cLhsi3zIkHg0K89rwqNMP/zu74yAwj9TY8S1saLXNpaOn9M+ruJHRAebucEAGOMF0GmpsXeOCj3PBTW5MSAg9Mpt1X8J+uqyl6nlogY23arsQl6x7x+by9E0CgYEA84QXcO0SXsrz3I5GJ2xEHksv5kaYDWhLEhSGSsm4Xa86DCE7FKewaIwjZIkqFcGkUvsvpUhD4JVf3J4l2ATci6YxFxYVLPPXbyHE5hZuvIPP95J4VnymMj+7thSf/XFCxsu7Y1QwogslfzOHZ2QscGPcMVgl4Dt3x9c/Cfd3YB0CgYEAv7Wx/7HBoRT4LJymQ5LLxEIB4pvTAmX9RrAG+ZoSKr1uOk6hW1EnTvDsq6O6eZdDTCsqRQskF8LKOc8LE6rB9KWzRZ1P6kFa7qp1FXDs1ccLjZblQ7HomhMcp8KuQKvVykqaSDflRm3xi9t4crnuVpaQ6UFeLm3x6+IsTy/lqqECgYEAtQdtpbWYAoA96aia3pPNz/d1FGtGfjEaHcbETrTHKl4pePr7QM+ohRAo/4Q4lRPvZQD22phuXXauXQP0fjKfAfH6bH8uHsznSuZ/yczDZcFXyWRJsYHYy2I12ZZbmb2pNsAd/imIPe6rYXSdJG+D2cli2Av/nEKZOSb65h3h0MECgYAw9hv16CtTC1ygtK7QO7EohJUFtwlPBF98ysZ7hw8zPo5/USD648dPv8+eIvcGjdCB1I2H0FAmSD7WytqlZ22kYVO9yHbKOgCnaFO3RadSCBqL7nMRla55U7PjooFCjF6iQUC8UR4cp+EqZjRRx2kbhu2atqJ5/nCnS8lcejquEA==";
+        String private64 = "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCC5DoIWL6gGdJy0VhrblQjP8Vwi077ItHwdgvgjP7NuftYoTMQux3XdDqheLySwzkrkIkApQN6Rw+px9d6WArZZiU2tDAUpZrb3ultYl8mELt+HgArnIlGBD+O6mw51YC3rwDkqEJS3gn9Zwr9KIkFSlxxV6LJTUJz2ry/Y7cRZyleyA4VVr7zgADIGkuu7BMFSFftEj8+JnXiEVk3kB0bLS+f4nSkVikylD1/Hu2dc1qBfMJ/SMPHH3hShu7N5nbXMTKVewG8ikbX0F8P7qHZGgaWAxEkbfHjEFqtCcJk5bc9NakQ051dTl3mkN846kx//A3ZW+JBui3iknS2PNKNAgMBAAECggEAeaLsByupYpD8kDTZjWSHDgbKTY84Q4uVO3gIC5IbjEVEPZX4JZkt3zYk8j+IRn7jlweHObEfbTeyZ53OMeS1mFgjRxXmBJntMlyR4lPjhjVQd6Abmmuq6gUyp3ZUQt6U8p3QH635jJbJA9MJVD+iLedvxuig359LnOxuMRHSY3l1A61xJ3kbPjFgoIU1LCEpO/y92XQmQwxTXGH/46JqV6wfOlnSkhQ5tyS/hNbcbKlPWT3Ec0oiG0G7aHcL4DQCXjA99d25blr1ka78jOX80hpnfVeq2QvrURTl9OMvg0+6e385oA+8u4GdXWJhfrxERlRsbVWL4nq2n04+JKzIxQKBgQDlUZ6aFJVZe1uhSDpycnd2iKGDMcP0gM4Rojph5mF58Hn758yNabExu5GT0ECl6ISwI7Vcc8atiGL31le/8TMyDBQaAw7j2R0klpyz1CHIgyoKftlcyc0IO2AuNToJbakMNJd+77gf8XMB+tnTIwlAMGn2b3ug/+tQuDnQUjSonwKBgQCSHuX8J+NYIXG5kPl8h1RRtkBEwXweYVjaLVjwPXib5ydOAVRmWVA0stO922F4sxAZbjsEzq2fxTu+nWOpQGn3o5pw31iR1bRqXIWJoc5hU/2FeteAfUlgEbSf/KWXEUJeaKmkv/cUtZIOcY+ZSBTUbaFnzgJ3K3oghmBNlil5UwKBgE+x5eS2cpD+hgGvEGDl1w6ivT7S9L7sZLFMJ+4OGqI+KKabEEO1D5exEA7GuTDvde2g+05+DfYRCBQJscVLFfe2quW/WlVlBvPIQ/1bI8KDkwDCxNeyakcKG4rzhI/yRGWxgVTkCqFPUCDIBRuTeYuNR8YVSGnThvwuiikT6KkRAoGBAIPkNe1jx7aeAXvhGwDHWlmjKuGkz7bQYZYVhojaw4ndnMGxO5Bin53hqHRfl9yNrEN4Fveg4mErc2D7yaBVDxFC8D1frB9+iSnUN4jir1l0qYqZNfm5nMiFUsdyEbmJD6IN0Mpvp8NenOZCpL5TrNGN3znGXr1YVhUTlcuSdf8XAoGAcsgjj/IU5H1ulkrJJHs/vTm2TWB+kejmpNy1wkR8DtxijKAGR2y9UcS8C22m3D6s5EXpNY35y1MVs5weZbH4gEdgNW/uO/M1oLS3FlC8oAShnA2gLvoyC07aVHMn/ASe4LfGOzYxOb41wR5BCdZe5N5PWgUC5+qD4t4SE99pLsc=";
+        try {
+            byte[] decoded = java.util.Base64.getDecoder().decode(publicKeyB64);
+            KeyFactory kf = KeyFactory.getInstance("RSA");
+            PublicKey RSAPublicKey = kf.generatePublic(new X509EncodedKeySpec(decoded));
+            byte[] decoded2 = java.util.Base64.getDecoder().decode(private64);
+            PrivateKey RSAPrivateKey = kf.generatePrivate(new PKCS8EncodedKeySpec(decoded2));
+            Signature signature = Signature.getInstance("SHA1withRSA");
+            signature.initSign(RSAPrivateKey, new SecureRandom());
+            byte[] message = createMessRqId.getBytes();
+            signature.update(message);
+            byte[] sigBytes = signature.sign();
+            String sig = java.util.Base64.getEncoder().encodeToString(sigBytes);
+            Signature signature1 = Signature.getInstance("SHA1withRSA");
+            signature1.initVerify(RSAPublicKey);
+            signature1.update(message);
+            boolean result = signature1.verify(sigBytes);
+            System.out.println("result-signature = " + result);
+
+            System.out.println("result-sig = " + sig);
+            return sig;
         } catch (NoSuchAlgorithmException | SignatureException | InvalidKeyException | InvalidKeySpecException ex) {
             throw new BusinessException(ErrorCode.SIGN_FAIL, ErrorCode.SIGN_FAIL_DESCRIPTION);
         }
@@ -423,6 +499,245 @@ public class Utils {
         bearResponse.setEndDate(
                 java.time.LocalDate.now().plusMonths(monthValue).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         return bearResponse;
+    }
+
+    public static void main(String[] args) {
+        String in = "contracts/default/dkdv.docx";
+        String out = "contracts/default/output.docx";
+        CfMast n = new CfMast();
+        BankAccountEntity b = new BankAccountEntity();
+        try {
+            fillDataToContract(n, b, in, out);
+        } catch (Docx4JException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (JAXBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
+    public static ByteArrayResource convertFile(MultipartFile sourceFile) {
+        ByteArrayResource resource = null;
+        try {
+            resource = new ByteArrayResource(sourceFile.getBytes()) {
+                @Override
+                public String getFilename() {
+                    return sourceFile.getOriginalFilename();
+                }
+            };
+        } catch (IOException e) {
+            throw new BusinessException(ErrorCode.FAILED_TO_FILE, ErrorCode.FAILED_TO_FILE_DESCRIPTION);
+        }
+
+        return resource;
+    }
+
+    public static void fillDataToContract(CfMast cfmast, BankAccountEntity bank,
+            String urlInputDocx,
+            String urlOutputDocx) throws Docx4JException, IOException, JAXBException {
+        String filePath = urlInputDocx;
+
+        Utils docx4j = new Utils();
+        WordprocessingMLPackage template = docx4j.getTemplate(filePath);
+
+        Date date = new Date();
+        // Choose time zone in which you want to interpret your Date
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
+        cal.setTime(date);
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+
+        List<Object> texts = getAllElementFromObject(template.getMainDocumentPart(), Text.class);
+
+        SimpleDateFormat sdf = new SimpleDateFormat(
+                "dd/MM/yyyy");
+
+        searchAndReplace(texts, new HashMap<String, String>() {
+            private static final long serialVersionUID = 1L;
+
+            {
+
+                this.put("${docno}", cfmast.getIdCode() + cfmast.getCustid());
+
+                this.put("${date}", String.valueOf(day));
+                this.put("${month}", String.valueOf(month));
+                this.put("${year}", String.valueOf(year));
+
+                this.put("${fullname}",
+                        WordUtils.capitalize(cfmast.getFullName().toLowerCase()));
+                this.put("${idcode}", cfmast.getIdCode());
+                this.put("${IDPLACE}", cfmast.getIdDate() != null ? 
+                        WordUtils.capitalize(cfmast.getIdPlace().toLowerCase()) : "[Nơi cấp]");
+                this.put("${iddate}", cfmast.getIdDate() != null ? sdf.format(cfmast.getIdDate()) : "[Ngày cấp]");
+                this.put("${phone}", cfmast.getMobileSms());
+                this.put("${address}",
+                        WordUtils.capitalize(cfmast.getAddress().toLowerCase()));
+                this.put("${curraddress}",
+                        WordUtils.capitalize(cfmast.getAddress().toLowerCase()));
+                this.put("${email}", cfmast.getEmail() != null ? cfmast.getEmail() : "[Email]");
+                this.put("${bankno}", bank.getBankAccount());
+                this.put("${bankname}",
+                        WordUtils.capitalize(bank.getBankName().toLowerCase()));
+
+            }
+
+            @Override
+            public String get(Object key) {
+                return super.get(key);
+            }
+        });
+
+        docx4j.writeDocxToStream(template, urlOutputDocx);
+    }
+
+    private void writeDocxToStream(WordprocessingMLPackage template, String target)
+            throws IOException, Docx4JException {
+        File f = new File(target);
+        template.save(f);
+    }
+
+    public static void searchAndReplace(List<Object> texts, Map<String, String> values) {
+
+        // -- scan all expressions
+        // Will later contain all the expressions used though not used at the moment
+        List<String> els = new ArrayList<String>();
+
+        StringBuilder sb = new StringBuilder();
+        int PASS = 0;
+        int PREPARE = 1;
+        int READ = 2;
+        int mode = PASS;
+
+        // to nullify
+        List<int[]> toNullify = new ArrayList<int[]>();
+        int[] currentNullifyProps = new int[4];
+
+        for (int i = 0; i < texts.size(); i++) {
+            Object text = texts.get(i);
+            Text textElement = (Text) text;
+            String newVal = "";
+            String v = textElement.getValue();
+            StringBuilder textSofar = new StringBuilder();
+            int extra = 0;
+            char[] vchars = v.toCharArray();
+            for (int col = 0; col < vchars.length; col++) {
+                char c = vchars[col];
+                textSofar.append(c);
+                switch (c) {
+                    case '$': {
+                        mode = PREPARE;
+                        sb.append(c);
+                    }
+                        break;
+                    case '{': {
+                        if (mode == PREPARE) {
+                            sb.append(c);
+                            mode = READ;
+                            currentNullifyProps[0] = i;
+                            currentNullifyProps[1] = col + extra - 1;
+                        } else {
+                            if (mode == READ) {
+                                sb = new StringBuilder();
+                                mode = PASS;
+                            }
+                        }
+                    }
+                        break;
+                    case '}': {
+                        if (mode == READ) {
+                            mode = PASS;
+                            sb.append(c);
+                            els.add(sb.toString());
+                            newVal += textSofar.toString()
+                                    + (null == values.get(sb.toString()) ? sb.toString() : values.get(sb.toString()));
+                            textSofar = new StringBuilder();
+                            currentNullifyProps[2] = i;
+                            currentNullifyProps[3] = col + extra;
+                            toNullify.add(currentNullifyProps);
+                            currentNullifyProps = new int[4];
+                            extra += sb.toString().length();
+                            sb = new StringBuilder();
+                        } else if (mode == PREPARE) {
+                            mode = PASS;
+                            sb = new StringBuilder();
+                        }
+                    }
+                    default: {
+                        if (mode == READ)
+                            sb.append(c);
+                        else if (mode == PREPARE) {
+                            mode = PASS;
+                            sb = new StringBuilder();
+                        }
+                    }
+                }
+            }
+            newVal += textSofar.toString();
+            textElement.setValue(newVal);
+        }
+
+        if (toNullify.size() > 0)
+            for (int i = 0; i < texts.size(); i++) {
+                if (toNullify.size() == 0)
+                    break;
+                currentNullifyProps = toNullify.get(0);
+                Object text = texts.get(i);
+                Text textElement = (Text) text;
+                String v = textElement.getValue();
+                StringBuilder nvalSB = new StringBuilder();
+                char[] textChars = v.toCharArray();
+                for (int j = 0; j < textChars.length; j++) {
+                    char c = textChars[j];
+                    if (null == currentNullifyProps) {
+                        nvalSB.append(c);
+                        continue;
+                    }
+                    int floor = currentNullifyProps[0] * 100000 + currentNullifyProps[1];
+                    int ceil = currentNullifyProps[2] * 100000 + currentNullifyProps[3];
+                    int head = i * 100000 + j;
+                    if (!(head >= floor && head <= ceil)) {
+                        nvalSB.append(c);
+                    }
+
+                    if (j > currentNullifyProps[3] && i >= currentNullifyProps[2]) {
+                        toNullify.remove(0);
+                        if (toNullify.size() == 0) {
+                            currentNullifyProps = null;
+                            continue;
+                        }
+                        currentNullifyProps = toNullify.get(0);
+                    }
+                }
+                textElement.setValue(nvalSB.toString());
+            }
+    }
+
+    private WordprocessingMLPackage getTemplate(String name) throws Docx4JException, FileNotFoundException {
+        WordprocessingMLPackage template = WordprocessingMLPackage.load(new FileInputStream(new File(name)));
+        return template;
+    }
+
+    private static List<Object> getAllElementFromObject(Object obj, Class<?> toSearch) {
+        List<Object> result = new ArrayList<Object>();
+        if (obj instanceof JAXBElement)
+            obj = ((JAXBElement<?>) obj).getValue();
+
+        if (obj.getClass().equals(toSearch))
+            result.add(obj);
+        else if (obj instanceof ContentAccessor) {
+            List<?> children = ((ContentAccessor) obj).getContent();
+            for (Object child : children) {
+                result.addAll(getAllElementFromObject(child, toSearch));
+            }
+
+        }
+        return result;
     }
 
     public static String createOtpId() {

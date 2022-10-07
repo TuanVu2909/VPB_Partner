@@ -17,9 +17,9 @@ public interface SavisService {
 
 	AccesToken getToken();
 
-	public ResponseEntity<?> callPredict(MultipartFile file, InfoIdentity identity, int type);
+	public ResponseEntity<?> callPredict(MultipartFile file, InfoIdentity identity, int type, String mobile);
 
-	ResponseEntity<?> callCheckSelfie(MultipartFile frontId, MultipartFile selfie);
+	ResponseEntity<?> callCheckSelfie(MultipartFile frontId, MultipartFile selfie, String mobile);
 
 	Optional<UserRegisterResponse> callRegisterKyc(MultipartFile frontId);
 

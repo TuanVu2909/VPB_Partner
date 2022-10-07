@@ -5,13 +5,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.lendbiz.p2p.api.configs.JwtProvider;
+import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.AccountInput;
 import com.lendbiz.p2p.api.entity.GetEndRateRequest;
@@ -58,6 +62,7 @@ import com.lendbiz.p2p.api.service.MailService;
 import com.lendbiz.p2p.api.service.SavisService;
 import com.lendbiz.p2p.api.service.User3GService;
 import com.lendbiz.p2p.api.service.UserService;
+import com.lendbiz.p2p.api.service.impl.UserServiceImpl;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -97,6 +102,15 @@ public class UserController {
         log.info("[" + requestId + "] << checkExistedAccount >>");
 
         return userService.checkExistedAccount(loginRequest);
+    }
+
+    @GetMapping("/check-version")
+    public ResponseEntity<?> checkVersionOutdated(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId,
+            @RequestParam String version) {
+        log.info("[" + requestId + "] << version >>");
+
+        return userService.checkVersion3GangOutdated(version);
     }
 
     @PostMapping("/login")
@@ -357,7 +371,7 @@ public class UserController {
 
         // String custId = userService.checkSession(session);
         InfoIdentity identity = new InfoIdentity();
-        return savisService.callPredict(idFile, identity, idType);
+        return savisService.callPredict(idFile, identity, idType, session);
     }
 
     // Authorization
@@ -443,12 +457,12 @@ public class UserController {
 
     @PostMapping("/verify-face")
     public ResponseEntity<?> verifyFace(HttpServletRequest httpServletRequest,
-            @RequestHeader("requestId") String requestId,
+            @RequestHeader("requestId") String requestId, @RequestHeader("session") String session,
             @RequestParam("front_file") MultipartFile frontFile, @RequestParam("selfie_file") MultipartFile selfieFile)
             throws BusinessException {
 
         // String custId = userService.checkSession(session);
-        return savisService.callCheckSelfie(frontFile, selfieFile);
+        return savisService.callCheckSelfie(frontFile, selfieFile, session);
     }
 
     @PostMapping("/product-info")
@@ -654,8 +668,8 @@ public class UserController {
         Mail mail = new Mail();
         mail.setMailFrom("tuht@lendbiz.vn");
         mail.setMailTo(request.getEmail());
-        mail.setMailSubject("3Gang Verification Email");
-        mail.setMailContent("Mã xác nhận của bạn là: " + request.getOtp());
+        mail.setMailSubject("[3Gang] Xác thực email");
+        mail.setMailContent("Mã xác thực email 3Gang của bạn là: " + request.getOtp());
 
         return mailService.sendEmail(mail, request);
     }
@@ -707,7 +721,8 @@ public class UserController {
     }
 
     @GetMapping("/avatar/{custid}/{source}/{imgname}/{type}")
-    public void showImageMan(HttpServletResponse response, @PathVariable String custid, @PathVariable String source, @PathVariable String imgname, @PathVariable String type)
+    public void showImageMan(HttpServletResponse response, @PathVariable String custid, @PathVariable String source,
+            @PathVariable String imgname, @PathVariable String type)
             throws IOException {
         response.setContentType("image/png");
 
@@ -715,7 +730,7 @@ public class UserController {
 
         InputStream inputStream = null;
 
-        urlImage = "images/" + custid +  "/" + source + "/" + imgname + "." + type;
+        urlImage = "images/" + custid + "/" + source + "/" + imgname + "." + type;
 
         System.out.println(urlImage);
 
@@ -750,6 +765,61 @@ public class UserController {
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
         }
+
+    }
+
+    public static void main(String[] args) {
+        System.out.println(WordUtils.capitalize("LÊ HOÀNG NGUYÊN".toLowerCase()));
+    }
+
+    @RequestMapping("/view/{typeContract}/{phone}")
+    public void showPDF(HttpServletResponse response, @PathVariable String typeContract, @PathVariable String phone)
+            throws IOException {
+
+        response.setContentType("application/pdf");
+        String urlPdf = "";
+
+        InputStream inputStream = null;
+        if (typeContract.equalsIgnoreCase("1")) {
+            urlPdf = "contracts/dieukhoandichvu/dk.pdf";
+        } else {
+            urlPdf = "contracts/sign/" + phone + "/signed_3gang.pdf";
+        }
+
+        File file = new File(urlPdf);
+        try {
+            inputStream = new FileInputStream(file);
+            int nRead;
+            while ((nRead = inputStream.read()) != -1) {
+                response.getWriter().write(nRead);
+            }
+            inputStream.close();
+        } catch (IOException e) {
+            log.info(e.getMessage());
+            urlPdf = "contracts/dieukhoandichvu/dk.pdf";
+            try {
+                File fileException = new File(urlPdf);
+                inputStream = new FileInputStream(fileException);
+                int nRead;
+                while ((nRead = inputStream.read()) != -1) {
+                    response.getWriter().write(nRead);
+                }
+                inputStream.close();
+            } catch (IOException ex) {
+                log.info(e.getMessage());
+            }
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        }
+    }
+
+    @Scheduled(initialDelay = 1 * 60, fixedDelay = 2 * 5000)
+    public void autoSign()
+            throws BusinessException {
+
+        userService.autoSignContract();
 
     }
 

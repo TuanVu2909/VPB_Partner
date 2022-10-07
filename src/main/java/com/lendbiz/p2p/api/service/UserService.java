@@ -19,6 +19,8 @@ import org.springframework.http.ResponseEntity;
  ***********************************************************************/
 public interface UserService {
 
+	public ResponseEntity<?> checkVersion3GangOutdated(String version);
+
 	public ResponseEntity<?> checkExistedAccount(LoginRequest loginRequest);
 
 	public ResponseEntity<?> login(LoginRequest loginRequest);
@@ -119,5 +121,7 @@ public interface UserService {
 	public ResponseEntity<?> withdraw(CashOutRequest request);
 
 	String checkSession(String session);
+
+	public void autoSignContract();
 
 }

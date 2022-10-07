@@ -96,12 +96,12 @@ public class Constants {
 	// metadate api use register face
 	public static final String METADATA = "{\"source\":\"24a00f5d-e625-4bc4-8384-c906848c03f3\"}";
 	// 9pay api card
-	public static final String NINE_PAY_PRODUCTS = "https://stg-api-console.9pay.mobi/service/wh/products";
-	public static final String NINE_PAY_CARD = "https://stg-api-console.9pay.mobi/service/wh/order/card";
-	public static final String NINE_PAY_INFO_TRANS = "https://stg-api-console.9pay.mobi/service/wh/order/check-info";
-	public static final String NINE_PAY_BALANCE = "https://stg-api-console.9pay.mobi/service/account/balance";
+	public static final String NINE_PAY_PRODUCTS = "https://api-console.9pay.vn/service/wh/products";
+	public static final String NINE_PAY_CARD = "https://api-console.9pay.vn/service/wh/order/card";
+	public static final String NINE_PAY_INFO_TRANS = "https://api-console.9pay.vn/service/wh/order/check-info";
+	public static final String NINE_PAY_BALANCE = "https://api-console.9pay.vn/service/account/balance";
 
-	public static final String SIGN_IMAGE_DEFAULT = "default_docs\\success.png";
+	public static final String SIGN_IMAGE_DEFAULT = "images/condau.jpg";
 	public static final String THRESHOLD = "0.75";
 
 	// MBBANK
@@ -120,7 +120,10 @@ public class Constants {
 		public static final String TOPIC_LOGS_3GANG = "topic_3gang_logs";
 		public static final String GROUP_3GANG_ID = "group_3gang_id";
 
-		public static final String TOPIC_CASH_OUT_3GANG = "topic_cash_out";
-        public static final String GROUP_CASH_OUT_3GANG_ID = "group_cash_out_id";
+		public static final String TOPIC_CASH_OUT_3GANG = "topic_cash_out_new";
+		public static final String GROUP_CASH_OUT_3GANG_ID = "group_cash_out_id_new";
+
+		public static final String TOPIC_SAVE_ID_CARD = "topic_save_id_card";
+		public static final String GROUP_SAVE_ID_CARD = "group_save_id_card";
 	}
 }

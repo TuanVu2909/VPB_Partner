@@ -135,6 +135,8 @@ public class MbbankTransferServiceImpl extends BaseResponse<MbbankTransferServic
     @Override
     public ResponseEntity<?> getBankName(String requestId, GetBankNameRequest getBankNameRequest) {
 
+       if  (getBankNameRequest.getAccountNumber().startsWith("9704"))  throw new BusinessException(ErrorCode.NOT_ACCEPT_CARDNUMBER, ErrorCode.NOT_ACCEPT_CARDNUMBER_DESCRIPTION);
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Bearer " + token());
@@ -209,7 +211,7 @@ public class MbbankTransferServiceImpl extends BaseResponse<MbbankTransferServic
             // transferRequest.setDebitResourceNumber("0001604822947");
             // transferRequest.setDebitType("ACCOUNT");
             transferRequest.setObject("dn");
-            transferRequest.setRemark("LENDBIZ-CHUYENTIEN-" + transactionId);
+            transferRequest.setRemark("3GANG-CHUYENTIEN-" + transactionId);
             transferRequest.setServiceType("CHI_HO");
             // transferRequest.setTransferAmount("1500000");
             // transferRequest.setTransferFee("0");
@@ -227,18 +229,6 @@ public class MbbankTransferServiceImpl extends BaseResponse<MbbankTransferServic
             String signatureKey = transferRequest.getDebitResourceNumber() + transferRequest.getDebitName()
                     + transferRequest.getCreditResourceNumber() + transferRequest.getCreditName()
                     + transferRequest.getTransferAmount();
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer " + token());
-            headers.set("clientMessageId", transactionId);
-            headers.set("signature", MbUltils.generateSha256Rsa(signatureKey));
-            headers.set("transactionId", transactionId);
-
-            JSONObject jsonObject = new JSONObject(transferRequest);
-            System.out.println(jsonObject.toString());
-            HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(),
-                    headers);
 
             String tranType = "6001";
             if (transferRequest.getDebitType().equalsIgnoreCase("ACCOUNT")
@@ -261,24 +251,36 @@ public class MbbankTransferServiceImpl extends BaseResponse<MbbankTransferServic
             requestLogs.setFt("");
             requestLogs.setTranDate("setTranDate");
             requestLogs.setCurrency("VND");
-            requestLogs.setTranDetail("LENDBIZ-CHUYENTIEN-" + transactionId);
+            requestLogs.setTranDetail("3GANG-CHUYENTIEN-" + transactionId);
             requestLogs.setStatus(0);
             requestLogs.setDebitSourceName(transferRequest.getDebitName());
             requestLogs.setDebitSourceNumber(transferRequest.getDebitResourceNumber());
             requestLogs.setCreditSourceName(transferRequest.getCreditName());
             requestLogs.setCreditSourceNumber(transferRequest.getCreditResourceNumber());
             requestLogs.setCreditFastName("creditFastName");
-            requestLogs.setCreditFastBankName("creditFastName");
+            requestLogs.setCreditFastBankName(transferRequest.getBankCode());
             requestLogs.setCreditIdCard(originalCreditNumber);
             requestLogs.setChannel("channel");
             requestLogs.setChannelName("channelName");
             requestLogs.setReconcileStatus(0);
-            requestLogs.setAddInfo("addInfo");
+            requestLogs.setAddInfo(transferRequest.getAddInfoList()[0].getValue());
             requestLogs.setRequestType(0);
             jsonObjectLogs = new JSONObject(requestLogs);
             // Send request log to kafka server
             producerMessage.sendMessage(jsonObjectLogs.toString());
             // End log
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Bearer " + token());
+            headers.set("clientMessageId", transactionId);
+            headers.set("signature", MbUltils.generateSha256Rsa(signatureKey));
+            headers.set("transactionId", transactionId);
+
+            JSONObject jsonObject = new JSONObject(transferRequest);
+            System.out.println(jsonObject.toString());
+            HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(),
+                    headers);
 
             ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(Constants.MB_TRANSFER, request,
                     String.class);
@@ -296,9 +298,11 @@ public class MbbankTransferServiceImpl extends BaseResponse<MbbankTransferServic
             logger.info(e.getMessage());
             requestLogs.setRequestType(1);
             requestLogs.setStatus(99);
+            requestLogs.setTranDetail(e.getMessage());
             jsonObjectLogs = new JSONObject(requestLogs);
             producerMessage.sendMessage(jsonObjectLogs.toString());
-            throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
+            // throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
+            return null;
         }
     }
 
