@@ -125,5 +125,11 @@ public class Constants {
 
 		public static final String TOPIC_SAVE_ID_CARD = "topic_save_id_card";
 		public static final String GROUP_SAVE_ID_CARD = "group_save_id_card";
+
+
+		public static final String TOPIC_3GANG_PARTITIONS = "3gang-partitions-log";
+		public static final String GROUP_3GANG_PARTITIONS = "group_3gang_partitions";
+
+		public static final String changeg = "changeg";
 	}
 }
