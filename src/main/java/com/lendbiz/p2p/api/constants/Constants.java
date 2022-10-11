@@ -129,7 +129,6 @@ public class Constants {
 
 		public static final String TOPIC_3GANG_PARTITIONS = "3gang-partitions-log";
 		public static final String GROUP_3GANG_PARTITIONS = "group_3gang_partitions";
-
-		public static final String changeg = "changeg";
+		
 	}
 }
