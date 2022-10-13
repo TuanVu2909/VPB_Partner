@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class OTPMappingRequest extends IdentityCustomerRequest {
-    private String OTP;
+    private String otp;
 }

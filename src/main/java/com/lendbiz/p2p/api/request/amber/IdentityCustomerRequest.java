@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class IdentityCustomerRequest {
-    protected String idCode;
+    protected String idcode;
     protected String mobile;
 }

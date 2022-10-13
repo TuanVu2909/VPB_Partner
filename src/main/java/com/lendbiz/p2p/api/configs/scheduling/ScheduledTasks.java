@@ -17,10 +17,10 @@ public class ScheduledTasks {
 //        logger.info("Send email every 2s");
 //    }
     // 15h45'00s hàng ngày gửi 1 tin nhắn theo giờ VN
-    @Scheduled(zone = "GMT+7", cron = "00 45 15 * * *")
-    public void scheduleTasksendEmail2() {
-        // call send email method here
-        logger.info("Send email every 15h45' dally");
-        return;
-    }
+//    @Scheduled(zone = "GMT+7", cron = "00 45 15 * * *")
+//    public void scheduleTasksendEmail2() {
+//        // call send email method here
+//        logger.info("Send email every 15h45' dally");
+//        return;
+//    }
 }

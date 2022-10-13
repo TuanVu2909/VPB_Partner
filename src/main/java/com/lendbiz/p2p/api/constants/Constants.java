@@ -126,4 +126,13 @@ public class Constants {
 		public static final String TOPIC_SAVE_ID_CARD = "topic_save_id_card";
 		public static final String GROUP_SAVE_ID_CARD = "group_save_id_card";
 	}
+
+	// FUND AMBER
+	// private final String AMBER_URL = "http://10.255.241.142:1351"; // link PROD
+	public static final String AMBER_URL = "http://222.252.8.194:21351"; // link UAT
+	public static final String GRANT_TYPE = "password";
+	public static final String CLIENT_ID = "FUNDAGENT";
+	public static final String CLIENT_SECRET = "FUNDAGENT2022";
+	public static final String USERNAME = "LBC";
+	public static final String PASSWORD = "123456";
 }
