@@ -22,7 +22,7 @@ public interface CfMastRepository extends CrudRepository<CfMast, String> {
 	List<CfMast> findByPhone(String phone);
 
 	// get cfmast vs truong hop la nha dau tu
-	@Query(value = "select * from cfmast where mobilesms = ?1", nativeQuery = true)
+	@Query(value = "select * from cfmast where (mobilesms = ?1 or custid = ?1) and custtype = 'I' order by custid desc", nativeQuery = true)
 	List<CfMast> findByMobileSms(String phone);
 
 	// get cfmast vs truong hop la nha dau tu
@@ -32,6 +32,10 @@ public interface CfMastRepository extends CrudRepository<CfMast, String> {
 	// get cfmast vs truong hop la nha dau tu
 	@Query(value = "select * from cfmast where idcode = ?1 and status = 'A' and mobilesms != ?2", nativeQuery = true)
 	List<CfMast> findByIdCode(String idCode, String mobile);
+
+	// get cfmast de ky hop dong 3gang
+	@Query(value = "select c.* from cfmast c, bg_account b, contracts_info i where c.custid = b.username and i.custid = b.custid and i.contract_type = '3GANG' and c.status = 'A' and i.status = 20 order by c.custid asc", nativeQuery = true)
+	List<CfMast> findAllActive();
 
 	@Transactional
 	@Modifying

@@ -16,16 +16,13 @@
 package com.lendbiz.p2p.api.service.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.OutputStream;
-import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,30 +30,138 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.stream.Stream;
+import java.util.UUID;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.core.ApiFuture;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.WriteResult;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.cloud.FirestoreClient;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
-import com.lendbiz.p2p.api.entity.*;
+import com.lendbiz.p2p.api.entity.AccountAssetEntity;
+import com.lendbiz.p2p.api.entity.AccountInput;
+import com.lendbiz.p2p.api.entity.AccountInvest;
+import com.lendbiz.p2p.api.entity.BankAccountEntity;
+import com.lendbiz.p2p.api.entity.BankInfoEntity;
+import com.lendbiz.p2p.api.entity.BaoVietEntity;
+import com.lendbiz.p2p.api.entity.CfMast;
+import com.lendbiz.p2p.api.entity.CoinEntity;
+import com.lendbiz.p2p.api.entity.FirstPasswordEntity;
+import com.lendbiz.p2p.api.entity.FundInvestDetailEntity;
+import com.lendbiz.p2p.api.entity.FundInvestEntity;
+import com.lendbiz.p2p.api.entity.FundListEntity;
+import com.lendbiz.p2p.api.entity.GetEndRateRequest;
+import com.lendbiz.p2p.api.entity.GmFundNAVEntity;
+import com.lendbiz.p2p.api.entity.InvestAssets;
+import com.lendbiz.p2p.api.entity.InvestPackageDetailEntity;
+import com.lendbiz.p2p.api.entity.InvestPackageEntity;
+import com.lendbiz.p2p.api.entity.NotificationsEntity;
+import com.lendbiz.p2p.api.entity.NotificationsPushEntity;
+import com.lendbiz.p2p.api.entity.NotifyEntity;
+import com.lendbiz.p2p.api.entity.PkgFundInfoEntity;
+import com.lendbiz.p2p.api.entity.PortfolioInvest;
+import com.lendbiz.p2p.api.entity.RateConfigEntity;
+import com.lendbiz.p2p.api.entity.RateEntity;
+import com.lendbiz.p2p.api.entity.ReferenceIdentity;
+import com.lendbiz.p2p.api.entity.RegisterEntity;
+import com.lendbiz.p2p.api.entity.RelationEntity;
+import com.lendbiz.p2p.api.entity.ResendOtpEntity;
+import com.lendbiz.p2p.api.entity.StatementsEntity;
+import com.lendbiz.p2p.api.entity.SumGrowthEntity;
+import com.lendbiz.p2p.api.entity.TransferCodeEntity;
+import com.lendbiz.p2p.api.entity.UpdateAccountEntity;
+import com.lendbiz.p2p.api.entity.UserInfoEntity;
+import com.lendbiz.p2p.api.entity.UserOnline;
+import com.lendbiz.p2p.api.entity.VerifyAccountInput;
+import com.lendbiz.p2p.api.entity.Version3Gang;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.producer.ProducerMessage;
-import com.lendbiz.p2p.api.repository.*;
-import com.lendbiz.p2p.api.request.*;
+import com.lendbiz.p2p.api.repository.AccountAssetRepository;
+import com.lendbiz.p2p.api.repository.AccountInvestRepository;
+import com.lendbiz.p2p.api.repository.AccountNotificationsRepository;
+import com.lendbiz.p2p.api.repository.BankAccountRepository;
+import com.lendbiz.p2p.api.repository.BankRepository;
+import com.lendbiz.p2p.api.repository.BaoVietRepo;
+import com.lendbiz.p2p.api.repository.CfMastRepository;
+import com.lendbiz.p2p.api.repository.CoinRepo;
+import com.lendbiz.p2p.api.repository.ContractInfoRepository;
+import com.lendbiz.p2p.api.repository.FirstPasswordRepository;
+import com.lendbiz.p2p.api.repository.FundInvestDetailRepository;
+import com.lendbiz.p2p.api.repository.FundInvestRepository;
+import com.lendbiz.p2p.api.repository.FundListRepository;
+import com.lendbiz.p2p.api.repository.GetRateRepository;
+import com.lendbiz.p2p.api.repository.GetReferenceRepo;
+import com.lendbiz.p2p.api.repository.InvestAssetsRepository;
+import com.lendbiz.p2p.api.repository.InvestPackageDetailRepository;
+import com.lendbiz.p2p.api.repository.InvestPackageRepository;
+import com.lendbiz.p2p.api.repository.NAVRepository;
+import com.lendbiz.p2p.api.repository.NinePayDepositRepo;
+import com.lendbiz.p2p.api.repository.NotifyRepo;
+import com.lendbiz.p2p.api.repository.PackageFilterRepository;
+import com.lendbiz.p2p.api.repository.PayRepo;
+import com.lendbiz.p2p.api.repository.PkgFundInfoRepository;
+import com.lendbiz.p2p.api.repository.PortfolioRepository;
+import com.lendbiz.p2p.api.repository.ProductGMRepository;
+import com.lendbiz.p2p.api.repository.PushRepository;
+import com.lendbiz.p2p.api.repository.RateConfigRepo;
+import com.lendbiz.p2p.api.repository.RateRepo;
+import com.lendbiz.p2p.api.repository.RegisterRepository;
+import com.lendbiz.p2p.api.repository.RelationRepo;
+import com.lendbiz.p2p.api.repository.ResendOtpRepository;
+import com.lendbiz.p2p.api.repository.StatementsRepository;
+import com.lendbiz.p2p.api.repository.SumGrowthRepository;
+import com.lendbiz.p2p.api.repository.TermRepo;
+import com.lendbiz.p2p.api.repository.TransFerCodeRepo;
+import com.lendbiz.p2p.api.repository.UpdateAccountRepository;
+import com.lendbiz.p2p.api.repository.UserInfoRepository;
+import com.lendbiz.p2p.api.repository.UserOnlineRepository;
+import com.lendbiz.p2p.api.repository.VerifyAccountRepository;
+import com.lendbiz.p2p.api.repository.Version3GangRepository;
+import com.lendbiz.p2p.api.request.BearRequest;
+import com.lendbiz.p2p.api.request.CashOutRequest;
+import com.lendbiz.p2p.api.request.CreatePolicyPartnerRq;
+import com.lendbiz.p2p.api.request.GmFundNavRequest;
+import com.lendbiz.p2p.api.request.InsuranceRequest;
+import com.lendbiz.p2p.api.request.LoginRequest;
+import com.lendbiz.p2p.api.request.PkgSumFundRequest;
+import com.lendbiz.p2p.api.request.ReqJoinRequest;
+import com.lendbiz.p2p.api.request.SetAccountPasswordRequest;
+import com.lendbiz.p2p.api.request.SignContractRequestV2;
+import com.lendbiz.p2p.api.request.UpdateAccountRequest;
+import com.lendbiz.p2p.api.request.UpdateBiometricRequest;
+import com.lendbiz.p2p.api.request.UpdateNotificationsRequest;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.response.PkgFundDetail;
 import com.lendbiz.p2p.api.response.PkgFundResponse;
+import com.lendbiz.p2p.api.response.SignPdfResponse;
+import com.lendbiz.p2p.api.service.FilesStorageService;
+import com.lendbiz.p2p.api.service.SavisService;
 import com.lendbiz.p2p.api.service.UserService;
 import com.lendbiz.p2p.api.utils.StringUtil;
 import com.lendbiz.p2p.api.utils.Utils;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.xpath.operations.Number;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 /***********************************************************************
  *
@@ -225,8 +330,6 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 Date now = new Date();
                 long diff = (now.getTime() - user.getLastChange().getTime()) / 1000 / 60;
 
-                System.out.println(diff);
-
                 if (diff <= 15) {
                     throw new BusinessException(ErrorCode.ACCOUNT_LOCKED,
                             ErrorCode.ACCOUNT_LOCKED_DESCRIPTION);
@@ -370,9 +473,20 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         try {
             UserInfoEntity user = userInfoRepository.getUserInfo(custId);
             BankAccountEntity bank = bankAccountRepository.getUserBankAccount(custId);
+            String userPhone = user.getMobileSms();
             String urlAvatar = "";
             String directPathAvatar = "images/" + user.getCustid() + "/avatar/";
-
+            String lbcAccount = "4585326647075";
+            String lbcName = "CONG TY CO PHAN LENDBIZ CAPITAL";
+            String ruleAgreementUrl = "https://bagang.lendbiz.vn/lendbiz/view/1/" + userPhone;
+            String contractUrl = "https://bagang.lendbiz.vn/lendbiz/view/2/" + userPhone;
+            String inviteFriendTitle = "40.000 VND";
+            String inviteFriendCash = "10.000 VND";
+            String inviteFriendDescription = "Mời bạn bè sử dụng 3Gang để cùng nhận thưởng. Với mỗi tài khoản được mở thành công và phát sinh giao dịch, bạn sẽ nhận được 40.000 VND. Đặc biệt, người được giới thiệu cũng nhận thêm 10.000 VND vào tài khoản 3Gang ngay sau khi phát sinh giao dịch tích lũy đầu tiên.";
+            String[] xuTitle = "Bạn sẽ nhận được sau một tháng kể từ ngày phát sinh giao dịch:|Nhà đầu tư có số dư tích lũy có kỳ hạn sẽ được tặng xu vào ngày sinh nhật với điều kiện:"
+                    .split("\\|");
+            String[] xuDescription = "+ 1 xu với mỗi 100.000 VND tích lũy có kỳ hạn.|+ 2 xu với mỗi 100.000 VND tích lũy có kỳ hạn vào ngày sinh nhật của bạn.|+ Nhận 20 xu nếu số dư tích lũy có kỳ hạn từ 1.000.000 – 10.000.000 VND|+ Nhận 100 xu nếu số dư tích lũy có kỳ hạn từ 10.000.000 – 50.000.000 VND|+ Nhận 200 xu nếu số dư tích lũy có kỳ hạn trên 50.000.000 VND"
+                    .split("\\|");
             try {
                 File folder = new File(directPathAvatar);
                 for (final File fileEntry : folder.listFiles()) {
@@ -399,6 +513,15 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             map.put("user", user);
             map.put("bank", bank);
             map.put("avatar", urlAvatar);
+            map.put("lbcAccount", lbcAccount);
+            map.put("lbcName", lbcName);
+            map.put("ruleAgreementUrl", ruleAgreementUrl);
+            map.put("contractUrl", contractUrl);
+            map.put("inviteFriendTitle", inviteFriendTitle);
+            map.put("inviteFriendCash", inviteFriendCash);
+            map.put("inviteFriendDescription", inviteFriendDescription);
+            map.put("xuTitle", xuTitle);
+            map.put("xuDescription", xuDescription);
 
             return response(toResult(map));
 
@@ -409,17 +532,22 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> setAccountPassword(SetAccountPasswordRequest setAccountPasswordRequest) {
-        FirstPasswordEntity entity;
-        try {
-            entity = firstPasswordRepository.firstPassword(setAccountPasswordRequest.getCustId(),
-                    passwordEncoder.encode(setAccountPasswordRequest.getPassword()));
+        FirstPasswordEntity entity = new FirstPasswordEntity();
+        List<CfMast> lstCfmast = cfMastRepository.findByMobileSms(setAccountPasswordRequest.getCustId());
+        String custId = getCustId(lstCfmast);
+        if (custId != null) {
+            try {
+                entity = firstPasswordRepository.firstPassword(custId,
+                        passwordEncoder.encode(setAccountPasswordRequest.getPassword()));
 
-            System.out.println("passwordEncoder.encode(setAccountPasswordRequest.getPassword()): "
-                    + passwordEncoder.encode(setAccountPasswordRequest.getPassword()));
-        } catch (Exception e) {
+                logger.info("passwordEncoder.encode(setAccountPasswordRequest.getPassword()): "
+                        + passwordEncoder.encode(setAccountPasswordRequest.getPassword()));
+            } catch (Exception e) {
+                throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
+            }
+        } else {
             throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
         }
-
         return response(toResult(entity));
     }
 
@@ -435,6 +563,19 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     updateRequest.getBankAccount(),
                     updateRequest.getBankAccountName(),
                     updateRequest.getBankCode());
+
+            if (entity.equals("1")) {
+                throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
+            } else {
+                if (contractInfoRepository.countByCustId(updateRequest.getCustId()) > 0) {
+                    contractInfoRepository.update(updateRequest.getCustId(), 20);
+                } else {
+                    contractInfoRepository.create(updateRequest.getCustId() + updateRequest.getIdCode(),
+                            updateRequest.getCustId(), "", "", "3GANG", "Hợp đồng",
+                            updateRequest.getCustId() + updateRequest.getIdCode());
+                }
+            }
+
         } catch (Exception e) {
             throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
         }
@@ -918,7 +1059,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             sDateF = sdf.parse(request.getFund_date());
 
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            logger.info(ex.getMessage());
         }
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         formatter = new SimpleDateFormat("dd-MMM-yyyy");
@@ -1023,7 +1164,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     + "\"contents\": {\"en\": \""
                     + request.getMessage() + "\"}" + "}";
 
-            System.out.println("strJsonBody:\n" + strJsonBody);
+            logger.info("strJsonBody:\n" + strJsonBody);
 
             byte[] sendBytes = strJsonBody.getBytes("UTF-8");
             con.setFixedLengthStreamingMode(sendBytes.length);
@@ -1032,7 +1173,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             outputStream.write(sendBytes);
 
             int httpResponse = con.getResponseCode();
-            System.out.println("httpResponse: " + httpResponse);
+            logger.info("httpResponse: " + httpResponse);
 
             if (httpResponse >= HttpURLConnection.HTTP_OK && httpResponse < HttpURLConnection.HTTP_BAD_REQUEST) {
                 Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
@@ -1044,7 +1185,21 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 scanner.close();
             }
             pushRepository.updateNotifications(1, request.getCustId(), request.getId());
-            System.out.println("jsonResponse:\n" + jsonResponse);
+            logger.info("jsonResponse:\n" + jsonResponse);
+
+            try {
+                Firestore db = FirestoreClient.getFirestore();
+                HashMap<String, String> data = new HashMap<String, String>();
+                data.put("change", String.valueOf(System.currentTimeMillis()));
+
+                ApiFuture<WriteResult> future = db.collection("balance").document(request.getCustId())
+                        .set(data);
+            } catch (Exception t) {
+                pushRepository.updateNotifications(101, request.getCustId(), request.getId());
+                logger.info("Error!" + t.getMessage());
+            }
+
+            logger.info("successfully!");
 
         } catch (Throwable t) {
             pushRepository.updateNotifications(99, request.getCustId(), request.getId());
@@ -1064,6 +1219,201 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
         }
 
+    }
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Autowired
+    ContractInfoRepository contractInfoRepository;
+
+    @Autowired
+    FilesStorageService filesStorageService;
+
+    @Override
+    public void autoSignContract() {
+        List<CfMast> lstCfmast = cfMastRepository.findAllActive();
+        String inSourceDoc = "contracts/default/dkdv.docx";
+        String outputDocs = "contracts/default/output.docx";
+        MultipartFile mckFile = null;
+        String docNo = UUID.randomUUID().toString();
+
+        if (lstCfmast.size() > 0) {
+            logger.info("Start auto sign! ~>" + docNo);
+
+            for (CfMast cfMast : lstCfmast) {
+                contractInfoRepository.update(cfMast.getCustid(), 21);
+            }
+
+            for (CfMast cfMast : lstCfmast) {
+                BankAccountEntity bank = new BankAccountEntity();
+                try {
+                    filesStorageService.initContracts(cfMast.getMobileSms());
+                    try {
+                        bank = bankAccountRepository.getUserBankAccount(cfMast.getCustid());
+                        if (bank == null) {
+                            bank = new BankAccountEntity();
+                            bank.setBankAccount("[Số tài khoản]");
+                            bank.setBankName("[Ngân hàng]");
+                        }
+                    } catch (Exception e) {
+                        bank.setBankAccount("[Số tài khoản]");
+                        bank.setBankName("[Ngân hàng]");
+                    }
+
+                    outputDocs = "contracts/sign/" + cfMast.getMobileSms() + "/hopdong_output.docx";
+                    Utils.fillDataToContract(cfMast, bank, inSourceDoc, outputDocs);
+
+                    File inputWord = new File(outputDocs);
+                    FileInputStream inputStream = new FileInputStream(inputWord);
+                    mckFile = new MockMultipartFile("hd", inputWord.getName(), "text/plain",
+                            IOUtils.toByteArray(inputStream));
+
+                    logger.info("---------Start call converter---------------");
+                    final String uri = "http://45.117.83.201:9013/esign/v1.0/convert-pdf";
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+                    headers.set("requestId", docNo);
+
+                    MultiValueMap<String, Object> multiValueMap = new LinkedMultiValueMap<>();
+                    ByteArrayResource contentsAsResource = Utils.convertFile(mckFile);
+                    multiValueMap.add("file", contentsAsResource);
+                    multiValueMap.add("output", docNo + ".pdf");
+
+                    HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(multiValueMap, headers);
+                    ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(uri, request, String.class);
+
+                    // mapping response
+                    // OutputStream outputStream;
+                    ObjectMapper mapper = new ObjectMapper();
+                    JsonNode root;
+                    if (responseEntityStr.getStatusCodeValue() == 200) {
+                        try {
+                            root = mapper.readTree(responseEntityStr.getBody());
+                            byte[] data;
+                            try {
+                                data = root.get("data").binaryValue();
+
+                                org.apache.commons.io.FileUtils.writeByteArrayToFile(
+                                        new File("contracts/sign/" + cfMast.getMobileSms() + "/hopdong_3gang.pdf"),
+                                        data);
+
+                                // FileUtils.savePdf(pathOutput, data);
+
+                                if (signContract("contracts/sign/" + cfMast.getMobileSms() + "/hopdong_3gang.pdf",
+                                        "contracts/sign/" + cfMast.getMobileSms() + "/signed_3gang.pdf",
+                                        cfMast)) {
+                                    try {
+                                        File deleteInputFile = new File(
+                                                "contracts/sign/" + cfMast.getMobileSms() + "/hopdong_output.docx");
+                                        File deleteGeneratedFile = new File(
+                                                "contracts/sign/" + cfMast.getMobileSms() + "/hopdong_3gang.pdf");
+                                        deleteInputFile.delete();
+                                        deleteGeneratedFile.delete();
+
+                                    } catch (Exception e) {
+                                        logger.info(e.getMessage());
+                                    }
+
+                                    contractInfoRepository.update(cfMast.getCustid(), 22);
+
+                                    logger.info("Success generated contract PDF!");
+                                } else {
+                                    contractInfoRepository.update(cfMast.getCustid(), 20);
+                                }
+
+                            } catch (IOException e) {
+                                contractInfoRepository.update(cfMast.getCustid(), 20);
+                                e.printStackTrace();
+                            }
+
+                        } catch (JsonProcessingException e) {
+                            contractInfoRepository.update(cfMast.getCustid(), 20);
+                            throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
+                        }
+
+                    } else {
+                        contractInfoRepository.update(cfMast.getCustid(), 20);
+                    }
+
+                } catch (Exception e) {
+                    contractInfoRepository.update(cfMast.getCustid(), 20);
+                    logger.info(e.getMessage());
+                }
+            }
+            logger.info("End auto sign! ~>" + docNo);
+        }
+    }
+
+    @Autowired
+    SavisService savisService;
+
+    public boolean signContract(String sourcePdf, String outputSigned, CfMast cfMast) {
+        logger.info("[" + sourcePdf + "] << signContract >>");
+        try {
+            ArrayList<String> positions = new ArrayList<String>();
+            SignContractRequestV2 request = new SignContractRequestV2();
+            SignContractRequestV2 signByLendBizRequest = new SignContractRequestV2();
+
+            String direct = "";
+
+            MultipartFile contract = null;
+            File pdf = null;
+            request.setSignedBy(cfMast.getFullName());
+
+            // Chu ky thu 1 cua khach hang
+            request.setPage("8");
+            request.setLlx("100");
+            request.setLly("550");
+            request.setUrx("250");
+            request.setUry("470");
+            request.setDetail("1,6");
+            request.setReason("Đồng ý ký hợp đồng");
+            request.setLocation("Việt Nam");
+            request.setIsLBC("lendbiz");
+            request.setType("client");
+            String position = request.toString();
+            positions.add(position);
+            request.setPositions(positions);
+
+            // Chu ky thu 2 cua cong ty lendbiz
+            signByLendBizRequest.setPage("8");
+            signByLendBizRequest.setLlx("340");
+            signByLendBizRequest.setLly("550");
+            signByLendBizRequest.setUrx("500");
+            signByLendBizRequest.setUry("470");
+            signByLendBizRequest.setDetail("1,6");
+            signByLendBizRequest.setReason("Đồng ý ký hợp đồng");
+            signByLendBizRequest.setLocation("Việt Nam");
+            signByLendBizRequest.setIsLBC("lbc");
+            signByLendBizRequest.setType("org");
+            positions = new ArrayList<>();
+            String positionLendBiz = signByLendBizRequest.toString();
+            positions.add(positionLendBiz);
+            signByLendBizRequest.setPositions(positions);
+
+            pdf = new File(sourcePdf);
+
+            /** Call api sign contract **/
+
+            FileInputStream input = new FileInputStream(pdf);
+            contract = new MockMultipartFile("hd", pdf.getName(), "text/plain", IOUtils.toByteArray(input));
+
+            // Ky khach hang
+            Optional<SignPdfResponse> otpFirstSignResult = savisService.signContract(contract, request);
+            contract = new MockMultipartFile("hdauto", pdf.getName(), "text/plain", otpFirstSignResult.get().getData());
+            // Ky LBC
+            Optional<SignPdfResponse> otpSignResult = savisService.signContract(contract, signByLendBizRequest);
+
+            logger.info("[Sign pdf] direct {}", direct);
+            filesStorageService.saveContract(otpSignResult.get().getData(), outputSigned);
+        } catch (Exception e) {
+            contractInfoRepository.update(cfMast.getCustid(), 20);
+            logger.info(e.getMessage());
+            return false;
+        }
+
+        return true;
     }
 
 }

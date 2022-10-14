@@ -68,15 +68,17 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.apache.kafka/kafka-streams
 	implementation group: 'org.apache.kafka', name: 'kafka-streams', version: '3.2.0'
 
-	// https://mvnrepository.com/artifact/commons-io/commons-io
-	implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
-
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.6.7'
 
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
 
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+
+	// https://mvnrepository.com/artifact/org.apache.commons/commons-text
+	implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
+
+	implementation 'com.google.firebase:firebase-admin:9.0.0'
 
 
 }

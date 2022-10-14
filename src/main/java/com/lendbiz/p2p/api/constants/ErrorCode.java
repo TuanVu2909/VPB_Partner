@@ -100,6 +100,9 @@ public class ErrorCode {
     public static final String FAIL_PASSWORD_LOGIN = "102";
     public static final String FAIL_PASSWORD_LOGIN_DESCRIPTION = "Tài khoản hoặc mật khẩu không đúng";
 
+    public static final String NOT_ACCEPT_CARDNUMBER = "103";
+    public static final String NOT_ACCEPT_CARDNUMBER_DESCRIPTION = "Không được nhập số thẻ";
+
     public static final String MOBILE_EXISTED = "Số điện thoại đã được sử dụng";
 
     public static final String VERSION_OUTDATED = "511";

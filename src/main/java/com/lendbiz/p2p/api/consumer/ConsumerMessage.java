@@ -97,4 +97,116 @@
 
 //     }
 
+//     // @KafkaListener(topics = Constants.KAFKA.TOPIC_CASH_OUT_3GANG, groupId = Constants.KAFKA.GROUP_CASH_OUT_3GANG_ID)
+//     // @Transactional(readOnly = true)
+//     // public void consumeAutoCashOut(String jsonData) {
+//     //     log.info(String.format("#### -> Consumed message auto cash out-> %s", jsonData));
+
+//     //     ObjectMapper mapper = new ObjectMapper();
+//     //     JsonNode root;
+//     //     try {
+//     //         root = mapper.readTree(jsonData);
+//     //         CashOutRequest cashoutRequest = new CashOutRequest();
+//     //         cashoutRequest = mapper.readValue(root.toString(), CashOutRequest.class);
+
+//     //         WithdrawEntity withdraw = withdrawRepo.subtractBalance(cashoutRequest.getCustId(),
+//     //                 cashoutRequest.getAmount(), "2");
+
+//     //         if (withdraw.getPStatus().equalsIgnoreCase("01")) {
+
+//     //             BankAccountEntity bankEntity = bankAccountRepository.getUserBankAccount(cashoutRequest.getCustId());
+//     //             String transferType = "INHOUSE";
+//     //             if (!bankEntity.getBankCode().equalsIgnoreCase("970422")) {
+//     //                 transferType = "FAST";
+//     //             }
+
+//     //             TransferMBRequest transRequest = new TransferMBRequest();
+//     //             transRequest.setBankCode(bankEntity.getBankCode());
+//     //             transRequest.setDebitName("CONG TY CO PHAN LENDBIZ CAPITAL");
+//     //             transRequest.setDebitResourceNumber("4585326647075");
+//     //             transRequest.setDebitType("ACCOUNT");
+
+//     //             transRequest.setCreditName(bankEntity.getBankAcName());
+//     //             transRequest.setCreditResourceNumber(bankEntity.getBankAccount());
+//     //             transRequest.setCreditType("ACCOUNT");
+
+//     //             transRequest.setTransferAmount(String.valueOf((int) cashoutRequest.getAmount()));
+//     //             transRequest.setTransferType(transferType);
+//     //             AddInfoList addInfo = new AddInfoList("requestId", withdraw.getDes(), "1");
+//     //             AddInfoList[] lstAddInfo = new AddInfoList[] {
+//     //                     addInfo
+//     //             };
+
+//     //             transRequest.setAddInfoList(lstAddInfo);
+//     //             System.out.println((int) cashoutRequest.getAmount());
+//     //             // transRequest.set
+//     //             mbbankTransferService.transfer(String.valueOf(System.currentTimeMillis()),
+//     //                     transRequest);
+
+//     //         } else {
+
+//     //         }
+
+//     //     } catch (JsonProcessingException e) {
+//     //         log.info(e.getMessage());
+//     //     }
+
+//     // }
+
+//     @KafkaListener(topics = Constants.KAFKA.TOPIC_CASH_OUT_3GANG, groupId = Constants.KAFKA.GROUP_CASH_OUT_3GANG_ID)
+//     @Transactional(readOnly = true)
+//     public void consumeAutoCashOut(String jsonData) {
+//         log.info(String.format("#### -> Consumed message auto cash out-> %s", jsonData));
+
+//         ObjectMapper mapper = new ObjectMapper();
+//         JsonNode root;
+//         try {
+//             root = mapper.readTree(jsonData);
+//             CashOutRequest cashoutRequest = new CashOutRequest();
+//             cashoutRequest = mapper.readValue(root.toString(), CashOutRequest.class);
+
+//             WithdrawEntity withdraw = withdrawRepo.subtractBalance(cashoutRequest.getCustId(),
+//                     cashoutRequest.getAmount(), "2");
+
+//             if (withdraw.getPStatus().equalsIgnoreCase("01")) {
+
+//                 BankAccountEntity bankEntity = bankAccountRepository.getUserBankAccount(cashoutRequest.getCustId());
+//                 String transferType = "INHOUSE";
+//                 if (!bankEntity.getBankCode().equalsIgnoreCase("970422")) {
+//                     transferType = "FAST";
+//                 }
+
+//                 TransferMBRequest transRequest = new TransferMBRequest();
+//                 transRequest.setBankCode(bankEntity.getBankCode());
+//                 transRequest.setDebitName("CONG TY CO PHAN LENDBIZ CAPITAL");
+//                 transRequest.setDebitResourceNumber("4585326647075");
+//                 transRequest.setDebitType("ACCOUNT");
+
+//                 transRequest.setCreditName(bankEntity.getBankAcName());
+//                 transRequest.setCreditResourceNumber(bankEntity.getBankAccount());
+//                 transRequest.setCreditType("ACCOUNT");
+
+//                 transRequest.setTransferAmount(String.valueOf((int) cashoutRequest.getAmount()));
+//                 transRequest.setTransferType(transferType);
+//                 AddInfoList addInfo = new AddInfoList("requestId", withdraw.getDes(), "1");
+//                 AddInfoList[] lstAddInfo = new AddInfoList[] {
+//                         addInfo
+//                 };
+
+//                 transRequest.setAddInfoList(lstAddInfo);
+//                 System.out.println((int) cashoutRequest.getAmount());
+//                 // transRequest.set
+//                 mbbankTransferService.transfer(String.valueOf(System.currentTimeMillis()),
+//                         transRequest);
+
+//             } else {
+
+//             }
+
+//         } catch (JsonProcessingException e) {
+//             log.info(e.getMessage());
+//         }
+
+//     }
+
 // }

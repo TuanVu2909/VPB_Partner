@@ -35,7 +35,7 @@ public class MailServiceImpl extends BaseResponse<MailService> implements MailSe
 
         try {
 
-            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
             mimeMessageHelper.setSubject(mail.getMailSubject());
             // mimeMessageHelper.setFrom(new InternetAddress(mail.getMailFrom(),

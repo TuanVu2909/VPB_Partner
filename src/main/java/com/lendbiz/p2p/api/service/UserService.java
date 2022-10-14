@@ -122,4 +122,6 @@ public interface UserService {
 
 	String checkSession(String session);
 
+	public void autoSignContract();
+
 }

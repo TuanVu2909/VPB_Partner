@@ -35,6 +35,7 @@ import com.lendbiz.p2p.api.utils.StringUtil;
 import com.lendbiz.p2p.api.utils.Utils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.text.WordUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -132,7 +133,8 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
             try {
                 root = mapper.readTree(responseEntityStr.getBody());
 
-                int sideType = root.get("output").get(0).get("class_name").get("normalized").get("value").asInt();
+                // int sideType =
+                // root.get("output").get(0).get("class_name").get("normalized").get("value").asInt();
 
                 // String isReal = root.get("output").get(0).get("id") != null
                 // ?
@@ -188,17 +190,15 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
 
         }
 
+
         if (type == 3) {
-            if (identity.getType() != 3 && identity.getType() != 5 && identity.getType() != 4) {
+            if (identity.getType() != 1 && identity.getType() != 3 && identity.getType() != 5) {
                 throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_IDENTITY_DESCRIPTION);
             }
-            // if (identity.getDateIssued() == null) {
-            // throw new BusinessException(ErrorCode.FAILED_IDENTITY,
-            // ErrorCode.FAILED_IDENTITY_DESCRIPTION);
-            // }
-        } else {
 
-            if (identity.getType() == 3 || identity.getType() == 5) {
+        } else {
+            if (identity.getType() == 1 || identity.getType() == 3 || identity.getType() == 52
+                    || identity.getType() == 53 || identity.getType() == 5 || identity.getType() == 6) {
                 throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_IDENTITY_DESCRIPTION);
             }
 
@@ -626,35 +626,36 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
                 signRequest.getIsLBC().equalsIgnoreCase("lbc") ? Constants.LBC_ALIAS : Constants.ALIAS);
         multiValueMap.add("isVisible", Constants.IS_VISIBLE);
 
-        if (signRequest.getType().equalsIgnoreCase("client")) {
-            multiValueMap.add("signedBy", signRequest.getSignedBy());
-        }
         multiValueMap.add("positions", generatePositionParam(signRequest.getPositions()));
 
         multiValueMap.add("detail", signRequest.getDetail());
         if (StringUtil.isEmty(signRequest.getReason())) {
-            multiValueMap.add("reason", "Ä�á»“ng Ã½ kÃ½ há»£p Ä‘á»“ng");
+            multiValueMap.add("reason", "Ký hợp đồng 3Gang");
         }
 
         if (StringUtil.isEmty(signRequest.getLocation())) {
-            multiValueMap.add("location", "HÃ  Ná»™i");
+            multiValueMap.add("location", "Hà Nội");
         }
 
         if (StringUtil.isEmty(signRequest.getContactInfo())) {
-            multiValueMap.add("contactInfo", "khu Ä‘Ã´ thá»‹ Ä�áº¡i Kim");
+            multiValueMap.add("contactInfo", "Khu độ thị Đại Kim");
         }
 
-        // try {
-        // File signImage = new File(Constants.SIGN_IMAGE_DEFAULT);
-        // FileInputStream input = new FileInputStream(signImage);
-        // MultipartFile imgMultiPartFile = new MockMultipartFile("sign_pdf",
-        // signImage.getName(), "text/plain",
-        // IOUtils.toByteArray(input));
-        // ByteArrayResource signature = convertFile(imgMultiPartFile);
-        // multiValueMap.add("image", signature);
-        // } catch (IOException e) {
-        // e.printStackTrace();
-        // }
+        if (signRequest.getType().equalsIgnoreCase("client")) {
+            multiValueMap.add("signedBy", WordUtils.capitalize(signRequest.getSignedBy().toLowerCase()));
+        } else {
+            try {
+                File signImage = new File(Constants.SIGN_IMAGE_DEFAULT);
+                FileInputStream input = new FileInputStream(signImage);
+                MultipartFile imgMultiPartFile = new MockMultipartFile("sign_pdf",
+                        signImage.getName(), "text/plain",
+                        IOUtils.toByteArray(input));
+                ByteArrayResource signature = convertFile(imgMultiPartFile);
+                multiValueMap.add("imageData", signature);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(uri).queryParam("type", signRequest.getType());
 
@@ -716,7 +717,7 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
         if (responseEntityStr.getStatusCodeValue() == 200) {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root;
-            logger.info("Start get token access: {}", responseEntityStr.getBody());
+            // logger.info("Start get token access: {}", responseEntityStr.getBody());
             try {
                 root = mapper.readTree(responseEntityStr.getBody());
                 AccesToken result = new AccesToken();
