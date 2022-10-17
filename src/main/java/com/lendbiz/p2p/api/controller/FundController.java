@@ -19,6 +19,10 @@ public class FundController {
     @Autowired
     private FundService fundService;
 
+    @GetMapping("/test")
+    public String testAPI () {
+        return "Ping success !";
+    }
 //    @GetMapping(value = "/sendSMS")
 //    public ResponseEntity<String> sendSMS() {
 //
