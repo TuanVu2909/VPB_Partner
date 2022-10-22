@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface ResendOtpRepository extends JpaRepository<ResendOtpEntity, String> {
 
     @Procedure("ResendOtpEntity.resendOtp")
-    ResendOtpEntity resendOtp(@Param("p_mobile") String mobile);
+    ResendOtpEntity resendOtp(@Param("p_mobile") String mobile, @Param("p_custId") String custId);
 
 }

@@ -92,9 +92,20 @@ public class ErrorCode {
     public static final String USER_EXISTED_DESCRIPTION = "Giấy tờ tuỳ thân đã được sử dụng, vui lòng sử dụng giấy tờ tuỳ thân khác!";
 
     public static final String FAIL_LOGIN = "100";
-    public static final String FAIL_LOGIN_DESCRIPTION = "Mật khẩu hoặc tài khoản không đúng!";
+    public static final String FAIL_LOGIN_DESCRIPTION = "Tài khoản không tồn tại";
 
     public static final String ACCOUNT_LOCKED = "101";
     public static final String ACCOUNT_LOCKED_DESCRIPTION = "Tài khoản bị khoá do bạn nhập sai mật khẩu quá 5 lần! Vui lòng thử lại sau 15 phút!";
+
+    public static final String FAIL_PASSWORD_LOGIN = "102";
+    public static final String FAIL_PASSWORD_LOGIN_DESCRIPTION = "Tài khoản hoặc mật khẩu không đúng";
+
+    public static final String NOT_ACCEPT_CARDNUMBER = "103";
+    public static final String NOT_ACCEPT_CARDNUMBER_DESCRIPTION = "Không được nhập số thẻ";
+
+    public static final String MOBILE_EXISTED = "Số điện thoại đã được sử dụng";
+
+    public static final String VERSION_OUTDATED = "511";
+    public static final String VERSION_OUTDATED_DESCRIPTION = "Version outdated";
 
 }

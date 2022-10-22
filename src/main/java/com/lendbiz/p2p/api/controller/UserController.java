@@ -1,38 +1,27 @@
 package com.lendbiz.p2p.api.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.text.DecimalFormat;
-import java.util.Random;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import com.lendbiz.p2p.api.configs.JwtProvider;
-import com.lendbiz.p2p.api.entity.AccountInput;
-import com.lendbiz.p2p.api.entity.User3GEntity;
-import com.lendbiz.p2p.api.entity.PkgFundInfoEntity;
-import com.lendbiz.p2p.api.entity.VerifyAccountInput;
-import com.lendbiz.p2p.api.exception.BusinessException;
-import com.lendbiz.p2p.api.model.MyUserDetails;
-import com.lendbiz.p2p.api.repository.ProductGMRepository;
-import com.lendbiz.p2p.api.model.Mail;
-import com.lendbiz.p2p.api.request.*;
-import com.lendbiz.p2p.api.response.InfoIdentity;
-import com.lendbiz.p2p.api.response.MyResponse;
-import com.lendbiz.p2p.api.service.MailService;
-import com.lendbiz.p2p.api.service.SavisService;
-import com.lendbiz.p2p.api.service.User3GService;
-import com.lendbiz.p2p.api.service.UserService;
-
+import org.apache.commons.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -41,11 +30,41 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import lombok.extern.log4j.Log4j2;
+import com.lendbiz.p2p.api.configs.JwtProvider;
+import com.lendbiz.p2p.api.constants.Constants;
+import com.lendbiz.p2p.api.constants.ErrorCode;
+import com.lendbiz.p2p.api.entity.AccountInput;
+import com.lendbiz.p2p.api.entity.GetEndRateRequest;
+import com.lendbiz.p2p.api.entity.User3GEntity;
+import com.lendbiz.p2p.api.entity.VerifyAccountInput;
+import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.model.Mail;
+import com.lendbiz.p2p.api.model.MyUserDetails;
+import com.lendbiz.p2p.api.request.BearRequest;
+import com.lendbiz.p2p.api.request.CashOutRequest;
+import com.lendbiz.p2p.api.request.GmFundNavRequest;
+import com.lendbiz.p2p.api.request.InsuranceRequest;
+import com.lendbiz.p2p.api.request.LoginRequest;
+import com.lendbiz.p2p.api.request.PkgSumFundRequest;
+import com.lendbiz.p2p.api.request.ReqJoinRequest;
+import com.lendbiz.p2p.api.request.SendEmailRequest;
+import com.lendbiz.p2p.api.request.SetAccountPasswordRequest;
+import com.lendbiz.p2p.api.request.SignInReq;
+import com.lendbiz.p2p.api.request.UpdateAccountRequest;
+import com.lendbiz.p2p.api.request.UpdateBiometricRequest;
+import com.lendbiz.p2p.api.request.UpdateNotificationsRequest;
+import com.lendbiz.p2p.api.request.VerifyEmailRequest;
+import com.lendbiz.p2p.api.response.InfoIdentity;
+import com.lendbiz.p2p.api.response.MyResponse;
+import com.lendbiz.p2p.api.service.FilesStorageService;
+import com.lendbiz.p2p.api.service.LoggingService;
+import com.lendbiz.p2p.api.service.MailService;
+import com.lendbiz.p2p.api.service.SavisService;
+import com.lendbiz.p2p.api.service.User3GService;
+import com.lendbiz.p2p.api.service.UserService;
+import com.lendbiz.p2p.api.service.impl.UserServiceImpl;
 
-import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import lombok.extern.log4j.Log4j2;
 
 /***********************************************************************
  *
@@ -72,6 +91,27 @@ public class UserController {
     User3GService user3GService;
     @Autowired
     AuthenticationManager authenticationManager;
+
+    @Autowired
+    private LoggingService loggingGetRequest;
+
+    @PostMapping("/check-existed-account")
+    public ResponseEntity<?> checkExistedAccount(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId,
+            @RequestBody LoginRequest loginRequest) {
+        log.info("[" + requestId + "] << checkExistedAccount >>");
+
+        return userService.checkExistedAccount(loginRequest);
+    }
+
+    @GetMapping("/check-version")
+    public ResponseEntity<?> checkVersionOutdated(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId,
+            @RequestParam String version) {
+        log.info("[" + requestId + "] << version >>");
+
+        return userService.checkVersion3GangOutdated(version);
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(HttpServletRequest httpServletRequest, @RequestHeader("requestId") String requestId,
@@ -114,6 +154,9 @@ public class UserController {
             @RequestHeader("requestId") String requestId, @RequestParam String mobile)
             throws BusinessException {
         log.info("[" + requestId + "] << get-user-info >>");
+        String requestString = "mobile=" + mobile;
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
+
         return userService.getUserInfo(mobile);
     }
 
@@ -128,11 +171,29 @@ public class UserController {
 
     @PostMapping("/update-account-info")
     @Transactional(readOnly = true)
-    public ResponseEntity<?> upDateAccountInfo(HttpServletRequest httpServletRequest,
+    public ResponseEntity<?> updateAccountInfo(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId,
             @RequestBody UpdateAccountRequest updateAccountRequest)
             throws BusinessException {
         return userService.updateAccountInfo(updateAccountRequest);
+    }
+
+    @PostMapping("/update-bank-account-info")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> updateBankAccountInfo(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId,
+            @RequestBody UpdateAccountRequest updateAccountRequest)
+            throws BusinessException {
+        return userService.updateBankAccountInfo(updateAccountRequest);
+    }
+
+    @PostMapping("/update-biometric-state")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> updateBiometricState(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId,
+            @RequestBody UpdateBiometricRequest request)
+            throws BusinessException {
+        return userService.updateBioState(request);
     }
 
     @PostMapping("/create-bear")
@@ -153,12 +214,23 @@ public class UserController {
         return userService.endBear(accountInput.getCustId(), accountInput.getDoc_no());
     }
 
+    @PostMapping("/end-rate-cal")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getEndRate(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId, @RequestBody GetEndRateRequest request)
+            throws BusinessException {
+        log.info("[" + requestId + "] << end rate info >>");
+        return userService.getEndRate(request);
+    }
+
     @GetMapping("/get-account-asset")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getAccountAsset(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestParam String cif)
             throws BusinessException {
         log.info("[" + requestId + "] << getAccountAsset >>");
+        String requestString = "cif=" + cif;
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
         return userService.getAccountAsset(cif);
     }
 
@@ -168,6 +240,8 @@ public class UserController {
             @RequestHeader("requestId") String requestId, @RequestParam String cif)
             throws BusinessException {
         log.info("[" + requestId + "] << getAccountInvest >>");
+        String requestString = "cif=" + cif;
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
         return userService.getAccountInvest(cif);
     }
 
@@ -177,6 +251,8 @@ public class UserController {
             @RequestHeader("requestId") String requestId, @RequestParam String cif)
             throws BusinessException {
         log.info("[" + requestId + "] << getAccountPortfolio >>");
+        String requestString = "cif=" + cif;
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
         return userService.getPortfolioInvest(cif);
     }
 
@@ -186,6 +262,8 @@ public class UserController {
             @RequestHeader("requestId") String requestId, @RequestParam String cif)
             throws BusinessException {
         log.info("[" + requestId + "] << getAccountNotifications >>");
+        String requestString = "cif=" + cif;
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
         return userService.getAccountNotifications(cif);
     }
 
@@ -204,6 +282,8 @@ public class UserController {
             @RequestHeader("requestId") String requestId, @RequestParam String cif)
             throws BusinessException {
         log.info("[" + requestId + "] << getAccountNotifications >>");
+        String requestString = "cif=" + cif;
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
         return userService.getStatements(cif);
     }
 
@@ -213,6 +293,8 @@ public class UserController {
             @RequestHeader("requestId") String requestId)
             throws BusinessException {
         log.info("[" + requestId + "] << getProduct >>");
+        String requestString = "";
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
         return userService.getProduct();
     }
 
@@ -223,6 +305,8 @@ public class UserController {
             @RequestHeader("requestId") String requestId)
             throws BusinessException {
         log.info("[" + requestId + "] << get-paytype >>");
+        String requestString = "";
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
         return userService.getPayType();
     }
 
@@ -233,6 +317,8 @@ public class UserController {
             @RequestHeader("requestId") String requestId, @RequestParam("pid") String pId)
             throws BusinessException {
         log.info("[" + requestId + "] << get-term >>");
+        String requestString = "pId=" + pId;
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
         return userService.getTerm(pId);
     }
 
@@ -242,6 +328,11 @@ public class UserController {
             @RequestHeader("requestId") String requestId, @RequestParam("pid") String pId,
             @RequestParam("term") String term, @RequestParam("amount") String amount)
             throws BusinessException {
+
+        String requestString = "pid=" + pId + "term=" + term + "amount=" + amount;
+
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
+
         log.info("[" + requestId + "] << get-rate >>");
         return userService.getRate(term, pId, amount);
     }
@@ -252,6 +343,8 @@ public class UserController {
             @RequestHeader("requestId") String requestId)
             throws BusinessException {
         log.info("[" + requestId + "] << get-rate >>");
+        String requestString = "";
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
         return userService.getConfigRate();
     }
 
@@ -265,6 +358,8 @@ public class UserController {
         accountInput.setProductId(pId);
         accountInput.setCustId(cif);
         log.info("[" + requestId + "] << getAccountInvestByProduct >>");
+        String requestString = "cif=" + cif + "pid=" + pId;
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
         return userService.getAccountInvestByProduct(accountInput);
     }
 
@@ -276,17 +371,15 @@ public class UserController {
 
         // String custId = userService.checkSession(session);
         InfoIdentity identity = new InfoIdentity();
-        return savisService.callPredict(idFile, identity, idType);
+        return savisService.callPredict(idFile, identity, idType, session);
     }
 
-
-    //Authorization
-
+    // Authorization
 
     @PostMapping("/auth/signup")
     public ResponseEntity<?> createUser3G(@RequestBody User3GEntity user) {
 
-       MyResponse response = new MyResponse();
+        MyResponse response = new MyResponse();
 
         response.setData("Đăng ký thành công");
         response.setMessage("success");
@@ -295,11 +388,11 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-
     @PostMapping("/auth/signin")
     public ResponseEntity<?> signin(@RequestBody SignInReq req) {
         try {
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(req.getUsername(),req.getPassword()));
+            Authentication authentication = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(req.getUsername(), req.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String token = provider.crateToken(authentication);
             MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
@@ -308,23 +401,34 @@ public class UserController {
             response.setMessage("SUCCESSFUL!");
             response.setStatus("00");
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
+        } catch (Exception e) {
             MyResponse response = new MyResponse();
             response.setStatus("99");
             response.setMessage("Tài khoản hoặc mật khẩu không đúng");
-            return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
-
 
     }
 
-    @PostMapping("/api/update-ref")
-    @Transactional(readOnly = true)
+    @PostMapping("/update-ref")
+    @Transactional(readOnly = false)
     public ResponseEntity<?> updateReferenceId(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
             throws BusinessException, UnsupportedEncodingException {
         log.info("[" + requestId + "] << check-updateReferenceId >>");
         return userService.updateReferenceId(accountInput);
+
+    }
+
+    @GetMapping("/get-ref-list")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getRefList(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId, @RequestParam("cif") String cId)
+            throws BusinessException, UnsupportedEncodingException {
+        log.info("[" + requestId + "] << get-ref-list >>");
+        String requestString = "cif=" + cId;
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
+        return userService.getRefList(cId);
 
     }
 
@@ -334,7 +438,8 @@ public class UserController {
             @RequestHeader("requestId") String requestId, @RequestParam("cif") String cId)
             throws BusinessException, UnsupportedEncodingException {
         log.info("[" + requestId + "] << check-get-coin >>");
-
+        String requestString = "cif=" + cId;
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
         return userService.getCoin(cId);
 
     }
@@ -349,9 +454,10 @@ public class UserController {
         return userService.changeCoin(input);
 
     }
+
     @PostMapping("/verify-face")
     public ResponseEntity<?> verifyFace(HttpServletRequest httpServletRequest,
-            @RequestHeader("requestId") String requestId, @RequestHeader("custid") String session,
+            @RequestHeader("requestId") String requestId, @RequestHeader("session") String session,
             @RequestParam("front_file") MultipartFile frontFile, @RequestParam("selfie_file") MultipartFile selfieFile)
             throws BusinessException {
 
@@ -373,7 +479,8 @@ public class UserController {
             @RequestHeader("requestId") String requestId)
             throws BusinessException {
         log.info("[" + requestId + "] << bankInfo >>");
-
+        String requestString = "";
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
         return userService.getBankInfo();
     }
 
@@ -383,7 +490,8 @@ public class UserController {
             @RequestHeader("requestId") String requestId)
             throws BusinessException {
         log.info("[" + requestId + "] << getInsurancePackage >>");
-
+        String requestString = "";
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
         return userService.getInsurancePackage();
     }
 
@@ -393,9 +501,11 @@ public class UserController {
             @RequestHeader("requestId") String requestId)
             throws BusinessException {
         log.info("[" + requestId + "] << getRelation >>");
-
+        String requestString = "";
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
         return userService.getRelation();
     }
+
     @PostMapping("/create-ins")
     @Transactional(readOnly = true)
     public ResponseEntity<?> createInsurance(HttpServletRequest httpServletRequest,
@@ -439,7 +549,8 @@ public class UserController {
             @RequestHeader("requestId") String requestId)
             throws BusinessException {
         log.info("[" + requestId + "] << getFundList >>");
-
+        String requestString = "";
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
         return userService.getFundList();
     }
 
@@ -449,7 +560,8 @@ public class UserController {
             @RequestHeader("requestId") String requestId)
             throws BusinessException {
         log.info("[" + requestId + "] << getInvestPackage >>");
-
+        String requestString = "";
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
         return userService.getInvestPackage();
     }
 
@@ -458,7 +570,8 @@ public class UserController {
             @RequestHeader("requestId") String requestId)
             throws BusinessException {
         log.info("[" + requestId + "] << nav >>");
-
+        String requestString = "";
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
         return userService.getFundNAV();
     }
 
@@ -497,7 +610,8 @@ public class UserController {
             @RequestHeader("requestId") String requestId, @RequestParam("pkId") String pkId)
             throws BusinessException {
         log.info("[" + requestId + "] << getInvestPackageDetail >>");
-
+        String requestString = "pkId=" + pkId;
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
         return userService.getInvestPackageDetail(pkId);
     }
 
@@ -507,18 +621,22 @@ public class UserController {
             @RequestHeader("requestId") String requestId, @RequestParam("cid") String cid)
             throws BusinessException {
         log.info("[" + requestId + "] << getFundInvest >>");
-
+        String requestString = "cid=" + cid;
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
         return userService.getFundInvest(cid);
     }
 
     @GetMapping("/gen-transfercode")
     @Transactional(readOnly = true)
     public ResponseEntity<?> genTransferCode(HttpServletRequest httpServletRequest,
-            @RequestHeader("requestId") String requestId, @RequestParam("cid") String cid)
+            @RequestHeader("requestId") String requestId, @RequestParam("cid") String cid,
+            @RequestParam("amt") String amount)
             throws BusinessException {
         log.info("[" + requestId + "] << genTransferCode >>");
+        String requestString = "cid=" + cid + "amt=" + amount;
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
 
-        return userService.genTransferCode(cid);
+        return userService.genTransferCode(amount, cid);
     }
 
     @GetMapping("/get-fund-invest-detail")
@@ -528,6 +646,8 @@ public class UserController {
             @RequestParam("pkid") String pkid)
             throws BusinessException {
         log.info("[" + requestId + "] << getFundInvest >>");
+        String requestString = "cid=" + cid + "pkid=" + pkid;
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
 
         return userService.getFundInvestDetail(cid, pkid);
     }
@@ -548,8 +668,8 @@ public class UserController {
         Mail mail = new Mail();
         mail.setMailFrom("tuht@lendbiz.vn");
         mail.setMailTo(request.getEmail());
-        mail.setMailSubject("3Gang Verification Email");
-        mail.setMailContent("Mã xác nhận của bạn là: " + request.getOtp());
+        mail.setMailSubject("[3Gang] Xác thực email");
+        mail.setMailContent("Mã xác thực email 3Gang của bạn là: " + request.getOtp());
 
         return mailService.sendEmail(mail, request);
     }
@@ -561,6 +681,146 @@ public class UserController {
             @RequestBody VerifyEmailRequest request)
             throws BusinessException {
         return mailService.verifyEmail(request);
+    }
+
+    @PostMapping("/withdraw")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> withdraw(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId, @RequestBody CashOutRequest request)
+            throws BusinessException {
+        log.info("[" + requestId + "] << withdraw >>");
+        return userService.withdraw(request);
+    }
+
+    @GetMapping("/image/{img}/{type}")
+    public void showImage(HttpServletResponse response, @PathVariable String img, @PathVariable String type)
+            throws IOException {
+        response.setContentType("image/png");
+
+        String urlImage = "";
+
+        InputStream inputStream = null;
+
+        urlImage = "images/" + img + "." + type;
+
+        File file = new File(urlImage);
+        try {
+            inputStream = new FileInputStream(file);
+            int nRead;
+            while ((nRead = inputStream.read()) != -1) {
+                response.getWriter().write(nRead);
+            }
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        }
+    }
+
+    @GetMapping("/avatar/{custid}/{source}/{imgname}/{type}")
+    public void showImageMan(HttpServletResponse response, @PathVariable String custid, @PathVariable String source,
+            @PathVariable String imgname, @PathVariable String type)
+            throws IOException {
+        response.setContentType("image/png");
+
+        String urlImage = "";
+
+        InputStream inputStream = null;
+
+        urlImage = "images/" + custid + "/" + source + "/" + imgname + "." + type;
+
+        System.out.println(urlImage);
+
+        File file = new File(urlImage);
+        try {
+            inputStream = new FileInputStream(file);
+            int nRead;
+            while ((nRead = inputStream.read()) != -1) {
+                response.getWriter().write(nRead);
+            }
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        }
+    }
+
+    @Autowired
+    FilesStorageService fileService;
+
+    @PostMapping("/upload-file")
+    public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file,
+            @RequestParam("cusId") String cusId) {
+
+        String key = "avatar";
+        log.info("[API UPLOAD] request param key:{} id", key, cusId);
+        try {
+            return fileService.uploadFile(file, key, cusId);
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
+        }
+
+    }
+
+    public static void main(String[] args) {
+        System.out.println(WordUtils.capitalize("LÊ HOÀNG NGUYÊN".toLowerCase()));
+    }
+
+    @RequestMapping("/view/{typeContract}/{phone}")
+    public void showPDF(HttpServletResponse response, @PathVariable String typeContract, @PathVariable String phone)
+            throws IOException {
+
+        response.setContentType("application/pdf");
+        String urlPdf = "";
+
+        InputStream inputStream = null;
+        if (typeContract.equalsIgnoreCase("1")) {
+            urlPdf = "contracts/dieukhoandichvu/dk.pdf";
+        } else {
+            urlPdf = "contracts/sign/" + phone + "/signed_3gang.pdf";
+        }
+
+        File file = new File(urlPdf);
+        try {
+            inputStream = new FileInputStream(file);
+            int nRead;
+            while ((nRead = inputStream.read()) != -1) {
+                response.getWriter().write(nRead);
+            }
+            inputStream.close();
+        } catch (IOException e) {
+            log.info(e.getMessage());
+            urlPdf = "contracts/dieukhoandichvu/dk.pdf";
+            try {
+                File fileException = new File(urlPdf);
+                inputStream = new FileInputStream(fileException);
+                int nRead;
+                while ((nRead = inputStream.read()) != -1) {
+                    response.getWriter().write(nRead);
+                }
+                inputStream.close();
+            } catch (IOException ex) {
+                log.info(e.getMessage());
+            }
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        }
+    }
+
+    @Scheduled(initialDelay = 1 * 60, fixedDelay = 2 * 5000)
+    public void autoSign()
+            throws BusinessException {
+
+        userService.autoSignContract();
+
     }
 
 }

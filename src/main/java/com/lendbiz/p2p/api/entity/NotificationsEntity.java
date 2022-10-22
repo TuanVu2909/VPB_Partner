@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@ToString
+// @ToString
 @NamedStoredProcedureQueries({ //
         @NamedStoredProcedureQuery(name = "NotificationsEntity.getNotifications", procedureName = "pkg_api.GET_NOTIFICATIONS", resultClasses = NotificationsEntity.class, parameters = { //
                 @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
@@ -36,6 +36,6 @@ public class NotificationsEntity {
     @Column(name = "AMOUNT")
     private String amount;
     @Column(name = "INVESTID")
-    private int investId;
+    private String investId;
 
 }

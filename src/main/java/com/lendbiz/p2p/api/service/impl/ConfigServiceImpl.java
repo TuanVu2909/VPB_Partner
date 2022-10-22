@@ -21,9 +21,11 @@ import java.util.List;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.BgConfigEntity;
+import com.lendbiz.p2p.api.entity.CurrentDateEntity;
 import com.lendbiz.p2p.api.entity.ProductConfigEntity;
 import com.lendbiz.p2p.api.model.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.BgConfigRepository;
+import com.lendbiz.p2p.api.repository.CurrentDateRepo;
 import com.lendbiz.p2p.api.repository.PackageFilterRepository;
 import com.lendbiz.p2p.api.repository.ProductConfigRepo;
 import com.lendbiz.p2p.api.repository.UserOnlineRepository;
@@ -57,6 +59,21 @@ public class ConfigServiceImpl extends BaseResponse<ConfigService> implements Co
 
 	@Autowired
 	ProductConfigRepo prodConfigRepo;
+
+	@Autowired
+	CurrentDateRepo currentDateRepo;
+
+	@Override
+	public ResponseEntity<?> getCurrentDate() {
+
+		// return response(toResult(bgConfigRepository.findViaProcedure()));
+		try {
+			CurrentDateEntity currentDateEntity = currentDateRepo.getCurrentDate();
+			return response(toResult(currentDateEntity));
+		} catch (Exception e) {
+			throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+		}
+	}
 
 	@Override
 	public ResponseEntity<?> getProductField() {

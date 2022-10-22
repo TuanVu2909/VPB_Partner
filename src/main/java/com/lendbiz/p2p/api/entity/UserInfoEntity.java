@@ -36,4 +36,7 @@ public class UserInfoEntity {
     @Column(name = "STATUS")
     private String status;
 
+    @Column(name = "BIOSTATE")
+    private String bioState;
+
 }

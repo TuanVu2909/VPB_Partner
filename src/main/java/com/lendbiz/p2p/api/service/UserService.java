@@ -1,6 +1,7 @@
 package com.lendbiz.p2p.api.service;
 
 import com.lendbiz.p2p.api.entity.AccountInput;
+import com.lendbiz.p2p.api.entity.GetEndRateRequest;
 import com.lendbiz.p2p.api.entity.PkgFundInfoEntity;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.request.*;
@@ -18,6 +19,10 @@ import org.springframework.http.ResponseEntity;
  ***********************************************************************/
 public interface UserService {
 
+	public ResponseEntity<?> checkVersion3GangOutdated(String version);
+
+	public ResponseEntity<?> checkExistedAccount(LoginRequest loginRequest);
+
 	public ResponseEntity<?> login(LoginRequest loginRequest);
 
 	// ReqJoin
@@ -27,11 +32,15 @@ public interface UserService {
 
 	public ResponseEntity<?> verifyAcc(VerifyAccountInput input);
 
+	public ResponseEntity<?> updateBioState(UpdateBiometricRequest request);
+
 	public ResponseEntity<?> getUserInfo(String mobile);
 
 	public ResponseEntity<?> setAccountPassword(SetAccountPasswordRequest setAccountPasswordRequest);
 
 	public ResponseEntity<?> updateAccountInfo(UpdateAccountRequest updateRequest);
+
+	public ResponseEntity<?> updateBankAccountInfo(UpdateAccountRequest updateRequest);
 
 	public ResponseEntity<?> createBear(AccountInput input);
 
@@ -65,6 +74,8 @@ public interface UserService {
 
 	public ResponseEntity<?> getCoin(String cif);
 
+	public ResponseEntity<?> getRefList(String cif);
+
 	public ResponseEntity<?> changeCoin(AccountInput input);
 
 	public ResponseEntity<?> updateReferenceId(AccountInput input);
@@ -97,14 +108,20 @@ public interface UserService {
 
 	public ResponseEntity<?> endBear(String cid, String documentNo);
 
+	public ResponseEntity<?> getEndRate(GetEndRateRequest request);
+
 	public ResponseEntity<?> getFundInvestDetail(String cid, String packageId);
 
 	public ResponseEntity<?> savePkgFundInfo(PkgSumFundRequest request);
 
 	public ResponseEntity<?> getPkgFundInfo();
 
-	public ResponseEntity<?> genTransferCode(String cif);
+	public ResponseEntity<?> genTransferCode(String amount, String cif);
+
+	public ResponseEntity<?> withdraw(CashOutRequest request);
 
 	String checkSession(String session);
+
+	public void autoSignContract();
 
 }

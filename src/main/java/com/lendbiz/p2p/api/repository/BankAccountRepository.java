@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository("bankAccountRepository")
 public interface BankAccountRepository extends JpaRepository<BankAccountEntity, String> {
 
-	@Query(value = "select f.bankname, f.bankacname, f.bankacc  from cfmast c, cfotheracc f where c.custid = f.cfcustid and c.custid = ?1", nativeQuery = true)
+	@Query(value = "select bank_name, bank_account_name, bank_account_number, bank_code from gm_userbankinfo where custid = ?1 and state = 1", nativeQuery = true)
 	BankAccountEntity getUserBankAccount(String custId);
 
 }

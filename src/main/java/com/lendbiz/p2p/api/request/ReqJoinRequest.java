@@ -14,5 +14,6 @@ import lombok.ToString;
 public class ReqJoinRequest {
 
     private String mobile;
+    private String deviceId;
 
 }

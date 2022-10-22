@@ -257,10 +257,12 @@ public class PackageFilterRepository {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("PKG_API_AUTHENTICATION")
                 .withProcedureName("REQJOIN_V2")
                 .declareParameters(new SqlParameter("Pv_Mobile", Types.VARCHAR))
+                .declareParameters(new SqlParameter("Pv_deviceId", Types.VARCHAR))
                 .declareParameters(new SqlOutParameter("PV_REFCURSOR", Types.REF_CURSOR));
 
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("Pv_Mobile", reqJoinRequest.getMobile());
+        params.addValue("Pv_deviceId", reqJoinRequest.getDeviceId());
 
         Map<String, Object> map = jdbcCall.execute(params);
         Map.Entry<String, Object> entry = map.entrySet().iterator().next();
@@ -438,7 +440,7 @@ public class PackageFilterRepository {
 
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("pv_custId", accountInput.getCustId());
-        params.addValue("pv_refId", accountInput.getPv_refId());
+        params.addValue("pv_refId", accountInput.getRefId());
         Map<String, Object> map = jdbcCall.execute(params);
         Map.Entry<String, Object> entry = map.entrySet().iterator().next();
 

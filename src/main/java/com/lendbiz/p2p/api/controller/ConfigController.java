@@ -39,4 +39,12 @@ public class ConfigController {
         return configService.getProductField();
     }
 
+    @Transactional(readOnly = true)
+    @GetMapping("/get-current-date")
+    public ResponseEntity<?> getCurrentDate(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId) {
+
+        return configService.getCurrentDate();
+    }
+
 }

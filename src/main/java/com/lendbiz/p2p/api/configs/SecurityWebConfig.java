@@ -23,15 +23,16 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
 
-//    @Bean
-//    public RestAuthenticationEntryPoint restServicesEntryPoint() {
-//        return new RestAuthenticationEntryPoint();
-//    }
+    // @Bean
+    // public RestAuthenticationEntryPoint restServicesEntryPoint() {
+    // return new RestAuthenticationEntryPoint();
+    // }
 
     @Bean
     public CustomAccessDeniedHandler customAccessDeniedHandler() {
         return new CustomAccessDeniedHandler();
     }
+
     @Autowired
     DataSource dataSource;
     @Autowired
@@ -40,7 +41,7 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
     JwtEntryPoint entryPoint;
 
     @Bean
-    public JwtFilter jwtFilter(){
+    public JwtFilter jwtFilter() {
         return new JwtFilter();
     }
     // @Bean
@@ -62,24 +63,27 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.csrf().disable().authorizeRequests().antMatchers("/lendbiz/** ")
-                .permitAll().antMatchers("/partner/api/**").hasAnyRole("PARTNER","ADMIN")
-//                .antMatchers("/lendbiz/api/9pay/**").hasRole("PARTNER")
-//                .antMatchers("/lendbiz/api/**").hasRole("ADMIN")
+                .permitAll().antMatchers("/partner/api/**").hasAnyRole("PARTNER", "ADMIN")
+                // .antMatchers("/lendbiz/api/9pay/**").hasRole("PARTNER")
+                // .antMatchers("/lendbiz/api/**").hasRole("ADMIN")
                 .and().exceptionHandling()
                 .authenticationEntryPoint(entryPoint)
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
     }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService);
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
 
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
+
     @Bean
     @Override
     public AuthenticationManager authenticationManager() throws Exception {

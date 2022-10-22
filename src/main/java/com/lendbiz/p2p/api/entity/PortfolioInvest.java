@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@ToString
+// @ToString
 @NamedStoredProcedureQueries({ //
         @NamedStoredProcedureQuery(name = "PortfolioInvest.getPortfolio", procedureName = "pkg_api.GET_PORTFOLIO", resultClasses = PortfolioInvest.class, parameters = { //
                 @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
@@ -42,6 +42,14 @@ public class PortfolioInvest {
     private String pName;
     @Column(name = "COLOR")
     private String color;
+    @Column(name = "ENDRATE")
+    private double endRate;
+    @Column(name = "ENDAMOUNT")
+    private double endAmount;
+    @Column(name = "INTEREST")
+    private long interest;
+    @Column(name = "ENDINTEREST")
+    private long endInterest;
     @Column(name = "STATUS_INVEST")
     private int status;
 

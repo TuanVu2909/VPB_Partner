@@ -15,12 +15,22 @@ public class ProducerMessage {
     private KafkaTemplate<String, String> kafkaTemplate;
 
     public void sendMessage(String smsJsonData) {
-        log.info(String.format("#### -> Producing message logs MBBank CHI_HO -> %s", smsJsonData));
+        log.info(String.format("#### -> Producing message logs MBBank CHI_HO ->"));
         this.kafkaTemplate.send(Constants.KAFKA.TOPIC_LOGS_MB, smsJsonData);
     }
 
     public void sendLogs3Gang(String smsJsonData) {
-        log.info(String.format("#### -> Producing message logs 3 Gang  -> %s", smsJsonData));
-        this.kafkaTemplate.send(Constants.KAFKA.TOPIC_LOGS_3GANG, smsJsonData);
+        log.info(String.format("#### -> Producing message logs 3 Gang  ->"));
+        this.kafkaTemplate.send(Constants.KAFKA.TOPIC_3GANG_PARTITIONS, smsJsonData);
+    }
+
+    public void sendCashOu3Gang(String smsJsonData) {
+        log.info(String.format("#### -> Producing message cash out 3 Gang  ->"));
+        this.kafkaTemplate.send(Constants.KAFKA.TOPIC_CASH_OUT_3GANG, smsJsonData);
+    }
+
+    public void sendSaveIdCard(String smsJsonData) {
+        log.info(String.format("#### -> Producing message save id card  ->"));
+        this.kafkaTemplate.send(Constants.KAFKA.TOPIC_SAVE_ID_CARD, smsJsonData);
     }
 }
