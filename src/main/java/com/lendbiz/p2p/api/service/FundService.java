@@ -4,6 +4,9 @@ import com.lendbiz.p2p.api.request.amber.*;
 import org.springframework.http.ResponseEntity;
 
 public interface FundService {
+    ResponseEntity<?> getBGAccountInfo(String mobile);
+    ResponseEntity<?> getAFMBankInfo();
+    // ================================
     ResponseEntity<?> getTokenAFM();
     ResponseEntity<?> linkAccount(String AFMToken, IdentityCustomerRequest identityCustomerRequest);
     ResponseEntity<?> checkOTPMapping(String AFMToken, OTPMappingRequest otpMappingRequest);

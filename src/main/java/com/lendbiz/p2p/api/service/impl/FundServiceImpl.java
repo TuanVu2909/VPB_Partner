@@ -1,16 +1,25 @@
 package com.lendbiz.p2p.api.service.impl;
 
 import com.lendbiz.p2p.api.constants.Constants;
+import com.lendbiz.p2p.api.entity.BankAccountEntity;
+import com.lendbiz.p2p.api.entity.CfMast;
+import com.lendbiz.p2p.api.entity.amber.AFMBankInfoEntity;
 import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.repository.BankAccountRepository;
+import com.lendbiz.p2p.api.repository.CfMastRepository;
+import com.lendbiz.p2p.api.repository.FundAmberRepository;
 import com.lendbiz.p2p.api.request.amber.*;
 import com.lendbiz.p2p.api.response.BaseResponse;
+import com.lendbiz.p2p.api.response.amber.AFMAccount;
 import com.lendbiz.p2p.api.service.FundService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -18,6 +27,49 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    FundAmberRepository fundAmberRepository;
+    @Qualifier("cfMastRepository")
+    @Autowired
+    CfMastRepository cfMastRepository;
+    @Qualifier("bankAccountRepository")
+    @Autowired
+    BankAccountRepository bankAccountRepository;
+
+    @Override
+    public ResponseEntity<?> getBGAccountInfo(String mobile) {
+        List<CfMast> data = cfMastRepository.findByMobileSms(mobile);
+        if (data.size() == 0) {
+            return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Thông tin không khớp hoặc khách hàng phải là cá nhân"));
+        }
+        if (data.size() > 1) {
+            return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Thông tin không hợp lệ"));
+        }
+        BankAccountEntity bankAccountEntity = bankAccountRepository.getUserBankAccount(data.get(0).getCustid());
+
+        AFMAccount afmAccount = new AFMAccount();
+        afmAccount.setLanguage(data.get(0).getLanguage());                // TODO afmAccount.setLanguage
+        afmAccount.setFullname(data.get(0).getFullName());
+        afmAccount.setIdcode(data.get(0).getIdCode());                    // TODO afmAccount.setIdcode
+        afmAccount.setIddate(data.get(0).getIdDate().toString());         // TODO afmAccount.setIddate
+        afmAccount.setIdplace(data.get(0).getIdPlace());
+        afmAccount.setBirthdate(data.get(0).getDateOfBirth().toString()); // TODO afmAccount.setBirthdate
+        afmAccount.setSex(data.get(0).getSex());                          // TODO afmAccount.setSex
+        afmAccount.setCountry(data.get(0).getCountry());
+        afmAccount.setMobile(data.get(0).getMobileSms());
+        afmAccount.setAddress(data.get(0).getAddress());
+        afmAccount.setEmail(data.get(0).getEmail());
+        afmAccount.setBankcode(bankAccountEntity != null ? bankAccountEntity.getBankCode() : ""); // TODO afmAccount.setBankcode
+        afmAccount.setCitybank("");
+        afmAccount.setBankacc(bankAccountEntity != null ? bankAccountEntity.getBankAccount() : "");
+        return null;
+    };
+
+    @Override
+    public ResponseEntity<?> getAFMBankInfo() {
+        List<AFMBankInfoEntity> data = fundAmberRepository.findAll();
+        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, data));
+    };
 
     // TODO API get token
     @Override
@@ -115,7 +167,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             headers.set("Authorization", "Bearer "+AFMToken);
             HttpEntity<OTPSellOrderRequest> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
-                    Constants.AMBER_URL + "/otpordersell",
+                    Constants.AMBER_URL + "/otporder",
                     HttpMethod.POST,
                     request,
                     Object.class,
@@ -135,7 +187,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             headers.set("Authorization", "Bearer "+AFMToken);
             HttpEntity<OTPIdentityRequest> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
-                    Constants.AMBER_URL + "/resendotpordersell",
+                    Constants.AMBER_URL + "/resendotporder",
                     HttpMethod.POST,
                     request,
                     Object.class,
