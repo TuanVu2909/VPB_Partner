@@ -18,4 +18,6 @@ public class AFMBankInfoEntity {
     private String bankCode;
     @Column(name = "BANK_NAME")
     private String bankName;
+    @Column(name = "BANK_BIN")
+    private String bankBin;
 }

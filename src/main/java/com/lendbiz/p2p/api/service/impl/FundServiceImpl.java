@@ -67,7 +67,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
     @Override
     public ResponseEntity<?> getAFMBankInfo() {
-        List<AFMBankInfoEntity> data = fundAmberRepository.findAll();
+        List<AFMBankInfoEntity> data = fundAmberRepository.listBankInfo();
         return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, data));
     };
 
