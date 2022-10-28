@@ -43,6 +43,11 @@ public class FundController {
     public ResponseEntity<?> getBGAccountInfo (
             @RequestHeader String mobile
     ) { return fundService.getBGAccountInfo(mobile); }
+
+    @PostMapping("afmcreateaccount")
+    ResponseEntity<?> openAFMAccount(
+            @RequestBody String accountInfo
+    ) { return fundService.openAFMAccount(); };
 // -------------------------------------------------------------------------------
 
     @GetMapping("/ssoagent/oauth/token")

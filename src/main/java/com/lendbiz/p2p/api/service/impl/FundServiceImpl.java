@@ -62,7 +62,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
         afmAccount.setBankcode(bankAccountEntity != null ? bankAccountEntity.getBankCode() : ""); // TODO afmAccount.setBankcode
         afmAccount.setCitybank("");
         afmAccount.setBankacc(bankAccountEntity != null ? bankAccountEntity.getBankAccount() : "");
-        return null;
+        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, afmAccount));
     };
 
     @Override
@@ -71,7 +71,13 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
         return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, data));
     };
 
-    // TODO API get token
+    @Override
+    public ResponseEntity<?> openAFMAccount() {
+
+        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, "Create success !"));
+    };
+
+      // TODO API get token
     @Override
     public ResponseEntity<?> getTokenAFM() {
         LoginRequest bodies = new LoginRequest();
