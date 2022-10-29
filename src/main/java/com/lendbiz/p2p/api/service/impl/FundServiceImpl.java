@@ -38,28 +38,29 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
     @Override
     public ResponseEntity<?> getBGAccountInfo(String mobile) {
-        List<CfMast> data = cfMastRepository.findByMobileSms(mobile);
-        if (data.size() == 0) {
-            return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Thông tin không khớp hoặc khách hàng phải là cá nhân"));
+        List<CfMast> data;
+        BankAccountEntity bankAccountEntity;
+        try {
+            data = cfMastRepository.findByMobileSms(mobile);
+            bankAccountEntity = bankAccountRepository.getUserBankAccount(data.get(0).getCustid());
         }
-        if (data.size() > 1) {
-            return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Thông tin không hợp lệ"));
+        catch (Exception e) {
+            return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "truy vấn không hợp lệ !"));
         }
-        BankAccountEntity bankAccountEntity = bankAccountRepository.getUserBankAccount(data.get(0).getCustid());
 
         AFMAccount afmAccount = new AFMAccount();
-        afmAccount.setLanguage(data.get(0).getLanguage());                // TODO afmAccount.setLanguage
+        afmAccount.setLanguage(data.get(0).getLanguage());
         afmAccount.setFullname(data.get(0).getFullName());
-        afmAccount.setIdcode(data.get(0).getIdCode());                    // TODO afmAccount.setIdcode
-        afmAccount.setIddate(data.get(0).getIdDate().toString());         // TODO afmAccount.setIddate
+        afmAccount.setIdcode(data.get(0).getIdCode());
+        afmAccount.setIddate(data.get(0).getIdDate().toString());
         afmAccount.setIdplace(data.get(0).getIdPlace());
-        afmAccount.setBirthdate(data.get(0).getDateOfBirth().toString()); // TODO afmAccount.setBirthdate
-        afmAccount.setSex(data.get(0).getSex());                          // TODO afmAccount.setSex
+        afmAccount.setBirthdate(data.get(0).getDateOfBirth().toString());
+        afmAccount.setSex(data.get(0).getSex());
         afmAccount.setCountry(data.get(0).getCountry());
         afmAccount.setMobile(data.get(0).getMobileSms());
         afmAccount.setAddress(data.get(0).getAddress());
         afmAccount.setEmail(data.get(0).getEmail());
-        afmAccount.setBankcode(bankAccountEntity != null ? bankAccountEntity.getBankCode() : ""); // TODO afmAccount.setBankcode
+        afmAccount.setBankcode(bankAccountEntity != null ? bankAccountEntity.getBankCode() : "");
         afmAccount.setCitybank("");
         afmAccount.setBankacc(bankAccountEntity != null ? bankAccountEntity.getBankAccount() : "");
         return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, afmAccount));
