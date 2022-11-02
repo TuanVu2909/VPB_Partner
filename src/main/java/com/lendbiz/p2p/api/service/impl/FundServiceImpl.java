@@ -11,6 +11,7 @@ import com.lendbiz.p2p.api.repository.FundAmberRepository;
 import com.lendbiz.p2p.api.request.amber.*;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.response.amber.AFMAccount;
+import com.lendbiz.p2p.api.response.amber.AFMToken;
 import com.lendbiz.p2p.api.service.FundService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -35,6 +36,8 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
     @Qualifier("bankAccountRepository")
     @Autowired
     BankAccountRepository bankAccountRepository;
+
+    private AFMToken accessTokenAFM = null;
 
     @Override
     public ResponseEntity<?> getBGAccountInfo(String mobile) {
@@ -78,9 +81,8 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
         return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, "Create success !"));
     };
 
-      // TODO API get token
     @Override
-    public ResponseEntity<?> getTokenAFM() {
+    public void getTokenAFM() {
         LoginRequest bodies = new LoginRequest();
         bodies.setGrant_type(Constants.GRANT_TYPE);
         bodies.setClient_id(Constants.CLIENT_ID);
@@ -92,26 +94,29 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<LoginRequest> request = new HttpEntity(bodies, headers);
-            ResponseEntity<?> responseEntity = restTemplate.exchange(
+            ResponseEntity<AFMToken> responseEntity = restTemplate.exchange(
                     Constants.AMBER_URL + "/ssoagent/oauth/token",
                     HttpMethod.POST,
                     request,
-                    Object.class,
+                    AFMToken.class,
                     (Object) null);
-            return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, responseEntity.getBody()));
+            this.accessTokenAFM = responseEntity.getBody();
+            return;
         }
         catch (Exception e) {
             throw new BusinessException("111", e.getMessage());
         }
     };
 
+    // *****************************************************************************************************************
+
     // TODO API liên kết tài khoản
     @Override
-    public ResponseEntity<?> linkAccount(String AFMToken, IdentityCustomerRequest bodies) {
+    public ResponseEntity<?> linkAccount(IdentityCustomerRequest bodies) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer "+AFMToken);
+            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<IdentityCustomerRequest> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
                     Constants.AMBER_URL + "/checkmapping",
@@ -127,11 +132,11 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
     // TODO API kiểm tra OTP
     @Override
-    public ResponseEntity<?> checkOTPMapping(String AFMToken, OTPMappingRequest bodies) {
+    public ResponseEntity<?> checkOTPMapping(OTPMappingRequest bodies) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer "+AFMToken);
+            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<OTPMappingRequest> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
                     Constants.AMBER_URL + "/otpmapping",
@@ -147,11 +152,11 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
     // TODO API gửi lại OTP
     @Override
-    public ResponseEntity<?> resendOTPMapping(String AFMToken, IdentityCustomerRequest bodies) {
+    public ResponseEntity<?> resendOTPMapping(IdentityCustomerRequest bodies) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer "+AFMToken);
+            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<IdentityCustomerRequest> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
                     Constants.AMBER_URL + "/resendotpmapping",
@@ -167,11 +172,11 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
     // TODO API kiểm tra OTP đặt lệnh bán
     @Override
-    public ResponseEntity<?> sellOtpOrder(String AFMToken, OTPSellOrderRequest bodies) {
+    public ResponseEntity<?> sellOtpOrder(OTPSellOrderRequest bodies) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer "+AFMToken);
+            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<OTPSellOrderRequest> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
                     Constants.AMBER_URL + "/otporder",
@@ -187,11 +192,11 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
     // TODO API gửi lại OTP đặt lệnh bán
     @Override
-    public ResponseEntity<?> sellResendOtpOrder(String AFMToken, OTPIdentityRequest bodies) {
+    public ResponseEntity<?> sellResendOtpOrder(OTPIdentityRequest bodies) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer "+AFMToken);
+            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<OTPIdentityRequest> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
                     Constants.AMBER_URL + "/resendotporder",
@@ -207,11 +212,11 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
     // TODO API kiểm tra tài khoản tồn tại
     @Override
-    public ResponseEntity<?> checkAccountExist(String AFMToken, String idCode){
+    public ResponseEntity<?> checkAccountExist(String idCode) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer "+AFMToken);
+            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<String> request = new HttpEntity(idCode, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
                     Constants.AMBER_URL + "/checkaccounts",
@@ -227,11 +232,11 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
     // TODO API thông tin tài khoản
     @Override
-    public ResponseEntity<?> accountInfo(String AFMToken, IdentityCustomerRequest bodies){
+    public ResponseEntity<?> accountInfo(IdentityCustomerRequest bodies){
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer "+AFMToken);
+            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<IdentityCustomerRequest> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
                     Constants.AMBER_URL + "/accounts",
@@ -247,11 +252,11 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
     // TODO API thông tin mã quỹ
     @Override
-    public ResponseEntity<?> fundsInfo(String AFMToken){
+    public ResponseEntity<?> fundsInfo(){
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer "+AFMToken);
+            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<Object> request = new HttpEntity(null, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
                     Constants.AMBER_URL + "/getfunds",
@@ -267,11 +272,11 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
     // TODO API thông tin giá NAV/CCQ
     @Override
-    public ResponseEntity<?> navPrice(String AFMToken, CCQInfoRequest bodies) {
+    public ResponseEntity<?> navPrice(CCQInfoRequest bodies) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer "+AFMToken);
+            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<CCQInfoRequest> request = new HttpEntity(headers);
             ObjectMapper mapper = new ObjectMapper();
             Map<String, Object> params = mapper.convertValue(bodies, Map.class);
@@ -289,11 +294,11 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
     // TODO API thông tin số dư CCQ
     @Override
-    public ResponseEntity<?> balanceInfo(String AFMToken, String custodycd) {
+    public ResponseEntity<?> balanceInfo(String custodycd) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer "+AFMToken);
+            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<String> request = new HttpEntity(custodycd, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
                     Constants.AMBER_URL + "/sebalance",
@@ -309,11 +314,11 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
     // TODO API thông tin thỏa thuận mua CCQ theo tài khoản và quỹ
     @Override
-    public ResponseEntity<?> buyCCQ(String AFMToken, DealCCQRequest bodies) {
+    public ResponseEntity<?> buyCCQ(DealCCQRequest bodies) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer "+AFMToken);
+            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<String> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
                     Constants.AMBER_URL + "/portfolioinfobuy",
@@ -329,11 +334,11 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
     // TODO API thông tin thỏa thuận bán CCQ theo tài khoản và quỹ
     @Override
-    public ResponseEntity<?> sellCCQ(String AFMToken, DealCCQRequest bodies) {
+    public ResponseEntity<?> sellCCQ(DealCCQRequest bodies) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer "+AFMToken);
+            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<String> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
                     Constants.AMBER_URL + "/portfolioinfosell",
@@ -349,11 +354,11 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
     // TODO API thông tin dự kiến bán CCQ
     @Override
-    public ResponseEntity<?> expectedSellInfoCCQ(String AFMToken, SellInfoRequest bodies) {
+    public ResponseEntity<?> expectedSellInfoCCQ(SellInfoRequest bodies) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer "+AFMToken);
+            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<SellInfoRequest> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
                     Constants.AMBER_URL + "/expectedsellinfo",
@@ -369,11 +374,11 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
     // TODO API đặt mua CCQ thông thường
     @Override
-    public ResponseEntity<?> buyNormalOrderCCQ(String AFMToken, BuyNormalCCQRequest bodies) {
+    public ResponseEntity<?> buyNormalOrderCCQ(BuyNormalCCQRequest bodies) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer "+AFMToken);
+            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<String> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
                     Constants.AMBER_URL + "/normalorder",
@@ -389,11 +394,11 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
     // TODO API đặt mua CCQ định kỳ
     @Override
-    public ResponseEntity<?> buyPeriodicOrderCCQ(String AFMToken, OrderCCQRequest bodies) {
+    public ResponseEntity<?> buyPeriodicOrderCCQ(OrderCCQRequest bodies) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer "+AFMToken);
+            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<String> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
                     Constants.AMBER_URL + "/siporder",
@@ -409,11 +414,11 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
     // TODO API đặt bán CCQ thông thường
     @Override
-    public ResponseEntity<?> sellNormalOrderCCQ(String AFMToken, SellNormalCCQRequest bodies) {
+    public ResponseEntity<?> sellNormalOrderCCQ(SellNormalCCQRequest bodies) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer "+AFMToken);
+            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<SellNormalCCQRequest> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
                     Constants.AMBER_URL + "/normalsell",
