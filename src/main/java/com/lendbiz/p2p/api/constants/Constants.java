@@ -1,5 +1,8 @@
 package com.lendbiz.p2p.api.constants;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /***********************************************************************
  * 
  * @package：com.lendbiz.p2p.api.constans，@class-name：Constans.java
@@ -135,4 +138,37 @@ public class Constants {
 	public static final String CLIENT_SECRET = "FUNDAGENT2022";
 	public static final String USERNAME = "LBC";
 	public static final String PASSWORD = "123456";
+
+	public static final Map<String, Object> AFM_INFO_STATUS = new HashMap<>();
+	static {
+		AFM_INFO_STATUS.put("P", "Chờ duyệt");
+		AFM_INFO_STATUS.put("R", "Chờ duyệt hủy");
+		AFM_INFO_STATUS.put("A", "Hoạt động");
+		AFM_INFO_STATUS.put("J", "Chờ duyệt sửa");
+		AFM_INFO_STATUS.put("N", "Chờ đóng");
+		AFM_INFO_STATUS.put("B", "Phong tỏa");
+	}
+
+	public static final Map<String, Object> AFM_STATUS_VSD = new HashMap<>();
+	static {
+		AFM_STATUS_VSD.put("T", "Chờ xác nhận sửa thông tin tài khoản");
+		AFM_STATUS_VSD.put("P", "Chờ xác nhận mở tài khoản");
+		AFM_STATUS_VSD.put("C", "Đã được VSD xác nhận mở");
+		AFM_STATUS_VSD.put("VSDR", "VSD từ chối");
+	}
+
+	public static final Map<String, Object> AFM_DEAL_STATUS = new HashMap<>();
+	static {
+		AFM_DEAL_STATUS.put("2", "Lệnh đặt thành công");
+		AFM_DEAL_STATUS.put("3", "Đang xử lý");
+		AFM_DEAL_STATUS.put("4", "Khớp lệnh một phần");
+		AFM_DEAL_STATUS.put("5", "Chờ đối chiếu");
+		AFM_DEAL_STATUS.put("6", "Đang sửa");
+		AFM_DEAL_STATUS.put("7", "Đang hủy");
+		AFM_DEAL_STATUS.put("8", "Đã sửa (lệnh gốc)");
+		AFM_DEAL_STATUS.put("9", "Đã hủy (lệnh gốc)");
+		AFM_DEAL_STATUS.put("14", "Khớp lệnh thành công");
+		AFM_DEAL_STATUS.put("20", "Khớp tiền thành công");
+		AFM_DEAL_STATUS.put("21", "Khớp tiền không thành công");
+	}
 }

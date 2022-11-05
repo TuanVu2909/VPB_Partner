@@ -23,6 +23,7 @@ public class FundController {
     public String testAPI () {
         return "Ping success !";
     }
+
 //    @GetMapping(value = "/sendSMS")
 //    public ResponseEntity<String> sendSMS() {
 //
@@ -48,6 +49,7 @@ public class FundController {
     ResponseEntity<?> openAFMAccount(
             @RequestBody String accountInfo
     ) { return fundService.openAFMAccount(); };
+
 // -------------------------------------------------------------------------------
 
     @PostMapping("/checkmapping")

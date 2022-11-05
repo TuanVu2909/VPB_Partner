@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -110,7 +112,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
     // *****************************************************************************************************************
 
-    // TODO API liên kết tài khoản
+    // TODO  3.1 API liên kết tài khoản
     @Override
     public ResponseEntity<?> linkAccount(IdentityCustomerRequest bodies) {
         try {
@@ -130,7 +132,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
         }
     };
 
-    // TODO API kiểm tra OTP
+    // TODO 3.1.1 API kiểm tra OTP
     @Override
     public ResponseEntity<?> checkOTPMapping(OTPMappingRequest bodies) {
         try {
@@ -150,7 +152,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
         }
     };
 
-    // TODO API gửi lại OTP
+    // TODO 3.1.2 API gửi lại OTP
     @Override
     public ResponseEntity<?> resendOTPMapping(IdentityCustomerRequest bodies) {
         try {
@@ -170,47 +172,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
         }
     };
 
-    // TODO API kiểm tra OTP đặt lệnh bán
-    @Override
-    public ResponseEntity<?> sellOtpOrder(OTPSellOrderRequest bodies) {
-        try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
-            HttpEntity<OTPSellOrderRequest> request = new HttpEntity(bodies, headers);
-            ResponseEntity<?> responseEntity = restTemplate.exchange(
-                    Constants.AMBER_URL + "/otporder",
-                    HttpMethod.POST,
-                    request,
-                    Object.class,
-                    (Object) null);
-            return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, responseEntity.getBody()));
-        } catch (Exception e) {
-            throw new BusinessException("111", e.getMessage());
-        }
-    };
-
-    // TODO API gửi lại OTP đặt lệnh bán
-    @Override
-    public ResponseEntity<?> sellResendOtpOrder(OTPIdentityRequest bodies) {
-        try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
-            HttpEntity<OTPIdentityRequest> request = new HttpEntity(bodies, headers);
-            ResponseEntity<?> responseEntity = restTemplate.exchange(
-                    Constants.AMBER_URL + "/resendotporder",
-                    HttpMethod.POST,
-                    request,
-                    Object.class,
-                    (Object) null);
-            return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, responseEntity.getBody()));
-        } catch (Exception e) {
-            throw new BusinessException("111", e.getMessage());
-        }
-    };
-
-    // TODO API kiểm tra tài khoản tồn tại
+    // TODO 3.2 API kiểm tra tài khoản tồn tại
     @Override
     public ResponseEntity<?> checkAccountExist(String idCode) {
         try {
@@ -230,7 +192,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
         }
     };
 
-    // TODO API thông tin tài khoản
+    // TODO 3.3 API thông tin tài khoản
     @Override
     public ResponseEntity<?> accountInfo(IdentityCustomerRequest bodies){
         try {
@@ -244,13 +206,21 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                     request,
                     Object.class,
                     (Object) null);
-            return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, responseEntity.getBody()));
+            Map<String, Object> data = new HashMap<>((Map<? extends String, ?>) responseEntity.getBody());
+            if(data.get("EC").equals("0")) {
+                ArrayList<Object> lst = (ArrayList<Object>) data.get("DT");
+                Map<String, Object> map = (Map<String, Object>) lst.get(0);
+                map.put("status", Constants.AFM_INFO_STATUS.get(map.get("status")));
+                map.put("status_vsd", Constants.AFM_STATUS_VSD.get(map.get("status_vsd")));
+                data.put("DT", map);
+            }
+            return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, data));
         } catch (Exception e) {
             throw new BusinessException("111", e.getMessage());
         }
     };
 
-    // TODO API thông tin mã quỹ
+    // TODO 3.4 API thông tin mã quỹ
     @Override
     public ResponseEntity<?> fundsInfo(){
         try {
@@ -270,7 +240,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
         }
     };
 
-    // TODO API thông tin giá NAV/CCQ
+    // TODO 3.5 API thông tin giá NAV/CCQ
     @Override
     public ResponseEntity<?> navPrice(CCQInfoRequest bodies) {
         try {
@@ -292,7 +262,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
         }
     };
 
-    // TODO API thông tin số dư CCQ
+    // TODO 3.6 API thông tin số dư CCQ
     @Override
     public ResponseEntity<?> balanceInfo(String custodycd) {
         try {
@@ -312,7 +282,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
         }
     };
 
-    // TODO API thông tin thỏa thuận mua CCQ theo tài khoản và quỹ
+    // TODO 3.7 API thông tin thỏa thuận mua CCQ theo tài khoản và quỹ
     @Override
     public ResponseEntity<?> buyCCQ(DealCCQRequest bodies) {
         try {
@@ -326,13 +296,24 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                     request,
                     Object.class,
                     (Object) null);
-            return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, responseEntity.getBody()));
+            Map<String, Object> data = new HashMap<>((Map<? extends String, ?>) responseEntity.getBody());
+            if(data.get("EC").equals("0")) {
+                ArrayList<Object> lst = (ArrayList<Object>) data.get("DT");
+
+                for(Object o : lst){
+                    Map<String, Object> map = (Map<String, Object>) o;
+                    map.put("status", Constants.AFM_DEAL_STATUS.get(map.get("status")));
+                    lst.set(lst.indexOf(o), map);
+                }
+                data.put("DT", lst);
+            }
+            return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, data));
         } catch (Exception e) {
             throw new BusinessException("111", e.getMessage());
         }
     };
 
-    // TODO API thông tin thỏa thuận bán CCQ theo tài khoản và quỹ
+    // TODO 3.8 API thông tin thỏa thuận bán CCQ theo tài khoản và quỹ
     @Override
     public ResponseEntity<?> sellCCQ(DealCCQRequest bodies) {
         try {
@@ -346,33 +327,24 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                     request,
                     Object.class,
                     (Object) null);
-            return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, responseEntity.getBody()));
+            Map<String, Object> data = new HashMap<>((Map<? extends String, ?>) responseEntity.getBody());
+            if(data.get("EC").equals("0")) {
+                ArrayList<Object> lst = (ArrayList<Object>) data.get("DT");
+
+                for(Object o : lst){
+                    Map<String, Object> map = (Map<String, Object>) o;
+                    map.put("status", Constants.AFM_DEAL_STATUS.get(map.get("status")));
+                    lst.set(lst.indexOf(o), map);
+                }
+                data.put("DT", lst);
+            }
+            return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, data));
         } catch (Exception e) {
             throw new BusinessException("111", e.getMessage());
         }
     };
 
-    // TODO API thông tin dự kiến bán CCQ
-    @Override
-    public ResponseEntity<?> expectedSellInfoCCQ(SellInfoRequest bodies) {
-        try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
-            HttpEntity<SellInfoRequest> request = new HttpEntity(bodies, headers);
-            ResponseEntity<?> responseEntity = restTemplate.exchange(
-                    Constants.AMBER_URL + "/expectedsellinfo",
-                    HttpMethod.POST,
-                    request,
-                    Object.class,
-                    (Object) null);
-            return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, responseEntity.getBody()));
-        } catch (Exception e) {
-            throw new BusinessException("111", e.getMessage());
-        }
-    };
-
-    // TODO API đặt mua CCQ thông thường
+    // TODO 3.9 API đặt mua CCQ thông thường
     @Override
     public ResponseEntity<?> buyNormalOrderCCQ(BuyNormalCCQRequest bodies) {
         try {
@@ -392,7 +364,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
         }
     };
 
-    // TODO API đặt mua CCQ định kỳ
+    // TODO 3.10 API đặt mua CCQ định kỳ SIP
     @Override
     public ResponseEntity<?> buyPeriodicOrderCCQ(OrderCCQRequest bodies) {
         try {
@@ -412,7 +384,27 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
         }
     };
 
-    // TODO API đặt bán CCQ thông thường
+    // TODO 3.11 API thông tin dự kiến bán CCQ
+    @Override
+    public ResponseEntity<?> expectedSellInfoCCQ(SellInfoRequest bodies) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
+            HttpEntity<SellInfoRequest> request = new HttpEntity(bodies, headers);
+            ResponseEntity<?> responseEntity = restTemplate.exchange(
+                    Constants.AMBER_URL + "/expectedsellinfo",
+                    HttpMethod.POST,
+                    request,
+                    Object.class,
+                    (Object) null);
+            return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, responseEntity.getBody()));
+        } catch (Exception e) {
+            throw new BusinessException("111", e.getMessage());
+        }
+    };
+
+    // TODO 3.12 API đặt bán CCQ thông thường
     @Override
     public ResponseEntity<?> sellNormalOrderCCQ(SellNormalCCQRequest bodies) {
         try {
@@ -422,6 +414,46 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             HttpEntity<SellNormalCCQRequest> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
                     Constants.AMBER_URL + "/normalsell",
+                    HttpMethod.POST,
+                    request,
+                    Object.class,
+                    (Object) null);
+            return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, responseEntity.getBody()));
+        } catch (Exception e) {
+            throw new BusinessException("111", e.getMessage());
+        }
+    };
+
+    // TODO 3.13 API kiểm tra OTP đặt lệnh bán
+    @Override
+    public ResponseEntity<?> sellOtpOrder(OTPSellOrderRequest bodies) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
+            HttpEntity<OTPSellOrderRequest> request = new HttpEntity(bodies, headers);
+            ResponseEntity<?> responseEntity = restTemplate.exchange(
+                    Constants.AMBER_URL + "/otporder",
+                    HttpMethod.POST,
+                    request,
+                    Object.class,
+                    (Object) null);
+            return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, responseEntity.getBody()));
+        } catch (Exception e) {
+            throw new BusinessException("111", e.getMessage());
+        }
+    };
+
+    // TODO 3.14 API gửi lại OTP đặt lệnh bán
+    @Override
+    public ResponseEntity<?> sellResendOtpOrder(OTPIdentityRequest bodies) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
+            HttpEntity<OTPIdentityRequest> request = new HttpEntity(bodies, headers);
+            ResponseEntity<?> responseEntity = restTemplate.exchange(
+                    Constants.AMBER_URL + "/resendotporder",
                     HttpMethod.POST,
                     request,
                     Object.class,

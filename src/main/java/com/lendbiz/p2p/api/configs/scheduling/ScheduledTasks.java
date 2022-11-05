@@ -15,15 +15,15 @@ public class ScheduledTasks {
     @Autowired
     private FundService fundService;
 
-    //    7h send request to get AFM token time zone VN
-//    @Scheduled(zone = "GMT+7", fixedRate = 7*(1000*60*60))
-//    public void scheduleTasksendEmail1() {
+    // 1s executive below action with time zone VN
+//    @Scheduled(zone = "GMT+7", fixedRate = 1000)
+//    public void scheduleTask() {
 //        // call send email method here
-//        logger.info("Send email every 2s");
+//        logger.info(!!!!!!!!!!!!!!!!!!!);
 //    }
     // 5 phút một lần
     @Scheduled(zone = "GMT+7", cron = "0 */5 * ? * *")
-    public void scheduleTasksendEmail2() {
+    public void scheduleTaskGetToken() {
         fundService.getTokenAFM();
         return;
     }
