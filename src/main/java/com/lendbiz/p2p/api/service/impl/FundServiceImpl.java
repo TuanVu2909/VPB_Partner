@@ -12,8 +12,9 @@ import com.lendbiz.p2p.api.repository.CfMastRepository;
 import com.lendbiz.p2p.api.repository.FundAmberRepository;
 import com.lendbiz.p2p.api.request.amber.*;
 import com.lendbiz.p2p.api.response.BaseResponse;
-import com.lendbiz.p2p.api.response.amber.AFMAccount;
 import com.lendbiz.p2p.api.response.amber.AFMAccInfo;
+import com.lendbiz.p2p.api.response.amber.AFMAccount;
+import com.lendbiz.p2p.api.response.amber.AFMAccStatus;
 import com.lendbiz.p2p.api.response.amber.AFMToken;
 import com.lendbiz.p2p.api.service.FundService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class FundServiceImpl extends BaseResponse<FundService> implements FundService {
@@ -81,7 +80,6 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
         saveData.setEmail(afmAccount.getEmail());
         saveData.setBankBin(afmAccount.getBankcode());
         saveData.setBankAccount(afmAccount.getBankacc());
-        saveData.setCreateDate(java.time.LocalDate.now().toString());
 
         this.afmAccountInfoRepository.save(saveData);
         return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, afmAccount));
@@ -156,7 +154,20 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                     request,
                     Object.class,
                     (Object) null);
-            return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, responseEntity.getBody()));
+
+            Map<String, Object> data = new HashMap<>((Map<? extends String, ?>) responseEntity.getBody());
+            if(data.get("EC").equals("0")) {
+                AFMAccInfo afmAccInfo = (AFMAccInfo) data.get("DT");
+                AFMAccountInfoEntity saveData = this.afmAccountInfoRepository.findByMobile(bodies.getMobile());
+                SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
+                String currentDate = formater.format(new Date());
+                if(saveData != null) {
+                    saveData.setCustodycd(afmAccInfo.getCustodycd());
+                    saveData.setCreateDate(currentDate);
+                    this.afmAccountInfoRepository.save(saveData);
+                }
+            }
+            return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, data));
         } catch (Exception e) {
             throw new BusinessException("111", e.getMessage());
         }
@@ -228,13 +239,12 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                 if(saveData != null) {
                     saveData.setStatus(map.get("status").toString());
                     saveData.setStatusVsd(map.get("status_vsd").toString());
-                    saveData.setCustodycd(map.get("custodycd").toString());
 
                     this.afmAccountInfoRepository.save(saveData);
                 }
             }
             else {
-                data.put("DT", new AFMAccInfo("", "", ""));
+                data.put("DT", new AFMAccStatus("", "", ""));
                 data.put("EC", data.get("EC").toString());
             }
             return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, data));
@@ -309,9 +319,19 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
     @Override
     public ResponseEntity<?> buyCCQ(DealCCQRequest bodies) {
         try {
+            AFMAccountInfoEntity getData = this.afmAccountInfoRepository.findByCustodycd(bodies.getCustodycd());
+
+            if(getData == null) return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Bạn chưa tạo tài khoản hoặc chưa lien kết tài khoản"));
+
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
+            SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
+            String currentDate = formater.format(new Date());
+
+            bodies.setFromdate(getData.getCreateDate());
+            bodies.setTodate(currentDate);
+
             HttpEntity<String> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
                     Constants.AMBER_URL + "/portfolioinfobuy",
@@ -340,9 +360,20 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
     @Override
     public ResponseEntity<?> sellCCQ(DealCCQRequest bodies) {
         try {
+            AFMAccountInfoEntity getData = this.afmAccountInfoRepository.findByCustodycd(bodies.getCustodycd());
+
+            if(getData == null) return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Bạn chưa tạo tài khoản hoặc chưa lien kết tài khoản"));
+
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
+
+            SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
+            String currentDate = formater.format(new Date());
+
+            bodies.setFromdate(getData.getCreateDate());
+            bodies.setTodate(currentDate);
+
             HttpEntity<String> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
                     Constants.AMBER_URL + "/portfolioinfosell",

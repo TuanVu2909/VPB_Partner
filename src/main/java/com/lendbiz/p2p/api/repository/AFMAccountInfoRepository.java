@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AFMAccountInfoRepository extends JpaRepository<AFMAccountInfoEntity, String> {
     AFMAccountInfoEntity findByMobile(String mobile);
+    AFMAccountInfoEntity findByCustodycd(String custodycd);
 }
