@@ -3,14 +3,17 @@ package com.lendbiz.p2p.api.service.impl;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.entity.BankAccountEntity;
 import com.lendbiz.p2p.api.entity.CfMast;
+import com.lendbiz.p2p.api.entity.amber.AFMAccountInfoEntity;
 import com.lendbiz.p2p.api.entity.amber.AFMBankInfoEntity;
 import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.repository.AFMAccountInfoRepository;
 import com.lendbiz.p2p.api.repository.BankAccountRepository;
 import com.lendbiz.p2p.api.repository.CfMastRepository;
 import com.lendbiz.p2p.api.repository.FundAmberRepository;
 import com.lendbiz.p2p.api.request.amber.*;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.response.amber.AFMAccount;
+import com.lendbiz.p2p.api.response.amber.AFMAccInfo;
 import com.lendbiz.p2p.api.response.amber.AFMToken;
 import com.lendbiz.p2p.api.service.FundService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +41,8 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
     @Qualifier("bankAccountRepository")
     @Autowired
     BankAccountRepository bankAccountRepository;
+    @Autowired
+    AFMAccountInfoRepository afmAccountInfoRepository;
 
     private AFMToken accessTokenAFM = null;
 
@@ -68,6 +73,17 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
         afmAccount.setBankcode(bankAccountEntity != null ? bankAccountEntity.getBankCode() : "");
         afmAccount.setCitybank("");
         afmAccount.setBankacc(bankAccountEntity != null ? bankAccountEntity.getBankAccount() : "");
+
+        AFMAccountInfoEntity saveData = new AFMAccountInfoEntity();
+        saveData.setCusId(data.get(0).getCustid());
+        saveData.setIdCode(afmAccount.getIdcode());
+        saveData.setMobile(afmAccount.getMobile());
+        saveData.setEmail(afmAccount.getEmail());
+        saveData.setBankBin(afmAccount.getBankcode());
+        saveData.setBankAccount(afmAccount.getBankacc());
+        saveData.setCreateDate(java.time.LocalDate.now().toString());
+
+        this.afmAccountInfoRepository.save(saveData);
         return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, afmAccount));
     };
 
@@ -75,12 +91,6 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
     public ResponseEntity<?> getAFMBankInfo() {
         List<AFMBankInfoEntity> data = fundAmberRepository.listBankInfo();
         return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, data));
-    };
-
-    @Override
-    public ResponseEntity<?> openAFMAccount() {
-
-        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, "Create success !"));
     };
 
     @Override
@@ -213,6 +223,19 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                 map.put("status", Constants.AFM_INFO_STATUS.get(map.get("status")));
                 map.put("status_vsd", Constants.AFM_STATUS_VSD.get(map.get("status_vsd")));
                 data.put("DT", map);
+
+                AFMAccountInfoEntity saveData = this.afmAccountInfoRepository.findByMobile(bodies.getMobile());
+                if(saveData.getMobile() != null) {
+                    saveData.setStatus(map.get("status").toString());
+                    saveData.setStatusVsd(map.get("status_vsd").toString());
+                    saveData.setCustodycd(map.get("custodycd").toString());
+
+                    this.afmAccountInfoRepository.save(saveData);
+                }
+            }
+            else {
+                data.put("DT", new AFMAccInfo("", "", ""));
+                data.put("EC", data.get("EC").toString());
             }
             return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, data));
         } catch (Exception e) {

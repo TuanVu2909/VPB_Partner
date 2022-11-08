@@ -45,11 +45,6 @@ public class FundController {
             @RequestHeader String mobile
     ) { return fundService.getBGAccountInfo(mobile); }
 
-    @PostMapping("afmcreateaccount")
-    ResponseEntity<?> openAFMAccount(
-            @RequestBody String accountInfo
-    ) { return fundService.openAFMAccount(); };
-
 // -------------------------------------------------------------------------------
 
     @PostMapping("/checkmapping")
