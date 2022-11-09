@@ -65,16 +65,16 @@ public class FundController {
         return fundService.resendOTPMapping(identityCustomerRequest);
     }
 
-    @PostMapping("/otpordersell")
-    public ResponseEntity<?> sellOtpOrder (
-            @RequestBody OTPSellOrderRequest otpSellOrderRequest) {
-        return fundService.sellOtpOrder(otpSellOrderRequest);
+    @PostMapping("/otporder")
+    public ResponseEntity<?> otpOrder (
+            @RequestBody OTPSellOrderRequest otpOrderRequest) {
+        return fundService.otpOrder(otpOrderRequest);
     }
 
-    @PostMapping("/resendotpordersell")
-    public ResponseEntity<?> sellResendOtpOrder (
+    @PostMapping("/resendotporder")
+    public ResponseEntity<?> resendOtpOrder (
             @RequestBody OTPIdentityRequest otpIdentityRequest) {
-        return fundService.sellResendOtpOrder(otpIdentityRequest);
+        return fundService.resendOtpOrder(otpIdentityRequest);
     }
 
     @PostMapping("/checkaccounts")

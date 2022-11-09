@@ -5,11 +5,9 @@ import com.lendbiz.p2p.api.entity.BankAccountEntity;
 import com.lendbiz.p2p.api.entity.CfMast;
 import com.lendbiz.p2p.api.entity.amber.AFMAccountInfoEntity;
 import com.lendbiz.p2p.api.entity.amber.AFMBankInfoEntity;
+import com.lendbiz.p2p.api.entity.amber.AFMHisOrderEntity;
 import com.lendbiz.p2p.api.exception.BusinessException;
-import com.lendbiz.p2p.api.repository.AFMAccountInfoRepository;
-import com.lendbiz.p2p.api.repository.BankAccountRepository;
-import com.lendbiz.p2p.api.repository.CfMastRepository;
-import com.lendbiz.p2p.api.repository.FundAmberRepository;
+import com.lendbiz.p2p.api.repository.*;
 import com.lendbiz.p2p.api.request.amber.*;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.response.amber.AFMAccInfo;
@@ -42,6 +40,8 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
     BankAccountRepository bankAccountRepository;
     @Autowired
     AFMAccountInfoRepository afmAccountInfoRepository;
+    @Autowired
+    AFMHisOrderRepository afmHisOrderRepository;
 
     private AFMToken accessTokenAFM = null;
 
@@ -326,11 +326,14 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
-            SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
-            String currentDate = formater.format(new Date());
 
-            bodies.setFromdate(getData.getCreateDate());
-            bodies.setTodate(currentDate);
+            if(bodies.getFromdate() == null || "".equals(bodies.getFromdate()) && bodies.getTodate() == null || "".equals(bodies.getTodate())){
+                SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
+                String currentDate = formater.format(new Date());
+
+                bodies.setFromdate(getData.getCreateDate());
+                bodies.setTodate(currentDate);
+            }
 
             HttpEntity<String> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
@@ -368,11 +371,13 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
 
-            SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
-            String currentDate = formater.format(new Date());
+            if(bodies.getFromdate() == null || "".equals(bodies.getFromdate()) && bodies.getTodate() == null || "".equals(bodies.getTodate())){
+                SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
+                String currentDate = formater.format(new Date());
 
-            bodies.setFromdate(getData.getCreateDate());
-            bodies.setTodate(currentDate);
+                bodies.setFromdate(getData.getCreateDate());
+                bodies.setTodate(currentDate);
+            }
 
             HttpEntity<String> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
@@ -412,7 +417,21 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                     request,
                     Object.class,
                     (Object) null);
-            return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, responseEntity.getBody()));
+            Map<String, Object> data = new HashMap<>((Map<? extends String, ?>) responseEntity.getBody());
+            if(data.get("EC").equals("0")) {
+                Map<String, Object> dt = new HashMap<>((Map<? extends String, ?>) data.get("DT"));
+                this.afmHisOrderRepository.saveBuy(
+                        dt.get("custodycd").toString(),
+                        dt.get("symbol").toString(),
+                        dt.get("srtype").toString(),
+                        dt.get("exectype").toString(),
+                        dt.get("txdate").toString(),
+                        dt.get("status").toString(),
+                        dt.get("amt").toString(),
+                        dt.get("orderid").toString()
+                );
+            }
+            return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, data));
         } catch (Exception e) {
             throw new BusinessException("111", e.getMessage());
         }
@@ -472,15 +491,29 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                     request,
                     Object.class,
                     (Object) null);
-            return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, responseEntity.getBody()));
+            Map<String, Object> data = new HashMap<>((Map<? extends String, ?>) responseEntity.getBody());
+            if(data.get("EC").equals("0")) {
+                Map<String, Object> dt = new HashMap<>((Map<? extends String, ?>) data.get("DT"));
+                this.afmHisOrderRepository.saveSell(
+                        dt.get("custodycd").toString(),
+                        dt.get("symbol").toString(),
+                        dt.get("srtype").toString(),
+                        dt.get("exectype").toString(),
+                        dt.get("txdate").toString(),
+                        dt.get("status").toString(),
+                        dt.get("qtty").toString(),
+                        dt.get("orderid").toString()
+                );
+            }
+            return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, data));
         } catch (Exception e) {
             throw new BusinessException("111", e.getMessage());
         }
     };
 
-    // TODO 3.13 API kiểm tra OTP đặt lệnh bán
+    // TODO 3.13 API kiểm tra OTP đặt lệnh mua/bán
     @Override
-    public ResponseEntity<?> sellOtpOrder(OTPSellOrderRequest bodies) {
+    public ResponseEntity<?> otpOrder(OTPSellOrderRequest bodies) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -492,15 +525,25 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                     request,
                     Object.class,
                     (Object) null);
-            return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, responseEntity.getBody()));
+            Map<String, Object> data = new HashMap<>((Map<? extends String, ?>) responseEntity.getBody());
+            if(data.get("EC").equals("0")) {
+                Map<String, Object> dt = new HashMap<>((Map<? extends String, ?>) data.get("DT"));
+                AFMHisOrderEntity afmHisOrder = this.afmHisOrderRepository.findByOrderid(bodies.getOrderid());
+                if (afmHisOrder != null) {
+                    afmHisOrder.setTxdate(dt.get("txdate").toString());
+                    afmHisOrder.setStatus(dt.get("status").toString());
+                    this.afmHisOrderRepository.save(afmHisOrder);
+                }
+            }
+            return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, data));
         } catch (Exception e) {
             throw new BusinessException("111", e.getMessage());
         }
     };
 
-    // TODO 3.14 API gửi lại OTP đặt lệnh bán
+    // TODO 3.14 API gửi lại OTP đặt lệnh mua/bán
     @Override
-    public ResponseEntity<?> sellResendOtpOrder(OTPIdentityRequest bodies) {
+    public ResponseEntity<?> resendOtpOrder(OTPIdentityRequest bodies) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);

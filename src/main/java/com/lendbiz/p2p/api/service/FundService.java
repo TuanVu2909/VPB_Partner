@@ -12,8 +12,8 @@ public interface FundService {
     ResponseEntity<?> linkAccount(IdentityCustomerRequest identityCustomerRequest);
     ResponseEntity<?> checkOTPMapping(OTPMappingRequest otpMappingRequest);
     ResponseEntity<?> resendOTPMapping(IdentityCustomerRequest identityCustomerRequest);
-    ResponseEntity<?> sellOtpOrder(OTPSellOrderRequest otpSellOrderRequest);
-    ResponseEntity<?> sellResendOtpOrder(OTPIdentityRequest otpIdentityRequest);
+    ResponseEntity<?> otpOrder(OTPSellOrderRequest otpSellOrderRequest);
+    ResponseEntity<?> resendOtpOrder(OTPIdentityRequest otpIdentityRequest);
     ResponseEntity<?> checkAccountExist (String idCode);
     ResponseEntity<?> accountInfo(IdentityCustomerRequest identityCustomerRequest);
     ResponseEntity<?> fundsInfo();
