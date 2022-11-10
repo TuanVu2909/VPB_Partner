@@ -47,41 +47,46 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
     @Override
     public ResponseEntity<?> getBGAccountInfo(String mobile) {
-        List<CfMast> data;
+        List<CfMast> cfm;
         BankAccountEntity bankAccountEntity;
         try {
-            data = cfMastRepository.findByMobileSms(mobile);
-            bankAccountEntity = bankAccountRepository.getUserBankAccount(data.get(0).getCustid());
+            cfm = cfMastRepository.findByMobileSms(mobile);
+            bankAccountEntity = bankAccountRepository.getUserBankAccount(cfm.get(0).getCustid());
         }
         catch (Exception e) {
             return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "truy vấn không hợp lệ !"));
         }
 
         AFMAccount afmAccount = new AFMAccount();
-        afmAccount.setLanguage(data.get(0).getLanguage());
-        afmAccount.setFullname(data.get(0).getFullName());
-        afmAccount.setIdcode(data.get(0).getIdCode());
-        afmAccount.setIddate(data.get(0).getIdDate().toString());
-        afmAccount.setIdplace(data.get(0).getIdPlace());
-        afmAccount.setBirthdate(data.get(0).getDateOfBirth().toString());
-        afmAccount.setSex(data.get(0).getSex());
-        afmAccount.setCountry(data.get(0).getCountry());
-        afmAccount.setMobile(data.get(0).getMobileSms());
-        afmAccount.setAddress(data.get(0).getAddress());
-        afmAccount.setEmail(data.get(0).getEmail());
+        afmAccount.setLanguage(cfm.get(0).getLanguage());
+        afmAccount.setFullname(cfm.get(0).getFullName());
+        afmAccount.setIdcode(cfm.get(0).getIdCode());
+        afmAccount.setIddate(cfm.get(0).getIdDate().toString());
+        afmAccount.setIdplace(cfm.get(0).getIdPlace());
+        afmAccount.setBirthdate(cfm.get(0).getDateOfBirth().toString());
+        afmAccount.setSex(cfm.get(0).getSex());
+        afmAccount.setCountry(cfm.get(0).getCountry());
+        afmAccount.setMobile(cfm.get(0).getMobileSms());
+        afmAccount.setAddress(cfm.get(0).getAddress());
+        afmAccount.setEmail(cfm.get(0).getEmail());
         afmAccount.setBankcode(bankAccountEntity != null ? bankAccountEntity.getBankCode() : "");
         afmAccount.setCitybank("");
         afmAccount.setBankacc(bankAccountEntity != null ? bankAccountEntity.getBankAccount() : "");
 
-        AFMAccountInfoEntity saveData = new AFMAccountInfoEntity();
-        saveData.setCusId(data.get(0).getCustid());
-        saveData.setIdCode(afmAccount.getIdcode());
-        saveData.setMobile(afmAccount.getMobile());
-        saveData.setEmail(afmAccount.getEmail());
-        saveData.setBankBin(afmAccount.getBankcode());
-        saveData.setBankAccount(afmAccount.getBankacc());
 
-        this.afmAccountInfoRepository.save(saveData);
+        AFMAccountInfoEntity afmAcc = this.afmAccountInfoRepository.findByMobile(cfm.get(0).getMobileSms());
+        if (afmAcc == null) {
+            AFMAccountInfoEntity afmA = new AFMAccountInfoEntity();
+            afmA.setCusId(cfm.get(0).getCustid());
+            afmA.setIdCode(afmAccount.getIdcode());
+            afmA.setMobile(afmAccount.getMobile());
+            afmA.setEmail(afmAccount.getEmail());
+            afmA.setBankBin(afmAccount.getBankcode());
+            afmA.setBankAccount(afmAccount.getBankacc());
+
+            this.afmAccountInfoRepository.save(afmA);
+        }
+
         return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, afmAccount));
     };
 
@@ -232,7 +237,9 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                 ArrayList<Object> lst = (ArrayList<Object>) data.get("DT");
                 Map<String, Object> map = (Map<String, Object>) lst.get(0);
                 map.put("status", Constants.AFM_INFO_STATUS.get(map.get("status")));
+                map.put("status_code", map.get("status"));
                 map.put("status_vsd", Constants.AFM_STATUS_VSD.get(map.get("status_vsd")));
+                map.put("status_vsd_code", map.get("status_vsd"));
                 data.put("DT", map);
 
                 AFMAccountInfoEntity saveData = this.afmAccountInfoRepository.findByMobile(bodies.getMobile());

@@ -26,7 +26,7 @@ public interface AFMHisOrderRepository extends JpaRepository<AFMHisOrderEntity, 
 
     @Transactional
     @Modifying
-    @Query(value = " INSERT INTO AFM_HIS_ORDER (id,custodycd,symbol,srtype,exectype,txdate,status,orderamt,orderid)" +
+    @Query(value = " INSERT INTO AFM_HIS_ORDER (id,custodycd,symbol,srtype,exectype,txdate,status,orderqtty,orderid)" +
             " VALUES (seq_afmhisorder.nextval,:custodycd,:symbol,:srtype,:exectype,:txdate,:status,:orderqtty,:orderid) ", nativeQuery = true)
     void saveSell(@Param("custodycd")String custodycd,
                   @Param("symbol")String symbol,
