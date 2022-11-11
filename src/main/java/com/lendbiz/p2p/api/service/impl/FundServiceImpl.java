@@ -236,10 +236,10 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             if(data.get("EC").equals("0")) {
                 ArrayList<Object> lst = (ArrayList<Object>) data.get("DT");
                 Map<String, Object> map = (Map<String, Object>) lst.get(0);
-                map.put("status", Constants.AFM_INFO_STATUS.get(map.get("status")));
                 map.put("status_code", map.get("status"));
-                map.put("status_vsd", Constants.AFM_STATUS_VSD.get(map.get("status_vsd")));
                 map.put("status_vsd_code", map.get("status_vsd"));
+                map.put("status", Constants.AFM_INFO_STATUS.get(map.get("status")));
+                map.put("status_vsd", Constants.AFM_STATUS_VSD.get(map.get("status_vsd")));
                 data.put("DT", map);
 
                 AFMAccountInfoEntity saveData = this.afmAccountInfoRepository.findByMobile(bodies.getMobile());
@@ -355,6 +355,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
                 for(Object o : lst){
                     Map<String, Object> map = (Map<String, Object>) o;
+                    map.put("status_code", map.get("status"));
                     map.put("status", Constants.AFM_DEAL_STATUS.get(map.get("status")));
                     lst.set(lst.indexOf(o), map);
                 }
@@ -399,6 +400,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
                 for(Object o : lst){
                     Map<String, Object> map = (Map<String, Object>) o;
+                    map.put("status_code", map.get("status"));
                     map.put("status", Constants.AFM_DEAL_STATUS.get(map.get("status")));
                     lst.set(lst.indexOf(o), map);
                 }
