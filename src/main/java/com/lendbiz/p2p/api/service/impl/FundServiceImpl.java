@@ -164,11 +164,9 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             if(data.get("EC").equals("0")) {
                 AFMAccInfo afmAccInfo = (AFMAccInfo) data.get("DT");
                 AFMAccountInfoEntity saveData = this.afmAccountInfoRepository.findByMobile(bodies.getMobile());
-                SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
-                String currentDate = formater.format(new Date());
                 if(saveData != null) {
                     saveData.setCustodycd(afmAccInfo.getCustodycd());
-                    saveData.setCreateDate(currentDate);
+                    saveData.setCreateDate(new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
                     this.afmAccountInfoRepository.save(saveData);
                 }
             }
@@ -246,7 +244,8 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                 if(saveData != null) {
                     saveData.setStatus(map.get("status").toString());
                     saveData.setStatusVsd(map.get("status_vsd").toString());
-
+                    saveData.setCustodycd(map.get("custodycd").toString());
+                    // saveData.setCreateDate(new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
                     this.afmAccountInfoRepository.save(saveData);
                 }
             }
@@ -338,7 +337,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                 SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
                 String currentDate = formater.format(new Date());
 
-                bodies.setFromdate(getData.getCreateDate());
+                bodies.setFromdate(getData.getCreateDate() != null ? getData.getCreateDate() : "31/12/2020");
                 bodies.setTodate(currentDate);
             }
 
@@ -383,7 +382,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                 SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
                 String currentDate = formater.format(new Date());
 
-                bodies.setFromdate(getData.getCreateDate());
+                bodies.setFromdate(getData.getCreateDate() != null ? getData.getCreateDate() : "31/12/2020");
                 bodies.setTodate(currentDate);
             }
 
