@@ -36,4 +36,9 @@ public interface AFMHisOrderRepository extends JpaRepository<AFMHisOrderEntity, 
                   @Param("status")String status,
                   @Param("orderqtty")String orderqtty,
                   @Param("orderid")String orderid);
+
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE AFM_HIS_ORDER SET tradingdate=?1, status=?2 WHERE custodycd=?3 AND symbol=?4 AND orderid=?5", nativeQuery = true)
+    int updateAfmHisOrder(String tradingdate, String status, String custodycd, String symbol, String orderid);
 }

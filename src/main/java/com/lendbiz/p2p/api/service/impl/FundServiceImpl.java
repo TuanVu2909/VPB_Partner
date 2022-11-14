@@ -351,12 +351,20 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             Map<String, Object> data = new HashMap<>((Map<? extends String, ?>) responseEntity.getBody());
             if(data.get("EC").equals("0")) {
                 ArrayList<Object> lst = (ArrayList<Object>) data.get("DT");
-
-                for(Object o : lst){
-                    Map<String, Object> map = (Map<String, Object>) o;
-                    map.put("status_code", map.get("status"));
-                    map.put("status", Constants.AFM_DEAL_STATUS.get(map.get("status")));
-                    lst.set(lst.indexOf(o), map);
+                if(lst.size() > 0){
+                    for(Object o : lst) {
+                        Map<String, Object> map = (Map<String, Object>) o;
+                        this.afmHisOrderRepository.updateAfmHisOrder(
+                                map.get("ngay_gd").toString(),
+                                Constants.AFM_DEAL_STATUS.get(map.get("status")).toString(),
+                                map.get("custodycd").toString(),
+                                map.get("symbol").toString(),
+                                map.get("orderid").toString()
+                        );
+                        map.put("status_code", map.get("status"));
+                        map.put("status", Constants.AFM_DEAL_STATUS.get(map.get("status")));
+                        lst.set(lst.indexOf(o), map);
+                    }
                 }
                 data.put("DT", lst);
             }
@@ -396,12 +404,22 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             Map<String, Object> data = new HashMap<>((Map<? extends String, ?>) responseEntity.getBody());
             if(data.get("EC").equals("0")) {
                 ArrayList<Object> lst = (ArrayList<Object>) data.get("DT");
+                if(lst.size() > 0){
+                    for(Object o : lst){
+                        Map<String, Object> map = (Map<String, Object>) o;
 
-                for(Object o : lst){
-                    Map<String, Object> map = (Map<String, Object>) o;
-                    map.put("status_code", map.get("status"));
-                    map.put("status", Constants.AFM_DEAL_STATUS.get(map.get("status")));
-                    lst.set(lst.indexOf(o), map);
+                        this.afmHisOrderRepository.updateAfmHisOrder(
+                                map.get("ngay_gd").toString(),
+                                Constants.AFM_DEAL_STATUS.get(map.get("status")).toString(),
+                                map.get("custodycd").toString(),
+                                map.get("symbol").toString(),
+                                map.get("orderid").toString()
+                        );
+
+                        map.put("status_code", map.get("status"));
+                        map.put("status", Constants.AFM_DEAL_STATUS.get(map.get("status")));
+                        lst.set(lst.indexOf(o), map);
+                    }
                 }
                 data.put("DT", lst);
             }
@@ -433,7 +451,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                         dt.get("symbol").toString(),
                         dt.get("srtype").toString(),
                         dt.get("exectype").toString(),
-                        dt.get("txdate").toString(),
+                        new SimpleDateFormat("HH:mm:ss").format(new Date()) +" "+ dt.get("txdate").toString(),
                         dt.get("status").toString(),
                         dt.get("amt").toString(),
                         dt.get("orderid").toString()
@@ -507,7 +525,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                         dt.get("symbol").toString(),
                         dt.get("srtype").toString(),
                         dt.get("exectype").toString(),
-                        dt.get("txdate").toString(),
+                        new SimpleDateFormat("HH:mm:ss").format(new Date()) +" "+ dt.get("txdate").toString(),
                         dt.get("status").toString(),
                         dt.get("qtty").toString(),
                         dt.get("orderid").toString()

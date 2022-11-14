@@ -5,4 +5,5 @@ import lombok.Data;
 @Data
 public class DealCCQRequest extends CCQInfoRequest{
     private String custodycd;
+    private String orderid;
 }
