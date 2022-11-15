@@ -10,7 +10,6 @@ import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.*;
 import com.lendbiz.p2p.api.request.amber.*;
 import com.lendbiz.p2p.api.response.BaseResponse;
-import com.lendbiz.p2p.api.response.amber.AFMAccInfo;
 import com.lendbiz.p2p.api.response.amber.AFMAccount;
 import com.lendbiz.p2p.api.response.amber.AFMAccStatus;
 import com.lendbiz.p2p.api.response.amber.AFMToken;
@@ -162,10 +161,11 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
             Map<String, Object> data = new HashMap<>((Map<? extends String, ?>) responseEntity.getBody());
             if(data.get("EC").equals("0")) {
-                AFMAccInfo afmAccInfo = (AFMAccInfo) data.get("DT");
+                ArrayList<Object> lst = (ArrayList<Object>) data.get("DT");
+                Map<String, Object> map = (Map<String, Object>) lst.get(0);
                 AFMAccountInfoEntity saveData = this.afmAccountInfoRepository.findByMobile(bodies.getMobile());
                 if(saveData != null) {
-                    saveData.setCustodycd(afmAccInfo.getCustodycd());
+                    saveData.setCustodycd(map.get("custodycd").toString());
                     saveData.setCreateDate(new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
                     this.afmAccountInfoRepository.save(saveData);
                 }
@@ -244,8 +244,6 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                 if(saveData != null) {
                     saveData.setStatus(map.get("status").toString());
                     saveData.setStatusVsd(map.get("status_vsd").toString());
-                    saveData.setCustodycd(map.get("custodycd").toString());
-                    // saveData.setCreateDate(new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
                     this.afmAccountInfoRepository.save(saveData);
                 }
             }
@@ -463,24 +461,25 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
         }
     };
 
-    // TODO 3.10 API đặt mua CCQ định kỳ SIP
+    // TODO 3.10 API đặt mua CCQ định kỳ SIP -> chưa mở
     @Override
     public ResponseEntity<?> buyPeriodicOrderCCQ(OrderCCQRequest bodies) {
-        try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
-            HttpEntity<String> request = new HttpEntity(bodies, headers);
-            ResponseEntity<?> responseEntity = restTemplate.exchange(
-                    Constants.AMBER_URL + "/siporder",
-                    HttpMethod.POST,
-                    request,
-                    Object.class,
-                    (Object) null);
-            return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, responseEntity.getBody()));
-        } catch (Exception e) {
-            throw new BusinessException("111", e.getMessage());
-        }
+        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, "Chưa mở tính năng này"));
+//        try {
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_JSON);
+//            headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
+//            HttpEntity<String> request = new HttpEntity(bodies, headers);
+//            ResponseEntity<?> responseEntity = restTemplate.exchange(
+//                    Constants.AMBER_URL + "/siporder",
+//                    HttpMethod.POST,
+//                    request,
+//                    Object.class,
+//                    (Object) null);
+//            return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, responseEntity.getBody()));
+//        } catch (Exception e) {
+//            throw new BusinessException("111", e.getMessage());
+//        }
     };
 
     // TODO 3.11 API thông tin dự kiến bán CCQ
