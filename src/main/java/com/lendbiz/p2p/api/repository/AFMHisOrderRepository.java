@@ -8,34 +8,22 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface AFMHisOrderRepository extends JpaRepository<AFMHisOrderEntity, String> {
-    AFMHisOrderEntity findByOrderid(String orderid);
 
     @Transactional
     @Modifying
-    @Query(value = " INSERT INTO AFM_HIS_ORDER (id,custodycd,symbol,srtype,exectype,txdate,status,orderamt,orderid)" +
-            " VALUES (seq_afmhisorder.nextval,:custodycd,:symbol,:srtype,:exectype,:txdate,:status,:orderamt,:orderid) ", nativeQuery = true)
-    void saveBuy(@Param("custodycd")String custodycd,
+    @Query(value = " INSERT INTO AFM_HIS_ORDER (id,custodycd,symbol,srtype,exectype,txdate,status,orderamt,orderqtty,orderid)" +
+            " VALUES (seq_afmhisorder.nextval,:custodycd,:symbol,:srtype,:exectype,:txdate,:status,:orderamt,:orderqtty,:orderid) ", nativeQuery = true)
+    void saveData(
+                 @Param("custodycd")String custodycd,
                  @Param("symbol")String symbol,
                  @Param("srtype")String srtype,
                  @Param("exectype")String exectype,
                  @Param("txdate")String txdate,
                  @Param("status")String status,
                  @Param("orderamt")String orderamt,
+                 @Param("orderqtty")String orderqtty,
                  @Param("orderid")String orderid
-                 );
-
-    @Transactional
-    @Modifying
-    @Query(value = " INSERT INTO AFM_HIS_ORDER (id,custodycd,symbol,srtype,exectype,txdate,status,orderqtty,orderid)" +
-            " VALUES (seq_afmhisorder.nextval,:custodycd,:symbol,:srtype,:exectype,:txdate,:status,:orderqtty,:orderid) ", nativeQuery = true)
-    void saveSell(@Param("custodycd")String custodycd,
-                  @Param("symbol")String symbol,
-                  @Param("srtype")String srtype,
-                  @Param("exectype")String exectype,
-                  @Param("txdate")String txdate,
-                  @Param("status")String status,
-                  @Param("orderqtty")String orderqtty,
-                  @Param("orderid")String orderid);
+    );
 
     @Transactional
     @Modifying

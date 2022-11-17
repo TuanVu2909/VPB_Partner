@@ -5,7 +5,6 @@ import com.lendbiz.p2p.api.entity.BankAccountEntity;
 import com.lendbiz.p2p.api.entity.CfMast;
 import com.lendbiz.p2p.api.entity.amber.AFMAccountInfoEntity;
 import com.lendbiz.p2p.api.entity.amber.AFMBankInfoEntity;
-import com.lendbiz.p2p.api.entity.amber.AFMHisOrderEntity;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.*;
 import com.lendbiz.p2p.api.request.amber.*;
@@ -436,19 +435,6 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                     Object.class,
                     (Object) null);
             Map<String, Object> data = new HashMap<>((Map<? extends String, ?>) responseEntity.getBody());
-            if(data.get("EC").equals("0")) {
-                Map<String, Object> dt = new HashMap<>((Map<? extends String, ?>) data.get("DT"));
-                this.afmHisOrderRepository.saveBuy(
-                        dt.get("custodycd").toString(),
-                        dt.get("symbol").toString(),
-                        dt.get("srtype").toString(),
-                        dt.get("exectype").toString(),
-                        new SimpleDateFormat("HH:mm:ss").format(new Date()) +" "+ dt.get("txdate").toString(),
-                        dt.get("status").toString(),
-                        dt.get("amt").toString(),
-                        dt.get("orderid").toString()
-                );
-            }
             return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, data));
         } catch (Exception e) {
             throw new BusinessException("111", e.getMessage());
@@ -511,19 +497,6 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                     Object.class,
                     (Object) null);
             Map<String, Object> data = new HashMap<>((Map<? extends String, ?>) responseEntity.getBody());
-            if(data.get("EC").equals("0")) {
-                Map<String, Object> dt = new HashMap<>((Map<? extends String, ?>) data.get("DT"));
-                this.afmHisOrderRepository.saveSell(
-                        dt.get("custodycd").toString(),
-                        dt.get("symbol").toString(),
-                        dt.get("srtype").toString(),
-                        dt.get("exectype").toString(),
-                        new SimpleDateFormat("HH:mm:ss").format(new Date()) +" "+ dt.get("txdate").toString(),
-                        dt.get("status").toString(),
-                        dt.get("qtty").toString(),
-                        dt.get("orderid").toString()
-                );
-            }
             return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, data));
         } catch (Exception e) {
             throw new BusinessException("111", e.getMessage());
@@ -547,12 +520,17 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             Map<String, Object> data = new HashMap<>((Map<? extends String, ?>) responseEntity.getBody());
             if(data.get("EC").equals("0")) {
                 Map<String, Object> dt = new HashMap<>((Map<? extends String, ?>) data.get("DT"));
-                AFMHisOrderEntity afmHisOrder = this.afmHisOrderRepository.findByOrderid(bodies.getOrderid());
-                if (afmHisOrder != null) {
-                    afmHisOrder.setTxdate(dt.get("txdate").toString());
-                    afmHisOrder.setStatus(dt.get("status").toString());
-                    this.afmHisOrderRepository.save(afmHisOrder);
-                }
+                this.afmHisOrderRepository.saveData(
+                        dt.get("custodycd").toString(),
+                        dt.get("symbol").toString(),
+                        dt.get("srtype").toString(),
+                        dt.get("exectype").toString(),
+                        dt.get("txdate").toString(),
+                        dt.get("status").toString(),
+                        dt.get("amt").toString(),
+                        dt.get("qtty").toString(),
+                        dt.get("orderid").toString()
+                );
             }
             return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, data));
         } catch (Exception e) {
