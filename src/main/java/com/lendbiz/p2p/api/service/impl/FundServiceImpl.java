@@ -71,7 +71,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
         afmAccount.setAddress(cfm.get(0).getAddress());
         afmAccount.setEmail(cfm.get(0).getEmail());
         afmAccount.setBankcode(afmBankInfoEntity != null ? afmBankInfoEntity.getBankCode() : "");
-        afmAccount.setCitybank("");
+        afmAccount.setCitybank("HN");
         afmAccount.setBankacc(bankAccountEntity != null ? bankAccountEntity.getBankAccount() : "");
 
         AFMAccountInfoEntity afmAcc = this.afmAccountInfoRepository.findByMobile(cfm.get(0).getMobileSms());
