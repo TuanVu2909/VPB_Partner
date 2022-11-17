@@ -56,6 +56,8 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "truy vấn không hợp lệ !"));
         }
 
+        AFMBankInfoEntity afmBankInfoEntity = fundAmberRepository.findByBankBin(bankAccountEntity != null ? bankAccountEntity.getBankCode() : "-1");
+
         AFMAccount afmAccount = new AFMAccount();
         afmAccount.setLanguage(cfm.get(0).getLanguage());
         afmAccount.setFullname(cfm.get(0).getFullName());
@@ -68,10 +70,9 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
         afmAccount.setMobile(cfm.get(0).getMobileSms());
         afmAccount.setAddress(cfm.get(0).getAddress());
         afmAccount.setEmail(cfm.get(0).getEmail());
-        afmAccount.setBankcode(bankAccountEntity != null ? bankAccountEntity.getBankCode() : "");
+        afmAccount.setBankcode(afmBankInfoEntity != null ? afmBankInfoEntity.getBankCode() : "");
         afmAccount.setCitybank("");
         afmAccount.setBankacc(bankAccountEntity != null ? bankAccountEntity.getBankAccount() : "");
-
 
         AFMAccountInfoEntity afmAcc = this.afmAccountInfoRepository.findByMobile(cfm.get(0).getMobileSms());
         if (afmAcc == null) {
@@ -85,14 +86,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
             this.afmAccountInfoRepository.save(afmA);
         }
-
         return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, afmAccount));
-    };
-
-    @Override
-    public ResponseEntity<?> getAFMBankInfo() {
-        List<AFMBankInfoEntity> data = fundAmberRepository.listBankInfo();
-        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, data));
     };
 
     @Override

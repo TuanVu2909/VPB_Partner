@@ -7,6 +7,5 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface FundAmberRepository extends JpaRepository<AFMBankInfoEntity, String> {
-    @Query(nativeQuery = true, value = "SELECT abi.* FROM AFM_BANK_INFO abi WHERE abi.BANK_BIN != '0'")
-    List<AFMBankInfoEntity> listBankInfo();
+    AFMBankInfoEntity findByBankBin(String bank_bin);
 }

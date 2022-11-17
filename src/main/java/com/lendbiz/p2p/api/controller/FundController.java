@@ -35,11 +35,6 @@ public class FundController {
 //        return new ResponseEntity<>("Message sent successfully", HttpStatus.OK);
 //    }
 
-    @GetMapping("afmbankinfo")
-    public ResponseEntity<?> getAFMBankInfo () {
-        return fundService.getAFMBankInfo();
-    }
-
     @GetMapping("bgaccountinfo")
     public ResponseEntity<?> getBGAccountInfo (
             @RequestHeader String mobile

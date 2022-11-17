@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 
 public interface FundService {
     ResponseEntity<?> getBGAccountInfo(String mobile);
-    ResponseEntity<?> getAFMBankInfo();
     // ================================
     void getTokenAFM();
     ResponseEntity<?> linkAccount(IdentityCustomerRequest identityCustomerRequest);
