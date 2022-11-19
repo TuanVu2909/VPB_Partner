@@ -21,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.text.SimpleDateFormat;
+import java.time.Year;
 import java.util.*;
 
 @Service
@@ -80,7 +81,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             afmA.setIdCode(afmAccount.getIdcode());
             afmA.setMobile(afmAccount.getMobile());
             afmA.setEmail(afmAccount.getEmail());
-            afmA.setBankBin(afmAccount.getBankcode());
+            afmA.setBankBin(afmBankInfoEntity.getBankCode());
             afmA.setBankAccount(afmAccount.getBankacc());
 
             this.afmAccountInfoRepository.save(afmA);
@@ -325,11 +326,8 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
 
             if(bodies.getFromdate() == null || "".equals(bodies.getFromdate()) && bodies.getTodate() == null || "".equals(bodies.getTodate())){
-                SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
-                String currentDate = formater.format(new Date());
-
-                bodies.setFromdate(getData.getCreateDate() != null ? getData.getCreateDate() : "31/12/2020");
-                bodies.setTodate(currentDate);
+                bodies.setFromdate(getData.getCreateDate());
+                bodies.setTodate(getToDate(getData.getCreateDate()));
             }
 
             HttpEntity<String> request = new HttpEntity(bodies, headers);
@@ -346,7 +344,6 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                     for(Object o : lst) {
                         Map<String, Object> map = (Map<String, Object>) o;
                         this.afmHisOrderRepository.updateAfmHisOrder(
-                                map.get("ngay_gd").toString(),
                                 Constants.AFM_DEAL_STATUS.get(map.get("status")).toString(),
                                 map.get("custodycd").toString(),
                                 map.get("symbol").toString(),
@@ -378,11 +375,8 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
 
             if(bodies.getFromdate() == null || "".equals(bodies.getFromdate()) && bodies.getTodate() == null || "".equals(bodies.getTodate())){
-                SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
-                String currentDate = formater.format(new Date());
-
-                bodies.setFromdate(getData.getCreateDate() != null ? getData.getCreateDate() : "31/12/2020");
-                bodies.setTodate(currentDate);
+                bodies.setFromdate(getData.getCreateDate());
+                bodies.setTodate(getToDate(getData.getCreateDate()));
             }
 
             HttpEntity<String> request = new HttpEntity(bodies, headers);
@@ -400,7 +394,6 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                         Map<String, Object> map = (Map<String, Object>) o;
 
                         this.afmHisOrderRepository.updateAfmHisOrder(
-                                map.get("ngay_gd").toString(),
                                 Constants.AFM_DEAL_STATUS.get(map.get("status")).toString(),
                                 map.get("custodycd").toString(),
                                 map.get("symbol").toString(),
@@ -526,6 +519,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                         dt.get("srtype").toString(),
                         dt.get("exectype").toString(),
                         dt.get("txdate").toString(),
+                        dt.get("tradingdate").toString(),
                         dt.get("status").toString(),
                         dt.get("amt").toString(),
                         dt.get("qtty").toString(),
@@ -557,4 +551,9 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             throw new BusinessException("111", e.getMessage());
         }
     };
+
+    private String getToDate(String createDate) {
+        int year = Year.now().getValue() + 1;
+        return createDate.substring(0, 6) + year;
+    }
 }

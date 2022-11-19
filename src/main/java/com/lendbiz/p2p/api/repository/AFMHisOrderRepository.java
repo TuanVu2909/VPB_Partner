@@ -11,14 +11,15 @@ public interface AFMHisOrderRepository extends JpaRepository<AFMHisOrderEntity, 
 
     @Transactional
     @Modifying
-    @Query(value = " INSERT INTO AFM_HIS_ORDER (id,custodycd,symbol,srtype,exectype,txdate,status,orderamt,orderqtty,orderid)" +
-            " VALUES (seq_afmhisorder.nextval,:custodycd,:symbol,:srtype,:exectype,:txdate,:status,:orderamt,:orderqtty,:orderid) ", nativeQuery = true)
+    @Query(value = " INSERT INTO AFM_HIS_ORDER (id,custodycd,symbol,srtype,exectype,txdate,tradingdate,status,orderamt,orderqtty,orderid)" +
+            " VALUES (seq_afmhisorder.nextval,:custodycd,:symbol,:srtype,:exectype,:txdate,:tradingdate,:status,:orderamt,:orderqtty,:orderid) ", nativeQuery = true)
     void saveData(
                  @Param("custodycd")String custodycd,
                  @Param("symbol")String symbol,
                  @Param("srtype")String srtype,
                  @Param("exectype")String exectype,
                  @Param("txdate")String txdate,
+                 @Param("tradingdate")String tradingdate,
                  @Param("status")String status,
                  @Param("orderamt")String orderamt,
                  @Param("orderqtty")String orderqtty,
@@ -27,6 +28,6 @@ public interface AFMHisOrderRepository extends JpaRepository<AFMHisOrderEntity, 
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE AFM_HIS_ORDER SET tradingdate=?1, status=?2 WHERE custodycd=?3 AND symbol=?4 AND orderid=?5", nativeQuery = true)
-    int updateAfmHisOrder(String tradingdate, String status, String custodycd, String symbol, String orderid);
+    @Query(value = "UPDATE AFM_HIS_ORDER SET status=?1 WHERE custodycd=?2 AND symbol=?3 AND orderid=?4", nativeQuery = true)
+    int updateAfmHisOrder(String status, String custodycd, String symbol, String orderid);
 }
