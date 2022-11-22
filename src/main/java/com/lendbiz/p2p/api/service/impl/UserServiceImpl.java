@@ -513,7 +513,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             String contractUrl = "https://bagang.lendbiz.vn/lendbiz/view/2/" + userPhone;
             String inviteFriendTitle = "30.000 VND";
             String inviteFriendCash = "20.000 VND";
-            String inviteFriendDescription = "Mời bạn bè sử dụng 3Gang để cùng nhận thưởng. Với mỗi tài khoản được mở thành công và phát sinh giao dịch, bạn sẽ nhận được 30.000 VND. Đặc biệt, người được giới thiệu cũng nhận thêm 20.000 VND vào tài khoản 3Gang ngay sau khi phát sinh giao dịch tích lũy có kỳ hạn đầu tiên.";
+            String inviteFriendDescription = "Mời bạn bè sử dụng 3Gang để cùng nhận thưởng. Với mỗi tài khoản được mở thành công, phát sinh giao dịch tích lũy có kỳ hạn và giữ tiền tích lũy tối thiểu 10 ngày. Bạn sẽ nhận được 30.000 VNĐ và người được giới thiệu cũng sẽ nhận được 20.000 VNĐ vào tài khoản 3Gang.";
             String[] xuTitle = "Bạn sẽ nhận được sau một tháng kể từ ngày phát sinh giao dịch:|Nhà đầu tư có số dư tích lũy có kỳ hạn sẽ được tặng xu vào ngày sinh nhật với điều kiện:"
                     .split("\\|");
             String[] xuDescription = "+ 1 xu với mỗi 100.000 VND tích lũy có kỳ hạn.|+ 2 xu với mỗi 100.000 VND tích lũy có kỳ hạn vào ngày sinh nhật của bạn.|+ Nhận 20 xu nếu số dư tích lũy có kỳ hạn từ 1.000.000 – 10.000.000 VND|+ Nhận 100 xu nếu số dư tích lũy có kỳ hạn từ 10.000.000 – 50.000.000 VND|+ Nhận 200 xu nếu số dư tích lũy có kỳ hạn trên 50.000.000 VND"

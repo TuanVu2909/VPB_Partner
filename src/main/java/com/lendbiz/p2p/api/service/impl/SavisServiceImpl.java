@@ -201,8 +201,12 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
             }
 
         } else {
-
-            Date nDate = Utils.convertStringToDateTechcombank(identity.getBirthDay());
+            Date nDate;
+            try {
+                nDate = Utils.convertStringToDateTechcombank(identity.getBirthDay());
+            } catch (Exception e) {
+                nDate = Utils.convertStringToDate3Gang(identity.getBirthDay());
+            }
 
             LocalDate startDate = nDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
