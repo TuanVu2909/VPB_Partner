@@ -39,6 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
@@ -140,19 +141,23 @@ import com.lendbiz.p2p.api.repository.UserInfoRepository;
 import com.lendbiz.p2p.api.repository.UserOnlineRepository;
 import com.lendbiz.p2p.api.repository.VerifyAccountRepository;
 import com.lendbiz.p2p.api.repository.Version3GangRepository;
+import com.lendbiz.p2p.api.request.ATRequest;
 import com.lendbiz.p2p.api.request.BearRequest;
 import com.lendbiz.p2p.api.request.CashOutRequest;
+import com.lendbiz.p2p.api.request.Converter;
 import com.lendbiz.p2p.api.request.CreatePolicyPartnerRq;
 import com.lendbiz.p2p.api.request.GmFundNavRequest;
 import com.lendbiz.p2p.api.request.InsuranceRequest;
 import com.lendbiz.p2p.api.request.LoginRequest;
 import com.lendbiz.p2p.api.request.PkgSumFundRequest;
 import com.lendbiz.p2p.api.request.ReqJoinRequest;
+import com.lendbiz.p2p.api.request.SendOTPRequest;
 import com.lendbiz.p2p.api.request.SetAccountPasswordRequest;
 import com.lendbiz.p2p.api.request.SignContractRequestV2;
 import com.lendbiz.p2p.api.request.UpdateAccountRequest;
 import com.lendbiz.p2p.api.request.UpdateBiometricRequest;
 import com.lendbiz.p2p.api.request.UpdateNotificationsRequest;
+import com.lendbiz.p2p.api.request.accesstrade.Item;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.response.PkgFundDetail;
 import com.lendbiz.p2p.api.response.PkgFundResponse;
@@ -295,13 +300,16 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     public ResponseEntity<?> checkVersion3GangOutdated(String version) {
         // List<Object> response;
-        Version3Gang verConfig = version3GangRepository.getVersion();
+        // Version3Gang verConfig = version3GangRepository.getVersion();
 
-        if (verConfig.getVersion().equalsIgnoreCase(version)) {
-            return response(toResult(verConfig.getVersion() + " " + version));
-        } else {
-            throw new BusinessException(ErrorCode.VERSION_OUTDATED, ErrorCode.VERSION_OUTDATED_DESCRIPTION);
-        }
+        // if (verConfig.getVersion().equalsIgnoreCase(version)) {
+        // return response(toResult(verConfig.getVersion() + " " + version));
+        // } else {
+        // throw new BusinessException(ErrorCode.VERSION_OUTDATED,
+        // ErrorCode.VERSION_OUTDATED_DESCRIPTION);
+        // }
+
+        return response(toResult("OK"));
 
     }
 
@@ -319,6 +327,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> login(LoginRequest loginRequest) {
+
         List<CfMast> lstCfmast = cfMastRepository.findByMobileSms(loginRequest.getUsername());
 
         String custId = getCustId(lstCfmast);
@@ -353,7 +362,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     reqJoinRequest.setMobile(loginRequest.getUsername());
                     reqJoinRequest.setDeviceId(loginRequest.getDeviceId());
                     registerRepository.register(reqJoinRequest.getMobile(),
-                            reqJoinRequest.getDeviceId(), custId);
+                            reqJoinRequest.getDeviceId(), custId, reqJoinRequest.getUtmSource(),
+                            reqJoinRequest.getUtmMedium());
                 }
 
                 if (!loginRequest.getDeviceId().equalsIgnoreCase(user.getDeviceId())) {
@@ -381,18 +391,31 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
                     if (userOnlineRepo.checkAccountMappingExist(custId) == 0) {
 
-                        return response(
-                                toResult(registerRepository.register(reqJoinRequest.getMobile(),
-                                        reqJoinRequest.getDeviceId(), custId)));
+                        RegisterEntity regEntity = registerRepository.register(reqJoinRequest.getMobile(),
+                                reqJoinRequest.getDeviceId(), custId, reqJoinRequest.getUtmSource(),
+                                reqJoinRequest.getUtmMedium());
+
+                        if (regEntity.getErrorCode() == 1) {
+                            throw new BusinessException(Constants.FAIL, regEntity.getCustId());
+                        } else {
+                            sendOtp(reqJoinRequest.getMobile(), regEntity.getCode(),
+                                    "3Gang moi quy khach nhap ma " + regEntity.getCode()
+                                            + " de dang ky tai khoan. Tran trong.");
+                            return response(toResult(regEntity));
+                        }
 
                     } else {
                         ResendOtpEntity resOtp = otpRepository.resendOtp(reqJoinRequest.getMobile(),
-                                custId);
+                                custId, reqJoinRequest.getUtmSource(),
+                                reqJoinRequest.getUtmMedium());
                         RegisterEntity regResendOtp = new RegisterEntity();
                         regResendOtp.setAccountStatus(cfmast.getStatus());
                         regResendOtp.setCode(resOtp.getCode());
                         regResendOtp.setCustId(custId);
                         regResendOtp.setErrorCode(0);
+                        sendOtp(reqJoinRequest.getMobile(),
+                                regResendOtp.getCode(), "3Gang moi quy khach nhap ma " + regResendOtp.getCode()
+                                        + " de dang ky tai khoan. Tran trong.");
                         return response(
                                 toResult(regResendOtp));
                     }
@@ -406,11 +429,15 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 // return response(toResult(response.get(0)));
                 // String custId = getCustId(lstCfmast);
                 RegisterEntity regEntity = registerRepository.register(reqJoinRequest.getMobile(),
-                        reqJoinRequest.getDeviceId(), custId);
+                        reqJoinRequest.getDeviceId(), custId, reqJoinRequest.getUtmSource(),
+                        reqJoinRequest.getUtmMedium());
 
                 if (regEntity.getErrorCode() == 1) {
                     throw new BusinessException(Constants.FAIL, regEntity.getCustId());
                 } else {
+                    sendOtp(reqJoinRequest.getMobile(), regEntity.getCode(),
+                            "3Gang moi quy khach nhap ma " + regEntity.getCode()
+                                    + " de dang ky tai khoan. Tran trong.");
                     return response(toResult(regEntity));
                 }
 
@@ -420,7 +447,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             // return response(toResult(response.get(0)));
             // String custId = getCustId(lstCfmast);
             RegisterEntity regEntity = registerRepository.register(reqJoinRequest.getMobile(),
-                    reqJoinRequest.getDeviceId(), custId);
+                    reqJoinRequest.getDeviceId(), custId, reqJoinRequest.getUtmSource(), reqJoinRequest.getUtmMedium());
 
             if (regEntity.getErrorCode() == 1) {
                 throw new BusinessException(Constants.FAIL, regEntity.getCustId());
@@ -437,10 +464,14 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         List<CfMast> lstCfmast = cfMastRepository.findByMobileSms(reqJoinRequest.getMobile());
         String custId = getCustId(lstCfmast);
         try {
-            ResendOtpEntity entity = otpRepository.resendOtp(reqJoinRequest.getMobile(), custId);
+            ResendOtpEntity entity = otpRepository.resendOtp(reqJoinRequest.getMobile(), custId, reqJoinRequest.getUtmSource(),
+            reqJoinRequest.getUtmMedium());
 
             if (entity.getCode().equals("0")) {
                 throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
+            } else {
+                sendOtp(reqJoinRequest.getMobile(), entity.getCode(), "3Gang moi quy khach nhap ma " + entity.getCode()
+                        + " de tao mat khau moi. Tran trong.");
             }
 
             return response(toResult(entity));
@@ -480,9 +511,9 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             String lbcName = "CONG TY CO PHAN LENDBIZ CAPITAL";
             String ruleAgreementUrl = "https://bagang.lendbiz.vn/lendbiz/view/1/" + userPhone;
             String contractUrl = "https://bagang.lendbiz.vn/lendbiz/view/2/" + userPhone;
-            String inviteFriendTitle = "40.000 VND";
-            String inviteFriendCash = "10.000 VND";
-            String inviteFriendDescription = "Mời bạn bè sử dụng 3Gang để cùng nhận thưởng. Với mỗi tài khoản được mở thành công và phát sinh giao dịch, bạn sẽ nhận được 40.000 VND. Đặc biệt, người được giới thiệu cũng nhận thêm 10.000 VND vào tài khoản 3Gang ngay sau khi phát sinh giao dịch tích lũy đầu tiên.";
+            String inviteFriendTitle = "30.000 VND";
+            String inviteFriendCash = "20.000 VND";
+            String inviteFriendDescription = "Mời bạn bè sử dụng 3Gang để cùng nhận thưởng. Với mỗi tài khoản được mở thành công và phát sinh giao dịch, bạn sẽ nhận được 30.000 VND. Đặc biệt, người được giới thiệu cũng nhận thêm 20.000 VND vào tài khoản 3Gang ngay sau khi phát sinh giao dịch tích lũy có kỳ hạn đầu tiên.";
             String[] xuTitle = "Bạn sẽ nhận được sau một tháng kể từ ngày phát sinh giao dịch:|Nhà đầu tư có số dư tích lũy có kỳ hạn sẽ được tặng xu vào ngày sinh nhật với điều kiện:"
                     .split("\\|");
             String[] xuDescription = "+ 1 xu với mỗi 100.000 VND tích lũy có kỳ hạn.|+ 2 xu với mỗi 100.000 VND tích lũy có kỳ hạn vào ngày sinh nhật của bạn.|+ Nhận 20 xu nếu số dư tích lũy có kỳ hạn từ 1.000.000 – 10.000.000 VND|+ Nhận 100 xu nếu số dư tích lũy có kỳ hạn từ 10.000.000 – 50.000.000 VND|+ Nhận 200 xu nếu số dư tích lũy có kỳ hạn trên 50.000.000 VND"
@@ -574,6 +605,13 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                             updateRequest.getCustId(), "", "", "3GANG", "Hợp đồng",
                             updateRequest.getCustId() + updateRequest.getIdCode());
                 }
+
+                // String trackingId =
+                // cfMastRepository.getAccessTradeTrackingId(updateRequest.getCustId());
+
+                // if (trackingId != null && !trackingId.isEmpty()) {
+                // accessTradePostBack(trackingId, updateRequest.getCustId());
+                // }
             }
 
         } catch (Exception e) {
@@ -1209,6 +1247,58 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         return jsonResponse;
     }
 
+    public String sendOtp(String mobile, String otp, String message) {
+        String jsonResponse = "";
+        try {
+            URL url = new URL("http://45.117.83.201:9095/otp/send-otp");
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setUseCaches(false);
+            con.setDoOutput(true);
+            con.setDoInput(true);
+
+            con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+            // con.setRequestProperty("token",
+            // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c24iOiJsYmNhcGl0YWwiLCJzaWQiOiJhYTgwMjIzNS04OTU1LTQ2ZDYtYmRmYi0xZDhjZmExYmYzODEiLCJvYnQiOiIiLCJvYmoiOiIiLCJuYmYiOjE2NjU5NzQyMDksImV4cCI6MTY2NTk3NzgwOSwiaWF0IjoxNjY1OTc0MjA5fQ.qqitpQMIkzk3OJJD-Mj5hYCwZ5cJ_EyVSWnsdE0BrjI");
+            con.setRequestMethod("POST");
+
+            SendOTPRequest request = new SendOTPRequest();
+            request.setMobile(mobile);
+            request.setCode(otp);
+            request.setMessage(message);
+            JSONObject jsonObject = new JSONObject(request);
+
+            logger.info("strJsonBody:\n" + jsonObject.toString());
+
+            byte[] sendBytes = jsonObject.toString().getBytes("UTF-8");
+            con.setFixedLengthStreamingMode(sendBytes.length);
+
+            OutputStream outputStream = con.getOutputStream();
+            outputStream.write(sendBytes);
+
+            int httpResponse = con.getResponseCode();
+            logger.info("httpResponse: " + httpResponse);
+
+            if (httpResponse >= HttpURLConnection.HTTP_OK && httpResponse < HttpURLConnection.HTTP_BAD_REQUEST) {
+                Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
+                jsonResponse = scanner.useDelimiter("/A").hasNext() ? scanner.next() : "";
+                scanner.close();
+            } else {
+                Scanner scanner = new Scanner(con.getErrorStream(), "UTF-8");
+                jsonResponse = scanner.useDelimiter("/A").hasNext() ? scanner.next() : "";
+                scanner.close();
+            }
+
+            logger.info("jsonResponse:\n" + jsonResponse);
+
+            logger.info("successfully!");
+
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+
+        return jsonResponse;
+    }
+
     @Override
     public ResponseEntity<?> withdraw(CashOutRequest request) {
         try {
@@ -1414,6 +1504,94 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         }
 
         return true;
+    }
+
+    public void accessTradePostBack(String trackingId, String custId) throws JsonProcessingException {
+        logger.info("---------Start call api accessTradePostBack---------------");
+        final String uri = Constants.ACCESS_TRADE_URI;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Token S6neiB7J1g6ojpmQz83EoFf83oxDHGbS");
+        Converter converter = new Converter();
+
+        ATRequest atRequest = new ATRequest();
+        atRequest.setConversionID(custId);
+        atRequest.setConversionResultID("30");
+
+        Item item = new Item();
+        item.setCategory("nap_tien");
+        item.setCategoryID("1");
+        item.setID(custId);
+        item.setName("nap_tien");
+        item.setPrice(0);
+        item.setQuantity(1);
+        item.setSku("sku");
+
+        Item[] itemList = new Item[1];
+        itemList[0] = item;
+
+        atRequest.setItems(itemList);
+        atRequest.setTrackingID(trackingId);
+        atRequest.setTransactionID(custId);
+        atRequest.setTransactionValue(0);
+        atRequest.setTransactionDiscount(0);
+        String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
+        atRequest.setTransactionTime(converter.parseDateTimeString((timeStamp)));
+
+        HttpEntity<String> request = new HttpEntity<String>(converter.toJsonString(atRequest), headers);
+
+        System.out.println(request.toString());
+
+        ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(uri, request, String.class);
+
+        // mapping response
+        if (responseEntityStr.getStatusCodeValue() == 200) {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root;
+            logger.info("[Call api accessTradePostBack otp] response : {}", responseEntityStr.getBody());
+            try {
+                root = mapper.readTree(responseEntityStr.getBody());
+                logger.info("accessTradePostBack response : {}", responseEntityStr.getBody());
+            } catch (JsonProcessingException e) {
+                logger.info("JsonProcessingException : {}", e.getMessage());
+            }
+
+        } else {
+            logger.info("Status <> 200 accessTradePostBack fail");
+        }
+    }
+
+    public void accessTradeUpdate(String custId, String status) throws JsonProcessingException {
+        logger.info("---------Start call api accessTradePostBack---------------");
+        final String uri = Constants.ACCESS_TRADE_UPDATE_URI;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Token S6neiB7J1g6ojpmQz83EoFf83oxDHGbS");
+    
+
+        String requestJson = "{\"transaction_id\":\"" + custId + "\",\"status\":\"" + status + "\",\"items\":[{\"id\":\""+ custId + "\",\"status\":" + Integer.parseInt(status) + "}]}";
+
+        HttpEntity<String> request = new HttpEntity<String>(requestJson, headers);
+
+        System.out.println(request.toString());
+
+        ResponseEntity<String> responseEntityStr = restTemplate.exchange(uri, HttpMethod.PUT, request, String.class);
+
+        // mapping response
+        if (responseEntityStr.getStatusCodeValue() == 200) {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root;
+            logger.info("[Call api accessTradePostBack otp] response : {}", responseEntityStr.getBody());
+            try {
+                root = mapper.readTree(responseEntityStr.getBody());
+                logger.info("accessTradePostBack response : {}", responseEntityStr.getBody());
+            } catch (JsonProcessingException e) {
+                logger.info("JsonProcessingException : {}", e.getMessage());
+            }
+
+        } else {
+            logger.info("Status <> 200 accessTradePostBack fail" );
+        }
     }
 
 }
