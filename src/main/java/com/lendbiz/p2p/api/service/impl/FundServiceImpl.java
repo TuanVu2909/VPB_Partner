@@ -81,7 +81,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             afmA.setIdCode(afmAccount.getIdcode());
             afmA.setMobile(afmAccount.getMobile());
             afmA.setEmail(afmAccount.getEmail());
-            afmA.setBankBin(afmBankInfoEntity.getBankCode());
+            afmA.setBankBin(bankAccountEntity.getBankCode());
             afmA.setBankAccount(afmAccount.getBankacc());
 
             this.afmAccountInfoRepository.save(afmA);
@@ -354,6 +354,14 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                         lst.set(lst.indexOf(o), map);
                     }
                 }
+                Map<String, Object> afm = new HashMap<>();
+                afm.put("bankcode", Constants.BANKCODE);
+                afm.put("bankname", Constants.BANKNAME);
+                afm.put("bankacc", Constants.BANKACC);
+                afm.put("bankreceivename", Constants.BANKRECEIVENAME);
+                afm.put("bankbranch", Constants.BANKBRANCH);
+
+                data.put("AFM", afm);
                 data.put("DT", lst);
             }
             return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, data));

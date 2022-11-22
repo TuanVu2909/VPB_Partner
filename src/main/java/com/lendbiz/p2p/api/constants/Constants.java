@@ -139,6 +139,12 @@ public class Constants {
 	public static final String USERNAME = "LBC";
 	public static final String PASSWORD = "123456";
 
+	public static final String BANKCODE = "VCB";
+	public static final String BANKNAME = "Ngân hàng TMCP Ngoại Thương Việt Nam";
+	public static final String BANKACC = "1090000004";
+	public static final String BANKRECEIVENAME = "Quỹ Đầu tư Trái Phiếu An toàn Amber";
+	public static final String BANKBRANCH = "Hội Sở";
+
 	public static final Map<String, Object> AFM_INFO_STATUS = new HashMap<>();
 	static {
 		AFM_INFO_STATUS.put("P", "Chờ duyệt");
