@@ -1302,6 +1302,13 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     public ResponseEntity<?> withdraw(CashOutRequest request) {
         try {
+            
+            BankAccountEntity bank =  bankAccountRepository.getUserBankAccount(request.getCustId());
+
+            if (bank.getBankAcName() == null || bank.getBankAccount() == null || bank.getBankCode() == null) {
+                throw new BusinessException(ErrorCode.UNKNOWN_ERROR, "Liên kết tài khoản ngân hàng!");
+            }
+            
             JSONObject jsonObject = new JSONObject(request);
             producerMessage.sendCashOu3Gang(jsonObject.toString());
             return response(toResult("OK"));

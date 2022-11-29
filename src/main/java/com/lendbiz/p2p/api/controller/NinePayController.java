@@ -228,10 +228,10 @@ public class NinePayController {
 
     @Autowired
     private LoggingService loggingGetRequest;
-    
+
     @PostMapping("/9pay/ipn")
     public ResponseEntity<?> ipn(HttpServletRequest httpServletRequest,
-            IpnRequest request) throws UnsupportedEncodingException {
+            @RequestBody IpnRequest request) throws UnsupportedEncodingException {
 
         log.info(request.getResult());
         log.info(request.getChecksum());
