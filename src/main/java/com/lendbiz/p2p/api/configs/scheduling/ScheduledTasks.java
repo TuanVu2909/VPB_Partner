@@ -1,5 +1,7 @@
 package com.lendbiz.p2p.api.configs.scheduling;
 
+import com.lendbiz.p2p.api.service.FundService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.slf4j.Logger;
@@ -10,17 +12,19 @@ import org.springframework.scheduling.annotation.Scheduled;
 @EnableScheduling
 public class ScheduledTasks {
     private static final Logger logger = LoggerFactory.getLogger(ScheduledTasks.class);
-//    2s gửi 1 tin nhắn theo giờ VN
-//    @Scheduled(zone = "GMT+7", fixedRate = 2000)
-//    public void scheduleTasksendEmail1() {
+    @Autowired
+    private FundService fundService;
+
+    // 1s executive below action with time zone VN
+//    @Scheduled(zone = "GMT+7", fixedRate = 1000)
+//    public void scheduleTask() {
 //        // call send email method here
-//        logger.info("Send email every 2s");
+//        logger.info(!!!!!!!!!!!!!!!!!!!);
 //    }
-    // 15h45'00s hàng ngày gửi 1 tin nhắn theo giờ VN
-//    @Scheduled(zone = "GMT+7", cron = "00 45 15 * * *")
-//    public void scheduleTasksendEmail2() {
-//        // call send email method here
-//        logger.info("Send email every 15h45' dally");
-//        return;
-//    }
+    // 5 phút một lần
+    @Scheduled(zone = "GMT+7", cron = "0 */1 * ? * *")
+    public void scheduleTaskGetToken() {
+        fundService.getTokenAFM();
+        return;
+    }
 }
