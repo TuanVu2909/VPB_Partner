@@ -3,7 +3,11 @@ package com.lendbiz.p2p.api.service.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -190,13 +194,28 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
 
         }
 
-
+        // type 3: mat sau giay to
         if (type == 3) {
             if (identity.getType() != 1 && identity.getType() != 3 && identity.getType() != 5) {
                 throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_IDENTITY_DESCRIPTION);
             }
 
         } else {
+            Date nDate;
+            try {
+                nDate = Utils.convertStringToDateTechcombank(identity.getBirthDay());
+            } catch (Exception e) {
+                nDate = Utils.convertStringToDate3Gang(identity.getBirthDay());
+            }
+
+            LocalDate startDate = nDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+            Period yearOld = Period.between(startDate, LocalDate.now());
+
+            if (yearOld.getYears() < 18) {
+                throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_OLD_INVALID);
+            }
+
             if (identity.getType() == 1 || identity.getType() == 3 || identity.getType() == 52
                     || identity.getType() == 53 || identity.getType() == 5 || identity.getType() == 6) {
                 throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_IDENTITY_DESCRIPTION);

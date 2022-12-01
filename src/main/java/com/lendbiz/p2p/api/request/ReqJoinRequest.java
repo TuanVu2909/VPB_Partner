@@ -15,5 +15,7 @@ public class ReqJoinRequest {
 
     private String mobile;
     private String deviceId;
+    private String utmSource;
+    private String utmMedium;
 
 }

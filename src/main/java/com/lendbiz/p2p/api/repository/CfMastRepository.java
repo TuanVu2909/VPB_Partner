@@ -8,6 +8,7 @@ import com.lendbiz.p2p.api.entity.CfMast;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,4 +42,10 @@ public interface CfMastRepository extends CrudRepository<CfMast, String> {
 	@Modifying
 	@Query(value = "update cfmast set status = 'A' where custid = ?1", nativeQuery = true)
 	void activeAccount(String custId);
+
+	@Query(value = "SELECT a.publicsherid FROM cfmast c, accesstrade a WHERE c.custid = a.custid and c.mobilesms = a.id and c.custid = ?1", nativeQuery = true)
+	String getAccessTradeTrackingId(String custId);
+
+	@Query(value = "SELECT count(*) FROM cfmast c, acaesstrade a WHERE c.custid = a.custid and c.mobilesms = a.id and c.custid = ?1", nativeQuery = true)
+	int countAccessTradeAccount(String custId);
 }

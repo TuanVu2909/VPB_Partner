@@ -59,9 +59,9 @@ public class Constants {
 	public static final String GET_OTP_URl_2 = "https://api-m.digital-id.vn/hmac-otp/v1/generation";
 	public static final String BASIC_AUTHEN_STRING = "Od7JOvkfEnhqswRfFW607TVBYS8a:TkIosoGyd8uPgeiB8Clh_Ec31pYa";
 	public static final String GET_TOKEN_URL = "https://api-m.digital-id.vn/token";
-	public static final String ESIGN_PREDICT = "https://uat-gateway.digital-id.vn/ocr-prod/1.0.1/call/predict";
-	public static final String ESIGN_FACE_GENERAL = "https://uat-gateway.digital-id.vn/ocr-prod/1.0.1/call/face_general";
-	public static final String ESIGN_REGISTER = "https://uat-gateway.digital-id.vn/ekyc-prod/1.0.1/call/register_user_face";
+	public static final String ESIGN_PREDICT = "https://sandbox-apim.savis.vn/ocr-prod/1.0.1/call/predict";
+	public static final String ESIGN_FACE_GENERAL = "https://sandbox-apim.savis.vn/ocr-prod/1.0.1/call/face_general";
+	public static final String ESIGN_REGISTER = "https://sandbox-apim.savis.vn/ekyc-prod/1.0.1/call/register_user_face";
 	public static final String GET_OTP = "https://api-m.digital-id.vn/service-otp/v1/otp/generate";
 	public static final String VALIDATE_OTP = "https://api-m.digital-id.vn/service-otp/v1/otp/validate";
 	public static final String SIGN_PDF = "https://api-m.digital-id.vn/signing/1.0/pdf";
@@ -96,34 +96,44 @@ public class Constants {
 	// metadate api use register face
 	public static final String METADATA = "{\"source\":\"24a00f5d-e625-4bc4-8384-c906848c03f3\"}";
 	// 9pay api card
-	public static final String NINE_PAY_PRODUCTS = "https://stg-api-console.9pay.mobi/service/wh/products";
-	public static final String NINE_PAY_CARD = "https://stg-api-console.9pay.mobi/service/wh/order/card";
-	public static final String NINE_PAY_INFO_TRANS = "https://stg-api-console.9pay.mobi/service/wh/order/check-info";
-	public static final String NINE_PAY_BALANCE = "https://stg-api-console.9pay.mobi/service/account/balance";
-
-	public static final String SIGN_IMAGE_DEFAULT = "default_docs\\success.png";
+	public static final String NINE_PAY_PRODUCTS = "https://api-console.9pay.vn/service/wh/products";
+	public static final String NINE_PAY_CARD = "https://api-console.9pay.vn/service/wh/order/card";
+	public static final String NINE_PAY_INFO_TRANS = "https://api-console.9pay.vn/service/wh/order/check-info";
+	public static final String NINE_PAY_BALANCE = "https://api-console.9pay.vn/service/account/balance";
+	public static final String SIGN_IMAGE_DEFAULT = "images/condau.jpg";
 	public static final String THRESHOLD = "0.75";
 
 	// MBBANK
 	public static final String HMAC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgcaKR79S/g+e+kCvGBAa957NCgAnuS4IEIUcAgoDfOSfTRaXeMHYnCD6b8apuoxAF7rA0/oLXJM0flhztNSpzW8oHVBksO5wZlFnT0U5eftfWixxoZHRJHPIQlcoXHAPt6oUiKqIpAnMdYP269gPZDiW75k9D6FfxosymXqVWO9F6yUbYU/REbQl8sn5H04q9IKeIW5MOtmMFGrGxZKecjW+a/Km3FIPfl4INM01rOJRWTCCfq0GimaYdy9JYcaNxM1QBqmy1UdyxAE9MKN4QsQqL3xLZDxt1ykcsLgF1BaF3OT7s4btZp88y0AuJ7LObVxS1wHevatvJl5f5DLq0QIDAQAB";
-
-	public static final String MB_TRANSFER = "https://api-sandbox.mbbank.com.vn/ms/funds-partner/transfer-fund/v1.0/make-transfer-partner";
-	public static final String MB_GET_TOKEN_URL = "https://api-sandbox.mbbank.com.vn/oauth2/v1/token";
-	public static final String MB_GET_NAME_URL = "https://api-sandbox.mbbank.com.vn/ms/onbehalfpayment/v1.0/onbehalfpayment/v1.0/account/credit/name";
-	public static final String MB_CONVERT_ID_CARD = "https://mbcardtest.mbbank.com.vn:8446/mbcardgw/internet/cardinfo/v1_0/generatetoken";
+	public static final String MB_TRANSFER = "https://api-public.mbbank.com.vn/ms/funds-partner/transfer-fund/v1.0/make-transfer-partner";
+	public static final String MB_GET_TOKEN_URL = "https://api-public.mbbank.com.vn/oauth2/v1/token";
+	public static final String MB_GET_NAME_URL = "https://api-public.mbbank.com.vn/ms/onbehalfpayment/v1.0/onbehalfpayment/v1.0/account/credit/name";
+	public static final String MB_CONVERT_ID_CARD = "https://mbcard.mbbank.com.vn:8446/mbcardgw/internet/cardinfo/v1_0/generatetoken";
 	public static final String MBBANK_BASIC_AUTHEN_STRING = "CNyagnuEbAZuUiI6qNFmFDYGPK14cNdt:iWpKiQT787zW2TMq";
 
 	public interface KAFKA {
-		public static final String TOPIC_LOGS_MB = "topic_mb_logs_test";
-		public static final String GROUP_MB_ID = "group_mb_id_test";
-
-		public static final String TOPIC_LOGS_3GANG = "topic_3gang_logs_test";
-		public static final String GROUP_3GANG_ID = "group_3gang_id_test";
-
-		public static final String TOPIC_CASH_OUT_3GANG = "topic_cash_out_new_test";
-		public static final String GROUP_CASH_OUT_3GANG_ID = "group_cash_out_id_new_test";
-
-		public static final String TOPIC_SAVE_ID_CARD = "topic_save_id_card_test";
-		public static final String GROUP_SAVE_ID_CARD = "group_save_id_card_test";
+		public static final String TOPIC_LOGS_MB = "topic_mb_logs";
+		public static final String GROUP_MB_ID = "group_mb_id";
+		public static final String TOPIC_LOGS_3GANG = "topic_3gang_logs";
+		public static final String GROUP_3GANG_ID = "group_3gang_id";
+		public static final String TOPIC_CASH_OUT_3GANG = "topic_cash_out_new";
+		public static final String GROUP_CASH_OUT_3GANG_ID = "group_cash_out_id_new";
+		public static final String TOPIC_SAVE_ID_CARD = "topic_save_id_card";
+		public static final String GROUP_SAVE_ID_CARD = "group_save_id_card";
+		public static final String TOPIC_3GANG_PARTITIONS = "3gang-partitions-log";
+		public static final String GROUP_3GANG_PARTITIONS = "group_3gang_partitions";
 	}
+
+	// FUND AMBER
+	// private final String AMBER_URL = "http://10.255.241.142:1351"; // link PROD
+	public static final String AMBER_URL = "http://222.252.8.194:21351"; // link UAT
+	public static final String GRANT_TYPE = "password";
+	public static final String CLIENT_ID = "FUNDAGENT";
+	public static final String CLIENT_SECRET = "FUNDAGENT2022";
+	public static final String USERNAME = "LBC";
+	public static final String PASSWORD = "123456";
+
+
+	public static final String ACCESS_TRADE_URI = "https://api.accesstrade.vn/v1/postbacks/conversions";
+	public static final String ACCESS_TRADE_UPDATE_URI = "https://api.accesstrade.vn/v1/postbacks/conversions";
 }

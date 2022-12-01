@@ -12,6 +12,7 @@ import com.lendbiz.p2p.api.constants.JsonMapper;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.producer.ProducerMessage;
 import com.lendbiz.p2p.api.repository.InsurancePriceRepository;
+import com.lendbiz.p2p.api.request.AddInfoList;
 import com.lendbiz.p2p.api.request.ConvertIdCardRequest;
 import com.lendbiz.p2p.api.request.GetBankNameRequest;
 import com.lendbiz.p2p.api.request.MbTransHistoryRequest;
@@ -263,7 +264,11 @@ public class MbbankTransferServiceImpl extends BaseResponse<MbbankTransferServic
             requestLogs.setChannel("channel");
             requestLogs.setChannelName("channelName");
             requestLogs.setReconcileStatus(0);
-            requestLogs.setAddInfo(transferRequest.getAddInfoList()[0].getValue());
+            // AddInfoList addInfo = new AddInfoList("requestId", "type", "1");
+            // AddInfoList[] lstAddInfo = new AddInfoList[] {
+            //         addInfo
+            // };
+            requestLogs.setAddInfo("");
             requestLogs.setRequestType(0);
             jsonObjectLogs = new JSONObject(requestLogs);
             // Send request log to kafka server

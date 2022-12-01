@@ -28,7 +28,6 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Bean
 	public RestTemplate restTemplate() {
-
 		SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
 		factory.setConnectTimeout(60000);
 		factory.setReadTimeout(60000);
@@ -50,11 +49,8 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
        registry.addResourceHandler("swagger-ui.html")
-            .addResourceLocations("classpath:/META-INF/resources/");  
+            .addResourceLocations("classpath:/META-INF/resources/");
        registry.addResourceHandler("/webjars/**")
             .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
-
-	
-
 }

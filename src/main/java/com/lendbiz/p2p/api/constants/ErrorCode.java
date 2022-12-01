@@ -45,6 +45,8 @@ public class ErrorCode {
     // public static final String FAILED_SELFIE_DESCRIPTION = "Anh selfie khong khop
     // voi CMND/CCCD";
 
+    public static final String FAILED_OLD_INVALID = "Bạn chưa đủ 18 tuổi!";
+
     public static final String NOT_MATCHING_TYPE = "14";
     public static final String NOT_MATCHING_CMND_DESCRIPTION = "Bạn chọn sai loại giấy tờ tuỳ thân. Hãy chụp loại giấy tờ là CHỨNG MINH NHÂN DÂN!";
     public static final String NOT_MATCHING_CCCD_DESCRIPTION = "Bạn chọn sai loại giấy tờ tuỳ thân. Hãy chụp loại giấy tờ là CĂN CƯỚC CÔNG DÂN!";
