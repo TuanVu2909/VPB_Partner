@@ -112,11 +112,11 @@ public class Card9PayServiceImpl extends BaseResponse<NinePayServiceImpl> {
                 tran.setPayDate(n.getPayDate());
 
                 tran.setPrice(n.getPrice());
-                tran.setService_name(n.getService_name());
-                tran.setTransactionId(n.getTransId());
-                tran.setProduct_des(n.getProduct_des());
-                tran.setProduct_name(n.getProduct_name());
-                tran.setCategory_id(n.getCategory_id());
+                tran.setService_name(n.getService_name()!= null ? n.getService_name() : "");
+                tran.setTransactionId(n.getTransId()!= null ? n.getTransId() : "");
+                tran.setProduct_des(n.getProduct_des() != null ? n.getProduct_des() : "");
+                tran.setProduct_name(n.getProduct_name()!= null ? n.getProduct_name() : "");
+                tran.setCategory_id(n.getCategory_id()!= null ? n.getCategory_id() : "");
                 arrayList.add(tran);
             } catch (JsonProcessingException | UnsupportedEncodingException e) {
                 e.printStackTrace();
