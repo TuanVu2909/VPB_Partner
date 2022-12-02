@@ -37,6 +37,7 @@ import com.lendbiz.p2p.api.entity.AccountInput;
 import com.lendbiz.p2p.api.entity.GetEndRateRequest;
 import com.lendbiz.p2p.api.entity.User3GEntity;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
+import com.lendbiz.p2p.api.entity.WithdrawBearRequest;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.model.Mail;
 import com.lendbiz.p2p.api.model.MyUserDetails;
@@ -203,6 +204,15 @@ public class UserController {
             throws BusinessException {
         log.info("[" + requestId + "] << create bear >>");
         return userService.createBear(accountInput);
+    }
+
+    @PostMapping("/withdraw-bear")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> wiBear(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId, @RequestBody WithdrawBearRequest request)
+            throws BusinessException {
+        log.info("[" + requestId + "] << withdraw bear >>");
+        return userService.withdrawBear(request);
     }
 
     @PostMapping("/end-bear")

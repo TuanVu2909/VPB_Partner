@@ -98,6 +98,7 @@ import com.lendbiz.p2p.api.entity.UserInfoEntity;
 import com.lendbiz.p2p.api.entity.UserOnline;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.entity.Version3Gang;
+import com.lendbiz.p2p.api.entity.WithdrawBearRequest;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.producer.ProducerMessage;
 import com.lendbiz.p2p.api.repository.AccountAssetRepository;
@@ -650,6 +651,21 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             }
             return response(toResult(notify));
         } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> withdrawBear(WithdrawBearRequest request) {
+        try {
+            NotifyEntity notify = notifyRepo.withdrawBear(request.getCustId(), request.getAmt(),
+            request.getDocNo());
+            if (!notify.getPStatus().equals("01")) {
+                throw new BusinessException(notify.getPStatus(), notify.getDes());
+            }
+            return response(toResult(notify));
+        } catch (Exception e) {
+            logger.info(e.getMessage());
             throw new BusinessException(Constants.FAIL, e.getMessage());
         }
     }
