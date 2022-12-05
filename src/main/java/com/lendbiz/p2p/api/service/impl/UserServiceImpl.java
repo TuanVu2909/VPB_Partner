@@ -32,10 +32,14 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.UUID;
 
+import com.lendbiz.p2p.api.service.VNPTService;
+import lombok.SneakyThrows;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -235,6 +239,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     UserInfoRepository userInfoRepository;
 
+    @Qualifier("bankAccountRepository")
     @Autowired
     BankAccountRepository bankAccountRepository;
 
@@ -244,6 +249,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     UpdateAccountRepository accountRepository;
 
+    @Qualifier("cfMastRepository")
     @Autowired
     CfMastRepository cfMastRepository;
 
@@ -261,6 +267,39 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Autowired
     private ProducerMessage producerMessage;
+
+    @Autowired
+    private VNPTService vnptService;
+
+    @SneakyThrows
+    @Override
+    public ResponseEntity<?> ekyc(MultipartFile imgFrontId, MultipartFile imgBackId, MultipartFile imgSelfie, String mobile){
+        String hashImgFrontId = vnptService.uploadImage(imgFrontId, "imgFrontId", "imgFrontId");
+        String hashImgBackId = vnptService.uploadImage(imgBackId, "imgBackId", "imgBackId");
+        String hashImgSelfie = vnptService.uploadImage(imgSelfie, "imgSelfie", "imgSelfie");
+
+        logger.info("============= Start eKYC (VNPT) =============");
+
+        if(hashImgFrontId == null && hashImgBackId == null && hashImgSelfie == null){
+            return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Không lấy được mã hash của hình ảnh"));
+        }
+
+        JsonNode resFaceCompare = vnptService.compareImage(hashImgFrontId, hashImgSelfie, mobile);
+
+        if(resFaceCompare.get("statusCode").asInt() == 400){
+            return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Không tìm thấy khuôn mặt"));
+        }
+
+        if(resFaceCompare.get("statusCode").asInt() == 200 && resFaceCompare.get("object").get("multiple_faces").asText().equals("true")){
+            return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Ảnh có nhiều hơn 1 khuôn mặt"));
+        }
+
+        if(resFaceCompare.get("statusCode").asInt() == 200 && resFaceCompare.get("object").get("msg").asText().equals("NOMATCH")){
+            return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Khuôn mặt không khớp"));
+        }
+
+        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, resFaceCompare.get("object").get("result")));
+    }
 
     public String getCustId(List<CfMast> lstCfmast) {
         List<CfMast> newLstCfmast = new ArrayList<>();
@@ -289,6 +328,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         return custId;
     }
 
+    @Qualifier("version3GangRepository")
     @Autowired
     Version3GangRepository version3GangRepository;
 
@@ -1294,7 +1334,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                             try {
                                 data = root.get("data").binaryValue();
 
-                                org.apache.commons.io.FileUtils.writeByteArrayToFile(
+                                FileUtils.writeByteArrayToFile(
                                         new File("contracts/sign/" + cfMast.getMobileSms() + "/hopdong_3gang.pdf"),
                                         data);
 
@@ -1415,5 +1455,4 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
         return true;
     }
-
 }

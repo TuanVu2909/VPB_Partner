@@ -30,6 +30,7 @@ import com.lendbiz.p2p.api.response.OtpResponseNew;
 import com.lendbiz.p2p.api.response.SignPdfResponse;
 import com.lendbiz.p2p.api.response.UserRegisterResponse;
 import com.lendbiz.p2p.api.service.SavisService;
+import com.lendbiz.p2p.api.service.base.BaseService;
 import com.lendbiz.p2p.api.utils.StringUtil;
 
 import com.lendbiz.p2p.api.utils.Utils;
@@ -38,6 +39,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.text.WordUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -60,6 +62,7 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
 
     private final String isSelfie = "TRUE";
 
+    @Qualifier("cfMastRepository")
     @Autowired
     CfMastRepository cfMastRepo;
     @Autowired
@@ -117,7 +120,7 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
         headers.set(Constants.ESIGN_API_KEY, Constants.ESIGN_VALUE_HEADER);
 
         MultiValueMap<String, Object> multiValueMap = new LinkedMultiValueMap<>();
-        ByteArrayResource contentsAsResource = convertFile(file);
+        ByteArrayResource contentsAsResource = BaseService.convertFile(file);
         multiValueMap.add("input", contentsAsResource);
 
         HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(multiValueMap, headers);
@@ -321,21 +324,6 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
 
     }
 
-    private ByteArrayResource convertFile(MultipartFile sourceImage) {
-        ByteArrayResource resource = null;
-        try {
-            resource = new ByteArrayResource(sourceImage.getBytes()) {
-                @Override
-                public String getFilename() {
-                    return sourceImage.getOriginalFilename();
-                }
-            };
-        } catch (IOException e) {
-            throw new BusinessException(ErrorCode.FAILED_TO_FILE, ErrorCode.FAILED_TO_FILE_DESCRIPTION);
-        }
-
-        return resource;
-    }
 
     @Override
     public ResponseEntity<?> callCheckSelfie(MultipartFile frontId, MultipartFile selfie, String mobile) {
@@ -350,9 +338,9 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
         headers.set(Constants.ESIGN_API_KEY, Constants.ESIGN_VALUE_HEADER);
 
         MultiValueMap<String, Object> multiValueMap = new LinkedMultiValueMap<>();
-        ByteArrayResource imageCard = convertFile(frontId);
+        ByteArrayResource imageCard = BaseService.convertFile(frontId);
         multiValueMap.add("image_card", imageCard);
-        ByteArrayResource imageGeneral = convertFile(selfie);
+        ByteArrayResource imageGeneral = BaseService.convertFile(selfie);
         multiValueMap.add("image_general", imageGeneral);
         multiValueMap.add("threshold", Constants.THRESHOLD);
 
@@ -485,7 +473,7 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
         headers.set(Constants.ESIGN_API_KEY, Constants.ESIGN_VALUE_HEADER);
 
         MultiValueMap<String, Object> multiValueMap = new LinkedMultiValueMap<>();
-        ByteArrayResource imageCard = convertFile(frontId);
+        ByteArrayResource imageCard = BaseService.convertFile(frontId);
         multiValueMap.add("image", imageCard);
         multiValueMap.add("metadata", Constants.METADATA);
         // String str = Utils.generateId(8);
@@ -542,7 +530,7 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
         headers.set(Constants.OTP_API_KEY, Constants.OTP_VALUE_HEADER);
 
         MultiValueMap<String, Object> multiValueMap = new LinkedMultiValueMap<>();
-        ByteArrayResource imageCard = convertFile(contract);
+        ByteArrayResource imageCard = BaseService.convertFile(contract);
         multiValueMap.add("fileSign", imageCard);
         multiValueMap.add("slotLabel", Constants.SLOT_LABEL);
         multiValueMap.add("userPin", Constants.USER_PIN);
@@ -572,7 +560,7 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
             FileInputStream input = new FileInputStream(signImage);
             MultipartFile imgMultiPartFile = new MockMultipartFile("sign_pdf", signImage.getName(), "text/plain",
                     IOUtils.toByteArray(input));
-            ByteArrayResource signature = convertFile(imgMultiPartFile);
+            ByteArrayResource signature = BaseService.convertFile(imgMultiPartFile);
             multiValueMap.add("image", signature);
         } catch (IOException e) {
             e.printStackTrace();
@@ -616,7 +604,7 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
         headers.add("X-WSO2-CLIENT-CERTIFICATE", Constants.X_WSO2);
 
         MultiValueMap<String, Object> multiValueMap = new LinkedMultiValueMap<>();
-        ByteArrayResource imageCard = convertFile(contract);
+        ByteArrayResource imageCard = BaseService.convertFile(contract);
         multiValueMap.add("fileSign", imageCard);
         multiValueMap.add("slotLabel",
                 signRequest.getIsLBC().equalsIgnoreCase("lbc") ? Constants.LBC_SLOT_LABEL : Constants.SLOT_LABEL);
@@ -650,7 +638,7 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
                 MultipartFile imgMultiPartFile = new MockMultipartFile("sign_pdf",
                         signImage.getName(), "text/plain",
                         IOUtils.toByteArray(input));
-                ByteArrayResource signature = convertFile(imgMultiPartFile);
+                ByteArrayResource signature = BaseService.convertFile(imgMultiPartFile);
                 multiValueMap.add("imageData", signature);
             } catch (IOException e) {
                 e.printStackTrace();

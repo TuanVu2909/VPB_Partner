@@ -7,6 +7,7 @@ import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.request.*;
 import com.lendbiz.p2p.api.response.BearResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 /***********************************************************************
  * 
@@ -18,6 +19,8 @@ import org.springframework.http.ResponseEntity;
  *
  ***********************************************************************/
 public interface UserService {
+
+	ResponseEntity<?> ekyc(MultipartFile imgFrontId, MultipartFile imgBackId, MultipartFile imgSelfie, String mobile);
 
 	public ResponseEntity<?> checkVersion3GangOutdated(String version);
 
