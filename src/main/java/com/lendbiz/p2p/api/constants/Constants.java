@@ -148,6 +148,12 @@ public class Constants {
 	public static final String BANKRECEIVENAME = "Quỹ Đầu tư Trái Phiếu An toàn Amber";
 	public static final String BANKBRANCH = "Hội Sở";
 
+	// VNPT
+	public static final String VNPT_DOMAIN = "https://api.idg.vnpt.vn";
+	public static final String VNPT_ID = "ee3036c3-36f5-7efa-e053-63199f0aee9d";
+	public static final String VNPT_KEY = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALISKEQNtCXxqd71DupX9N7cdG3w4mdJOuNqtMXBwDKK8uR7LM38B8uZN5EzttpccxIv9/+5tHMJ//KZMpcBLiMCAwEAAQ==";
+	public static final String VNPT_TOKEN = "bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlZTMwMzIxYS0wZDczLTA5OGMtZTA1My02MjE5OWYwYTUwMDQiLCJhdWQiOlsicmVzdHNlcnZpY2UiXSwidXNlcl9uYW1lIjoibGVzb24xNzEwQGdtYWlsLmNvbSIsInNjb3BlIjpbInJlYWQiXSwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3QiLCJuYW1lIjoibGVzb24xNzEwQGdtYWlsLmNvbSIsInV1aWRfYWNjb3VudCI6ImVlMzAzMjFhLTBkNzMtMDk4Yy1lMDUzLTYyMTk5ZjBhNTAwNCIsImF1dGhvcml0aWVzIjpbIlVTRVIiXSwianRpIjoiNThjYzQzMzgtMDhmNy00YTUxLThiY2EtZjYzY2Y4YjRmOTQwIiwiY2xpZW50X2lkIjoiYWRtaW5hcHAifQ.zVthM71rfE_OOlnUS2w0Ts98mxzUdkfcrznN1idjm7nskWG7OtzGI_ICXIMzYiLkb--YCytG-jLSC6YHef9JPf_XMWFFvhY5Bu-WzSBEpuTWSWZEJ8vv9IOBJVPxw0yze0elqn2tMshfiTnzlRt4im5Jc1JwjLgEYVYxp40cXa5pwz5y3B-ZoW6Y4HqHDr4r0BnJIRcXDI8h97_w3Mz_D_8sk8Tw6lIeXqi_6ld5mi__aO-BB1Ab9ELEiVgjWO2KyOk1zuKoevtwx3TuwQKbvTU7HzctQRSULcsbOL3WWQG8KfMNq5lBMYjk0Zq7RAJwFjytibPx-8xq0w2U4bLnaQ";
+
 	public static final Map<String, Object> AFM_INFO_STATUS = new HashMap<>();
 	static {
 		AFM_INFO_STATUS.put("P", "Chờ duyệt");

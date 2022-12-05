@@ -9,7 +9,11 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
+import com.lendbiz.p2p.api.response.BaseResponse;
 import org.apache.commons.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -79,7 +83,7 @@ import lombok.extern.log4j.Log4j2;
 @RestController
 @RequestMapping("/lendbiz")
 @Log4j2
-public class UserController {
+public class UserController extends BaseResponse<UserService> {
 
     @Autowired
     UserService userService;
@@ -95,6 +99,28 @@ public class UserController {
 
     @Autowired
     private LoggingService loggingGetRequest;
+
+    @PostMapping("/3gang/ekyc")
+    public ResponseEntity<?> ekyc(
+            @RequestParam("imgFrontId") @NotBlank MultipartFile imgFrontId,
+            @RequestParam("imgBackId") @NotBlank MultipartFile imgBackId,
+            @RequestParam("imgSelfie") @NotBlank MultipartFile imgSelfie,
+            @RequestParam("mobile") @NotBlank String mobile
+            )
+    {
+        if(mobile.equals("")) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "mobile is not empty")), HttpStatus.OK);
+        for (int i=0; i<mobile.length(); i++){
+            if(mobile.charAt(i) == ' ') return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "mobile is not space")), HttpStatus.OK);
+        }
+        if(mobile.length() > 14){
+            return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "mobile is too long")), HttpStatus.OK);
+        }
+        if(imgFrontId.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgFrontId is not empty")) , HttpStatus.OK);
+        if(imgBackId.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgBackId is not empty")), HttpStatus.OK);
+        if(imgSelfie.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgSelfie is not empty")), HttpStatus.OK);
+
+        return userService.ekyc(imgFrontId, imgBackId, imgSelfie, mobile);
+    }
 
     @PostMapping("/check-existed-account")
     public ResponseEntity<?> checkExistedAccount(HttpServletRequest httpServletRequest,
