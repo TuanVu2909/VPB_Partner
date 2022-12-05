@@ -268,39 +268,6 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     private ProducerMessage producerMessage;
 
-    @Autowired
-    private VNPTService vnptService;
-
-    @SneakyThrows
-    @Override
-    public ResponseEntity<?> ekyc(MultipartFile imgFrontId, MultipartFile imgBackId, MultipartFile imgSelfie, String mobile){
-        String hashImgFrontId = vnptService.uploadImage(imgFrontId, "imgFrontId", "imgFrontId");
-        String hashImgBackId = vnptService.uploadImage(imgBackId, "imgBackId", "imgBackId");
-        String hashImgSelfie = vnptService.uploadImage(imgSelfie, "imgSelfie", "imgSelfie");
-
-        logger.info("============= Start eKYC (VNPT) =============");
-
-        if(hashImgFrontId == null && hashImgBackId == null && hashImgSelfie == null){
-            return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Không lấy được mã hash của hình ảnh"));
-        }
-
-        JsonNode resFaceCompare = vnptService.compareImage(hashImgFrontId, hashImgSelfie, mobile);
-
-        if(resFaceCompare.get("statusCode").asInt() == 400){
-            return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Không tìm thấy khuôn mặt"));
-        }
-
-        if(resFaceCompare.get("statusCode").asInt() == 200 && resFaceCompare.get("object").get("multiple_faces").asText().equals("true")){
-            return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Ảnh có nhiều hơn 1 khuôn mặt"));
-        }
-
-        if(resFaceCompare.get("statusCode").asInt() == 200 && resFaceCompare.get("object").get("msg").asText().equals("NOMATCH")){
-            return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Khuôn mặt không khớp"));
-        }
-
-        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, resFaceCompare.get("object").get("result")));
-    }
-
     public String getCustId(List<CfMast> lstCfmast) {
         List<CfMast> newLstCfmast = new ArrayList<>();
         String custId = null;

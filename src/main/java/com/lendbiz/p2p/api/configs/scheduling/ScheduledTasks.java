@@ -24,7 +24,7 @@ public class ScheduledTasks {
     // 5 phút một lần
     @Scheduled(zone = "GMT+7", cron = "0 */1 * ? * *")
     public void scheduleTaskGetToken() {
-        fundService.getTokenAFM();
+        //undService.getTokenAFM();
         return;
     }
 }
