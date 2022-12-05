@@ -1,5 +1,5 @@
 package com.lendbiz.p2p.api.service.impl;
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.Constants;
@@ -19,36 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
-
-        String hashImgFrontId = vnptService.uploadImage(imgFrontId, "imgFrontId", "imgFrontId");
-                String hashImgBackId = vnptService.uploadImage(imgBackId, "imgBackId", "imgBackId");
-                String hashImgSelfie = vnptService.uploadImage(imgSelfie, "imgSelfie", "imgSelfie");
-
-                logger.info("============= Start eKYC (VNPT) =============");
-
-                if(hashImgFrontId == null && hashImgBackId == null && hashImgSelfie == null){
-                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Không lấy được mã hash của hình ảnh"));
-                }
-
-                JsonNode resFaceCompare = vnptService.compareImage(hashImgFrontId, hashImgSelfie, mobile);
-
-                if(resFaceCompare.get("statusCode").asInt() == 400) {
-                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Không tìm thấy khuôn mặt"));
-                }
-
-                if(resFaceCompare.get("statusCode").asInt() == 200 && resFaceCompare.get("object").get("multiple_faces").asText().equals("true")){
-                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Ảnh có nhiều hơn 1 khuôn mặt"));
-                }
-
-                if(resFaceCompare.get("statusCode").asInt() == 200 && resFaceCompare.get("object").get("msg").asText().equals("NOMATCH")){
-                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Khuôn mặt không khớp"));
-                }
-
-                return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, resFaceCompare.get("object").get("result")));
-
-    String uploadImage(MultipartFile image, String title, String description);
-            JsonNode compareImage(String hashImgFrontId, String hashImgSelfie, String mobile);
-            JsonNode extractOCR(String hashImgFrontId, String hashImgBackId) throws JsonProcessingException;
 
 @Service
 public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTService {
@@ -92,19 +62,24 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
         return null;
     }
 
+    @SneakyThrows
     @Override
-    public ResponseEntity<?> vertifyIdentity(MultipartFile imgFrontId, MultipartFile imgBackId) throws JsonProcessingException {
-        // Phí 800 vnd
+    public ResponseEntity<?> vertifyIdentity(MultipartFile imgFrontId, MultipartFile imgBackId, String mobile) {
         String hashImgFrontId = this.uploadImage(imgFrontId, "imgFrontId", "imgFrontId");
         String hashImgBackId = this.uploadImage(imgBackId, "imgBackId", "imgBackId");
+        if(hashImgFrontId == null || hashImgBackId == null){
+            return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Không lấy được mã hash của hình ảnh"));
+        }
+        logger.info("============= Start eKYC vertifyIdentity (VNPT) =============");
 
+        // Phí 800 vnd
         HttpHeaders headers = new HttpHeaders();
         Map<String, Object> bodies = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
 
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", Constants.VNPT_TOKEN);
-        headers.set("Token-id", Constants.VNPT_ID);
+        headers.set("Token-id", mobile);
         headers.set("Token-key", Constants.VNPT_KEY);
 
         bodies.put("img_front", hashImgFrontId);
@@ -123,19 +98,49 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                     String.class,
                     (Object) null);
             root = mapper.readTree(responseEntity.getBody());
+            if(root.get("statusCode").asInt() == 200 &&
+                    (root.get("object").get("match_front_back").get("match_sex").asText().equals("no") ||
+                     root.get("object").get("match_front_back").get("match_bod").asText().equals("no") ||
+                     root.get("object").get("match_front_back").get("match_id").asText().equals("no") ||
+                     root.get("object").get("match_front_back").get("match_valid_date").asText().equals("no") ||
+                     root.get("object").get("match_front_back").get("match_name").asText().equals("no")
+                    )
+            ) {
+                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ có mặt trước và mặt sau không khớp"));
+            }
+            if(root.get("statusCode").asInt() == 200 && root.get("object").get("tampering").get("is_legal").asText().equals("no")) {
+                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ là giả mạo"));
+            }
         }
         catch (Exception e) {
             root = BaseService.stringToRoot(e.getMessage());
+            if(root.get("statusCode").asInt() == 400 && root.get("message").asText().equals("IDG-00010003")) {
+                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Chất lượng ảnh đầu vào không đạt chuẩn (ảnh quá mờ hoặc bị tẩy xóa)"));
+            }
+            if(root.get("statusCode").asInt() == 400 && root.get("message").asText().equals("IDG-00010202")) {
+                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Dữ liệu đầu vào không phải là ảnh"));
+            }
+            if(root.get("statusCode").asInt() == 400 && root.get("message").asText().equals("IDG-00010445")) {
+                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Loại giấy tờ không hợp lệ"));
+            }
+            else {
+                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Lỗi hệ thống"));
+            }
         }
-        //return root;
-        return null;
+        // TODO INSERT TO TABLE
+        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, root.get("object").get("result")));
     }
 
+    @SneakyThrows
     @Override
-    public ResponseEntity<?> vertifySelfie(MultipartFile imgFrontId, MultipartFile imgSelfie) {
+    public ResponseEntity<?> vertifySelfie(MultipartFile imgFrontId, MultipartFile imgSelfie, String mobile) {
         String hashImgFrontId = this.uploadImage(imgFrontId, "imgFrontId", "imgFrontId");
         String hashImgSelfie = this.uploadImage(imgSelfie, "imgSelfie", "imgSelfie");
+        if(hashImgFrontId == null || hashImgSelfie == null){
+            return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Không lấy được mã hash của hình ảnh"));
+        }
 
+        logger.info("============= Start eKYC vertifySelfie (VNPT) =============");
         // Phí 800 vnd
         HttpHeaders headers = new HttpHeaders();
         Map<String, Object> bodies = new HashMap<>();
@@ -161,11 +166,25 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                     String.class,
                     (Object) null);
             root = mapper.readTree(responseEntity.getBody());
+
+            if(root.get("statusCode").asInt() == 200 && root.get("object").get("multiple_faces").asText().equals("true")){
+                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Ảnh có nhiều hơn 1 khuôn mặt"));
+            }
+
+            if(root.get("statusCode").asInt() == 200 && root.get("object").get("msg").asText().equals("NOMATCH")){
+                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Khuôn mặt không khớp"));
+            }
         }
         catch (Exception e) {
             root = BaseService.stringToRoot(e.getMessage());
+            if(root.get("statusCode").asInt() == 400) {
+                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Không tìm thấy khuôn mặt"));
+            }
+            else {
+                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Lỗi hệ thống"));
+            }
         }
-        //return root;
-        return null;
+        // TODO INSERT TO TABLE
+        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, root.get("object").get("result")));
     }
 }

@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.service.*;
+import lombok.SneakyThrows;
 import org.apache.commons.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -387,7 +388,7 @@ public class UserController extends BaseResponse<UserService> {
         if (mobile == null || mobile.equals("")) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "mobile is not empty")) , HttpStatus.OK);
         if(imgFrontId.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgFrontId is not empty")) , HttpStatus.OK);
         if(imgBackId.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgBackId is not empty")), HttpStatus.OK);
-        return vnptService.vertifyIdentity(imgFrontId, imgBackId);
+        return vnptService.vertifyIdentity(imgFrontId, imgBackId, mobile);
     }
 
     @PostMapping("/3gang/ekyc/vertify-selfie")
@@ -400,7 +401,7 @@ public class UserController extends BaseResponse<UserService> {
         if (mobile == null || mobile.equals("")) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "mobile is not empty")) , HttpStatus.OK);
         if(imgFrontId.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgFrontId is not empty")) , HttpStatus.OK);
         if(imgSelfie.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgSelfie is not empty")), HttpStatus.OK);
-        return vnptService.vertifySelfie(imgFrontId, imgSelfie);
+        return vnptService.vertifySelfie(imgFrontId, imgSelfie, mobile);
     }
     // Authorization
 
