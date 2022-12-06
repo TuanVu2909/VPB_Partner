@@ -3,8 +3,11 @@ package com.lendbiz.p2p.api.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.Constants;
+import com.lendbiz.p2p.api.entity.vnpt.BgEkycEntity;
 import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.repository.BgEkycRepository;
 import com.lendbiz.p2p.api.response.BaseResponse;
+import com.lendbiz.p2p.api.response.vnpt.ORCResponse;
 import com.lendbiz.p2p.api.service.VNPTService;
 import com.lendbiz.p2p.api.service.base.BaseService;
 import lombok.SneakyThrows;
@@ -25,6 +28,9 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private BgEkycRepository bgEkycRepository;
 
     public String uploadImage(MultipartFile image, String title, String description) {
         // Phí 0 vnd
@@ -127,8 +133,47 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                 return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Lỗi hệ thống"));
             }
         }
-        // TODO INSERT TO TABLE
-        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, root.get("object")));
+
+        ORCResponse orcResponse = new ORCResponse();
+        orcResponse.setBirthDay(root.get("object").get("birth_day").asText());
+        orcResponse.setCardType(root.get("object").get("card_type").asText());
+        orcResponse.setGender(root.get("object").get("gender").asText());
+        orcResponse.setIdNo(root.get("object").get("id").asText());
+        orcResponse.setIssueDate(root.get("object").get("issue_date").asText());
+        orcResponse.setIssuePlace(root.get("object").get("issue_place").asText());
+        orcResponse.setName(root.get("object").get("name").asText());
+        orcResponse.setNationality(root.get("object").get("nationality").asText());
+        orcResponse.setOriginLocation(root.get("object").get("origin_location").asText());
+        orcResponse.setRecentLocation(root.get("object").get("recent_location").asText());
+        orcResponse.setTypeId(root.get("object").get("type_id").asInt());
+        orcResponse.setValidDate(root.get("object").get("valid_date").asText());
+
+        BgEkycEntity bgEkyc = this.bgEkycRepository.findByMobileSms(mobile);
+        BgEkycEntity insertData = new BgEkycEntity();
+
+        insertData.setIdNo(orcResponse.getIdNo());
+        insertData.setTypeId(orcResponse.getTypeId());
+        insertData.setCardType(orcResponse.getCardType());
+        insertData.setName(orcResponse.getName());
+        insertData.setBirthDay(orcResponse.getBirthDay());
+        insertData.setNationality(orcResponse.getNationality());
+        insertData.setGender(orcResponse.getGender());
+        insertData.setOriginLocation(orcResponse.getOriginLocation());
+        insertData.setRecentLocation(orcResponse.getRecentLocation());
+        insertData.setIssueDate(orcResponse.getIssueDate());
+        insertData.setValidDate(orcResponse.getValidDate());
+        insertData.setIssuePlace(orcResponse.getIssuePlace());
+        insertData.setOrcSuccess("YES");
+        if (bgEkyc == null) {
+            insertData.setMobileSms(mobile);
+            insertData.setApiOrc(1);
+        }
+        else {
+            insertData.setApiOrc(bgEkyc.getApiOrc() + 1);
+        }
+
+        this.bgEkycRepository.save(insertData);
+        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, orcResponse));
     }
 
     @SneakyThrows
@@ -184,7 +229,19 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                 return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Lỗi hệ thống"));
             }
         }
-        // TODO INSERT TO TABLE
+
+        BgEkycEntity bgEkyc = this.bgEkycRepository.findByMobileSms(mobile);
+        BgEkycEntity insertData = new BgEkycEntity();
+
+        insertData.setCompareSuccess("YES");
+        if (bgEkyc == null) {
+            insertData.setMobileSms(mobile);
+            insertData.setApiCompare(1);
+        }
+        else {
+            insertData.setApiCompare(bgEkyc.getApiCompare() + 1);
+        }
+        this.bgEkycRepository.save(insertData);
         return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, root.get("object")));
     }
 }
