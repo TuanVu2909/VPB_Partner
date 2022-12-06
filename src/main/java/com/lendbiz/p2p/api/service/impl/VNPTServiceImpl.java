@@ -79,12 +79,12 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
 
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", Constants.VNPT_TOKEN);
-        headers.set("Token-id", mobile);
+        headers.set("Token-id", Constants.VNPT_ID);
         headers.set("Token-key", Constants.VNPT_KEY);
 
         bodies.put("img_front", hashImgFrontId);
         bodies.put("img_back", hashImgBackId);
-        bodies.put("client_session", Constants.VNPT_ID);
+        bodies.put("client_session", mobile);
         bodies.put("type", -1); // -1: CMND, CCCD cũ/ mới
         bodies.put("token", Constants.VNPT_ID);
 
@@ -128,7 +128,7 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
             }
         }
         // TODO INSERT TO TABLE
-        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, root.get("object").get("result")));
+        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, root.get("object")));
     }
 
     @SneakyThrows
@@ -185,6 +185,6 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
             }
         }
         // TODO INSERT TO TABLE
-        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, root.get("object").get("result")));
+        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, root.get("object")));
     }
 }
