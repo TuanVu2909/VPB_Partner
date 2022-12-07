@@ -21,8 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
  ***********************************************************************/
 public interface UserService {
 
-	ResponseEntity<?> ekyc(MultipartFile imgFrontId, MultipartFile imgBackId, MultipartFile imgSelfie, String mobile);
-
 	public ResponseEntity<?> checkVersion3GangOutdated(String version);
 
 	public ResponseEntity<?> checkExistedAccount(LoginRequest loginRequest);

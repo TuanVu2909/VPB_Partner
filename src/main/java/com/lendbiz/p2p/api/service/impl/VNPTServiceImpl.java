@@ -1,11 +1,13 @@
 package com.lendbiz.p2p.api.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.Constants;
+import com.lendbiz.p2p.api.entity.vnpt.BgEkycEntity;
 import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.repository.BgEkycRepository;
 import com.lendbiz.p2p.api.response.BaseResponse;
+import com.lendbiz.p2p.api.response.vnpt.ORCResponse;
 import com.lendbiz.p2p.api.service.VNPTService;
 import com.lendbiz.p2p.api.service.base.BaseService;
 import lombok.SneakyThrows;
@@ -27,7 +29,9 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
     @Autowired
     private RestTemplate restTemplate;
 
-    @Override
+    @Autowired
+    private BgEkycRepository bgEkycRepository;
+
     public String uploadImage(MultipartFile image, String title, String description) {
         // Phí 0 vnd
         HttpHeaders headers = new HttpHeaders();
@@ -66,8 +70,115 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
 
     @SneakyThrows
     @Override
-    public JsonNode compareImage(String hashImgFrontId, String hashImgSelfie, String mobile) {
+    public ResponseEntity<?> vertifyIdentity(MultipartFile imgFrontId, MultipartFile imgBackId, String mobile) {
+        String hashImgFrontId = this.uploadImage(imgFrontId, "imgFrontId", "imgFrontId");
+        String hashImgBackId = this.uploadImage(imgBackId, "imgBackId", "imgBackId");
+        if(hashImgFrontId == null || hashImgBackId == null) {
+            return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Không lấy được mã hash của hình ảnh"));
+        }
+        logger.info("============= Start eKYC vertifyIdentity (VNPT) =============");
+
         // Phí 800 vnd
+        BgEkycEntity bgEkyc = this.bgEkycRepository.findByMobileSms(mobile);
+        if(bgEkyc == null) bgEkyc = new BgEkycEntity();
+        // Lưu số lần call API vertifyIdentity vào DB
+        bgEkyc.setMobileSms(mobile);
+        bgEkyc.setApiOrc(bgEkyc.getApiOrc() + 1); // default ApiOrc = 0
+        this.bgEkycRepository.save(bgEkyc);
+
+        HttpHeaders headers = new HttpHeaders();
+        Map<String, Object> bodies = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", Constants.VNPT_TOKEN);
+        headers.set("Token-id", Constants.VNPT_ID);
+        headers.set("Token-key", Constants.VNPT_KEY);
+
+        bodies.put("img_front", hashImgFrontId);
+        bodies.put("img_back", hashImgBackId);
+        bodies.put("client_session", mobile);
+        bodies.put("type", -1); // -1: CMND, CCCD cũ/ mới
+        bodies.put("token", Constants.VNPT_ID);
+
+        HttpEntity<?> request = new HttpEntity(bodies, headers);
+        JsonNode root;
+        try {
+            ResponseEntity<String> responseEntity = restTemplate.exchange(
+                    Constants.VNPT_DOMAIN + "/ai/v1/ocr/id",
+                    HttpMethod.POST,
+                    request,
+                    String.class,
+                    (Object) null);
+
+            root = mapper.readTree(responseEntity.getBody());
+            if(root.get("statusCode").asInt() == 200 &&
+                    (root.get("object").get("match_front_back").get("match_sex").asText().equals("no") ||
+                     root.get("object").get("match_front_back").get("match_bod").asText().equals("no") ||
+                     root.get("object").get("match_front_back").get("match_id").asText().equals("no") ||
+                     root.get("object").get("match_front_back").get("match_valid_date").asText().equals("no") ||
+                     root.get("object").get("match_front_back").get("match_name").asText().equals("no")
+                    )
+            ) {
+                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ có mặt trước và mặt sau không khớp"));
+            }
+            if(root.get("statusCode").asInt() == 200 && root.get("object").get("tampering").get("is_legal").asText().equals("no")) {
+                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ là giả mạo"));
+            }
+        }
+        catch (Exception e) {
+            root = BaseService.stringToRoot(e.getMessage());
+            if(root.get("statusCode").asInt() == 400 && root.get("message").asText().equals("IDG-00010003")) {
+                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Chất lượng ảnh đầu vào không đạt chuẩn (ảnh quá mờ hoặc bị tẩy xóa)"));
+            }
+            if(root.get("statusCode").asInt() == 400 && root.get("message").asText().equals("IDG-00010202")) {
+                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Dữ liệu đầu vào không phải là ảnh"));
+            }
+            if(root.get("statusCode").asInt() == 400 && root.get("message").asText().equals("IDG-00010445")) {
+                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Loại giấy tờ không hợp lệ"));
+            }
+            else {
+                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Lỗi hệ thống"));
+            }
+        }
+
+        // Đến đây là vertifyIdentity không có lỗi -> insert vào DB
+        bgEkyc.setIdNo(root.get("object").get("id").asText());
+        bgEkyc.setTypeId(root.get("object").get("type_id").asInt());
+        bgEkyc.setCardType(root.get("object").get("card_type").asText());
+        bgEkyc.setName(root.get("object").get("name").asText());
+        bgEkyc.setBirthDay(root.get("object").get("birth_day").asText());
+        bgEkyc.setNationality(root.get("object").get("nationality").asText());
+        bgEkyc.setGender(root.get("object").get("gender").asText());
+        bgEkyc.setOriginLocation(root.get("object").get("origin_location").asText());
+        bgEkyc.setRecentLocation(root.get("object").get("recent_location").asText());
+        bgEkyc.setIssueDate(root.get("object").get("issue_date").asText());
+        bgEkyc.setValidDate(root.get("object").get("valid_date").asText());
+        bgEkyc.setIssuePlace(root.get("object").get("issue_place").asText());
+        bgEkyc.setOrcSuccess("YES");
+
+        this.bgEkycRepository.save(bgEkyc);
+        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, bgEkyc));
+    }
+
+    @SneakyThrows
+    @Override
+    public ResponseEntity<?> vertifySelfie(MultipartFile imgFrontId, MultipartFile imgSelfie, String mobile) {
+        String hashImgFrontId = this.uploadImage(imgFrontId, "imgFrontId", "imgFrontId");
+        String hashImgSelfie = this.uploadImage(imgSelfie, "imgSelfie", "imgSelfie");
+        if(hashImgFrontId == null || hashImgSelfie == null){
+            return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Không lấy được mã hash của hình ảnh"));
+        }
+
+        logger.info("============= Start eKYC vertifySelfie (VNPT) =============");
+        // Phí 800 vnd
+        BgEkycEntity bgEkyc = this.bgEkycRepository.findByMobileSms(mobile);
+        if(bgEkyc == null) bgEkyc = new BgEkycEntity();
+        // Lưu số lần call API vertifyIdentity vào DB
+        bgEkyc.setMobileSms(mobile);
+        bgEkyc.setApiCompare(bgEkyc.getApiCompare() + 1); // default ApiCompare = 0
+        this.bgEkycRepository.save(bgEkyc);
+
         HttpHeaders headers = new HttpHeaders();
         Map<String, Object> bodies = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
@@ -92,18 +203,27 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                     String.class,
                     (Object) null);
             root = mapper.readTree(responseEntity.getBody());
+
+            if(root.get("statusCode").asInt() == 200 && root.get("object").get("multiple_faces").asText().equals("true")){
+                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Ảnh có nhiều hơn 1 khuôn mặt"));
+            }
+
+            if(root.get("statusCode").asInt() == 200 && root.get("object").get("msg").asText().equals("NOMATCH")){
+                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Khuôn mặt không khớp"));
+            }
         }
         catch (Exception e) {
             root = BaseService.stringToRoot(e.getMessage());
+            if(root.get("statusCode").asInt() == 400) {
+                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Không tìm thấy khuôn mặt"));
+            }
+            else {
+                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Lỗi hệ thống"));
+            }
         }
-        return root;
+
+        bgEkyc.setCompareSuccess("YES");
+        this.bgEkycRepository.save(bgEkyc);
+        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, root.get("object")));
     }
-
-    @Override
-    public ResponseEntity<?> extractOCR(String hashImgFrontId, String hashImgBackId, String hashImgSelfie) {
-        return null;
-    }
-
-
-
 }
