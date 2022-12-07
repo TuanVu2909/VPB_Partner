@@ -73,12 +73,19 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
     public ResponseEntity<?> vertifyIdentity(MultipartFile imgFrontId, MultipartFile imgBackId, String mobile) {
         String hashImgFrontId = this.uploadImage(imgFrontId, "imgFrontId", "imgFrontId");
         String hashImgBackId = this.uploadImage(imgBackId, "imgBackId", "imgBackId");
-        if(hashImgFrontId == null || hashImgBackId == null){
+        if(hashImgFrontId == null || hashImgBackId == null) {
             return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Không lấy được mã hash của hình ảnh"));
         }
         logger.info("============= Start eKYC vertifyIdentity (VNPT) =============");
 
         // Phí 800 vnd
+        BgEkycEntity bgEkyc = this.bgEkycRepository.findByMobileSms(mobile);
+        if(bgEkyc == null) bgEkyc = new BgEkycEntity();
+        // Lưu số lần call API vertifyIdentity vào DB
+        bgEkyc.setMobileSms(mobile);
+        bgEkyc.setApiOrc(bgEkyc.getApiOrc() + 1); // default ApiOrc = 0
+        this.bgEkycRepository.save(bgEkyc);
+
         HttpHeaders headers = new HttpHeaders();
         Map<String, Object> bodies = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
@@ -103,6 +110,7 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                     request,
                     String.class,
                     (Object) null);
+
             root = mapper.readTree(responseEntity.getBody());
             if(root.get("statusCode").asInt() == 200 &&
                     (root.get("object").get("match_front_back").get("match_sex").asText().equals("no") ||
@@ -134,46 +142,23 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
             }
         }
 
-        ORCResponse orcResponse = new ORCResponse();
-        orcResponse.setBirthDay(root.get("object").get("birth_day").asText());
-        orcResponse.setCardType(root.get("object").get("card_type").asText());
-        orcResponse.setGender(root.get("object").get("gender").asText());
-        orcResponse.setIdNo(root.get("object").get("id").asText());
-        orcResponse.setIssueDate(root.get("object").get("issue_date").asText());
-        orcResponse.setIssuePlace(root.get("object").get("issue_place").asText());
-        orcResponse.setName(root.get("object").get("name").asText());
-        orcResponse.setNationality(root.get("object").get("nationality").asText());
-        orcResponse.setOriginLocation(root.get("object").get("origin_location").asText());
-        orcResponse.setRecentLocation(root.get("object").get("recent_location").asText());
-        orcResponse.setTypeId(root.get("object").get("type_id").asInt());
-        orcResponse.setValidDate(root.get("object").get("valid_date").asText());
+        // Đến đây là vertifyIdentity không có lỗi -> insert vào DB
+        bgEkyc.setIdNo(root.get("object").get("id").asText());
+        bgEkyc.setTypeId(root.get("object").get("type_id").asInt());
+        bgEkyc.setCardType(root.get("object").get("card_type").asText());
+        bgEkyc.setName(root.get("object").get("name").asText());
+        bgEkyc.setBirthDay(root.get("object").get("birth_day").asText());
+        bgEkyc.setNationality(root.get("object").get("nationality").asText());
+        bgEkyc.setGender(root.get("object").get("gender").asText());
+        bgEkyc.setOriginLocation(root.get("object").get("origin_location").asText());
+        bgEkyc.setRecentLocation(root.get("object").get("recent_location").asText());
+        bgEkyc.setIssueDate(root.get("object").get("issue_date").asText());
+        bgEkyc.setValidDate(root.get("object").get("valid_date").asText());
+        bgEkyc.setIssuePlace(root.get("object").get("issue_place").asText());
+        bgEkyc.setOrcSuccess("YES");
 
-        BgEkycEntity bgEkyc = this.bgEkycRepository.findByMobileSms(mobile);
-        BgEkycEntity insertData = new BgEkycEntity();
-
-        insertData.setIdNo(orcResponse.getIdNo());
-        insertData.setTypeId(orcResponse.getTypeId());
-        insertData.setCardType(orcResponse.getCardType());
-        insertData.setName(orcResponse.getName());
-        insertData.setBirthDay(orcResponse.getBirthDay());
-        insertData.setNationality(orcResponse.getNationality());
-        insertData.setGender(orcResponse.getGender());
-        insertData.setOriginLocation(orcResponse.getOriginLocation());
-        insertData.setRecentLocation(orcResponse.getRecentLocation());
-        insertData.setIssueDate(orcResponse.getIssueDate());
-        insertData.setValidDate(orcResponse.getValidDate());
-        insertData.setIssuePlace(orcResponse.getIssuePlace());
-        insertData.setOrcSuccess("YES");
-        if (bgEkyc == null) {
-            insertData.setMobileSms(mobile);
-            insertData.setApiOrc(1);
-        }
-        else {
-            insertData.setApiOrc(bgEkyc.getApiOrc() + 1);
-        }
-
-        this.bgEkycRepository.save(insertData);
-        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, orcResponse));
+        this.bgEkycRepository.save(bgEkyc);
+        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, bgEkyc));
     }
 
     @SneakyThrows
@@ -187,6 +172,13 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
 
         logger.info("============= Start eKYC vertifySelfie (VNPT) =============");
         // Phí 800 vnd
+        BgEkycEntity bgEkyc = this.bgEkycRepository.findByMobileSms(mobile);
+        if(bgEkyc == null) bgEkyc = new BgEkycEntity();
+        // Lưu số lần call API vertifyIdentity vào DB
+        bgEkyc.setMobileSms(mobile);
+        bgEkyc.setApiCompare(bgEkyc.getApiCompare() + 1); // default ApiCompare = 0
+        this.bgEkycRepository.save(bgEkyc);
+
         HttpHeaders headers = new HttpHeaders();
         Map<String, Object> bodies = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
@@ -230,18 +222,8 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
             }
         }
 
-        BgEkycEntity bgEkyc = this.bgEkycRepository.findByMobileSms(mobile);
-        BgEkycEntity insertData = new BgEkycEntity();
-
-        insertData.setCompareSuccess("YES");
-        if (bgEkyc == null) {
-            insertData.setMobileSms(mobile);
-            insertData.setApiCompare(1);
-        }
-        else {
-            insertData.setApiCompare(bgEkyc.getApiCompare() + 1);
-        }
-        this.bgEkycRepository.save(insertData);
+        bgEkyc.setCompareSuccess("YES");
+        this.bgEkycRepository.save(bgEkyc);
         return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, root.get("object")));
     }
 }
