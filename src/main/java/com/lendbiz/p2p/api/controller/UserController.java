@@ -854,7 +854,7 @@ public class UserController extends BaseResponse<UserService> {
         }
     }
 
-    @Scheduled(initialDelay = 1 * 60, fixedDelay = 2 * 5000)
+    // @Scheduled(initialDelay = 1 * 60, fixedDelay = 2 * 5000)
     public void autoSign()
             throws BusinessException {
 
