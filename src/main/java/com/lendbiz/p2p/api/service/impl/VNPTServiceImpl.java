@@ -7,7 +7,6 @@ import com.lendbiz.p2p.api.entity.vnpt.BgEkycEntity;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.BgEkycRepository;
 import com.lendbiz.p2p.api.response.BaseResponse;
-import com.lendbiz.p2p.api.response.vnpt.ORCResponse;
 import com.lendbiz.p2p.api.service.VNPTService;
 import com.lendbiz.p2p.api.service.base.BaseService;
 import lombok.SneakyThrows;
@@ -73,9 +72,6 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
     public ResponseEntity<?> vertifyIdentity(MultipartFile imgFrontId, MultipartFile imgBackId, String mobile) {
         String hashImgFrontId = this.uploadImage(imgFrontId, "imgFrontId", "imgFrontId");
         String hashImgBackId = this.uploadImage(imgBackId, "imgBackId", "imgBackId");
-        if(hashImgFrontId == null || hashImgBackId == null) {
-            return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Không lấy được mã hash của hình ảnh"));
-        }
         logger.info("============= Start eKYC vertifyIdentity (VNPT) =============");
 
         // Phí 800 vnd
@@ -112,33 +108,68 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                     (Object) null);
 
             root = mapper.readTree(responseEntity.getBody());
-            if(root.get("statusCode").asInt() == 200 &&
-                    (root.get("object").get("match_front_back").get("match_sex").asText().equals("no") ||
-                     root.get("object").get("match_front_back").get("match_bod").asText().equals("no") ||
-                     root.get("object").get("match_front_back").get("match_id").asText().equals("no") ||
-                     root.get("object").get("match_front_back").get("match_valid_date").asText().equals("no") ||
-                     root.get("object").get("match_front_back").get("match_name").asText().equals("no")
-                    )
-            ) {
-                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ có mặt trước và mặt sau không khớp"));
-            }
-            if(root.get("statusCode").asInt() == 200 && root.get("object").get("tampering").get("is_legal").asText().equals("no")) {
-                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ là giả mạo"));
+            // field common
+            // idFontType,idBackType -> loai giay to:  2 -> HC, 3 -> CMQD, 4 -> BLX
+            // idFontType,idBackType -> loai giay to:  0 -> CM9, 1 -> CCCD,CM12, 5 -> CCGC
+            String idFontType = root.get("object").get("type_id").asText();
+            String idBackType = root.get("object").get("back_type_id").asText();
+
+            if(root.get("statusCode").asInt() == 200) {
+                if(idFontType.equals("2") || idFontType.equals("3") || idFontType.equals("4") ||
+                   idBackType.equals("2") || idBackType.equals("3") || idBackType.equals("4")){
+                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Chỉ được phép sử dụng chứng minh nhân dân, Căn cước công dân, Căn cước gắn chíp"));
+                }
+                if(!idFontType.equals(idBackType)){
+                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ mặt trước và sau không cùng loại"));
+                }
+                if(!(root.get("object").get("cover_prob_front").asText().equals("0"))){
+                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ có mặt trước bị che"));
+                }
+                if(root.get("object").get("tampering").get("is_legal").asText().equals("no") ||
+                   root.get("object").get("id_fake_warning").asText().equals("yes")) {
+                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ là giả mạo"));
+                }
+                if(root.get("object").get("expire_warning").asText().equals("yes") ||
+                   root.get("object").get("back_expire_warning").asText().equals("yes")){
+                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ hết hạn sử dụng"));
+                }
+                if(root.get("object").get("corner_warning").asText().equals("yes") ||
+                   root.get("object").get("back_corner_warning").asText().equals("yes")){
+                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ bị mất góc"));
+                }
+                // CCGC
+                if(idFontType.equals("5") && idBackType.equals("5")) {
+                    if(root.get("object").get("match_front_back").get("match_sex").asText().equals("no") ||
+                       root.get("object").get("match_front_back").get("match_bod").asText().equals("no") ||
+                       root.get("object").get("match_front_back").get("match_id").asText().equals("no") ||
+                       root.get("object").get("match_front_back").get("match_valid_date").asText().equals("no") ||
+                       root.get("object").get("match_front_back").get("match_name").asText().equals("no")
+                    ){ return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ có mặt trước và mặt sau không khớp")); }
+                }
+                // còn lại là CM9, CM12, CCCD
             }
         }
         catch (Exception e) {
             root = BaseService.stringToRoot(e.getMessage());
-            if(root.get("statusCode").asInt() == 400 && root.get("message").asText().equals("IDG-00010003")) {
-                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Chất lượng ảnh đầu vào không đạt chuẩn (ảnh quá mờ hoặc bị tẩy xóa)"));
-            }
-            if(root.get("statusCode").asInt() == 400 && root.get("message").asText().equals("IDG-00010202")) {
-                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Dữ liệu đầu vào không phải là ảnh"));
-            }
-            if(root.get("statusCode").asInt() == 400 && root.get("message").asText().equals("IDG-00010445")) {
-                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Loại giấy tờ không hợp lệ"));
-            }
-            else {
-                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Lỗi hệ thống"));
+            if(root.get("statusCode").asInt() == 400){
+                if(root.get("message").asText().equals("IDG-00010003")){
+                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Input không hợp lệ"));
+                }
+                if(root.get("message").asText().equals("IDG-00010202")){
+                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Dữ liệu đầu vào không phải là ảnh"));
+                }
+                if(root.get("message").asText().equals("IDG-00010445")){
+                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Loại giấy tờ không hợp lệ"));
+                }
+                if(root.get("message").asText().equals("IDG-00010448")){
+                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Mặt trước giấy tờ không hợp lệ"));
+                }
+                if(root.get("message").asText().equals("IDG-00010449")){
+                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Mặt sau giấy tờ không hợp lệ"));
+                }
+                else {
+                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, root.get("errors").asText()));
+                }
             }
         }
 
@@ -166,9 +197,6 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
     public ResponseEntity<?> vertifySelfie(MultipartFile imgFrontId, MultipartFile imgSelfie, String mobile) {
         String hashImgFrontId = this.uploadImage(imgFrontId, "imgFrontId", "imgFrontId");
         String hashImgSelfie = this.uploadImage(imgSelfie, "imgSelfie", "imgSelfie");
-        if(hashImgFrontId == null || hashImgSelfie == null){
-            return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Không lấy được mã hash của hình ảnh"));
-        }
 
         logger.info("============= Start eKYC vertifySelfie (VNPT) =============");
         // Phí 800 vnd
@@ -204,12 +232,13 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                     (Object) null);
             root = mapper.readTree(responseEntity.getBody());
 
-            if(root.get("statusCode").asInt() == 200 && root.get("object").get("multiple_faces").asText().equals("true")){
-                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Ảnh có nhiều hơn 1 khuôn mặt"));
-            }
-
-            if(root.get("statusCode").asInt() == 200 && root.get("object").get("msg").asText().equals("NOMATCH")){
-                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Khuôn mặt không khớp"));
+            if(root.get("statusCode").asInt() == 200){
+                if(root.get("object").get("multiple_faces").asText().equals("true")){
+                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Ảnh có nhiều hơn 1 khuôn mặt"));
+                }
+                if(root.get("object").get("msg").asText().equals("NOMATCH")){
+                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Khuôn mặt không khớp"));
+                }
             }
         }
         catch (Exception e) {
@@ -218,7 +247,7 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                 return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Không tìm thấy khuôn mặt"));
             }
             else {
-                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Lỗi hệ thống"));
+                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, root.get("errors").asText()));
             }
         }
 
