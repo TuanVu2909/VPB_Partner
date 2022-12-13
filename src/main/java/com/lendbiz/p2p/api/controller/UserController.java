@@ -392,26 +392,26 @@ public class UserController extends BaseResponse<UserService> {
     public ResponseEntity<?> vertifyId(
             @RequestParam("imgFrontId") @NotBlank MultipartFile imgFrontId,
             @RequestParam("imgBackId") @NotBlank MultipartFile imgBackId,
-            @RequestHeader("mobile") String mobile
+            @RequestHeader("session") String session
             )
     {
-        if (mobile == null || mobile.equals("")) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "mobile is not empty")) , HttpStatus.OK);
+        if (session == null || session.equals("")) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "mobile is not empty")) , HttpStatus.OK);
         if(imgFrontId.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgFrontId is not empty")) , HttpStatus.OK);
         if(imgBackId.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgBackId is not empty")), HttpStatus.OK);
-        return vnptService.vertifyIdentity(imgFrontId, imgBackId, mobile);
+        return vnptService.vertifyIdentity(imgFrontId, imgBackId, session);
     }
 
     @PostMapping("/3gang/ekyc/vertify-selfie")
     public ResponseEntity<?> vertifySelfie(
             @RequestParam("imgFrontId") @NotBlank MultipartFile imgFrontId,
             @RequestParam("imgSelfie") @NotBlank MultipartFile imgSelfie,
-            @RequestHeader("mobile") String mobile
+            @RequestHeader("session") String session
     )
     {
-        if (mobile == null || mobile.equals("")) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "mobile is not empty")) , HttpStatus.OK);
+        if (session == null || session.equals("")) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "mobile is not empty")) , HttpStatus.OK);
         if(imgFrontId.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgFrontId is not empty")) , HttpStatus.OK);
         if(imgSelfie.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgSelfie is not empty")), HttpStatus.OK);
-        return vnptService.vertifySelfie(imgFrontId, imgSelfie, mobile);
+        return vnptService.vertifySelfie(imgFrontId, imgSelfie, session);
     }
     // Authorization
 

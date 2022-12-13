@@ -1,5 +1,6 @@
 package com.lendbiz.p2p.api.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.Constants;
@@ -66,8 +67,7 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
         }
         return null;
     }
-
-    @SneakyThrows
+    
     @Override
     public ResponseEntity<?> vertifyIdentity(MultipartFile imgFrontId, MultipartFile imgBackId, String mobile) {
         String hashImgFrontId = this.uploadImage(imgFrontId, "imgFrontId", "imgFrontId");
@@ -98,7 +98,7 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
         bodies.put("token", Constants.VNPT_ID);
 
         HttpEntity<?> request = new HttpEntity(bodies, headers);
-        JsonNode root;
+        JsonNode root = null;
         try {
             ResponseEntity<String> responseEntity = restTemplate.exchange(
                     Constants.VNPT_DOMAIN + "/ai/v1/ocr/id",
@@ -115,6 +115,11 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
             String idBackType = root.get("object").get("back_type_id").asText();
 
             if(root.get("statusCode").asInt() == 200) {
+                String imgDupplicate = root.get("object").get("dupplication_warning").asBoolean() ? root.get("object").get("dupplication_warning").asText() : null;
+                if("true".equals(imgDupplicate)) {
+                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Input không hợp lệ"));
+                }
+
                 if(idFontType.equals("2") || idFontType.equals("3") || idFontType.equals("4") ||
                    idBackType.equals("2") || idBackType.equals("3") || idBackType.equals("4")){
                     return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Chỉ được phép sử dụng chứng minh nhân dân, Căn cước công dân, Căn cước gắn chíp"));
@@ -122,8 +127,11 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                 if(!idFontType.equals(idBackType)){
                     return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ mặt trước và sau không cùng loại"));
                 }
-                if(!(root.get("object").get("cover_prob_front").asText().equals("0"))){
-                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ có mặt trước bị che"));
+                if(!(root.get("object").get("checking_result_front").get("corner_cut_result").asText().equals("0"))){
+                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ mặt trước bị cắt hoặc bị che"));
+                }
+                if(!(root.get("object").get("checking_result_back").get("corner_cut_result").asText().equals("0"))){
+                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ mặt sau bị cắt hoặc bị che"));
                 }
                 if(root.get("object").get("tampering").get("is_legal").asText().equals("no") ||
                    root.get("object").get("id_fake_warning").asText().equals("yes")) {
@@ -150,7 +158,11 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
             }
         }
         catch (Exception e) {
-            root = BaseService.stringToRoot(e.getMessage());
+            try {
+                root = BaseService.stringToRoot(e.getMessage());
+            } catch (JsonProcessingException jsonProcessingException) {
+                jsonProcessingException.printStackTrace();
+            }
             if(root.get("statusCode").asInt() == 400){
                 if(root.get("message").asText().equals("IDG-00010003")){
                     return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Input không hợp lệ"));
