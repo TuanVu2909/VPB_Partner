@@ -117,7 +117,8 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
             if(root.get("statusCode").asInt() == 200) {
                 if(idFontType.equals("2") || idFontType.equals("3") || idFontType.equals("4") ||
                    idBackType.equals("2") || idBackType.equals("3") || idBackType.equals("4")){
-                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Chỉ được phép sử dụng chứng minh nhân dân, Căn cước công dân, Căn cước gắn chíp"));
+                    // return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Chỉ được phép sử dụng chứng minh nhân dân, Căn cước công dân, Căn cước gắn chíp"));
+                    throw new BusinessException(Constants.FAIL,"Chỉ được phép sử dụng chứng minh nhân dân, Căn cước công dân, Căn cước gắn chíp");
                 }
                 if(!idFontType.equals(idBackType)){
                     return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ mặt trước và sau không cùng loại"));
@@ -144,7 +145,10 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                        root.get("object").get("match_front_back").get("match_id").asText().equals("no") ||
                        root.get("object").get("match_front_back").get("match_valid_date").asText().equals("no") ||
                        root.get("object").get("match_front_back").get("match_name").asText().equals("no")
-                    ){ return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ có mặt trước và mặt sau không khớp")); }
+                    ){
+                        throw new BusinessException(Constants.FAIL,"Giấy tờ có mặt trước và mặt sau không khớp");
+                        //  return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ có mặt trước và mặt sau không khớp"));
+                         }
                 }
                 // còn lại là CM9, CM12, CCCD
             }
@@ -168,7 +172,8 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                     return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Mặt sau giấy tờ không hợp lệ"));
                 }
                 else {
-                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, root.get("errors").asText()));
+                    // return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, root.get("errors").asText()));
+                    throw new BusinessException(Constants.FAIL, root.get("errors").asText());
                 }
             }
         }
@@ -234,20 +239,24 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
 
             if(root.get("statusCode").asInt() == 200){
                 if(root.get("object").get("multiple_faces").asText().equals("true")){
-                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Ảnh có nhiều hơn 1 khuôn mặt"));
+                    // return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Ảnh có nhiều hơn 1 khuôn mặt"));
+                    throw new BusinessException(Constants.FAIL, "Ảnh có nhiều hơn 1 khuôn mặt");
                 }
                 if(root.get("object").get("msg").asText().equals("NOMATCH")){
-                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Khuôn mặt không khớp"));
+                    // return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Khuôn mặt không khớp"));
+                    throw new BusinessException(Constants.FAIL, "Khuôn mặt không khớp");
                 }
             }
         }
         catch (Exception e) {
             root = BaseService.stringToRoot(e.getMessage());
             if(root.get("statusCode").asInt() == 400) {
-                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Không tìm thấy khuôn mặt"));
+                // return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Không tìm thấy khuôn mặt"));
+                throw new BusinessException(Constants.FAIL, "Không tìm thấy khuôn mặt");
             }
             else {
-                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, root.get("errors").asText()));
+                // return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, root.get("errors").asText()));
+                throw new BusinessException(Constants.FAIL, root.get("errors").asText());
             }
         }
 
