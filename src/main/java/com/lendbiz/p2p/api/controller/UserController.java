@@ -9,9 +9,6 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.service.*;
@@ -390,8 +387,8 @@ public class UserController extends BaseResponse<UserService> {
 
     @PostMapping("/3gang/ekyc/vertify-identity")
     public ResponseEntity<?> vertifyId(
-            @RequestParam("imgFrontId") @NotBlank MultipartFile imgFrontId,
-            @RequestParam("imgBackId") @NotBlank MultipartFile imgBackId,
+            @RequestParam("imgFrontId") MultipartFile imgFrontId,
+            @RequestParam("imgBackId")  MultipartFile imgBackId,
             @RequestHeader("session") String session
             )
     {
@@ -403,8 +400,8 @@ public class UserController extends BaseResponse<UserService> {
 
     @PostMapping("/3gang/ekyc/vertify-selfie")
     public ResponseEntity<?> vertifySelfie(
-            @RequestParam("imgFrontId") @NotBlank MultipartFile imgFrontId,
-            @RequestParam("imgSelfie") @NotBlank MultipartFile imgSelfie,
+            @RequestParam("imgFrontId") MultipartFile imgFrontId,
+            @RequestParam("imgSelfie") MultipartFile imgSelfie,
             @RequestHeader("session") String session
     )
     {

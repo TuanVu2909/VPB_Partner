@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.Constants;
+import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.vnpt.BgEkycEntity;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.BgEkycRepository;
@@ -117,33 +118,33 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
             if(root.get("statusCode").asInt() == 200) {
                 String imgDupplicate = root.get("object").get("dupplication_warning").asBoolean() ? root.get("object").get("dupplication_warning").asText() : null;
                 if("true".equals(imgDupplicate)) {
-                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Input không hợp lệ"));
+                    throw new BusinessException(ErrorCode.VNPT_INVALID_INPUT, ErrorCode.VNPT_INVALID_INPUT_DESC);
                 }
 
                 if(idFontType.equals("2") || idFontType.equals("3") || idFontType.equals("4") ||
                    idBackType.equals("2") || idBackType.equals("3") || idBackType.equals("4")){
-                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Chỉ được phép sử dụng chứng minh nhân dân, Căn cước công dân, Căn cước gắn chíp"));
+                    throw new BusinessException(ErrorCode.VNPT_INVALID_TYPE, ErrorCode.VNPT_INVALID_TYPE_DESC);
                 }
                 if(!idFontType.equals(idBackType)){
-                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ mặt trước và sau không cùng loại"));
+                    throw new BusinessException(ErrorCode.VNPT_INVALID_ID_TYPE, ErrorCode.VNPT_INVALID_ID_TYPE_DESC);
                 }
                 if(!(root.get("object").get("checking_result_front").get("corner_cut_result").asText().equals("0"))){
-                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ mặt trước bị cắt hoặc bị che"));
+                    throw new BusinessException(ErrorCode.VNPT_ID_FRONT_COVER, ErrorCode.VNPT_ID_FRONT_COVER_DESC);
                 }
                 if(!(root.get("object").get("checking_result_back").get("corner_cut_result").asText().equals("0"))){
-                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ mặt sau bị cắt hoặc bị che"));
+                    throw new BusinessException(ErrorCode.VNPT_ID_BACK_COVER, ErrorCode.VNPT_ID_BACK_COVER_DESC);
                 }
                 if(root.get("object").get("tampering").get("is_legal").asText().equals("no") ||
                    root.get("object").get("id_fake_warning").asText().equals("yes")) {
-                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ là giả mạo"));
+                    throw new BusinessException(ErrorCode.VNPT_ID_FAKE, ErrorCode.VNPT_ID_FAKE_DESC);
                 }
                 if(root.get("object").get("expire_warning").asText().equals("yes") ||
                    root.get("object").get("back_expire_warning").asText().equals("yes")){
-                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ hết hạn sử dụng"));
+                    throw new BusinessException(ErrorCode.VNPT_ID_EXPIRED, ErrorCode.VNPT_ID_EXPIRED_DESC);
                 }
                 if(root.get("object").get("corner_warning").asText().equals("yes") ||
                    root.get("object").get("back_corner_warning").asText().equals("yes")){
-                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ bị mất góc"));
+                    throw new BusinessException(ErrorCode.VNPT_ID_NO_CORNER, ErrorCode.VNPT_ID_NO_CORNER_DESC);
                 }
                 // CCGC
                 if(idFontType.equals("5") && idBackType.equals("5")) {
@@ -152,7 +153,7 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                        root.get("object").get("match_front_back").get("match_id").asText().equals("no") ||
                        root.get("object").get("match_front_back").get("match_valid_date").asText().equals("no") ||
                        root.get("object").get("match_front_back").get("match_name").asText().equals("no")
-                    ){ return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Giấy tờ có mặt trước và mặt sau không khớp")); }
+                    ){ throw new BusinessException(ErrorCode.VNPT_ID_NO_MATCH, ErrorCode.VNPT_ID_NO_MATCH_DESC); }
                 }
                 // còn lại là CM9, CM12, CCCD
             }
@@ -165,22 +166,22 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
             }
             if(root.get("statusCode").asInt() == 400){
                 if(root.get("message").asText().equals("IDG-00010003")){
-                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Input không hợp lệ"));
+                    throw new BusinessException(ErrorCode.VNPT_INVALID_INPUT, ErrorCode.VNPT_INVALID_INPUT_DESC);
                 }
                 if(root.get("message").asText().equals("IDG-00010202")){
-                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Dữ liệu đầu vào không phải là ảnh"));
+                    throw new BusinessException(ErrorCode.VNPT_NO_IMAGE, ErrorCode.VNPT_NO_IMAGE_DESC);
                 }
                 if(root.get("message").asText().equals("IDG-00010445")){
-                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Loại giấy tờ không hợp lệ"));
+                    throw new BusinessException(ErrorCode.VNPT_INVALID_TYPE, ErrorCode.VNPT_INVALID_TYPE_DESC);
                 }
                 if(root.get("message").asText().equals("IDG-00010448")){
-                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Mặt trước giấy tờ không hợp lệ"));
+                    throw new BusinessException(ErrorCode.VNPT_ID_FRONT_INVALID, ErrorCode.VNPT_ID_FRONT_INVALID_DESC);
                 }
                 if(root.get("message").asText().equals("IDG-00010449")){
-                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Mặt sau giấy tờ không hợp lệ"));
+                    throw new BusinessException(ErrorCode.VNPT_ID_BACK_INVALID, ErrorCode.VNPT_ID_BACK_INVALID_DESC);
                 }
                 else {
-                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, root.get("errors").asText()));
+                    throw new BusinessException(ErrorCode.UNKNOWN_ERROR, root.get("errors").asText());
                 }
             }
         }
@@ -193,11 +194,11 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
         bgEkyc.setBirthDay(root.get("object").get("birth_day").asText());
         bgEkyc.setNationality(root.get("object").get("nationality").asText());
         bgEkyc.setGender(root.get("object").get("gender").asText());
-        bgEkyc.setOriginLocation(root.get("object").get("origin_location").asText());
-        bgEkyc.setRecentLocation(root.get("object").get("recent_location").asText());
+        bgEkyc.setOriginLocation(root.get("object").get("origin_location").asText().replaceAll("\n", ", "));
+        bgEkyc.setRecentLocation(root.get("object").get("recent_location").asText().replaceAll("\n", ", "));
         bgEkyc.setIssueDate(root.get("object").get("issue_date").asText());
         bgEkyc.setValidDate(root.get("object").get("valid_date").asText());
-        bgEkyc.setIssuePlace(root.get("object").get("issue_place").asText());
+        bgEkyc.setIssuePlace(root.get("object").get("issue_place").asText().replaceAll("\n", ", "));
         bgEkyc.setOrcSuccess("YES");
 
         this.bgEkycRepository.save(bgEkyc);
@@ -246,20 +247,20 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
 
             if(root.get("statusCode").asInt() == 200){
                 if(root.get("object").get("multiple_faces").asText().equals("true")){
-                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Ảnh có nhiều hơn 1 khuôn mặt"));
+                    throw new BusinessException(ErrorCode.VNPT_MULTIPLE_FACES, ErrorCode.VNPT_MULTIPLE_FACES_DESC);
                 }
                 if(root.get("object").get("msg").asText().equals("NOMATCH")){
-                    return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Khuôn mặt không khớp"));
+                    throw new BusinessException(ErrorCode.VNPT_FACE_NO_MATCH, ErrorCode.VNPT_FACE_NO_MATCH_DESC);
                 }
             }
         }
         catch (Exception e) {
             root = BaseService.stringToRoot(e.getMessage());
             if(root.get("statusCode").asInt() == 400) {
-                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "Không tìm thấy khuôn mặt"));
+                throw new BusinessException(ErrorCode.VNPT_FACE_NO_FIND, ErrorCode.VNPT_FACE_NO_FIND_DESC);
             }
             else {
-                return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, root.get("errors").asText()));
+                throw new BusinessException(ErrorCode.UNKNOWN_ERROR, root.get("errors").asText());
             }
         }
 
