@@ -1272,52 +1272,52 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     public String sendOtp(String mobile, String otp, String message) {
         String jsonResponse = "";
-        try {
-            URL url = new URL("http://45.117.83.201:9095/otp/send-otp");
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setUseCaches(false);
-            con.setDoOutput(true);
-            con.setDoInput(true);
+        // try {
+        //     URL url = new URL("http://45.117.83.201:9095/otp/send-otp");
+        //     HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        //     con.setUseCaches(false);
+        //     con.setDoOutput(true);
+        //     con.setDoInput(true);
 
-            con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            // con.setRequestProperty("token",
-            // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c24iOiJsYmNhcGl0YWwiLCJzaWQiOiJhYTgwMjIzNS04OTU1LTQ2ZDYtYmRmYi0xZDhjZmExYmYzODEiLCJvYnQiOiIiLCJvYmoiOiIiLCJuYmYiOjE2NjU5NzQyMDksImV4cCI6MTY2NTk3NzgwOSwiaWF0IjoxNjY1OTc0MjA5fQ.qqitpQMIkzk3OJJD-Mj5hYCwZ5cJ_EyVSWnsdE0BrjI");
-            con.setRequestMethod("POST");
+        //     con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+        //     // con.setRequestProperty("token",
+        //     // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c24iOiJsYmNhcGl0YWwiLCJzaWQiOiJhYTgwMjIzNS04OTU1LTQ2ZDYtYmRmYi0xZDhjZmExYmYzODEiLCJvYnQiOiIiLCJvYmoiOiIiLCJuYmYiOjE2NjU5NzQyMDksImV4cCI6MTY2NTk3NzgwOSwiaWF0IjoxNjY1OTc0MjA5fQ.qqitpQMIkzk3OJJD-Mj5hYCwZ5cJ_EyVSWnsdE0BrjI");
+        //     con.setRequestMethod("POST");
 
-            SendOTPRequest request = new SendOTPRequest();
-            request.setMobile(mobile);
-            request.setCode(otp);
-            request.setMessage(message);
-            JSONObject jsonObject = new JSONObject(request);
+        //     SendOTPRequest request = new SendOTPRequest();
+        //     request.setMobile(mobile);
+        //     request.setCode(otp);
+        //     request.setMessage(message);
+        //     JSONObject jsonObject = new JSONObject(request);
 
-            logger.info("strJsonBody:\n" + jsonObject.toString());
+        //     logger.info("strJsonBody:\n" + jsonObject.toString());
 
-            byte[] sendBytes = jsonObject.toString().getBytes("UTF-8");
-            con.setFixedLengthStreamingMode(sendBytes.length);
+        //     byte[] sendBytes = jsonObject.toString().getBytes("UTF-8");
+        //     con.setFixedLengthStreamingMode(sendBytes.length);
 
-            OutputStream outputStream = con.getOutputStream();
-            outputStream.write(sendBytes);
+        //     OutputStream outputStream = con.getOutputStream();
+        //     outputStream.write(sendBytes);
 
-            int httpResponse = con.getResponseCode();
-            logger.info("httpResponse: " + httpResponse);
+        //     int httpResponse = con.getResponseCode();
+        //     logger.info("httpResponse: " + httpResponse);
 
-            if (httpResponse >= HttpURLConnection.HTTP_OK && httpResponse < HttpURLConnection.HTTP_BAD_REQUEST) {
-                Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
-                jsonResponse = scanner.useDelimiter("/A").hasNext() ? scanner.next() : "";
-                scanner.close();
-            } else {
-                Scanner scanner = new Scanner(con.getErrorStream(), "UTF-8");
-                jsonResponse = scanner.useDelimiter("/A").hasNext() ? scanner.next() : "";
-                scanner.close();
-            }
+        //     if (httpResponse >= HttpURLConnection.HTTP_OK && httpResponse < HttpURLConnection.HTTP_BAD_REQUEST) {
+        //         Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
+        //         jsonResponse = scanner.useDelimiter("/A").hasNext() ? scanner.next() : "";
+        //         scanner.close();
+        //     } else {
+        //         Scanner scanner = new Scanner(con.getErrorStream(), "UTF-8");
+        //         jsonResponse = scanner.useDelimiter("/A").hasNext() ? scanner.next() : "";
+        //         scanner.close();
+        //     }
 
-            logger.info("jsonResponse:\n" + jsonResponse);
+        //     logger.info("jsonResponse:\n" + jsonResponse);
 
-            logger.info("successfully!");
+        //     logger.info("successfully!");
 
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
+        // } catch (Throwable t) {
+        //     t.printStackTrace();
+        // }
 
         return jsonResponse;
     }
