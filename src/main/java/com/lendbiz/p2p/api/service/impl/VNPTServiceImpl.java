@@ -140,11 +140,9 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
         String idBackType = root.get("object").get("back_type_id").asText();
 
         if(root.get("statusCode").asInt() == 200){
-            String imgDupplicate = root.get("object").get("dupplication_warning").asBoolean() ? root.get("object").get("dupplication_warning").asText() : null;
-            if("true".equals(imgDupplicate)){
+            if(root.get("object").has("dupplication_warning")){
                 throw new BusinessException(ErrorCode.VNPT_INVALID_INPUT, ErrorCode.VNPT_INVALID_INPUT_DESC);
             }
-
             if(idFontType.equals("2") || idFontType.equals("3") || idFontType.equals("4") ||
                     idBackType.equals("2") || idBackType.equals("3") || idBackType.equals("4")){
                 throw new BusinessException(ErrorCode.VNPT_INVALID_TYPE, ErrorCode.VNPT_INVALID_TYPE_DESC);
@@ -179,7 +177,6 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                         root.get("object").get("match_front_back").get("match_name").asText().equals("no")
                 ){ throw new BusinessException(ErrorCode.VNPT_ID_NO_MATCH, ErrorCode.VNPT_ID_NO_MATCH_DESC); }
             }
-            // còn lại là CM9, CM12, CCCD
         }
         // Đến đây là vertifyIdentity không có lỗi -> insert vào DB
         bgEkyc.setIdNo(root.get("object").get("id").asText());
