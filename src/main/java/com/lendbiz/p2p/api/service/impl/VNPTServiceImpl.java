@@ -148,11 +148,11 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
         String idBackType = root.get("object").get("back_type_id").asText();
 
         if(root.get("statusCode").asInt() == 200){
-            if(root.get("object").has("dupplication_warning")){
-                if("true".equals(root.get("object").get("dupplication_warning").asText())){
-                    throw new BusinessException(ErrorCode.VNPT_INVALID_INPUT, ErrorCode.VNPT_INVALID_INPUT_DESC);
-                }
-            }
+//            if(root.get("object").has("dupplication_warning")){
+//                if("true".equals(root.get("object").get("dupplication_warning").asText())){
+//                    throw new BusinessException(ErrorCode.VNPT_INVALID_INPUT, ErrorCode.VNPT_INVALID_INPUT_DESC);
+//                }
+//            }
             if(idFontType.equals("2") || idFontType.equals("3") || idFontType.equals("4") ||
                     idBackType.equals("2") || idBackType.equals("3") || idBackType.equals("4")){
                 throw new BusinessException(ErrorCode.VNPT_INVALID_TYPE, ErrorCode.VNPT_INVALID_TYPE_DESC);
@@ -193,7 +193,7 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
             }
             String []birth = root.get("object").get("birth_day").asText().split("/");
             String currentYear = new SimpleDateFormat("yyyy").format(new Date());
-            if(Integer.parseInt(birth[2]) - Integer.parseInt(currentYear) < 18){
+            if(Integer.parseInt(currentYear) - Integer.parseInt(birth[2]) < 18){
                 throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_OLD_INVALID);
             }
             // Đến đây là vertifyIdentity không có lỗi -> insert vào DB
