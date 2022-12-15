@@ -7,11 +7,13 @@ import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.vnpt.BgEkycEntity;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.BgEkycRepository;
+import com.lendbiz.p2p.api.repository.CfMastRepository;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.service.VNPTService;
 import com.lendbiz.p2p.api.service.base.BaseService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,6 +35,10 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
 
     @Autowired
     private BgEkycRepository bgEkycRepository;
+
+    @Qualifier("cfMastRepository")
+    @Autowired
+    CfMastRepository cfMastRepo;
 
     public String uploadImage(MultipartFile image, String title, String description) {
         // Phí 0 vnd
@@ -179,23 +187,32 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                         root.get("object").get("match_front_back").get("match_name").asText().equals("no")
                 ){ throw new BusinessException(ErrorCode.VNPT_ID_NO_MATCH, ErrorCode.VNPT_ID_NO_MATCH_DESC); }
             }
-        }
-        // Đến đây là vertifyIdentity không có lỗi -> insert vào DB
-        bgEkyc.setIdNo(root.get("object").get("id").asText());
-        bgEkyc.setTypeId(root.get("object").get("type_id").asInt());
-        bgEkyc.setCardType(root.get("object").get("card_type").asText());
-        bgEkyc.setName(root.get("object").get("name").asText());
-        bgEkyc.setBirthDay(root.get("object").get("birth_day").asText());
-        bgEkyc.setNationality(root.get("object").get("nationality").asText());
-        bgEkyc.setGender(root.get("object").get("gender").asText());
-        bgEkyc.setOriginLocation(root.get("object").get("origin_location").asText().replaceAll("\n", ", "));
-        bgEkyc.setRecentLocation(root.get("object").get("recent_location").asText().replaceAll("\n", ", "));
-        bgEkyc.setIssueDate(root.get("object").get("issue_date").asText());
-        bgEkyc.setValidDate(root.get("object").get("valid_date").asText());
-        bgEkyc.setIssuePlace(root.get("object").get("issue_place").asText().replaceAll("\n", ", "));
-        bgEkyc.setOrcSuccess("YES");
 
-        this.bgEkycRepository.save(bgEkyc);
+            if(cfMastRepo.findByIdCode(root.get("object").get("id").asText(), mobile).size() > 0){
+                throw new BusinessException(ErrorCode.USER_EXISTED, ErrorCode.USER_EXISTED_DESCRIPTION);
+            }
+            String []birth = root.get("object").get("birth_day").asText().split("/");
+            String currentYear = new SimpleDateFormat("yyyy").format(new Date());
+            if(Integer.parseInt(birth[2]) - Integer.parseInt(currentYear) < 18){
+                throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_OLD_INVALID);
+            }
+            // Đến đây là vertifyIdentity không có lỗi -> insert vào DB
+            bgEkyc.setIdNo(root.get("object").get("id").asText());
+            bgEkyc.setTypeId(root.get("object").get("type_id").asInt());
+            bgEkyc.setCardType(root.get("object").get("card_type").asText());
+            bgEkyc.setName(root.get("object").get("name").asText());
+            bgEkyc.setBirthDay(root.get("object").get("birth_day").asText());
+            bgEkyc.setNationality(root.get("object").get("nationality").asText());
+            bgEkyc.setGender(root.get("object").get("gender").asText());
+            bgEkyc.setOriginLocation(root.get("object").get("origin_location").asText().replaceAll("\n", ", "));
+            bgEkyc.setRecentLocation(root.get("object").get("recent_location").asText().replaceAll("\n", ", "));
+            bgEkyc.setIssueDate(root.get("object").get("issue_date").asText());
+            bgEkyc.setValidDate(root.get("object").get("valid_date").asText());
+            bgEkyc.setIssuePlace(root.get("object").get("issue_place").asText().replaceAll("\n", ", "));
+            bgEkyc.setOrcSuccess("YES");
+
+            this.bgEkycRepository.save(bgEkyc);
+        }
         return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, bgEkyc));
     }
 

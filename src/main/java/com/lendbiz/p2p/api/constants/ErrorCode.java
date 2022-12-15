@@ -91,49 +91,49 @@ public class ErrorCode {
     public static final String USER_EXISTED_DESCRIPTION = "Giấy tờ tuỳ thân đã được sử dụng, vui lòng sử dụng giấy tờ tuỳ thân khác!";
 
     public static final String VNPT_INVALID_INPUT = "23";
-    public static final String VNPT_INVALID_INPUT_DESC = "Ảnh đầu vào là không hợp lệ !";
+    public static final String VNPT_INVALID_INPUT_DESC = "Ảnh đầu vào không hợp lệ!";
 
     public static final String VNPT_INVALID_TYPE = "24";
-    public static final String VNPT_INVALID_TYPE_DESC = "Loại giấy tờ không hợp lệ, Chỉ được phép sử dụng chứng minh nhân dân, Căn cước công dân, Căn cước gắn chíp !";
+    public static final String VNPT_INVALID_TYPE_DESC = "Loại giấy tờ không hợp lệ, Chỉ được phép sử dụng chứng minh nhân dân, Căn cước công dân, Căn cước gắn chíp!";
 
     public static final String VNPT_INVALID_ID_TYPE = "25";
-    public static final String VNPT_INVALID_ID_TYPE_DESC = "Giấy tờ mặt trước và sau không cùng loại !";
+    public static final String VNPT_INVALID_ID_TYPE_DESC = "Giấy tờ mặt trước và sau không cùng loại!";
 
     public static final String VNPT_ID_FRONT_COVER = "26";
-    public static final String VNPT_ID_FRONT_COVER_DESC = "Giấy tờ mặt trước bị cắt hoặc bị che !";
+    public static final String VNPT_ID_FRONT_COVER_DESC = "Giấy tờ mặt trước bị cắt hoặc bị che!";
 
     public static final String VNPT_ID_BACK_COVER = "27";
-    public static final String VNPT_ID_BACK_COVER_DESC = "Giấy tờ mặt sau bị cắt hoặc bị che !";
+    public static final String VNPT_ID_BACK_COVER_DESC = "Giấy tờ mặt sau bị cắt hoặc bị che!";
 
     public static final String VNPT_ID_FRONT_INVALID = "28";
-    public static final String VNPT_ID_FRONT_INVALID_DESC = "Giấy tờ mặt trước không hợp lệ !";
+    public static final String VNPT_ID_FRONT_INVALID_DESC = "Giấy tờ mặt trước không hợp lệ!";
 
     public static final String VNPT_ID_BACK_INVALID = "29";
-    public static final String VNPT_ID_BACK_INVALID_DESC = "Giấy tờ mặt sau bị cắt hoặc bị che !";
+    public static final String VNPT_ID_BACK_INVALID_DESC = "Giấy tờ mặt sau bị cắt hoặc bị che!";
 
     public static final String VNPT_ID_FAKE = "30";
-    public static final String VNPT_ID_FAKE_DESC = "Giấy tờ là giả mạo !";
+    public static final String VNPT_ID_FAKE_DESC = "Giấy tờ là giả mạo!";
 
     public static final String VNPT_ID_EXPIRED = "31";
-    public static final String VNPT_ID_EXPIRED_DESC = "Giấy tờ hết hạn sử dụng !";
+    public static final String VNPT_ID_EXPIRED_DESC = "Giấy tờ hết hạn sử dụng!";
 
     public static final String VNPT_ID_NO_CORNER = "32";
-    public static final String VNPT_ID_NO_CORNER_DESC = "Giấy tờ bị mất góc !";
+    public static final String VNPT_ID_NO_CORNER_DESC = "Giấy tờ bị mất góc!";
 
     public static final String VNPT_ID_NO_MATCH = "33";
-    public static final String VNPT_ID_NO_MATCH_DESC = "Giấy tờ có mặt trước và mặt sau không khớp !";
+    public static final String VNPT_ID_NO_MATCH_DESC = "Giấy tờ có mặt trước và mặt sau không khớp!";
 
     public static final String VNPT_NO_IMAGE = "34";
-    public static final String VNPT_NO_IMAGE_DESC = "Dữ liệu đầu vào không phải là ảnh !";
+    public static final String VNPT_NO_IMAGE_DESC = "Dữ liệu đầu vào không phải là ảnh!";
 
     public static final String VNPT_MULTIPLE_FACES = "35";
-    public static final String VNPT_MULTIPLE_FACES_DESC = "Ảnh có nhiều hơn 1 khuôn mặt !";
+    public static final String VNPT_MULTIPLE_FACES_DESC = "Ảnh có nhiều hơn 1 khuôn mặt!";
 
     public static final String VNPT_FACE_NO_MATCH = "36";
-    public static final String VNPT_FACE_NO_MATCH_DESC = "Khuôn mặt không khớp !";
+    public static final String VNPT_FACE_NO_MATCH_DESC = "Khuôn mặt không khớp!";
 
     public static final String VNPT_FACE_NO_FIND = "37";
-    public static final String VNPT_FACE_NO_FIND_DESC = "Không tìm thấy khuôn mặt !";
+    public static final String VNPT_FACE_NO_FIND_DESC = "Không tìm thấy khuôn mặt!";
 
     public static final String SESSION_TIMEOUT = "901";
     public static final String SESSION_TIMEOUT_DESCRIPTION = "Hết phiên đăng nhập, vui lòng đăng nhập lại!";
