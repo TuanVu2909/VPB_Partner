@@ -141,7 +141,9 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
 
         if(root.get("statusCode").asInt() == 200){
             if(root.get("object").has("dupplication_warning")){
-                throw new BusinessException(ErrorCode.VNPT_INVALID_INPUT, ErrorCode.VNPT_INVALID_INPUT_DESC);
+                if("true".equals(root.get("object").get("dupplication_warning").asText())){
+                    throw new BusinessException(ErrorCode.VNPT_INVALID_INPUT, ErrorCode.VNPT_INVALID_INPUT_DESC);
+                }
             }
             if(idFontType.equals("2") || idFontType.equals("3") || idFontType.equals("4") ||
                     idBackType.equals("2") || idBackType.equals("3") || idBackType.equals("4")){
