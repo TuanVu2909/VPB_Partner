@@ -1,6 +1,5 @@
 package com.lendbiz.p2p.api.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.Constants;
@@ -68,7 +67,8 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
         }
         return null;
     }
-    
+
+    @SneakyThrows
     @Override
     public ResponseEntity<?> vertifyIdentity(MultipartFile imgFrontId, MultipartFile imgBackId, String mobile) {
         String hashImgFrontId = this.uploadImage(imgFrontId, "imgFrontId", "imgFrontId");
@@ -109,61 +109,9 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                     (Object) null);
 
             root = mapper.readTree(responseEntity.getBody());
-            // field common
-            // idFontType,idBackType -> loai giay to:  2 -> HC, 3 -> CMQD, 4 -> BLX
-            // idFontType,idBackType -> loai giay to:  0 -> CM9, 1 -> CCCD,CM12, 5 -> CCGC
-            String idFontType = root.get("object").get("type_id").asText();
-            String idBackType = root.get("object").get("back_type_id").asText();
-
-            if(root.get("statusCode").asInt() == 200) {
-                String imgDupplicate = root.get("object").get("dupplication_warning").asBoolean() ? root.get("object").get("dupplication_warning").asText() : null;
-                if("true".equals(imgDupplicate)) {
-                    throw new BusinessException(ErrorCode.VNPT_INVALID_INPUT, ErrorCode.VNPT_INVALID_INPUT_DESC);
-                }
-
-                if(idFontType.equals("2") || idFontType.equals("3") || idFontType.equals("4") ||
-                   idBackType.equals("2") || idBackType.equals("3") || idBackType.equals("4")){
-                    throw new BusinessException(ErrorCode.VNPT_INVALID_TYPE, ErrorCode.VNPT_INVALID_TYPE_DESC);
-                }
-                if(!idFontType.equals(idBackType)){
-                    throw new BusinessException(ErrorCode.VNPT_INVALID_ID_TYPE, ErrorCode.VNPT_INVALID_ID_TYPE_DESC);
-                }
-                if(!(root.get("object").get("checking_result_front").get("corner_cut_result").asText().equals("0"))){
-                    throw new BusinessException(ErrorCode.VNPT_ID_FRONT_COVER, ErrorCode.VNPT_ID_FRONT_COVER_DESC);
-                }
-                if(!(root.get("object").get("checking_result_back").get("corner_cut_result").asText().equals("0"))){
-                    throw new BusinessException(ErrorCode.VNPT_ID_BACK_COVER, ErrorCode.VNPT_ID_BACK_COVER_DESC);
-                }
-                if(root.get("object").get("tampering").get("is_legal").asText().equals("no") ||
-                   root.get("object").get("id_fake_warning").asText().equals("yes")) {
-                    throw new BusinessException(ErrorCode.VNPT_ID_FAKE, ErrorCode.VNPT_ID_FAKE_DESC);
-                }
-                if(root.get("object").get("expire_warning").asText().equals("yes") ||
-                   root.get("object").get("back_expire_warning").asText().equals("yes")){
-                    throw new BusinessException(ErrorCode.VNPT_ID_EXPIRED, ErrorCode.VNPT_ID_EXPIRED_DESC);
-                }
-                if(root.get("object").get("corner_warning").asText().equals("yes") ||
-                   root.get("object").get("back_corner_warning").asText().equals("yes")){
-                    throw new BusinessException(ErrorCode.VNPT_ID_NO_CORNER, ErrorCode.VNPT_ID_NO_CORNER_DESC);
-                }
-                // CCGC
-                if(idFontType.equals("5") && idBackType.equals("5")) {
-                    if(root.get("object").get("match_front_back").get("match_sex").asText().equals("no") ||
-                       root.get("object").get("match_front_back").get("match_bod").asText().equals("no") ||
-                       root.get("object").get("match_front_back").get("match_id").asText().equals("no") ||
-                       root.get("object").get("match_front_back").get("match_valid_date").asText().equals("no") ||
-                       root.get("object").get("match_front_back").get("match_name").asText().equals("no")
-                    ){ throw new BusinessException(ErrorCode.VNPT_ID_NO_MATCH, ErrorCode.VNPT_ID_NO_MATCH_DESC); }
-                }
-                // còn lại là CM9, CM12, CCCD
-            }
         }
         catch (Exception e) {
-            try {
-                root = BaseService.stringToRoot(e.getMessage());
-            } catch (JsonProcessingException jsonProcessingException) {
-                jsonProcessingException.printStackTrace();
-            }
+            root = BaseService.stringToRoot(e.getMessage());
             if(root.get("statusCode").asInt() == 400){
                 if(root.get("message").asText().equals("IDG-00010003")){
                     throw new BusinessException(ErrorCode.VNPT_INVALID_INPUT, ErrorCode.VNPT_INVALID_INPUT_DESC);
@@ -172,7 +120,7 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                     throw new BusinessException(ErrorCode.VNPT_NO_IMAGE, ErrorCode.VNPT_NO_IMAGE_DESC);
                 }
                 if(root.get("message").asText().equals("IDG-00010445")){
-                    throw new BusinessException(ErrorCode.VNPT_INVALID_TYPE, ErrorCode.VNPT_INVALID_TYPE_DESC);
+                    throw new BusinessException(ErrorCode.VNPT_INVALID_INPUT, ErrorCode.VNPT_INVALID_INPUT_DESC);
                 }
                 if(root.get("message").asText().equals("IDG-00010448")){
                     throw new BusinessException(ErrorCode.VNPT_ID_FRONT_INVALID, ErrorCode.VNPT_ID_FRONT_INVALID_DESC);
@@ -185,7 +133,54 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                 }
             }
         }
+        // field common
+        // idFontType,idBackType -> loai giay to:  2 -> HC, 3 -> CMQD, 4 -> BLX
+        // idFontType,idBackType -> loai giay to:  0 -> CM9, 1 -> CCCD,CM12, 5 -> CCGC
+        String idFontType = root.get("object").get("type_id").asText();
+        String idBackType = root.get("object").get("back_type_id").asText();
 
+        if(root.get("statusCode").asInt() == 200){
+            String imgDupplicate = root.get("object").get("dupplication_warning").asBoolean() ? root.get("object").get("dupplication_warning").asText() : null;
+            if("true".equals(imgDupplicate)){
+                throw new BusinessException(ErrorCode.VNPT_INVALID_INPUT, ErrorCode.VNPT_INVALID_INPUT_DESC);
+            }
+
+            if(idFontType.equals("2") || idFontType.equals("3") || idFontType.equals("4") ||
+                    idBackType.equals("2") || idBackType.equals("3") || idBackType.equals("4")){
+                throw new BusinessException(ErrorCode.VNPT_INVALID_TYPE, ErrorCode.VNPT_INVALID_TYPE_DESC);
+            }
+            if(!idFontType.equals(idBackType)){
+                throw new BusinessException(ErrorCode.VNPT_INVALID_ID_TYPE, ErrorCode.VNPT_INVALID_ID_TYPE_DESC);
+            }
+            if(!(root.get("object").get("checking_result_front").get("corner_cut_result").asText().equals("0"))){
+                throw new BusinessException(ErrorCode.VNPT_ID_FRONT_COVER, ErrorCode.VNPT_ID_FRONT_COVER_DESC);
+            }
+            if(!(root.get("object").get("checking_result_back").get("corner_cut_result").asText().equals("0"))){
+                throw new BusinessException(ErrorCode.VNPT_ID_BACK_COVER, ErrorCode.VNPT_ID_BACK_COVER_DESC);
+            }
+            if(root.get("object").get("tampering").get("is_legal").asText().equals("no") ||
+                    root.get("object").get("id_fake_warning").asText().equals("yes")) {
+                throw new BusinessException(ErrorCode.VNPT_ID_FAKE, ErrorCode.VNPT_ID_FAKE_DESC);
+            }
+            if(root.get("object").get("expire_warning").asText().equals("yes") ||
+                    root.get("object").get("back_expire_warning").asText().equals("yes")){
+                throw new BusinessException(ErrorCode.VNPT_ID_EXPIRED, ErrorCode.VNPT_ID_EXPIRED_DESC);
+            }
+            if(root.get("object").get("corner_warning").asText().equals("yes") ||
+                    root.get("object").get("back_corner_warning").asText().equals("yes")){
+                throw new BusinessException(ErrorCode.VNPT_ID_NO_CORNER, ErrorCode.VNPT_ID_NO_CORNER_DESC);
+            }
+            // CCGC
+            if(idFontType.equals("5") && idBackType.equals("5")) {
+                if(root.get("object").get("match_front_back").get("match_sex").asText().equals("no") ||
+                        root.get("object").get("match_front_back").get("match_bod").asText().equals("no") ||
+                        root.get("object").get("match_front_back").get("match_id").asText().equals("no") ||
+                        root.get("object").get("match_front_back").get("match_valid_date").asText().equals("no") ||
+                        root.get("object").get("match_front_back").get("match_name").asText().equals("no")
+                ){ throw new BusinessException(ErrorCode.VNPT_ID_NO_MATCH, ErrorCode.VNPT_ID_NO_MATCH_DESC); }
+            }
+            // còn lại là CM9, CM12, CCCD
+        }
         // Đến đây là vertifyIdentity không có lỗi -> insert vào DB
         bgEkyc.setIdNo(root.get("object").get("id").asText());
         bgEkyc.setTypeId(root.get("object").get("type_id").asInt());
@@ -244,23 +239,23 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                     String.class,
                     (Object) null);
             root = mapper.readTree(responseEntity.getBody());
-
-            if(root.get("statusCode").asInt() == 200){
-                if(root.get("object").get("multiple_faces").asText().equals("true")){
-                    throw new BusinessException(ErrorCode.VNPT_MULTIPLE_FACES, ErrorCode.VNPT_MULTIPLE_FACES_DESC);
-                }
-                if(root.get("object").get("msg").asText().equals("NOMATCH")){
-                    throw new BusinessException(ErrorCode.VNPT_FACE_NO_MATCH, ErrorCode.VNPT_FACE_NO_MATCH_DESC);
-                }
-            }
         }
-        catch (Exception e) {
+        catch (Exception e){
             root = BaseService.stringToRoot(e.getMessage());
-            if(root.get("statusCode").asInt() == 400) {
+            if(root.get("statusCode").asInt() == 400){
                 throw new BusinessException(ErrorCode.VNPT_FACE_NO_FIND, ErrorCode.VNPT_FACE_NO_FIND_DESC);
             }
             else {
                 throw new BusinessException(ErrorCode.UNKNOWN_ERROR, root.get("errors").asText());
+            }
+        }
+
+        if(root.get("statusCode").asInt() == 200){
+            if(root.get("object").get("multiple_faces").asBoolean() == true){
+                throw new BusinessException(ErrorCode.VNPT_MULTIPLE_FACES, ErrorCode.VNPT_MULTIPLE_FACES_DESC);
+            }
+            if(root.get("object").get("msg").asText().equals("NOMATCH")){
+                throw new BusinessException(ErrorCode.VNPT_FACE_NO_MATCH, ErrorCode.VNPT_FACE_NO_MATCH_DESC);
             }
         }
 
