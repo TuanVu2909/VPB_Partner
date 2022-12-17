@@ -109,10 +109,10 @@ public class ErrorCode {
     public static final String VNPT_ID_FRONT_INVALID_DESC = "Giấy tờ mặt trước không hợp lệ!";
 
     public static final String VNPT_ID_BACK_INVALID = "29";
-    public static final String VNPT_ID_BACK_INVALID_DESC = "Giấy tờ mặt sau bị cắt hoặc bị che!";
+    public static final String VNPT_ID_BACK_INVALID_DESC = "Giấy tờ mặt sau không hợp lệ!";
 
     public static final String VNPT_ID_FAKE = "30";
-    public static final String VNPT_ID_FAKE_DESC = "Giấy tờ là giả mạo!";
+    public static final String VNPT_ID_FAKE_DESC = "Ảnh chụp không hợp lệ, vui lòng chụp lại!";
 
     public static final String VNPT_ID_EXPIRED = "31";
     public static final String VNPT_ID_EXPIRED_DESC = "Giấy tờ hết hạn sử dụng!";
@@ -130,7 +130,7 @@ public class ErrorCode {
     public static final String VNPT_MULTIPLE_FACES_DESC = "Ảnh có nhiều hơn 1 khuôn mặt!";
 
     public static final String VNPT_FACE_NO_MATCH = "36";
-    public static final String VNPT_FACE_NO_MATCH_DESC = "Khuôn mặt không khớp!";
+    public static final String VNPT_FACE_NO_MATCH_DESC = "Khuôn mặt không khớp với giấy tờ tùy thân!";
 
     public static final String VNPT_FACE_NO_FIND = "37";
     public static final String VNPT_FACE_NO_FIND_DESC = "Không tìm thấy khuôn mặt!";
