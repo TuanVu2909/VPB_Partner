@@ -91,7 +91,7 @@ public class ErrorCode {
     public static final String USER_EXISTED_DESCRIPTION = "Giấy tờ tuỳ thân đã được sử dụng, vui lòng sử dụng giấy tờ tuỳ thân khác!";
 
     public static final String VNPT_INVALID_INPUT = "23";
-    public static final String VNPT_INVALID_INPUT_DESC = "Ảnh chụp không hợp lệ!";
+    public static final String VNPT_INVALID_INPUT_DESC = "Ảnh chụp không hợp lệ, vui lòng chụp lại!";
 
     public static final String VNPT_INVALID_TYPE = "24";
     public static final String VNPT_INVALID_TYPE_DESC = "Loại giấy tờ không hợp lệ, Chỉ được phép sử dụng chứng minh nhân dân, Căn cước công dân, Căn cước gắn chíp!";
@@ -111,28 +111,25 @@ public class ErrorCode {
     public static final String VNPT_ID_BACK_INVALID = "29";
     public static final String VNPT_ID_BACK_INVALID_DESC = "Giấy tờ mặt sau không hợp lệ!";
 
-    public static final String VNPT_ID_FAKE = "30";
-    public static final String VNPT_ID_FAKE_DESC = "Ảnh chụp không hợp lệ, vui lòng chụp lại!";
-
-    public static final String VNPT_ID_EXPIRED = "31";
+    public static final String VNPT_ID_EXPIRED = "30";
     public static final String VNPT_ID_EXPIRED_DESC = "Giấy tờ hết hạn sử dụng!";
 
-    public static final String VNPT_ID_NO_CORNER = "32";
+    public static final String VNPT_ID_NO_CORNER = "31";
     public static final String VNPT_ID_NO_CORNER_DESC = "Giấy tờ bị mất góc!";
 
-    public static final String VNPT_ID_NO_MATCH = "33";
+    public static final String VNPT_ID_NO_MATCH = "32";
     public static final String VNPT_ID_NO_MATCH_DESC = "Giấy tờ có mặt trước và mặt sau không khớp!";
 
-    public static final String VNPT_NO_IMAGE = "34";
+    public static final String VNPT_NO_IMAGE = "33";
     public static final String VNPT_NO_IMAGE_DESC = "Dữ liệu không phải là ảnh!";
 
-    public static final String VNPT_MULTIPLE_FACES = "35";
+    public static final String VNPT_MULTIPLE_FACES = "34";
     public static final String VNPT_MULTIPLE_FACES_DESC = "Ảnh có nhiều hơn 1 khuôn mặt!";
 
-    public static final String VNPT_FACE_NO_MATCH = "36";
+    public static final String VNPT_FACE_NO_MATCH = "35";
     public static final String VNPT_FACE_NO_MATCH_DESC = "Khuôn mặt không khớp với giấy tờ tùy thân!";
 
-    public static final String VNPT_FACE_NO_FIND = "37";
+    public static final String VNPT_FACE_NO_FIND = "36";
     public static final String VNPT_FACE_NO_FIND_DESC = "Không tìm thấy khuôn mặt!";
 
     public static final String SESSION_TIMEOUT = "901";

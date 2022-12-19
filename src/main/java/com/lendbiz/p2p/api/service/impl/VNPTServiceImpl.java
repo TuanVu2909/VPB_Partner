@@ -168,7 +168,7 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
             }
             if(root.get("object").get("tampering").get("is_legal").asText().equals("no") ||
                     root.get("object").get("id_fake_warning").asText().equals("yes")) {
-                throw new BusinessException(ErrorCode.VNPT_ID_FAKE, ErrorCode.VNPT_ID_FAKE_DESC);
+                throw new BusinessException(ErrorCode.VNPT_INVALID_INPUT_DESC, ErrorCode.VNPT_INVALID_INPUT_DESC);
             }
             if(root.get("object").get("expire_warning").asText().equals("yes") ||
                     root.get("object").get("back_expire_warning").asText().equals("yes")){
