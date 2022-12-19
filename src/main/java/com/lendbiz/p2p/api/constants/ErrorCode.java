@@ -91,7 +91,7 @@ public class ErrorCode {
     public static final String USER_EXISTED_DESCRIPTION = "Giấy tờ tuỳ thân đã được sử dụng, vui lòng sử dụng giấy tờ tuỳ thân khác!";
 
     public static final String VNPT_INVALID_INPUT = "23";
-    public static final String VNPT_INVALID_INPUT_DESC = "Ảnh đầu vào không hợp lệ!";
+    public static final String VNPT_INVALID_INPUT_DESC = "Ảnh chụp không hợp lệ!";
 
     public static final String VNPT_INVALID_TYPE = "24";
     public static final String VNPT_INVALID_TYPE_DESC = "Loại giấy tờ không hợp lệ, Chỉ được phép sử dụng chứng minh nhân dân, Căn cước công dân, Căn cước gắn chíp!";
@@ -124,7 +124,7 @@ public class ErrorCode {
     public static final String VNPT_ID_NO_MATCH_DESC = "Giấy tờ có mặt trước và mặt sau không khớp!";
 
     public static final String VNPT_NO_IMAGE = "34";
-    public static final String VNPT_NO_IMAGE_DESC = "Dữ liệu đầu vào không phải là ảnh!";
+    public static final String VNPT_NO_IMAGE_DESC = "Dữ liệu không phải là ảnh!";
 
     public static final String VNPT_MULTIPLE_FACES = "35";
     public static final String VNPT_MULTIPLE_FACES_DESC = "Ảnh có nhiều hơn 1 khuôn mặt!";
