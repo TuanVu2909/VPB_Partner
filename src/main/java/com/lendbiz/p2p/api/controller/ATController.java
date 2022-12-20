@@ -43,7 +43,7 @@ public class ATController {
     UserServiceImpl serviceImpl;
 
     @Transactional(readOnly = true)
-    @Scheduled(initialDelay = 1 * 60, fixedDelay = 1 * 30 * 1000)
+    // @Scheduled(initialDelay = 1 * 60, fixedDelay = 1 * 30 * 1000)
     public void postBack() {
 
         List<ATEntity> atList = atRepository.postBack();
@@ -64,7 +64,7 @@ public class ATController {
     }
 
     @Transactional(readOnly = true)
-    @Scheduled(initialDelay = 1 * 60, fixedDelay = 1 * 30 * 1000)
+    // @Scheduled(initialDelay = 1 * 60, fixedDelay = 1 * 30 * 1000)
     public void postBackAccept() {
 
         List<ATEntity> atList = atRepository.accept();
@@ -85,7 +85,7 @@ public class ATController {
     }
 
     @Transactional(readOnly = true)
-    @Scheduled(initialDelay = 1 * 60, fixedDelay = 1 * 30 * 1000)
+    // @Scheduled(initialDelay = 1 * 60, fixedDelay = 1 * 30 * 1000)
     public void postBackReject() {
 
         List<ATEntity> atList = atRepository.reject();

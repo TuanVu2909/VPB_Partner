@@ -34,6 +34,12 @@ import lombok.ToString;
                 @StoredProcedureParameter(name = "pv_contractId", mode = ParameterMode.IN, type = String.class),
                 @StoredProcedureParameter(name = "pv_payType", mode = ParameterMode.IN, type = String.class),
         }),
+        @NamedStoredProcedureQuery(name = "NotifyEntity.withdrawBear", procedureName = "pck_gm.withdrawBear", resultClasses = NotifyEntity.class, parameters = { //
+                @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
+                @StoredProcedureParameter(name = "pv_custId", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_amt", mode = ParameterMode.IN, type = String.class),
+                @StoredProcedureParameter(name = "pv_documentNo", mode = ParameterMode.IN, type = String.class),
+        }),
         @NamedStoredProcedureQuery(name = "NotifyEntity.insert_trans9pay", procedureName = "PKG_API.insert_trans9pay", resultClasses = NotifyEntity.class, parameters = { //
                 @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
                 @StoredProcedureParameter(name = "cid", mode = ParameterMode.IN, type = String.class),

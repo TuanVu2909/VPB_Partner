@@ -10,6 +10,9 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.lendbiz.p2p.api.response.BaseResponse;
+import com.lendbiz.p2p.api.service.*;
+import lombok.SneakyThrows;
 import org.apache.commons.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,6 +40,7 @@ import com.lendbiz.p2p.api.entity.AccountInput;
 import com.lendbiz.p2p.api.entity.GetEndRateRequest;
 import com.lendbiz.p2p.api.entity.User3GEntity;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
+import com.lendbiz.p2p.api.entity.WithdrawBearRequest;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.model.Mail;
 import com.lendbiz.p2p.api.model.MyUserDetails;
@@ -56,12 +60,6 @@ import com.lendbiz.p2p.api.request.UpdateNotificationsRequest;
 import com.lendbiz.p2p.api.request.VerifyEmailRequest;
 import com.lendbiz.p2p.api.response.InfoIdentity;
 import com.lendbiz.p2p.api.response.MyResponse;
-import com.lendbiz.p2p.api.service.FilesStorageService;
-import com.lendbiz.p2p.api.service.LoggingService;
-import com.lendbiz.p2p.api.service.MailService;
-import com.lendbiz.p2p.api.service.SavisService;
-import com.lendbiz.p2p.api.service.User3GService;
-import com.lendbiz.p2p.api.service.UserService;
 import com.lendbiz.p2p.api.service.impl.UserServiceImpl;
 
 import lombok.extern.log4j.Log4j2;
@@ -78,13 +76,17 @@ import lombok.extern.log4j.Log4j2;
 @RestController
 @RequestMapping("/lendbiz")
 @Log4j2
-public class UserController {
+public class UserController extends BaseResponse<UserService> {
 
     @Autowired
     UserService userService;
 
     @Autowired
     SavisService savisService;
+
+    @Autowired
+    VNPTService vnptService;
+
     @Autowired
     JwtProvider provider;
     @Autowired
@@ -203,6 +205,15 @@ public class UserController {
             throws BusinessException {
         log.info("[" + requestId + "] << create bear >>");
         return userService.createBear(accountInput);
+    }
+
+    @PostMapping("/withdraw-bear")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> wiBear(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId, @RequestBody WithdrawBearRequest request)
+            throws BusinessException {
+        log.info("[" + requestId + "] << withdraw bear >>");
+        return userService.withdrawBear(request);
     }
 
     @PostMapping("/end-bear")
@@ -374,6 +385,31 @@ public class UserController {
         return savisService.callPredict(idFile, identity, idType, session);
     }
 
+    @PostMapping("/3gang/ekyc/vertify-identity")
+    public ResponseEntity<?> vertifyId(
+            @RequestParam("imgFrontId") MultipartFile imgFrontId,
+            @RequestParam("imgBackId")  MultipartFile imgBackId,
+            @RequestHeader("session") String session
+            )
+    {
+        if (session == null || session.equals("")) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "mobile is not empty")) , HttpStatus.OK);
+        if(imgFrontId.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgFrontId is not empty")) , HttpStatus.OK);
+        if(imgBackId.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgBackId is not empty")), HttpStatus.OK);
+        return vnptService.vertifyIdentity(imgFrontId, imgBackId, session);
+    }
+
+    @PostMapping("/3gang/ekyc/vertify-selfie")
+    public ResponseEntity<?> vertifySelfie(
+            @RequestParam("imgFrontId") MultipartFile imgFrontId,
+            @RequestParam("imgSelfie") MultipartFile imgSelfie,
+            @RequestHeader("session") String session
+    )
+    {
+        if (session == null || session.equals("")) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "mobile is not empty")) , HttpStatus.OK);
+        if(imgFrontId.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgFrontId is not empty")) , HttpStatus.OK);
+        if(imgSelfie.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgSelfie is not empty")), HttpStatus.OK);
+        return vnptService.vertifySelfie(imgFrontId, imgSelfie, session);
+    }
     // Authorization
 
     @PostMapping("/auth/signup")
@@ -815,7 +851,7 @@ public class UserController {
         }
     }
 
-    @Scheduled(initialDelay = 1 * 60, fixedDelay = 2 * 5000)
+    // @Scheduled(initialDelay = 1 * 60, fixedDelay = 2 * 5000)
     public void autoSign()
             throws BusinessException {
 

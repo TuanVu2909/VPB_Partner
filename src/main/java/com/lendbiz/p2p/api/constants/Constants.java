@@ -1,5 +1,8 @@
 package com.lendbiz.p2p.api.constants;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /***********************************************************************
  * 
  * @package：com.lendbiz.p2p.api.constans，@class-name：Constans.java
@@ -126,6 +129,19 @@ public class Constants {
 		public static final String GROUP_3GANG_PARTITIONS = "group_3gang_partitions";
 	}
 
+	// VNPT
+	public static final String VNPT_DOMAIN = "https://api.idg.vnpt.vn";
+	// Account trial
+	// public static final String VNPT_ID = "ee3036c3-36f5-7efa-e053-63199f0aee9d";
+	// public static final String VNPT_KEY =
+	// "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALISKEQNtCXxqd71DupX9N7cdG3w4mdJOuNqtMXBwDKK8uR7LM38B8uZN5EzttpccxIv9/+5tHMJ//KZMpcBLiMCAwEAAQ==";
+	// public static final String VNPT_TOKEN = "bearer
+	// eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlZTMwMzIxYS0wZDczLTA5OGMtZTA1My02MjE5OWYwYTUwMDQiLCJhdWQiOlsicmVzdHNlcnZpY2UiXSwidXNlcl9uYW1lIjoibGVzb24xNzEwQGdtYWlsLmNvbSIsInNjb3BlIjpbInJlYWQiXSwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3QiLCJuYW1lIjoibGVzb24xNzEwQGdtYWlsLmNvbSIsInV1aWRfYWNjb3VudCI6ImVlMzAzMjFhLTBkNzMtMDk4Yy1lMDUzLTYyMTk5ZjBhNTAwNCIsImF1dGhvcml0aWVzIjpbIlVTRVIiXSwianRpIjoiNThjYzQzMzgtMDhmNy00YTUxLThiY2EtZjYzY2Y4YjRmOTQwIiwiY2xpZW50X2lkIjoiYWRtaW5hcHAifQ.zVthM71rfE_OOlnUS2w0Ts98mxzUdkfcrznN1idjm7nskWG7OtzGI_ICXIMzYiLkb--YCytG-jLSC6YHef9JPf_XMWFFvhY5Bu-WzSBEpuTWSWZEJ8vv9IOBJVPxw0yze0elqn2tMshfiTnzlRt4im5Jc1JwjLgEYVYxp40cXa5pwz5y3B-ZoW6Y4HqHDr4r0BnJIRcXDI8h97_w3Mz_D_8sk8Tw6lIeXqi_6ld5mi__aO-BB1Ab9ELEiVgjWO2KyOk1zuKoevtwx3TuwQKbvTU7HzctQRSULcsbOL3WWQG8KfMNq5lBMYjk0Zq7RAJwFjytibPx-8xq0w2U4bLnaQ";
+	// Account live
+	public static final String VNPT_ID = "edf6fbf8-6468-3377-e053-63199f0aea8b";
+	public static final String VNPT_KEY = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJ4DZir0axuFUoNmqUfzteiLjcx29ly/pDcFiMG/pFk5I/9z8eKvzw6WcfCG0VFY38FjBEA0sdtU2uhWfmxMBbsCAwEAAQ==";
+	public static final String VNPT_TOKEN = "bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlZGY2ZjlhOC1mYzcxLTY2ZDQtZTA1My02MjE5OWYwYWNlNTgiLCJhdWQiOlsicmVzdHNlcnZpY2UiXSwidXNlcl9uYW1lIjoibmd1eWVubGhuZ3V5ZW5AZ21haWwuY29tIiwic2NvcGUiOlsicmVhZCJdLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdCIsIm5hbWUiOiJuZ3V5ZW5saG5ndXllbkBnbWFpbC5jb20iLCJ1dWlkX2FjY291bnQiOiJlZGY2ZjlhOC1mYzcxLTY2ZDQtZTA1My02MjE5OWYwYWNlNTgiLCJhdXRob3JpdGllcyI6WyJVU0VSIl0sImp0aSI6ImVkYjg1NzUzLTIxMWEtNGZhMC1iYTJmLTI1M2I3ZDkyYjI2ZCIsImNsaWVudF9pZCI6ImFkbWluYXBwIn0.Ug0_c8cU8unP_J1E81sxHWBHcjISS1U-yVasD9q13gF6AgnYtsn3YMH4tbMIpQ-urQ1SuRtNWP4CTA3ywlPU_Y7tx0dkJ6FRnZjarfpsviGun1zafy5iccXOJGP47Hvjai34yk-hEQ_BZgjFy9s9kl56KqAyEXStwhNU5umyr-6Qj11c9BEXCnmOUc8tWC8VJ_uy9wc4zV8gw468XiZHAsZ9LzjwyMkf050DkK2EGoA4TMHlhuFaLo6xB5uR4X1wHiYhNyoDTp_8MmwwfpkoUbHo9ZIP3OTJ9DQ5zEIvtzQAbo8IepVuwPmb_lucO5v8AflXLOJBKLlottgutjsRdQ";
+
 	// FUND AMBER
 	// private final String AMBER_URL = "http://10.255.241.142:1351"; // link PROD
 	public static final String AMBER_URL = "http://222.252.8.194:21351"; // link UAT
@@ -137,4 +153,42 @@ public class Constants {
 
 	public static final String ACCESS_TRADE_URI = "https://api.accesstrade.vn/v1/postbacks/conversions";
 	public static final String ACCESS_TRADE_UPDATE_URI = "https://api.accesstrade.vn/v1/postbacks/conversions";
+	public static final String BANKCODE = "VCB";
+	public static final String BANKNAME = "Ngân hàng TMCP Ngoại Thương Việt Nam";
+	public static final String BANKACC = "1090000004";
+	public static final String BANKRECEIVENAME = "Quỹ Đầu tư Trái Phiếu An toàn Amber";
+	public static final String BANKBRANCH = "Hội Sở";
+
+	public static final Map<String, Object> AFM_INFO_STATUS = new HashMap<>();
+	static {
+		AFM_INFO_STATUS.put("P", "Chờ duyệt");
+		AFM_INFO_STATUS.put("R", "Chờ duyệt hủy");
+		AFM_INFO_STATUS.put("A", "Hoạt động");
+		AFM_INFO_STATUS.put("J", "Chờ duyệt sửa");
+		AFM_INFO_STATUS.put("N", "Chờ đóng");
+		AFM_INFO_STATUS.put("B", "Phong tỏa");
+	}
+
+	public static final Map<String, Object> AFM_STATUS_VSD = new HashMap<>();
+	static {
+		AFM_STATUS_VSD.put("T", "Chờ xác nhận sửa thông tin tài khoản");
+		AFM_STATUS_VSD.put("P", "Chờ xác nhận mở tài khoản");
+		AFM_STATUS_VSD.put("C", "Đã được VSD xác nhận mở");
+		AFM_STATUS_VSD.put("VSDR", "VSD từ chối");
+	}
+
+	public static final Map<String, Object> AFM_DEAL_STATUS = new HashMap<>();
+	static {
+		AFM_DEAL_STATUS.put("2", "Lệnh đặt thành công");
+		AFM_DEAL_STATUS.put("3", "Đang xử lý");
+		AFM_DEAL_STATUS.put("4", "Khớp lệnh một phần");
+		AFM_DEAL_STATUS.put("5", "Chờ đối chiếu");
+		AFM_DEAL_STATUS.put("6", "Đang sửa");
+		AFM_DEAL_STATUS.put("7", "Đang hủy");
+		AFM_DEAL_STATUS.put("8", "Đã sửa (lệnh gốc)");
+		AFM_DEAL_STATUS.put("9", "Đã hủy (lệnh gốc)");
+		AFM_DEAL_STATUS.put("14", "Khớp lệnh thành công");
+		AFM_DEAL_STATUS.put("20", "Khớp tiền thành công");
+		AFM_DEAL_STATUS.put("21", "Khớp tiền không thành công");
+	}
 }

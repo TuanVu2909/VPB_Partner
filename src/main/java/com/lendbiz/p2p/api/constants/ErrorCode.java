@@ -2,11 +2,11 @@ package com.lendbiz.p2p.api.constants;
 
 public class ErrorCode {
 
-    public static final String UNKNOWN_ERROR = "01";
-    public static final String UNKNOWN_ERROR_DESCRIPTION = "Unknown Error";
-
     public static final String SUCCESS = "00";
     public static final String SUCCESS_DESCRIPTION = "Successful!";
+
+    public static final String UNKNOWN_ERROR = "01";
+    public static final String UNKNOWN_ERROR_DESCRIPTION = "Unknown Error";
 
     public static final String INVALID_DATA_REQUEST = "02";
     public static final String INVALID_DATA_REQUEST_DESCRIPTION = "Invalid Input's request!";
@@ -77,21 +77,63 @@ public class ErrorCode {
 
     public static final String NO_DATA = "18";
     public static final String NO_DATA_DESCRIPTION = "Không có dữ liệu";
+
     public static final String SIGN_FAIL = "19";
     public static final String SIGN_FAIL_DESCRIPTION = "SIGN_FAIL";
+
     public static final String NO_CARD = "20";
     public static final String NO_CARD_DESCRIPTION = "HẾT THẺ";
 
-    public static final String SESSION_TIMEOUT = "901";
-    public static final String SESSION_TIMEOUT_DESCRIPTION = "Hết phiên đăng nhập, vui lòng đăng nhập lại!";
-
-    public static final String ERROR_500 = "500";
-    public static final String ERROR_500_DESCRIPTION = "Lỗi không xác định!";
     public static final String NO_refId = "21";
     public static final String NO_refId_DESCRIPTION = "Mã giới thiệu đã tồn tại";
 
     public static final String USER_EXISTED = "22";
     public static final String USER_EXISTED_DESCRIPTION = "Giấy tờ tuỳ thân đã được sử dụng, vui lòng sử dụng giấy tờ tuỳ thân khác!";
+
+    public static final String VNPT_INVALID_INPUT = "23";
+    public static final String VNPT_INVALID_INPUT_DESC = "Ảnh chụp không hợp lệ, vui lòng chụp lại!";
+
+    public static final String VNPT_INVALID_TYPE = "24";
+    public static final String VNPT_INVALID_TYPE_DESC = "Loại giấy tờ không hợp lệ, Chỉ được phép sử dụng chứng minh nhân dân, Căn cước công dân, Căn cước gắn chíp!";
+
+    public static final String VNPT_INVALID_ID_TYPE = "25";
+    public static final String VNPT_INVALID_ID_TYPE_DESC = "Giấy tờ mặt trước và sau không cùng loại!";
+
+    public static final String VNPT_ID_FRONT_COVER = "26";
+    public static final String VNPT_ID_FRONT_COVER_DESC = "Giấy tờ mặt trước bị cắt hoặc bị che!";
+
+    public static final String VNPT_ID_BACK_COVER = "27";
+    public static final String VNPT_ID_BACK_COVER_DESC = "Giấy tờ mặt sau bị cắt hoặc bị che!";
+
+    public static final String VNPT_ID_FRONT_INVALID = "28";
+    public static final String VNPT_ID_FRONT_INVALID_DESC = "Giấy tờ mặt trước không hợp lệ!";
+
+    public static final String VNPT_ID_BACK_INVALID = "29";
+    public static final String VNPT_ID_BACK_INVALID_DESC = "Giấy tờ mặt sau không hợp lệ!";
+
+    public static final String VNPT_ID_EXPIRED = "30";
+    public static final String VNPT_ID_EXPIRED_DESC = "Giấy tờ hết hạn sử dụng!";
+
+    public static final String VNPT_ID_NO_CORNER = "31";
+    public static final String VNPT_ID_NO_CORNER_DESC = "Giấy tờ bị mất góc!";
+
+    public static final String VNPT_ID_NO_MATCH = "32";
+    public static final String VNPT_ID_NO_MATCH_DESC = "Giấy tờ có mặt trước và mặt sau không khớp!";
+
+    public static final String VNPT_NO_IMAGE = "33";
+    public static final String VNPT_NO_IMAGE_DESC = "Dữ liệu không phải là ảnh!";
+
+    public static final String VNPT_MULTIPLE_FACES = "34";
+    public static final String VNPT_MULTIPLE_FACES_DESC = "Ảnh có nhiều hơn 1 khuôn mặt!";
+
+    public static final String VNPT_FACE_NO_MATCH = "35";
+    public static final String VNPT_FACE_NO_MATCH_DESC = "Khuôn mặt không khớp với giấy tờ tùy thân!";
+
+    public static final String VNPT_FACE_NO_FIND = "36";
+    public static final String VNPT_FACE_NO_FIND_DESC = "Không tìm thấy khuôn mặt!";
+
+    public static final String SESSION_TIMEOUT = "901";
+    public static final String SESSION_TIMEOUT_DESCRIPTION = "Hết phiên đăng nhập, vui lòng đăng nhập lại!";
 
     public static final String FAIL_LOGIN = "100";
     public static final String FAIL_LOGIN_DESCRIPTION = "Tài khoản không tồn tại";
@@ -106,6 +148,9 @@ public class ErrorCode {
     public static final String NOT_ACCEPT_CARDNUMBER_DESCRIPTION = "Không được nhập số thẻ";
 
     public static final String MOBILE_EXISTED = "Số điện thoại đã được sử dụng";
+
+    public static final String ERROR_500 = "500";
+    public static final String ERROR_500_DESCRIPTION = "Lỗi không xác định!";
 
     public static final String VERSION_OUTDATED = "511";
     public static final String VERSION_OUTDATED_DESCRIPTION = "Version outdated";

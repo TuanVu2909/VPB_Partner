@@ -23,6 +23,7 @@ public class FundController {
     public String testAPI () {
         return "Ping success !";
     }
+
 //    @GetMapping(value = "/sendSMS")
 //    public ResponseEntity<String> sendSMS() {
 //
@@ -34,134 +35,105 @@ public class FundController {
 //        return new ResponseEntity<>("Message sent successfully", HttpStatus.OK);
 //    }
 
-    @GetMapping("afmbankinfo")
-    public ResponseEntity<?> getAFMBankInfo () {
-        return fundService.getAFMBankInfo();
-    }
-
     @GetMapping("bgaccountinfo")
     public ResponseEntity<?> getBGAccountInfo (
             @RequestHeader String mobile
     ) { return fundService.getBGAccountInfo(mobile); }
 
-    @PostMapping("afmcreateaccount")
-    ResponseEntity<?> openAFMAccount(
-            @RequestBody String accountInfo
-    ) { return fundService.openAFMAccount(); };
 // -------------------------------------------------------------------------------
-
-    @GetMapping("/ssoagent/oauth/token")
-    public ResponseEntity<?> getTokenAFM () {
-        return fundService.getTokenAFM();
-    }
 
     @PostMapping("/checkmapping")
     public ResponseEntity<?> linkAccount (
-            @RequestHeader String AFMToken,
             @RequestBody IdentityCustomerRequest identityCustomerRequest) {
-        return fundService.linkAccount(AFMToken, identityCustomerRequest);
+        return fundService.linkAccount(identityCustomerRequest);
     }
 
     @PostMapping("/otpmapping")
     public ResponseEntity<?> checkOTPMapping (
-            @RequestHeader String AFMToken,
             @RequestBody OTPMappingRequest otpMappingRequest) {
-        return fundService.checkOTPMapping(AFMToken, otpMappingRequest);
+        return fundService.checkOTPMapping(otpMappingRequest);
     }
 
     @PostMapping("/resendotpmapping")
     public ResponseEntity<?> resendOTPMapping (
-            @RequestHeader String AFMToken,
             @RequestBody IdentityCustomerRequest identityCustomerRequest) {
-        return fundService.resendOTPMapping(AFMToken, identityCustomerRequest);
+        return fundService.resendOTPMapping(identityCustomerRequest);
     }
 
-    @PostMapping("/otpordersell")
-    public ResponseEntity<?> sellOtpOrder (
-            @RequestHeader String AFMToken,
-            @RequestBody OTPSellOrderRequest otpSellOrderRequest) {
-        return fundService.sellOtpOrder(AFMToken, otpSellOrderRequest);
+    @PostMapping("/otporder")
+    public ResponseEntity<?> otpOrder (
+            @RequestBody OTPSellOrderRequest otpOrderRequest) {
+        return fundService.otpOrder(otpOrderRequest);
     }
 
-    @PostMapping("/resendotpordersell")
-    public ResponseEntity<?> sellResendOtpOrder (
-            @RequestHeader String AFMToken,
+    @PostMapping("/resendotporder")
+    public ResponseEntity<?> resendOtpOrder (
             @RequestBody OTPIdentityRequest otpIdentityRequest) {
-        return fundService.sellResendOtpOrder(AFMToken, otpIdentityRequest);
+        return fundService.resendOtpOrder(otpIdentityRequest);
     }
 
     @PostMapping("/checkaccounts")
     public ResponseEntity<?> checkAccountExist (
-            @RequestHeader String AFMToken,
             @RequestBody String idCode) {
-        return fundService.checkAccountExist(AFMToken, idCode);
+        return fundService.checkAccountExist(idCode);
     }
 
     @PostMapping("/accounts")
     public ResponseEntity<?> accountInfo (
-            @RequestHeader String AFMToken,
             @RequestBody IdentityCustomerRequest identityCustomerRequest) {
-        return fundService.accountInfo(AFMToken, identityCustomerRequest);
+        return fundService.accountInfo(identityCustomerRequest);
     }
 
     @GetMapping("/getfunds")
-    public ResponseEntity<?> fundsInfo (@RequestHeader String AFMToken) {
-        return fundService.fundsInfo(AFMToken);
+    public ResponseEntity<?> fundsInfo () {
+        return fundService.fundsInfo();
     }
 
     @PostMapping("/navprice")
     public ResponseEntity<?> navPrice (
-            @RequestHeader String AFMToken,
             @RequestBody CCQInfoRequest ccqInfoRequest) {
-        return fundService.navPrice(AFMToken, ccqInfoRequest);
+        return fundService.navPrice(ccqInfoRequest);
     }
 
     @PostMapping("/sebalance")
     public ResponseEntity<?> balanceInfo (
-            @RequestHeader String AFMToken,
             @RequestBody String custodycd) {
-        return fundService.balanceInfo(AFMToken, custodycd);
+        return fundService.balanceInfo(custodycd);
     }
 
     @PostMapping("/portfolioinfobuy")
     public ResponseEntity<?> buyCCQ (
-            @RequestHeader String AFMToken,
             @RequestBody DealCCQRequest dealCCQRequest) {
-        return fundService.buyCCQ(AFMToken, dealCCQRequest);
+        return fundService.buyCCQ(dealCCQRequest);
     }
 
     @PostMapping("/portfolioinfosell")
     public ResponseEntity<?> sellCCQ (
-            @RequestHeader String AFMToken,
             @RequestBody DealCCQRequest dealCCQRequest) {
-        return fundService.sellCCQ(AFMToken, dealCCQRequest);
+        return fundService.sellCCQ(dealCCQRequest);
     }
 
     @PostMapping("/expectedsellinfo")
     public ResponseEntity<?> expectedSellInfoCCQ (
-            @RequestHeader String AFMToken,
             @RequestBody SellInfoRequest sellInfoRequest) {
-        return fundService.expectedSellInfoCCQ(AFMToken, sellInfoRequest);
+        return fundService.expectedSellInfoCCQ(sellInfoRequest);
     }
 
     @PostMapping("/normalorder")
     public ResponseEntity<?> buyNormalOrderCCQ (
-            @RequestHeader String AFMToken,
             @RequestBody BuyNormalCCQRequest buyNormalCCQRequest) {
-        return fundService.buyNormalOrderCCQ(AFMToken, buyNormalCCQRequest);
+        return fundService.buyNormalOrderCCQ(buyNormalCCQRequest);
     }
 
     @PostMapping("/siporder")
     public ResponseEntity<?> buyPeriodicOrderCCQ (
-            @RequestHeader String AFMToken,
             @RequestBody OrderCCQRequest orderCCQRequest) {
-        return fundService.buyPeriodicOrderCCQ(AFMToken, orderCCQRequest);
+        return fundService.buyPeriodicOrderCCQ(orderCCQRequest);
     }
 
     @PostMapping("/normalsell")
     public ResponseEntity<?> sellNormalOrderCCQ (
-            @RequestHeader String AFMToken,
             @RequestBody SellNormalCCQRequest sellNormalCCQRequest) {
-        return fundService.sellNormalOrderCCQ(AFMToken, sellNormalCCQRequest);
+        return fundService.sellNormalOrderCCQ(sellNormalCCQRequest);
     }
 }

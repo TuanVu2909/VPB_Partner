@@ -32,10 +32,14 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.UUID;
 
+import com.lendbiz.p2p.api.service.VNPTService;
+import lombok.SneakyThrows;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -98,6 +102,7 @@ import com.lendbiz.p2p.api.entity.UserInfoEntity;
 import com.lendbiz.p2p.api.entity.UserOnline;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.entity.Version3Gang;
+import com.lendbiz.p2p.api.entity.WithdrawBearRequest;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.producer.ProducerMessage;
 import com.lendbiz.p2p.api.repository.AccountAssetRepository;
@@ -240,6 +245,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     UserInfoRepository userInfoRepository;
 
+    @Qualifier("bankAccountRepository")
     @Autowired
     BankAccountRepository bankAccountRepository;
 
@@ -249,6 +255,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     UpdateAccountRepository accountRepository;
 
+    @Qualifier("cfMastRepository")
     @Autowired
     CfMastRepository cfMastRepository;
 
@@ -294,6 +301,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         return custId;
     }
 
+    @Qualifier("version3GangRepository")
     @Autowired
     Version3GangRepository version3GangRepository;
 
@@ -650,6 +658,21 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             }
             return response(toResult(notify));
         } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> withdrawBear(WithdrawBearRequest request) {
+        try {
+            NotifyEntity notify = notifyRepo.withdrawBear(request.getCustId(), request.getAmt(),
+            request.getDocNo());
+            if (!notify.getPStatus().equals("01")) {
+                throw new BusinessException(notify.getPStatus(), notify.getDes());
+            }
+            return response(toResult(notify));
+        } catch (Exception e) {
+            logger.info(e.getMessage());
             throw new BusinessException(Constants.FAIL, e.getMessage());
         }
     }
@@ -1249,52 +1272,52 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     public String sendOtp(String mobile, String otp, String message) {
         String jsonResponse = "";
-        try {
-            URL url = new URL("http://45.117.83.201:9095/otp/send-otp");
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setUseCaches(false);
-            con.setDoOutput(true);
-            con.setDoInput(true);
+        // try {
+        //     URL url = new URL("http://45.117.83.201:9095/otp/send-otp");
+        //     HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        //     con.setUseCaches(false);
+        //     con.setDoOutput(true);
+        //     con.setDoInput(true);
 
-            con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            // con.setRequestProperty("token",
-            // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c24iOiJsYmNhcGl0YWwiLCJzaWQiOiJhYTgwMjIzNS04OTU1LTQ2ZDYtYmRmYi0xZDhjZmExYmYzODEiLCJvYnQiOiIiLCJvYmoiOiIiLCJuYmYiOjE2NjU5NzQyMDksImV4cCI6MTY2NTk3NzgwOSwiaWF0IjoxNjY1OTc0MjA5fQ.qqitpQMIkzk3OJJD-Mj5hYCwZ5cJ_EyVSWnsdE0BrjI");
-            con.setRequestMethod("POST");
+        //     con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+        //     // con.setRequestProperty("token",
+        //     // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c24iOiJsYmNhcGl0YWwiLCJzaWQiOiJhYTgwMjIzNS04OTU1LTQ2ZDYtYmRmYi0xZDhjZmExYmYzODEiLCJvYnQiOiIiLCJvYmoiOiIiLCJuYmYiOjE2NjU5NzQyMDksImV4cCI6MTY2NTk3NzgwOSwiaWF0IjoxNjY1OTc0MjA5fQ.qqitpQMIkzk3OJJD-Mj5hYCwZ5cJ_EyVSWnsdE0BrjI");
+        //     con.setRequestMethod("POST");
 
-            SendOTPRequest request = new SendOTPRequest();
-            request.setMobile(mobile);
-            request.setCode(otp);
-            request.setMessage(message);
-            JSONObject jsonObject = new JSONObject(request);
+        //     SendOTPRequest request = new SendOTPRequest();
+        //     request.setMobile(mobile);
+        //     request.setCode(otp);
+        //     request.setMessage(message);
+        //     JSONObject jsonObject = new JSONObject(request);
 
-            logger.info("strJsonBody:\n" + jsonObject.toString());
+        //     logger.info("strJsonBody:\n" + jsonObject.toString());
 
-            byte[] sendBytes = jsonObject.toString().getBytes("UTF-8");
-            con.setFixedLengthStreamingMode(sendBytes.length);
+        //     byte[] sendBytes = jsonObject.toString().getBytes("UTF-8");
+        //     con.setFixedLengthStreamingMode(sendBytes.length);
 
-            OutputStream outputStream = con.getOutputStream();
-            outputStream.write(sendBytes);
+        //     OutputStream outputStream = con.getOutputStream();
+        //     outputStream.write(sendBytes);
 
-            int httpResponse = con.getResponseCode();
-            logger.info("httpResponse: " + httpResponse);
+        //     int httpResponse = con.getResponseCode();
+        //     logger.info("httpResponse: " + httpResponse);
 
-            if (httpResponse >= HttpURLConnection.HTTP_OK && httpResponse < HttpURLConnection.HTTP_BAD_REQUEST) {
-                Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
-                jsonResponse = scanner.useDelimiter("/A").hasNext() ? scanner.next() : "";
-                scanner.close();
-            } else {
-                Scanner scanner = new Scanner(con.getErrorStream(), "UTF-8");
-                jsonResponse = scanner.useDelimiter("/A").hasNext() ? scanner.next() : "";
-                scanner.close();
-            }
+        //     if (httpResponse >= HttpURLConnection.HTTP_OK && httpResponse < HttpURLConnection.HTTP_BAD_REQUEST) {
+        //         Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
+        //         jsonResponse = scanner.useDelimiter("/A").hasNext() ? scanner.next() : "";
+        //         scanner.close();
+        //     } else {
+        //         Scanner scanner = new Scanner(con.getErrorStream(), "UTF-8");
+        //         jsonResponse = scanner.useDelimiter("/A").hasNext() ? scanner.next() : "";
+        //         scanner.close();
+        //     }
 
-            logger.info("jsonResponse:\n" + jsonResponse);
+        //     logger.info("jsonResponse:\n" + jsonResponse);
 
-            logger.info("successfully!");
+        //     logger.info("successfully!");
 
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
+        // } catch (Throwable t) {
+        //     t.printStackTrace();
+        // }
 
         return jsonResponse;
     }
@@ -1391,7 +1414,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                             try {
                                 data = root.get("data").binaryValue();
 
-                                org.apache.commons.io.FileUtils.writeByteArrayToFile(
+                                FileUtils.writeByteArrayToFile(
                                         new File("contracts/sign/" + cfMast.getMobileSms() + "/hopdong_3gang.pdf"),
                                         data);
 
