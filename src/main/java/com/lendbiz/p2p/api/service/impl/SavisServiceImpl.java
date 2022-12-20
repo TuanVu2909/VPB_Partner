@@ -227,7 +227,7 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
             if (identity.getIdNo() == null) {
                 throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_IDENTITY_DESCRIPTION);
             } else {
-                if (cfMastRepo.findByIdCode(identity.getIdNo(), mobile).size() > 0) {
+                if (cfMastRepo.findExistedIdCode(identity.getIdNo()).size() > 0) {
                     throw new BusinessException(ErrorCode.USER_EXISTED, ErrorCode.USER_EXISTED_DESCRIPTION);
                 }
             }
