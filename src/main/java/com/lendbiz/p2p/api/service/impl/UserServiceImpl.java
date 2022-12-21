@@ -472,8 +472,9 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         List<CfMast> lstCfmast = cfMastRepository.findByMobileSms(reqJoinRequest.getMobile());
         String custId = getCustId(lstCfmast);
         try {
-            ResendOtpEntity entity = otpRepository.resendOtp(reqJoinRequest.getMobile(), custId, reqJoinRequest.getUtmSource(),
-            reqJoinRequest.getUtmMedium());
+            ResendOtpEntity entity = otpRepository.resendOtp(reqJoinRequest.getMobile(), custId,
+                    reqJoinRequest.getUtmSource(),
+                    reqJoinRequest.getUtmMedium());
 
             if (entity.getCode().equals("0")) {
                 throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
@@ -521,7 +522,12 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             String contractUrl = "https://bagang.lendbiz.vn/lendbiz/view/2/" + userPhone;
             String inviteFriendTitle = "30.000 VND";
             String inviteFriendCash = "20.000 VND";
-            String inviteFriendDescription = "Mời bạn bè sử dụng 3Gang để cùng nhận thưởng. Với mỗi tài khoản được mở thành công, phát sinh giao dịch tích lũy có kỳ hạn và giữ tiền tích lũy tối thiểu 10 ngày. Bạn sẽ nhận được 30.000 VNĐ và người được giới thiệu cũng sẽ nhận được 20.000 VNĐ vào tài khoản 3Gang.";
+            String inviteFriendDescription = "Mời bạn bè sử dụng 3Gang để cùng nhận thưởng. Với mỗi tài khoản mở thành công, phát sinh giao dịch tích lũy có giá trị từ 50.000 VND và nắm giữ tối thiểu 10 ngày. Bạn sẽ nhận được 30.000 VND và người được. giới thiệu cũng sẽ nhận được 20.000 VND vào tài khoản 3Gang.\n"
+                    + "Giá trị tiên thưởng cho Bạn sẽ được tăng lên nếu bạn giới thiệu thêm nhiều bạn bè.\n"
+                    + " - Giới thiệu từ 1-5 người, tiền thưởng là 30.000 VND/người được giới thiệu mới.\n"
+                    + " - Giới thiệu từ 6-50 người, tiền thưởng là 35.000 VND/người được giới thiệu mới.\n"
+                    + " - Giới thiệu từ  51-200 người, tiền thưởng là 40.000 VND/người được giới thiệu mới\n"
+                    + " - Giới thiệu trên 200 người, tiền thưởng là 45.000 VND/người được giới thiệu mới.\n";
             String[] xuTitle = "Bạn sẽ nhận được sau một tháng kể từ ngày phát sinh giao dịch:|Nhà đầu tư có số dư tích lũy có kỳ hạn sẽ được tặng xu vào ngày sinh nhật với điều kiện:"
                     .split("\\|");
             String[] xuDescription = "+ 1 xu với mỗi 100.000 VND tích lũy có kỳ hạn.|+ 2 xu với mỗi 100.000 VND tích lũy có kỳ hạn vào ngày sinh nhật của bạn.|+ Nhận 20 xu nếu số dư tích lũy có kỳ hạn từ 1.000.000 – 10.000.000 VND|+ Nhận 100 xu nếu số dư tích lũy có kỳ hạn từ 10.000.000 – 50.000.000 VND|+ Nhận 200 xu nếu số dư tích lũy có kỳ hạn trên 50.000.000 VND"
@@ -666,7 +672,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     public ResponseEntity<?> withdrawBear(WithdrawBearRequest request) {
         try {
             NotifyEntity notify = notifyRepo.withdrawBear(request.getCustId(), request.getAmt(),
-            request.getDocNo());
+                    request.getDocNo());
             if (!notify.getPStatus().equals("01")) {
                 throw new BusinessException(notify.getPStatus(), notify.getDes());
             }
@@ -1273,50 +1279,52 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     public String sendOtp(String mobile, String otp, String message) {
         String jsonResponse = "";
         // try {
-        //     URL url = new URL("http://45.117.83.201:9095/otp/send-otp");
-        //     HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        //     con.setUseCaches(false);
-        //     con.setDoOutput(true);
-        //     con.setDoInput(true);
+        // URL url = new URL("http://45.117.83.201:9095/otp/send-otp");
+        // HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        // con.setUseCaches(false);
+        // con.setDoOutput(true);
+        // con.setDoInput(true);
 
-        //     con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-        //     // con.setRequestProperty("token",
-        //     // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c24iOiJsYmNhcGl0YWwiLCJzaWQiOiJhYTgwMjIzNS04OTU1LTQ2ZDYtYmRmYi0xZDhjZmExYmYzODEiLCJvYnQiOiIiLCJvYmoiOiIiLCJuYmYiOjE2NjU5NzQyMDksImV4cCI6MTY2NTk3NzgwOSwiaWF0IjoxNjY1OTc0MjA5fQ.qqitpQMIkzk3OJJD-Mj5hYCwZ5cJ_EyVSWnsdE0BrjI");
-        //     con.setRequestMethod("POST");
+        // con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+        // // con.setRequestProperty("token",
+        // //
+        // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c24iOiJsYmNhcGl0YWwiLCJzaWQiOiJhYTgwMjIzNS04OTU1LTQ2ZDYtYmRmYi0xZDhjZmExYmYzODEiLCJvYnQiOiIiLCJvYmoiOiIiLCJuYmYiOjE2NjU5NzQyMDksImV4cCI6MTY2NTk3NzgwOSwiaWF0IjoxNjY1OTc0MjA5fQ.qqitpQMIkzk3OJJD-Mj5hYCwZ5cJ_EyVSWnsdE0BrjI");
+        // con.setRequestMethod("POST");
 
-        //     SendOTPRequest request = new SendOTPRequest();
-        //     request.setMobile(mobile);
-        //     request.setCode(otp);
-        //     request.setMessage(message);
-        //     JSONObject jsonObject = new JSONObject(request);
+        // SendOTPRequest request = new SendOTPRequest();
+        // request.setMobile(mobile);
+        // request.setCode(otp);
+        // request.setMessage(message);
+        // JSONObject jsonObject = new JSONObject(request);
 
-        //     logger.info("strJsonBody:\n" + jsonObject.toString());
+        // logger.info("strJsonBody:\n" + jsonObject.toString());
 
-        //     byte[] sendBytes = jsonObject.toString().getBytes("UTF-8");
-        //     con.setFixedLengthStreamingMode(sendBytes.length);
+        // byte[] sendBytes = jsonObject.toString().getBytes("UTF-8");
+        // con.setFixedLengthStreamingMode(sendBytes.length);
 
-        //     OutputStream outputStream = con.getOutputStream();
-        //     outputStream.write(sendBytes);
+        // OutputStream outputStream = con.getOutputStream();
+        // outputStream.write(sendBytes);
 
-        //     int httpResponse = con.getResponseCode();
-        //     logger.info("httpResponse: " + httpResponse);
+        // int httpResponse = con.getResponseCode();
+        // logger.info("httpResponse: " + httpResponse);
 
-        //     if (httpResponse >= HttpURLConnection.HTTP_OK && httpResponse < HttpURLConnection.HTTP_BAD_REQUEST) {
-        //         Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
-        //         jsonResponse = scanner.useDelimiter("/A").hasNext() ? scanner.next() : "";
-        //         scanner.close();
-        //     } else {
-        //         Scanner scanner = new Scanner(con.getErrorStream(), "UTF-8");
-        //         jsonResponse = scanner.useDelimiter("/A").hasNext() ? scanner.next() : "";
-        //         scanner.close();
-        //     }
+        // if (httpResponse >= HttpURLConnection.HTTP_OK && httpResponse <
+        // HttpURLConnection.HTTP_BAD_REQUEST) {
+        // Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
+        // jsonResponse = scanner.useDelimiter("/A").hasNext() ? scanner.next() : "";
+        // scanner.close();
+        // } else {
+        // Scanner scanner = new Scanner(con.getErrorStream(), "UTF-8");
+        // jsonResponse = scanner.useDelimiter("/A").hasNext() ? scanner.next() : "";
+        // scanner.close();
+        // }
 
-        //     logger.info("jsonResponse:\n" + jsonResponse);
+        // logger.info("jsonResponse:\n" + jsonResponse);
 
-        //     logger.info("successfully!");
+        // logger.info("successfully!");
 
         // } catch (Throwable t) {
-        //     t.printStackTrace();
+        // t.printStackTrace();
         // }
 
         return jsonResponse;
@@ -1325,13 +1333,13 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     public ResponseEntity<?> withdraw(CashOutRequest request) {
         try {
-            
-            BankAccountEntity bank =  bankAccountRepository.getUserBankAccount(request.getCustId());
+
+            BankAccountEntity bank = bankAccountRepository.getUserBankAccount(request.getCustId());
 
             if (bank.getBankAcName() == null || bank.getBankAccount() == null || bank.getBankCode() == null) {
                 throw new BusinessException(ErrorCode.UNKNOWN_ERROR, "Liên kết tài khoản ngân hàng!");
             }
-            
+
             JSONObject jsonObject = new JSONObject(request);
             producerMessage.sendCashOu3Gang(jsonObject.toString());
             return response(toResult("OK"));
@@ -1415,32 +1423,32 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                                 data = root.get("data").binaryValue();
 
                                 FileUtils.writeByteArrayToFile(
-                                        new File("contracts/sign/" + cfMast.getMobileSms() + "/hopdong_3gang.pdf"),
+                                        new File("contracts/sign/" + cfMast.getMobileSms() + "/signed.pdf"),
                                         data);
 
                                 // FileUtils.savePdf(pathOutput, data);
 
-                                if (signContract("contracts/sign/" + cfMast.getMobileSms() + "/hopdong_3gang.pdf",
-                                        "contracts/sign/" + cfMast.getMobileSms() + "/signed_3gang.pdf",
-                                        cfMast)) {
-                                    try {
-                                        File deleteInputFile = new File(
-                                                "contracts/sign/" + cfMast.getMobileSms() + "/hopdong_output.docx");
-                                        File deleteGeneratedFile = new File(
-                                                "contracts/sign/" + cfMast.getMobileSms() + "/hopdong_3gang.pdf");
-                                        deleteInputFile.delete();
-                                        deleteGeneratedFile.delete();
+                                // if (signContract("contracts/sign/" + cfMast.getMobileSms() + "/hopdong_3gang.pdf",
+                                //         "contracts/sign/" + cfMast.getMobileSms() + "/signed_3gang.pdf",
+                                //         cfMast)) {
+                                //     try {
+                                //         File deleteInputFile = new File(
+                                //                 "contracts/sign/" + cfMast.getMobileSms() + "/hopdong_output.docx");
+                                //         File deleteGeneratedFile = new File(
+                                //                 "contracts/sign/" + cfMast.getMobileSms() + "/hopdong_3gang.pdf");
+                                //         deleteInputFile.delete();
+                                //         deleteGeneratedFile.delete();
 
-                                    } catch (Exception e) {
-                                        logger.info(e.getMessage());
-                                    }
+                                //     } catch (Exception e) {
+                                //         logger.info(e.getMessage());
+                                //     }
 
-                                    contractInfoRepository.update(cfMast.getCustid(), 22);
+                                //     contractInfoRepository.update(cfMast.getCustid(), 22);
 
-                                    logger.info("Success generated contract PDF!");
-                                } else {
-                                    contractInfoRepository.update(cfMast.getCustid(), 20);
-                                }
+                                //     logger.info("Success generated contract PDF!");
+                                // } else {
+                                //     contractInfoRepository.update(cfMast.getCustid(), 20);
+                                // }
 
                             } catch (IOException e) {
                                 contractInfoRepository.update(cfMast.getCustid(), 20);
@@ -1597,9 +1605,9 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Token S6neiB7J1g6ojpmQz83EoFf83oxDHGbS");
-    
 
-        String requestJson = "{\"transaction_id\":\"" + custId + "\",\"status\":\"" + status + "\",\"items\":[{\"id\":\""+ custId + "\",\"status\":" + Integer.parseInt(status) + "}]}";
+        String requestJson = "{\"transaction_id\":\"" + custId + "\",\"status\":\"" + status
+                + "\",\"items\":[{\"id\":\"" + custId + "\",\"status\":" + Integer.parseInt(status) + "}]}";
 
         HttpEntity<String> request = new HttpEntity<String>(requestJson, headers);
 
@@ -1620,7 +1628,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             }
 
         } else {
-            logger.info("Status <> 200 accessTradePostBack fail" );
+            logger.info("Status <> 200 accessTradePostBack fail");
         }
     }
 
