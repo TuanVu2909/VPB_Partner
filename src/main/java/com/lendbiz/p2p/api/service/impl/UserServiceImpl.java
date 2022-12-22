@@ -1421,7 +1421,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                                 data = root.get("data").binaryValue();
 
                                 FileUtils.writeByteArrayToFile(
-                                        new File("contracts/sign/" + cfMast.getMobileSms() + "/signed.pdf"),
+                                        new File("contracts/sign/" + cfMast.getMobileSms() + "/signed_3gang.pdf"),
                                         data);
 
                                 // FileUtils.savePdf(pathOutput, data);
