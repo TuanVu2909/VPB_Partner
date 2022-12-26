@@ -132,6 +132,9 @@ public class ErrorCode {
     public static final String VNPT_FACE_NO_FIND = "36";
     public static final String VNPT_FACE_NO_FIND_DESC = "Không tìm thấy khuôn mặt!";
 
+    public static final String EKYC_LIMIT = "37";
+    public static final String EKYC_LIMIT_DESC = "Bạn đã vượt quá số lần eKYC trong ngày hôm nay (tối đa 3 lần), vui lòng thử lại vào ngày mai";
+
     public static final String SESSION_TIMEOUT = "901";
     public static final String SESSION_TIMEOUT_DESCRIPTION = "Hết phiên đăng nhập, vui lòng đăng nhập lại!";
 
