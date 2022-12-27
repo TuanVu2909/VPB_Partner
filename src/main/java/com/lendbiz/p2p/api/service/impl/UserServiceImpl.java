@@ -307,17 +307,17 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> checkVersion3GangOutdated(String version) {
-        List<Object> response;
-        Version3Gang verConfig = version3GangRepository.getVersion();
+        // List<Object> response;
+        // Version3Gang verConfig = version3GangRepository.getVersion();
 
-        if (verConfig.getVersion().equalsIgnoreCase(version)) {
-            return response(toResult(verConfig.getVersion() + " " + version));
-        } else {
-            throw new BusinessException(ErrorCode.VERSION_OUTDATED,
-                    ErrorCode.VERSION_OUTDATED_DESCRIPTION);
-        }
+        // if (verConfig.getVersion().equalsIgnoreCase(version)) {
+        //     return response(toResult(verConfig.getVersion() + " " + version));
+        // } else {
+        //     throw new BusinessException(ErrorCode.VERSION_OUTDATED,
+        //             ErrorCode.VERSION_OUTDATED_DESCRIPTION);
+        // }
 
-        // return response(toResult("OK"));
+        return response(toResult("OK"));
 
     }
 
