@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTService {
+public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTService{
 
     @Autowired
     private RestTemplate restTemplate;
@@ -45,9 +45,9 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
     CfMastRepository cfMastRepo;
 
     @Autowired
-    private ProducerMessage producerMessage;
+    ProducerMessage producerMessage;
 
-    public String uploadImage(MultipartFile image, String title, String description) {
+    public String uploadImage(MultipartFile image, String title, String description){
         // Phí 0 vnd
         HttpHeaders headers = new HttpHeaders();
         MultiValueMap<String, Object> bodies = new LinkedMultiValueMap<>();
@@ -72,7 +72,7 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                     request,
                     String.class,
                     (Object) null);
-            if(responseEntity.getStatusCodeValue() == 200) {
+            if(responseEntity.getStatusCodeValue() == 200){
                 JsonNode root = mapper.readTree(responseEntity.getBody());
                 return root.get("object").get("hash").textValue();
             }
@@ -85,7 +85,7 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
 
     @SneakyThrows
     @Override
-    public ResponseEntity<?> vertifyIdentity(MultipartFile imgFrontId, MultipartFile imgBackId, String mobile) {
+    public ResponseEntity<?> vertifyIdentity(MultipartFile imgFrontId, MultipartFile imgBackId, String mobile){
         String hashImgFrontId = this.uploadImage(imgFrontId, "imgFrontId", "imgFrontId");
         String hashImgBackId = this.uploadImage(imgBackId, "imgBackId", "imgBackId");
         logger.info("============= Start eKYC vertifyIdentity (VNPT) =============");
@@ -95,10 +95,29 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
 
         // Phí 800 vnd
         BgEkycEntity bgEkyc = this.bgEkycRepository.findByMobileSms(mobile);
-        if(bgEkyc == null) bgEkyc = new BgEkycEntity();
-        // Lưu số lần call API vertifyIdentity vào DB
-        bgEkyc.setMobileSms(mobile);
-        bgEkyc.setApiOrc(bgEkyc.getApiOrc() + 1); // default ApiOrc = 0
+        String currentDate = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
+        // chua co data
+        if(bgEkyc == null){
+            bgEkyc = new BgEkycEntity();
+            bgEkyc.setMobileSms(mobile);
+            bgEkyc.setEkycDate(currentDate);
+            // Lưu số lần call API vertifyIdentity vào DB
+            bgEkyc.setApiOrc(bgEkyc.getApiOrc() + 1); // default ApiOrc = 0
+        }
+        // có data
+        else {
+            // ngày hiện tại là ngày eKYC -> check số lần ekyc
+            if(currentDate.equals(bgEkyc.getEkycDate())){
+                if(bgEkyc.getApiOrc()>=3) throw new BusinessException(ErrorCode.EKYC_LIMIT, ErrorCode.EKYC_LIMIT_DESC);
+                // Lưu số lần call API vertifyIdentity vào DB
+                bgEkyc.setApiOrc(bgEkyc.getApiOrc() + 1); // default ApiOrc = 0
+            }
+            // ngày hiện tại khac ngày eKYC -> reset lại ngày, so lần call API
+            else{
+                bgEkyc.setEkycDate(currentDate);
+                bgEkyc.setApiOrc(1);
+            }
+        }
         this.bgEkycRepository.save(bgEkyc);
 
         HttpHeaders headers = new HttpHeaders();
@@ -128,7 +147,7 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
 
             root = mapper.readTree(responseEntity.getBody());
         }
-        catch (Exception e) {
+        catch (Exception e){
             root = BaseService.stringToRoot(e.getMessage());
             if(root.get("statusCode").asInt() == 400){
                 if(root.get("message").asText().equals("IDG-00010003")){
@@ -177,7 +196,7 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                 throw new BusinessException(ErrorCode.VNPT_ID_BACK_COVER, ErrorCode.VNPT_ID_BACK_COVER_DESC);
             }
             if(root.get("object").get("tampering").get("is_legal").asText().equals("no") ||
-                    root.get("object").get("id_fake_warning").asText().equals("yes")) {
+                    root.get("object").get("id_fake_warning").asText().equals("yes")){
                 throw new BusinessException(ErrorCode.VNPT_INVALID_INPUT_DESC, ErrorCode.VNPT_INVALID_INPUT_DESC);
             }
             if(root.get("object").get("expire_warning").asText().equals("yes") ||
@@ -189,7 +208,7 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                 throw new BusinessException(ErrorCode.VNPT_ID_NO_CORNER, ErrorCode.VNPT_ID_NO_CORNER_DESC);
             }
             // CCGC
-            if(idFontType.equals("5") && idBackType.equals("5")) {
+            if(idFontType.equals("5") && idBackType.equals("5")){
                 if(root.get("object").get("match_front_back").get("match_sex").asText().equals("no") ||
                         root.get("object").get("match_front_back").get("match_bod").asText().equals("no") ||
                         root.get("object").get("match_front_back").get("match_id").asText().equals("no") ||
@@ -228,7 +247,7 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
 
     @SneakyThrows
     @Override
-    public ResponseEntity<?> vertifySelfie(MultipartFile imgFrontId, MultipartFile imgSelfie, String mobile) {
+    public ResponseEntity<?> vertifySelfie(MultipartFile imgFrontId, MultipartFile imgSelfie, String mobile){
         String hashImgFrontId = this.uploadImage(imgFrontId, "imgFrontId", "imgFrontId");
         String hashImgSelfie = this.uploadImage(imgSelfie, "imgSelfie", "imgSelfie");
 
@@ -237,10 +256,29 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
 
         // Phí 800 vnd
         BgEkycEntity bgEkyc = this.bgEkycRepository.findByMobileSms(mobile);
-        if(bgEkyc == null) bgEkyc = new BgEkycEntity();
-        // Lưu số lần call API vertifyIdentity vào DB
-        bgEkyc.setMobileSms(mobile);
-        bgEkyc.setApiCompare(bgEkyc.getApiCompare() + 1); // default ApiCompare = 0
+        String currentDate = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
+        // chua co data
+        if(bgEkyc == null){
+            bgEkyc = new BgEkycEntity();
+            bgEkyc.setMobileSms(mobile);
+            bgEkyc.setEkycDate(currentDate);
+            // Lưu số lần call API vertifyIdentity vào DB
+            bgEkyc.setApiCompare(bgEkyc.getApiCompare() + 1); // default ApiCompare = 0
+        }
+        // có data
+        else{
+            // ngày hiện tại là ngày eKYC -> check số lần ekyc
+            if(currentDate.equals(bgEkyc.getEkycDate())){
+                if(bgEkyc.getApiCompare()>=3) throw new BusinessException(ErrorCode.EKYC_LIMIT, ErrorCode.EKYC_LIMIT_DESC);
+                // Lưu số lần call API vertifyIdentity vào DB
+                bgEkyc.setApiCompare(bgEkyc.getApiCompare() + 1); // default ApiCompare = 0
+            }
+            // ngày hiện tại khac ngày eKYC -> reset lại ngày, so lần call API
+            else{
+                bgEkyc.setEkycDate(currentDate);
+                bgEkyc.setApiCompare(1);
+            }
+        }
         this.bgEkycRepository.save(bgEkyc);
 
         HttpHeaders headers = new HttpHeaders();

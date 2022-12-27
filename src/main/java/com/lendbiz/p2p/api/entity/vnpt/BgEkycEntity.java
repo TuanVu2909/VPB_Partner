@@ -46,4 +46,6 @@ public class BgEkycEntity {
     private String compareSuccess;
     @Column(name = "ORC_SUCCESS")
     private String orcSuccess;
+    @Column(name = "EKYC_DATE")
+    private String ekycDate;
 }
