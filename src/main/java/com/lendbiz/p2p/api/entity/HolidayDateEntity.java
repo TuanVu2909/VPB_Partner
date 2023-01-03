@@ -14,9 +14,12 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class CurrentDateEntity {
+public class HolidayDateEntity {
     @Id
-    @Column(name = "currentdate")
-    private String currentDate;
+    @Column(name = "DATEVAL")
+    private String dateVal;
+
+    @Column(name = "GRPID")
+    private int groupId;
 
 }
