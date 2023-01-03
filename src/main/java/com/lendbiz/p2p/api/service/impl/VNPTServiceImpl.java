@@ -11,6 +11,7 @@ import com.lendbiz.p2p.api.repository.CfMastRepository;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.service.VNPTService;
 import com.lendbiz.p2p.api.service.base.BaseService;
+import com.lendbiz.p2p.api.utils.Utils;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,6 +24,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -210,9 +214,22 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
             if(cfMastRepo.findByIdCode(root.get("object").get("id").asText(), mobile).size() > 0){
                 throw new BusinessException(ErrorCode.USER_EXISTED, ErrorCode.USER_EXISTED_DESCRIPTION);
             }
-            String []birth = root.get("object").get("birth_day").asText().split("/");
-            String currentYear = new SimpleDateFormat("yyyy").format(new Date());
-            if(Integer.parseInt(currentYear) - Integer.parseInt(birth[2]) < 18){
+//            String []birth = root.get("object").get("birth_day").asText().split("/");
+//            String currentYear = new SimpleDateFormat("yyyy").format(new Date());
+//            if(Integer.parseInt(currentYear) - Integer.parseInt(birth[2]) < 18){
+//                throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_OLD_INVALID);
+//            }
+            Date nDate;
+            try {
+                nDate = Utils.convertStringToDateTechcombank(root.get("object").get("birth_day").asText());
+            } catch (Exception e) {
+                nDate = Utils.convertStringToDate3Gang(root.get("object").get("birth_day").asText());
+            }
+
+            LocalDate startDate = nDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            Period yearOld = Period.between(startDate, LocalDate.now());
+
+            if (yearOld.getYears() < 18) {
                 throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_OLD_INVALID);
             }
             // Đến đây là vertifyIdentity không có lỗi -> insert vào DB

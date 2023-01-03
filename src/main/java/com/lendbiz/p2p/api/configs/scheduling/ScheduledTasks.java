@@ -25,6 +25,5 @@ public class ScheduledTasks {
     //@Scheduled(zone = "GMT+7", cron = "0 */5 * ? * *")
     public void scheduleTaskGetToken() {
         fundService.getTokenAFM();
-        return;
     }
 }
