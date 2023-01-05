@@ -524,7 +524,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             String inviteFriendCash = "15.000 VND";
             String inviteFriendDescription = "Mời bạn bè sử dụng 3Gang để cùng nhận thưởng. Với mỗi tài khoản mở thành công, phát sinh giao dịch tích lũy có kỳ hạn với số tiền từ 50.000 VND trở lên trong thời gian tối thiểu 1 tháng.\n" +
                     "Bạn sẽ nhận được 50.000 VND và người được giới thiệu cũng sẽ nhận được 15.000 VND vào tài khoản 3Gang.\n"
-                    + "Giá trị tiên thưởng sẽ tăng lên nếu bạn giới thiệu thêm nhiều bạn bè cùng sử dụng 3Gang khi:\n"
+                    + "Giá trị tiền thưởng sẽ tăng lên nếu bạn giới thiệu thêm nhiều bạn bè cùng sử dụng 3Gang khi:\n"
                     + " 1. Giới thiệu từ 1-5 người, tiền thưởng là 50.000 VND/người được giới thiệu mới.\n"
                     + " 2. Giới thiệu từ 6-50 người, tiền thưởng là 55.000 VND/người được giới thiệu mới.\n"
                     + " 3. Giới thiệu từ  51-200 người, tiền thưởng là 60.000 VND/người được giới thiệu mới\n"
