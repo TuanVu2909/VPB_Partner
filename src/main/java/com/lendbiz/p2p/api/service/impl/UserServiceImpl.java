@@ -520,14 +520,15 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             String lbcName = "CONG TY CO PHAN LENDBIZ CAPITAL";
             String ruleAgreementUrl = "https://bagang.lendbiz.vn/lendbiz/view/1/" + userPhone;
             String contractUrl = "https://bagang.lendbiz.vn/lendbiz/view/2/" + userPhone;
-            String inviteFriendTitle = "30.000 VND";
-            String inviteFriendCash = "20.000 VND";
-            String inviteFriendDescription = "Mời bạn bè sử dụng 3Gang để cùng nhận thưởng. Với mỗi tài khoản mở thành công, phát sinh giao dịch tích lũy có giá trị từ 50.000 VND và nắm giữ tối thiểu 10 ngày. Bạn sẽ nhận được 30.000 VND và người được. giới thiệu cũng sẽ nhận được 20.000 VND vào tài khoản 3Gang.\n"
-                    + "Giá trị tiên thưởng cho Bạn sẽ được tăng lên nếu bạn giới thiệu thêm nhiều bạn bè.\n"
-                    + " - Giới thiệu từ 1-5 người, tiền thưởng là 30.000 VND/người được giới thiệu mới.\n"
-                    + " - Giới thiệu từ 6-50 người, tiền thưởng là 35.000 VND/người được giới thiệu mới.\n"
-                    + " - Giới thiệu từ  51-200 người, tiền thưởng là 40.000 VND/người được giới thiệu mới\n"
-                    + " - Giới thiệu trên 200 người, tiền thưởng là 45.000 VND/người được giới thiệu mới.\n";
+            String inviteFriendTitle = "50.000 VND";
+            String inviteFriendCash = "15.000 VND";
+            String inviteFriendDescription = "Mời bạn bè sử dụng 3Gang để cùng nhận thưởng. Với mỗi tài khoản mở thành công, phát sinh giao dịch tích lũy có kỳ hạn với số tiền từ 50.000 VND trở lên trong thời gian tối thiểu 1 tháng.\n" +
+                    "Bạn sẽ nhận được 50.000 VND và người được giới thiệu cũng sẽ nhận được 15.000 VND vào tài khoản 3Gang.\n"
+                    + "Giá trị tiên thưởng sẽ tăng lên nếu bạn giới thiệu thêm nhiều bạn bè cùng sử dụng 3Gang khi:\n"
+                    + " 1. Giới thiệu từ 1-5 người, tiền thưởng là 50.000 VND/người được giới thiệu mới.\n"
+                    + " 2. Giới thiệu từ 6-50 người, tiền thưởng là 55.000 VND/người được giới thiệu mới.\n"
+                    + " 3. Giới thiệu từ  51-200 người, tiền thưởng là 60.000 VND/người được giới thiệu mới\n"
+                    + " 4. Giới thiệu trên 200 người, tiền thưởng là 65.000 VND/người được giới thiệu mới.\n";
             String[] xuTitle = "Bạn sẽ nhận được sau một tháng kể từ ngày phát sinh giao dịch:|Nhà đầu tư có số dư tích lũy có kỳ hạn sẽ được tặng xu vào ngày sinh nhật với điều kiện:"
                     .split("\\|");
             String[] xuDescription = "+ 1 xu với mỗi 100.000 VND tích lũy có kỳ hạn.|+ 2 xu với mỗi 100.000 VND tích lũy có kỳ hạn vào ngày sinh nhật của bạn.|+ Nhận 20 xu nếu số dư tích lũy có kỳ hạn từ 1.000.000 – 10.000.000 VND|+ Nhận 100 xu nếu số dư tích lũy có kỳ hạn từ 10.000.000 – 50.000.000 VND|+ Nhận 200 xu nếu số dư tích lũy có kỳ hạn trên 50.000.000 VND"
