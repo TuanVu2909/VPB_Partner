@@ -130,6 +130,9 @@ public class Constants {
 		public static final String GROUP_SAVE_ID_CARD = "group_save_id_card_test";
 	}
 
+	public static final String ACCESS_TRADE_URI = "https://api.accesstrade.vn/v1/postbacks/conversions";
+	public static final String ACCESS_TRADE_UPDATE_URI = "https://api.accesstrade.vn/v1/postbacks/conversions";
+
 	// VNPT
 	public static final String VNPT_DOMAIN = "https://api.idg.vnpt.vn";
 	// Account trial
@@ -143,23 +146,18 @@ public class Constants {
 
 
 	// FUND AMBER
-	// private final String AMBER_URL = "http://10.255.241.142:1351"; // link PROD
-	public static final String AMBER_URL = "http://222.252.8.194:21351"; // link UAT
+	public static final String AMBER_URL = "https://online.ambercapital.vn"; // link UAT
 	public static final String GRANT_TYPE = "password";
 	public static final String CLIENT_ID = "FUNDAGENT";
 	public static final String CLIENT_SECRET = "FUNDAGENT2022";
 	public static final String USERNAME = "LBC";
-	public static final String PASSWORD = "123456";
+	public static final String PASSWORD = "F]tT5pM{xs5UC%n";
 
-
-	public static final String ACCESS_TRADE_URI = "https://api.accesstrade.vn/v1/postbacks/conversions";
-	public static final String ACCESS_TRADE_UPDATE_URI = "https://api.accesstrade.vn/v1/postbacks/conversions";
 	public static final String BANKCODE = "VCB";
 	public static final String BANKNAME = "Ngân hàng TMCP Ngoại Thương Việt Nam";
 	public static final String BANKACC = "1090000004";
 	public static final String BANKRECEIVENAME = "Quỹ Đầu tư Trái Phiếu An toàn Amber";
 	public static final String BANKBRANCH = "Hội Sở";
-
 
 	public static final Map<String, Object> AFM_INFO_STATUS = new HashMap<>();
 	static {

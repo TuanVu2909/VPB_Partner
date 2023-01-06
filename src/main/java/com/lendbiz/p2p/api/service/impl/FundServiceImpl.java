@@ -218,12 +218,13 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<IdentityCustomerRequest> request = new HttpEntity(bodies, headers);
-            ResponseEntity<?> responseEntity = restTemplate.exchange(
-                    Constants.AMBER_URL + "/accounts",
-                    HttpMethod.POST,
-                    request,
-                    Object.class,
-                    (Object) null);
+//            ResponseEntity<?> responseEntity = restTemplate.exchange(
+//                    Constants.AMBER_URL + "/accounts",
+//                    HttpMethod.POST,
+//                    request,
+//                    Object.class,
+//                    (Object) null);
+            ResponseEntity<?> responseEntity = restTemplate.postForEntity(Constants.AMBER_URL + "/accounts", request, Object.class);
             Map<String, Object> data = new HashMap<>((Map<? extends String, ?>) responseEntity.getBody());
             if(data.get("EC").equals("0")) {
                 ArrayList<Object> lst = (ArrayList<Object>) data.get("DT");
