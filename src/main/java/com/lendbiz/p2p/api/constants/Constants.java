@@ -146,7 +146,7 @@ public class Constants {
 
 
 	// FUND AMBER
-	public static final String AMBER_URL = "https://online.ambercapital.vn"; // link UAT
+	public static final String AMBER_URL = "https://online.ambercapital.vn"; // link golive
 	public static final String GRANT_TYPE = "password";
 	public static final String CLIENT_ID = "FUNDAGENT";
 	public static final String CLIENT_SECRET = "FUNDAGENT2022";

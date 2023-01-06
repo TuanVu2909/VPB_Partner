@@ -127,7 +127,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<IdentityCustomerRequest> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
-                    Constants.AMBER_URL + "/checkmapping",
+                    Constants.AMBER_URL + "/agentapi/checkmapping",
                     HttpMethod.POST,
                     request,
                     Object.class,
@@ -147,7 +147,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<OTPMappingRequest> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
-                    Constants.AMBER_URL + "/otpmapping",
+                    Constants.AMBER_URL + "/agentapi/otpmapping",
                     HttpMethod.POST,
                     request,
                     Object.class,
@@ -179,7 +179,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<IdentityCustomerRequest> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
-                    Constants.AMBER_URL + "/resendotpmapping",
+                    Constants.AMBER_URL + "/agentapi/resendotpmapping",
                     HttpMethod.POST,
                     request,
                     Object.class,
@@ -199,7 +199,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<String> request = new HttpEntity(idCode, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
-                    Constants.AMBER_URL + "/checkaccounts",
+                    Constants.AMBER_URL + "/agentapi/checkaccounts",
                     HttpMethod.POST,
                     request,
                     Object.class,
@@ -218,13 +218,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<IdentityCustomerRequest> request = new HttpEntity(bodies, headers);
-//            ResponseEntity<?> responseEntity = restTemplate.exchange(
-//                    Constants.AMBER_URL + "/accounts",
-//                    HttpMethod.POST,
-//                    request,
-//                    Object.class,
-//                    (Object) null);
-            ResponseEntity<?> responseEntity = restTemplate.postForEntity(Constants.AMBER_URL + "/accounts", request, Object.class);
+            ResponseEntity<?> responseEntity = restTemplate.postForEntity(Constants.AMBER_URL + "/agentapi/accounts", request, Object.class);
             Map<String, Object> data = new HashMap<>((Map<? extends String, ?>) responseEntity.getBody());
             if(data.get("EC").equals("0")) {
                 ArrayList<Object> lst = (ArrayList<Object>) data.get("DT");
@@ -261,7 +255,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<Object> request = new HttpEntity(null, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
-                    Constants.AMBER_URL + "/getfunds",
+                    Constants.AMBER_URL + "/agentapi/getfunds",
                     HttpMethod.GET,
                     request,
                     Object.class,
@@ -283,7 +277,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             ObjectMapper mapper = new ObjectMapper();
             Map<String, Object> params = mapper.convertValue(bodies, Map.class);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
-                    Constants.AMBER_URL + "/navprice?fromdate={fromdate}&todate={todate}&symbol={symbol}",
+                    Constants.AMBER_URL + "/agentapi/navprice?fromdate={fromdate}&todate={todate}&symbol={symbol}",
                     HttpMethod.GET,
                     request,
                     Object.class,
@@ -303,7 +297,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<String> request = new HttpEntity(custodycd, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
-                    Constants.AMBER_URL + "/sebalance",
+                    Constants.AMBER_URL + "/agentapi/sebalance",
                     HttpMethod.POST,
                     request,
                     Object.class,
@@ -333,7 +327,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
             HttpEntity<String> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
-                    Constants.AMBER_URL + "/portfolioinfobuy",
+                    Constants.AMBER_URL + "/agentapi/portfolioinfobuy",
                     HttpMethod.POST,
                     request,
                     Object.class,
@@ -390,7 +384,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
             HttpEntity<String> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
-                    Constants.AMBER_URL + "/portfolioinfosell",
+                    Constants.AMBER_URL + "/agentapi/portfolioinfosell",
                     HttpMethod.POST,
                     request,
                     Object.class,
@@ -431,7 +425,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<String> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
-                    Constants.AMBER_URL + "/normalorder",
+                    Constants.AMBER_URL + "/agentapi/normalorder",
                     HttpMethod.POST,
                     request,
                     Object.class,
@@ -473,7 +467,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<SellInfoRequest> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
-                    Constants.AMBER_URL + "/expectedsellinfo",
+                    Constants.AMBER_URL + "/agentapi/expectedsellinfo",
                     HttpMethod.POST,
                     request,
                     Object.class,
@@ -493,7 +487,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<SellNormalCCQRequest> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
-                    Constants.AMBER_URL + "/normalsell",
+                    Constants.AMBER_URL + "/agentapi/normalsell",
                     HttpMethod.POST,
                     request,
                     Object.class,
@@ -514,7 +508,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<OTPSellOrderRequest> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
-                    Constants.AMBER_URL + "/otporder",
+                    Constants.AMBER_URL + "/agentapi/otporder",
                     HttpMethod.POST,
                     request,
                     Object.class,
@@ -550,7 +544,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             headers.set("Authorization", "Bearer " + this.accessTokenAFM.getAccess_token());
             HttpEntity<OTPIdentityRequest> request = new HttpEntity(bodies, headers);
             ResponseEntity<?> responseEntity = restTemplate.exchange(
-                    Constants.AMBER_URL + "/resendotporder",
+                    Constants.AMBER_URL + "/agentapi/resendotporder",
                     HttpMethod.POST,
                     request,
                     Object.class,
