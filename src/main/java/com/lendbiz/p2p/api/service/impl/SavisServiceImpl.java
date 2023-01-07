@@ -101,22 +101,22 @@ public class SavisServiceImpl extends BaseResponse<SavisService> implements Savi
 
         saveFileKafka(file, mobile, type);
 
-        try {
-            byte[] fileContent = Base64.encodeBase64(file.getBytes());
-            String result = new String(fileContent);
-            System.out.println(result);
+        // try {
+        //     byte[] fileContent = Base64.encodeBase64(file.getBytes());
+        //     String result = new String(fileContent);
+        //     System.out.println(result);
 
-            Map<String, Object> map = new HashMap<>();
-            map.put("mobile", mobile);
-            map.put("file", result);
-            map.put("fileName", file.getOriginalFilename());
+        //     Map<String, Object> map = new HashMap<>();
+        //     map.put("mobile", mobile);
+        //     map.put("file", result);
+        //     map.put("fileName", file.getOriginalFilename());
 
-            JSONObject jsonObjectLogs = new JSONObject(map);
-            producerMessage.sendSaveIdCard(jsonObjectLogs.toString());
+        //     JSONObject jsonObjectLogs = new JSONObject(map);
+        //     producerMessage.sendSaveIdCard(jsonObjectLogs.toString());
 
-        } catch (Exception e) {
-            logger.info(e.getMessage());
-        }
+        // } catch (Exception e) {
+        //     logger.info(e.getMessage());
+        // }
 
         final String uri = Constants.ESIGN_PREDICT;
         HttpHeaders headers = new HttpHeaders();

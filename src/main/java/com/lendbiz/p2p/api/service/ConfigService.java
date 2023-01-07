@@ -20,7 +20,7 @@ import org.springframework.http.ResponseEntity;
  ***********************************************************************/
 public interface ConfigService {
 
-	public ResponseEntity<?> getCurrentDate();
+	public ResponseEntity<?> getHolidayDate();
 
 	public ResponseEntity<?> getProductField();
 

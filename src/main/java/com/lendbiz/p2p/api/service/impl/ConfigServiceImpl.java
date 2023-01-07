@@ -21,7 +21,7 @@ import java.util.List;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.BgConfigEntity;
-import com.lendbiz.p2p.api.entity.CurrentDateEntity;
+import com.lendbiz.p2p.api.entity.HolidayDateEntity;
 import com.lendbiz.p2p.api.entity.ProductConfigEntity;
 import com.lendbiz.p2p.api.model.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.BgConfigRepository;
@@ -64,13 +64,14 @@ public class ConfigServiceImpl extends BaseResponse<ConfigService> implements Co
 	CurrentDateRepo currentDateRepo;
 
 	@Override
-	public ResponseEntity<?> getCurrentDate() {
+	public ResponseEntity<?> getHolidayDate() {
 
 		// return response(toResult(bgConfigRepository.findViaProcedure()));
 		try {
-			CurrentDateEntity currentDateEntity = currentDateRepo.getCurrentDate();
-			return response(toResult(currentDateEntity));
+			List<HolidayDateEntity> dateEntity = currentDateRepo.getHolidayDate();
+			return response(toResult(dateEntity));
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 			throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
 		}
 	}

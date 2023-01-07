@@ -40,11 +40,11 @@ public class ConfigController {
     }
 
     @Transactional(readOnly = true)
-    @GetMapping("/get-current-date")
-    public ResponseEntity<?> getCurrentDate(HttpServletRequest httpServletRequest,
+    @GetMapping("/get-holiday-date")
+    public ResponseEntity<?> getHolidayDate(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId) {
 
-        return configService.getCurrentDate();
+        return configService.getHolidayDate();
     }
 
 }
