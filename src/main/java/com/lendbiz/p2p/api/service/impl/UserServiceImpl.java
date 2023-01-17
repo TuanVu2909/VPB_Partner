@@ -33,6 +33,7 @@ import java.util.Scanner;
 import java.util.UUID;
 
 import com.lendbiz.p2p.api.service.VNPTService;
+import com.lendbiz.p2p.api.service.base.BaseService;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -274,33 +275,6 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     private ProducerMessage producerMessage;
 
-    public String getCustId(List<CfMast> lstCfmast) {
-        List<CfMast> newLstCfmast = new ArrayList<>();
-        String custId = null;
-        if (lstCfmast.size() > 1) {
-            lstCfmast.forEach((n) -> {
-                try {
-                    if (n.getStatus().equalsIgnoreCase("A")) {
-                        newLstCfmast.add(n);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            });
-
-            if (newLstCfmast.size() > 0) {
-                custId = newLstCfmast.get(0).getCustid();
-            } else {
-                custId = lstCfmast.get(0).getCustid();
-            }
-
-        } else if (lstCfmast.size() == 1) {
-            custId = lstCfmast.get(0).getCustid();
-        }
-        return custId;
-    }
-
     @Qualifier("version3GangRepository")
     @Autowired
     Version3GangRepository version3GangRepository;
@@ -340,7 +314,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
         List<CfMast> lstCfmast = cfMastRepository.findByMobileSms(loginRequest.getUsername());
 
-        String custId = getCustId(lstCfmast);
+        String custId = BaseService.getCustId(lstCfmast);
 
         UserOnline user = userOnlineRepo.getUserOnline(custId);
         if (user != null) {
@@ -393,7 +367,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     public ResponseEntity<?> register(ReqJoinRequest reqJoinRequest) {
         CfMast cfmast;
         List<CfMast> lstCfmast = cfMastRepository.findByMobileSms(reqJoinRequest.getMobile());
-        String custId = getCustId(lstCfmast);
+        String custId = BaseService.getCustId(lstCfmast);
         if (custId != null) {
             cfmast = cfMastRepository.findByCustid(custId).get();
             if (cfmast.getStatus().equalsIgnoreCase("P")) {
@@ -472,7 +446,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     public ResponseEntity<?> resendOtp(ReqJoinRequest reqJoinRequest) {
         List<CfMast> lstCfmast = cfMastRepository.findByMobileSms(reqJoinRequest.getMobile());
-        String custId = getCustId(lstCfmast);
+        String custId = BaseService.getCustId(lstCfmast);
         try {
             ResendOtpEntity entity = otpRepository.resendOtp(reqJoinRequest.getMobile(), custId,
                     reqJoinRequest.getUtmSource(),
@@ -582,7 +556,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     public ResponseEntity<?> setAccountPassword(SetAccountPasswordRequest setAccountPasswordRequest) {
         FirstPasswordEntity entity = new FirstPasswordEntity();
         List<CfMast> lstCfmast = cfMastRepository.findByMobileSms(setAccountPasswordRequest.getCustId());
-        String custId = getCustId(lstCfmast);
+        String custId = BaseService.getCustId(lstCfmast);
         if (custId != null) {
             try {
                 entity = firstPasswordRepository.firstPassword(custId,

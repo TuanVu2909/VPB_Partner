@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.ErrorCode;
+import com.lendbiz.p2p.api.entity.CfMast;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,8 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BaseService {
 
@@ -49,5 +52,29 @@ public class BaseService {
 			}
 		}
 		return result;
+	}
+
+	public static String getCustId(List<CfMast> lstCfmast) {
+		List<CfMast> newLstCfmast = new ArrayList<>();
+		String custId = null;
+		if (lstCfmast.size() > 1) {
+			lstCfmast.forEach((n) -> {
+				try {
+					if (n.getStatus().equalsIgnoreCase("A")) {
+						newLstCfmast.add(n);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+			if (newLstCfmast.size() > 0) {
+				custId = newLstCfmast.get(0).getCustid();
+			} else {
+				custId = lstCfmast.get(0).getCustid();
+			}
+		} else if (lstCfmast.size() == 1) {
+			custId = lstCfmast.get(0).getCustid();
+		}
+		return custId;
 	}
 }

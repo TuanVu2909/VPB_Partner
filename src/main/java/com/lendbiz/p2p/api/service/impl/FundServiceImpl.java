@@ -13,6 +13,7 @@ import com.lendbiz.p2p.api.response.amber.AFMAccount;
 import com.lendbiz.p2p.api.response.amber.AFMAccStatus;
 import com.lendbiz.p2p.api.response.amber.AFMToken;
 import com.lendbiz.p2p.api.service.FundService;
+import com.lendbiz.p2p.api.service.base.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.*;
@@ -46,11 +47,19 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
 
     @Override
     public ResponseEntity<?> getBGAccountInfo(String mobile) {
-        List<CfMast> cfm;
+        List<CfMast> lstCfmast;
         BankAccountEntity bankAccountEntity;
+        CfMast user = null;
         try {
-            cfm = cfMastRepository.findByMobileSms(mobile);
-            bankAccountEntity = bankAccountRepository.getUserBankAccount(cfm.get(0).getCustid());
+            lstCfmast = cfMastRepository.findByMobileSms(mobile);
+            String custId = BaseService.getCustId(lstCfmast);
+
+            for(CfMast u : lstCfmast){
+                if (u.getCustid().equals(custId)){
+                    user = u;
+                }
+            }
+            bankAccountEntity = bankAccountRepository.getUserBankAccount(user.getCustid());
         }
         catch (Exception e) {
             return response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "truy vấn không hợp lệ !"));
@@ -59,29 +68,29 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
         AFMBankInfoEntity afmBankInfoEntity = fundAmberRepository.findByBankBin(bankAccountEntity != null ? bankAccountEntity.getBankCode() : "-1");
 
         AFMAccount afmAccount = new AFMAccount();
-        afmAccount.setLanguage(cfm.get(0).getLanguage());
-        afmAccount.setFullname(cfm.get(0).getFullName());
-        afmAccount.setIdcode(cfm.get(0).getIdCode());
-        afmAccount.setIddate(cfm.get(0).getIdDate().toString());
-        afmAccount.setIdplace(cfm.get(0).getIdPlace());
-        afmAccount.setBirthdate(cfm.get(0).getDateOfBirth().toString());
-        afmAccount.setSex(cfm.get(0).getSex());
-        afmAccount.setCountry(cfm.get(0).getCountry());
-        afmAccount.setMobile(cfm.get(0).getMobileSms());
-        afmAccount.setAddress(cfm.get(0).getAddress());
-        afmAccount.setEmail(cfm.get(0).getEmail());
+        afmAccount.setLanguage(user.getLanguage());
+        afmAccount.setFullname(user.getFullName());
+        afmAccount.setIdcode(user.getIdCode());
+        afmAccount.setIddate(user.getIdDate().toString());
+        afmAccount.setIdplace(user.getIdPlace());
+        afmAccount.setBirthdate(user.getDateOfBirth().toString());
+        afmAccount.setSex(user.getSex());
+        afmAccount.setCountry(user.getCountry());
+        afmAccount.setMobile(user.getMobileSms());
+        afmAccount.setAddress(user.getAddress());
+        afmAccount.setEmail(user.getEmail());
         afmAccount.setBankcode(afmBankInfoEntity != null ? afmBankInfoEntity.getBankCode() : "");
         afmAccount.setCitybank("HN");
         afmAccount.setBankacc(bankAccountEntity != null ? bankAccountEntity.getBankAccount() : "");
 
-        AFMAccountInfoEntity afmAcc = this.afmAccountInfoRepository.findByMobile(cfm.get(0).getMobileSms());
+        AFMAccountInfoEntity afmAcc = this.afmAccountInfoRepository.findByMobile(user.getMobileSms());
         if (afmAcc == null) {
             AFMAccountInfoEntity afmA = new AFMAccountInfoEntity();
-            afmA.setCusId(cfm.get(0).getCustid());
+            afmA.setCusId(user.getCustid());
             afmA.setIdCode(afmAccount.getIdcode());
             afmA.setMobile(afmAccount.getMobile());
             afmA.setEmail(afmAccount.getEmail());
-            afmA.setBankBin(bankAccountEntity.getBankCode());
+            afmA.setBankBin(bankAccountEntity != null ? bankAccountEntity.getBankCode() : "");
             afmA.setBankAccount(afmAccount.getBankacc());
 
             this.afmAccountInfoRepository.save(afmA);
