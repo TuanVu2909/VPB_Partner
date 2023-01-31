@@ -243,17 +243,22 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                 throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_OLD_INVALID);
             }
             // Đến đây là vertifyIdentity không có lỗi -> insert vào DB
+            // Xử lý những field có thể bị null
+            String convNationality = "-".equals(root.get("object").get("nationality").asText()) ? "N/A" : root.get("object").get("nationality").asText();
+            String convGender = "-".equals(root.get("object").get("gender").asText()) ? "Nam" : root.get("object").get("gender").asText();
+            String convValidDate = "-".equals(root.get("object").get("valid_date").asText()) ? "31/12/9999" : root.get("object").get("valid_date").asText();
+
             bgEkyc.setIdNo(root.get("object").get("id").asText());
             bgEkyc.setTypeId(root.get("object").get("type_id").asInt());
             bgEkyc.setCardType(root.get("object").get("card_type").asText());
             bgEkyc.setName(root.get("object").get("name").asText());
             bgEkyc.setBirthDay(root.get("object").get("birth_day").asText());
-            bgEkyc.setNationality("-".equals(root.get("object").get("nationality").asText()) ? null : root.get("object").get("nationality").asText());
-            bgEkyc.setGender("-".equals(root.get("object").get("gender").asText()) ? null : root.get("object").get("gender").asText());
+            bgEkyc.setNationality(convNationality);
+            bgEkyc.setGender(convGender);
             bgEkyc.setOriginLocation(root.get("object").get("origin_location").asText().replaceAll("\n", ", "));
             bgEkyc.setRecentLocation(root.get("object").get("recent_location").asText().replaceAll("\n", ", "));
             bgEkyc.setIssueDate(root.get("object").get("issue_date").asText());
-            bgEkyc.setValidDate("-".equals(root.get("object").get("valid_date").asText()) ? null : root.get("object").get("valid_date").asText());
+            bgEkyc.setValidDate(convValidDate);
             bgEkyc.setIssuePlace(root.get("object").get("issue_place").asText().replaceAll("\n", ", "));
             bgEkyc.setOrcSuccess("YES");
 
