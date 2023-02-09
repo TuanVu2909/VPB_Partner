@@ -597,7 +597,7 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
                     amountAfterChargeFee = String.valueOf(result.getAmount() - (result.getAmount() * 0.0075));
                 }
                 ninePayDepositRepo.insertApiTrans(amountAfterChargeFee,
-                        result.getDescription() + " " + request.getResult());
+                        result.getDescription());
             }
 
         } catch (JsonProcessingException e) {
