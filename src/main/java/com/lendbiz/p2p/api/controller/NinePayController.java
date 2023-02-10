@@ -27,6 +27,7 @@ import com.lendbiz.p2p.api.service.UserService;
 import com.lendbiz.p2p.api.service.impl.Card9PayServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -231,9 +232,8 @@ public class NinePayController {
     @Autowired
     private LoggingService loggingGetRequest;
 
-    @PostMapping("/9pay/ipn")
-    public ResponseEntity<?> ipn(HttpServletRequest httpServletRequest,
-            @RequestBody IpnRequest request) throws UnsupportedEncodingException {
+    @PostMapping(path = "/9pay/ipn", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    public ResponseEntity<?> ipn(HttpServletRequest httpServletRequest, IpnRequest request) {
 
         log.info(request.getResult());
         log.info(request.getChecksum());
