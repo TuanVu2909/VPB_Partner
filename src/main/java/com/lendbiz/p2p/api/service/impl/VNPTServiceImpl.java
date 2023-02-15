@@ -245,8 +245,16 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
             // Đến đây là vertifyIdentity không có lỗi -> insert vào DB
             // Xử lý những field có thể bị null
             String convNationality = "-".equals(root.get("object").get("nationality").asText()) ? "N/A" : root.get("object").get("nationality").asText();
-            // TODO sửa lại convGender, convValidDate sau 001:Nam, 002:Nữ, 003:Khác,
-            String convGender = "-".equals(root.get("object").get("gender").asText()) ? "Nam" : root.get("object").get("gender").asText();
+            String baseStr = root.get("object").get("gender").asText();
+            String convGender = "";
+            // 001:Nam, 002:Nữ, 003:Khác
+            if("Nam".equals(baseStr)){
+                convGender = "001";
+            }else if("Nữ".equals(baseStr)){
+                convGender = "002";
+            } else {
+                convGender = "003";
+            }
             String convValidDate = "-".equals(root.get("object").get("valid_date").asText()) ? "31/12/9999" : root.get("object").get("valid_date").asText();
 
             bgEkyc.setIdNo(root.get("object").get("id").asText());
