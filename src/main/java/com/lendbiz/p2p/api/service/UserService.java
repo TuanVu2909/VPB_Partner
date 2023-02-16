@@ -6,6 +6,7 @@ import com.lendbiz.p2p.api.entity.PkgFundInfoEntity;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.entity.WithdrawBearRequest;
 import com.lendbiz.p2p.api.request.*;
+import com.lendbiz.p2p.api.request.hyperlead.HypPostBack;
 import com.lendbiz.p2p.api.response.BearResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -128,4 +129,5 @@ public interface UserService {
 
 	public void autoSignContract();
 
+	String hyperleadPostBack();
 }

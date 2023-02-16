@@ -129,8 +129,14 @@ public class Constants {
 		public static final String GROUP_3GANG_PARTITIONS = "group_3gang_partitions";
 	}
 
+	// accesstrade
 	public static final String ACCESS_TRADE_URI = "https://api.accesstrade.vn/v1/postbacks/conversions";
 	public static final String ACCESS_TRADE_UPDATE_URI = "https://api.accesstrade.vn/v1/postbacks/conversions";
+
+	// hyperlead
+	public static final String HYPER_LEAD_URI = "https://s2s.riofintech.net";
+	public static final String HYPER_LEAD_API_KEY = "k97Ocp5U6VoAMgGW";
+	public static final String HYPER_LEAD_POSTBACK_TYPE = "cpl_standard_postback";
 
 	// VNPT
 	public static final String VNPT_DOMAIN = "https://api.idg.vnpt.vn";

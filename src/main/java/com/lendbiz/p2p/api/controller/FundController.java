@@ -6,6 +6,8 @@ import com.lendbiz.p2p.api.service.FundService;
 // import com.twilio.rest.api.v2010.account.Message;
 // import com.twilio.type.PhoneNumber;
 // import org.springframework.http.HttpStatus;
+import com.lendbiz.p2p.api.service.User3GService;
+import com.lendbiz.p2p.api.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +21,11 @@ public class FundController {
     @Autowired
     private FundService fundService;
 
+    @Autowired
+    private UserService userService;
     @GetMapping("/test")
     public String testAPI () {
-        return "Ping success !";
+        return userService.hyperleadPostBack();
     }
 
 //    @GetMapping(value = "/sendSMS")
