@@ -253,7 +253,7 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
             }else if("Nữ".equals(baseStr)){
                 convGender = "002";
             } else {
-                convGender = "003";
+                convGender = "001";
             }
             String convValidDate = "-".equals(root.get("object").get("valid_date").asText()) ? "31/12/9999" : root.get("object").get("valid_date").asText();
 
