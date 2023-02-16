@@ -129,5 +129,7 @@ public interface UserService {
 
 	public void autoSignContract();
 
-	String hyperleadPostBack();
+	String jobHandleAffiliate2();
+
+	void jobHandleAffiliate3();
 }

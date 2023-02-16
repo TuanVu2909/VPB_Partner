@@ -15,8 +15,8 @@ public class ScheduledTasks {
     private static final Logger logger = LoggerFactory.getLogger(ScheduledTasks.class);
     @Autowired
     private FundService fundService;
-    @Autowired
-    private UserService userService;
+//    @Autowired
+//    private UserService userService;
 
     // 1s executive below action with time zone VN
 //    @Scheduled(zone = "GMT+7", fixedRate = 1000)
@@ -26,9 +26,9 @@ public class ScheduledTasks {
 //    }
     // 5 phút một lần
     // @Scheduled(zone = "GMT+7", cron = "0 */5 * ? * *")
-    public void scheduleTaskGetToken() {
-        fundService.getTokenAFM();
-    }
+//    public void scheduleTaskGetToken() {
+//        fundService.getTokenAFM();
+//    }
 
     // 1s một lần
     //@Scheduled(zone = "GMT+7", fixedRate = 1000)

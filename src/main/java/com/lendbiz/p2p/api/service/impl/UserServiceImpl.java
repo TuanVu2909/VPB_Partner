@@ -23,6 +23,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -1574,47 +1576,98 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         }
     }
 
-
-    @Autowired
-    public String hyperleadPostBack() {
-        // status:2 -> tìm tất cả thằng nào có thay đổi eKYC hoặc saving
+    // status:2 -> tìm tất cả thằng nào có thay đổi state (eKYC hoặc saving)
+    @SneakyThrows
+    public String jobHandleAffiliate2() {
         List<GMAffiliateEntity> dbd = affiliateRepository.findAllByStatus(2);
-        HypPostBack par = new HypPostBack();
-
         for(GMAffiliateEntity cus : dbd) {
-
-            List<HypPostBack> req;
-
+            HypPostBack req = new HypPostBack();
+            req.setClick_id(cus.getPublicSherId());
+            req.setTransaction_id(cus.getCustId());
+            // đã eKYC thành công
             if(cus.getIsEkyc() == 1){
-                // update IsEkyc = 2 -> để lần sau ko nhảy vào đây nữa
+                req.setStatus_code(0); // cái này hyperLead define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
+                req.setStatus_message("isEkyc");
+
+                ResponseEntity<String> res = hyperLeadAPI(req);// postBack sang hyperLead
+                if(res != null && res.getStatusCodeValue() == 200){
+                    ObjectMapper mapper = new ObjectMapper();
+                    JsonNode root = mapper.readTree(res.getBody());
+                    if("200".equals(root.get("status_code").asText())){
+                        // update IsEkyc = 2 -> để lần sau ko quét lại nữa
+                        cus.setIsEkyc(2);
+                        affiliateRepository.save(cus);
+                    }
+                }
             }
+            // đã tích lũy tối thiểu 50k thành công
             if(cus.getIsSaving() == 1){
-                // update IsSaving = 2 -> để lần sau ko nhảy vào đây nữa
+                LocalDate date1 = cus.getStartDate().toLocalDate();
+                LocalDate date2 = LocalDate.now();
+                Period period = Period.between(date1, date2);
+                // đến ngày thứ 8 mà status vẫn = 2 => hủy đơn
+                if(period.getYears() == 0 && period.getMonths() == 0 && period.getDays()>=8){
+                    req.setStatus_code(-1); // cái này hyperLead define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
+                    req.setStatus_message("cancel");
+
+                    ResponseEntity<String> res = this.hyperLeadAPI(req);
+                    if (res != null && res.getStatusCodeValue() == 200) {
+                        ObjectMapper mapper = new ObjectMapper();
+                        JsonNode root = mapper.readTree(res.getBody());
+                        if ("200".equals(root.get("status_code").asText())) {
+                            // update Saving = 2 -> để lần sau ko quét lại nữa
+                            cus.setIsSaving(-1); // đã gửi sang hyperlead hủy đơn
+                            affiliateRepository.save(cus);
+                        }
+                    }
+                    break;
+                }
+
+                req.setStatus_code(1); // cái này hyperLead define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
+                req.setStatus_message("isSaving");
+
+                ResponseEntity<String> res = this.hyperLeadAPI(req);
+                if (res != null && res.getStatusCodeValue() == 200) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    JsonNode root = mapper.readTree(res.getBody());
+                    if ("200".equals(root.get("status_code").asText())) {
+                        // update Saving = 2 -> để lần sau ko quét lại nữa
+                        cus.setIsSaving(2);
+                        affiliateRepository.save(cus);
+                    }
+                }
             }
-            ResponseEntity<?> x = this.callHyperLeadAPI(par);
-            System.out.println(x);
         }
         return "ok";
     }
 
+    @Autowired
+    // status:3 -> tìm tất cả thằng nào tích lũy từ 50K trở lên ít nhất 7 ngày
+    public void jobHandleAffiliate3(){
+//        List<GMAffiliateEntity> dbd = affiliateRepository.findAllByStatus(3);
+//        HypPostBack par = new HypPostBack();
+//
+//        for(GMAffiliateEntity cus : dbd) {
+//
+//            List<HypPostBack> req;
+//            ResponseEntity<?> x = this.hyperLeadAPI(par);
+//            System.out.println("=================================");
+//            System.out.println(x);
+//        }
+    }
 
-    public ResponseEntity<?> callHyperLeadAPI(HypPostBack par) {
+    private ResponseEntity<String> hyperLeadAPI(HypPostBack req) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<CCQInfoRequest> request = new HttpEntity(headers);
             ObjectMapper mapper = new ObjectMapper();
 
-            par.setApi_key(Constants.HYPER_LEAD_API_KEY);
-            par.setPostback_type(Constants.HYPER_LEAD_POSTBACK_TYPE);
+            req.setApi_key(Constants.HYPER_LEAD_API_KEY);
+            req.setPostback_type(Constants.HYPER_LEAD_POSTBACK_TYPE);
 
-            par.setClick_id("63edc720bcef3600019dccbf"); // lay o DB xuong: publicsherid
-            par.setTransaction_id("1AB"); // lay o DB xuong: cusID
-            par.setStatus_code(1); // check o DB
-            par.setStatus_message("abc"); // check o DB
-
-            Map<String, Object> params = mapper.convertValue(par, Map.class);
-            ResponseEntity<?> responseEntity = restTemplate.exchange(
+            Map<String, Object> params = mapper.convertValue(req, Map.class);
+            ResponseEntity<String> responseEntity = restTemplate.exchange(
                     Constants.HYPER_LEAD_URI + "/v1/3gang/postback.json?" +
                             "api_key={api_key}&" +
                             "postback_type={postback_type}&" +
@@ -1624,12 +1677,12 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                             "status_message={status_message}",
                     HttpMethod.GET,
                     request,
-                    Object.class,
+                    String.class,
                     params);
             return responseEntity;
-
         } catch (Exception e) {
-            throw new BusinessException("111", e.getMessage());
+            System.out.println(e.getMessage());
+            return null;
         }
     }
 }

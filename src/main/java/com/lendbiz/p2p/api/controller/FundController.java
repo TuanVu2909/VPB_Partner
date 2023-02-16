@@ -8,6 +8,7 @@ import com.lendbiz.p2p.api.service.FundService;
 // import org.springframework.http.HttpStatus;
 import com.lendbiz.p2p.api.service.User3GService;
 import com.lendbiz.p2p.api.service.UserService;
+import com.lendbiz.p2p.api.service.impl.UserServiceImpl;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class FundController {
     private UserService userService;
     @GetMapping("/test")
     public String testAPI () {
-        return userService.hyperleadPostBack();
+        return userService.jobHandleAffiliate2();
     }
 
 //    @GetMapping(value = "/sendSMS")
