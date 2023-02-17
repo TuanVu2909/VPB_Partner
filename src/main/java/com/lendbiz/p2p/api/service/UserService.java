@@ -131,5 +131,5 @@ public interface UserService {
 
 	String jobHandleAffiliate2();
 
-	void jobHandleAffiliate3();
+	String jobHandleAffiliate3();
 }

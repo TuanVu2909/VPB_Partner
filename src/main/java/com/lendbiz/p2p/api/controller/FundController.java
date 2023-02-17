@@ -26,7 +26,7 @@ public class FundController {
     private UserService userService;
     @GetMapping("/test")
     public String testAPI () {
-        return userService.jobHandleAffiliate2();
+        return userService.jobHandleAffiliate3();
     }
 
 //    @GetMapping(value = "/sendSMS")
