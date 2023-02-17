@@ -129,7 +129,10 @@ public interface UserService {
 
 	public void autoSignContract();
 
+	String jobHandleAffiliate1();
+
 	String jobHandleAffiliate2();
 
 	String jobHandleAffiliate3();
+
 }

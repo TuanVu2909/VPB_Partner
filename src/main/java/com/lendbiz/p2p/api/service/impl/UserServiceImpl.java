@@ -1576,6 +1576,31 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         }
     }
 
+    // status:0 -> tìm tất cả thằng nào đã DKTK chưa confirm affiliate
+    @Override
+    @SneakyThrows
+    public String jobHandleAffiliate1(){
+        List<GMAffiliateEntity> dbd = affiliateRepository.findAllByStatus(0);
+        for(GMAffiliateEntity cus : dbd) {
+            HypPostBack req = new HypPostBack();
+            req.setClick_id(cus.getPublicSherId());
+            req.setTransaction_id(cus.getCustId());
+            req.setStatus_code(0); // cái này hyperLead define: 0 -> Insert new transaction, 1 -> Approve transaction, -1 -> Cancel transaction
+            req.setStatus_message("isRegister");
+            ResponseEntity<String> res = hyperLeadAPI(req);// postBack sang hyperLead
+            if(res != null && res.getStatusCodeValue() == 200){
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode root = mapper.readTree(res.getBody());
+                if("200".equals(root.get("status_code").asText())){
+                    // update status = 1 -> để lần sau ko quét lại nữa
+                    cus.setStatus(1);
+                    affiliateRepository.save(cus);
+                }
+            }
+        }
+        return "ok";
+    }
+
     // status:2 -> tìm tất cả thằng nào có thay đổi state (eKYC hoặc saving)
     @SneakyThrows
     public String jobHandleAffiliate2() {
@@ -1695,6 +1720,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             return responseEntity;
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            logger.info("[Call api Hyperlead] error : {}", e.getMessage());
             return null;
         }
     }

@@ -22,12 +22,12 @@ public class FundController {
     @Autowired
     private FundService fundService;
 
-    @Autowired
-    private UserService userService;
-    @GetMapping("/test")
-    public String testAPI () {
-        return userService.jobHandleAffiliate3();
-    }
+//    @Autowired
+//    private UserService userService;
+//    @GetMapping("/test")
+//    public String testAPI () {
+//        return userService.jobHandleAffiliate1();
+//    }
 
 //    @GetMapping(value = "/sendSMS")
 //    public ResponseEntity<String> sendSMS() {
