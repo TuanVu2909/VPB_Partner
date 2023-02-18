@@ -19,23 +19,22 @@ public class ScheduledTasks {
     private UserService userService;
 
     // 1s executive below action with time zone VN
-    @Scheduled(zone = "GMT+7", fixedRate = 1000)
-    public void scheduleTask() {
-        // call send email method here
-        logger.info("+++++++++++++ 123123 +++++++++++++++");
-    }
+//    @Scheduled(zone = "GMT+7", fixedRate = 1000)
+//    public void scheduleTask() {
+//        // call send email method here
+//        logger.info("+++++++++++++ 123123 +++++++++++++++");
+//    }
     // 5 phút một lần
     // @Scheduled(zone = "GMT+7", cron = "0 */5 * ? * *")
 //    public void scheduleTaskGetToken() {
 //        fundService.getTokenAFM();
 //    }
 
-    // 1s một lần
-    @Scheduled(zone = "GMT+7", fixedRate = 1000)
-    public void jobHyperlead() {
-        System.out.println("zôzzzo");
-        //String x = userService.jobHandleAffiliate1();
-        //System.out.println(x);
-        //if(x.equals("ok")) System.out.println("success !");
+    // 5p một lần
+    @Scheduled(zone = "GMT+7", fixedRate = (1000*60)*5)
+    public void jobAffiliate() {
+        userService.jobHandleAffiliate1();
+        userService.jobHandleAffiliate2();
+        userService.jobHandleAffiliate3();
     }
 }

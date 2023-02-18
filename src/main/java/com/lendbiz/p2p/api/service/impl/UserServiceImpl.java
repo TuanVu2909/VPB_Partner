@@ -1579,7 +1579,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     // status:0 -> tìm tất cả thằng nào đã DKTK chưa confirm affiliate
     @Override
     @SneakyThrows
-    public String jobHandleAffiliate1(){
+    public void jobHandleAffiliate1(){
         List<GMAffiliateEntity> dbd = affiliateRepository.findAllByStatus(0);
         for(GMAffiliateEntity cus : dbd) {
             HypPostBack req = new HypPostBack();
@@ -1587,23 +1587,19 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             req.setTransaction_id(cus.getCustId());
             req.setStatus_code(0); // cái này hyperLead define: 0 -> Insert new transaction, 1 -> Approve transaction, -1 -> Cancel transaction
             req.setStatus_message("isRegister");
-            ResponseEntity<String> res = hyperLeadAPI(req);// postBack sang hyperLead
-            if(res != null && res.getStatusCodeValue() == 200){
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode root = mapper.readTree(res.getBody());
-                if("200".equals(root.get("status_code").asText())){
-                    // update status = 1 -> để lần sau ko quét lại nữa
-                    cus.setStatus(1);
-                    affiliateRepository.save(cus);
-                }
+            JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
+            if(root != null && "200".equals(root.get("status_code").asText())){
+                // update status = 1 -> để lần sau ko quét lại nữa
+                cus.setStatus(1);
+                affiliateRepository.save(cus);
             }
         }
-        return "ok";
     }
 
     // status:2 -> tìm tất cả thằng nào có thay đổi state (eKYC hoặc saving)
+    @Override
     @SneakyThrows
-    public String jobHandleAffiliate2() {
+    public void jobHandleAffiliate2() {
         List<GMAffiliateEntity> dbd = affiliateRepository.findAllByStatus(2);
         for(GMAffiliateEntity cus : dbd) {
             HypPostBack req = new HypPostBack();
@@ -1613,31 +1609,24 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
             if(cus.getIsEkyc() == 1){ // đã eKYC thành công
                 req.setStatus_message("isEkyc");
-                ResponseEntity<String> res = hyperLeadAPI(req);// postBack sang hyperLead
-                if(res != null && res.getStatusCodeValue() == 200){
-                    ObjectMapper mapper = new ObjectMapper();
-                    JsonNode root = mapper.readTree(res.getBody());
-                    if("200".equals(root.get("status_code").asText())){
-                        // update IsEkyc = 2 -> để lần sau ko quét lại nữa
-                        cus.setIsEkyc(2);
-                        affiliateRepository.save(cus);
-                    }
+                JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
+                if(root != null && "200".equals(root.get("status_code").asText())){
+                    // update IsEkyc = 2 -> để lần sau ko quét lại nữa
+                    cus.setIsEkyc(2);
+                    affiliateRepository.save(cus);
                 }
             }
 
             if(cus.getIsSaving() == 1){ // đã tích lũy tối thiểu 50k thành công
                 req.setStatus_message("isSaving");
-                ResponseEntity<String> res = this.hyperLeadAPI(req);// postBack sang hyperLead
-                if (res != null && res.getStatusCodeValue() == 200){
-                    ObjectMapper mapper = new ObjectMapper();
-                    JsonNode root = mapper.readTree(res.getBody());
-                    if ("200".equals(root.get("status_code").asText())){
-                        // update Saving = 2 -> để lần sau ko quét lại nữa
-                        cus.setIsSaving(2);
-                        affiliateRepository.save(cus);
-                    }
+                JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
+                if (root != null && "200".equals(root.get("status_code").asText())){
+                    // update Saving = 2 -> để lần sau ko quét lại nữa
+                    cus.setIsSaving(2);
+                    affiliateRepository.save(cus);
                 }
             }
+
             // (case này sau 30 ngày sẽ nhảy vào)
             if(cus.getIsSaving() == 2){
                 LocalDate date1 = cus.getStartDate().toLocalDate(); // từ lúc tạo TK
@@ -1647,26 +1636,21 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 if(period.getYears() == 0 && (period.getMonths() >= 1)){
                     req.setStatus_code(-1); // cái này hyperLead define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
                     req.setStatus_message("cancel");
-
-                    ResponseEntity<String> res = this.hyperLeadAPI(req);// postBack sang hyperLead
-                    if (res != null && res.getStatusCodeValue() == 200){
-                        ObjectMapper mapper = new ObjectMapper();
-                        JsonNode root = mapper.readTree(res.getBody());
-                        if ("200".equals(root.get("status_code").asText())){
-                            // update Status = -1 -> để lần sau ko quét lại nữa
-                            cus.setStatus(-1); // đã gửi sang hyperlead hủy đơn
-                            affiliateRepository.save(cus);
-                        }
+                    JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
+                    if (root != null && "200".equals(root.get("status_code").asText())){
+                        // update Status = -1 -> để lần sau ko quét lại nữa
+                        cus.setStatus(10); // đã gửi sang hyperlead hủy đơn
+                        affiliateRepository.save(cus);
                     }
                 }
             }
         }
-        return "ok";
     }
 
     // status:3 -> tìm tất cả thằng nào tích lũy từ 50K trở lên ít nhất 7 ngày
+    @Override
     @SneakyThrows
-    public String jobHandleAffiliate3(){
+    public void jobHandleAffiliate3(){
         List<GMAffiliateEntity> dbd = affiliateRepository.findAllByStatus(3);
         for(GMAffiliateEntity cus : dbd) {
             HypPostBack req = new HypPostBack();
@@ -1674,21 +1658,16 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             req.setTransaction_id(cus.getCustId());
             req.setStatus_code(1); // cái này hyperLead define: 0 -> Insert new transaction, 1 -> Approve transaction, -1 -> Cancel transaction
             req.setStatus_message("approve");
-            ResponseEntity<String> res = hyperLeadAPI(req);// postBack sang hyperLead
-            if(res != null && res.getStatusCodeValue() == 200){
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode root = mapper.readTree(res.getBody());
-                if("200".equals(root.get("status_code").asText())){
-                    // update IsEkyc = 2 -> để lần sau ko quét lại nữa
-                    cus.setStatus(4);
-                    affiliateRepository.save(cus);
-                }
+            JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
+            if(root != null && "200".equals(root.get("status_code").asText())){
+                // update IsEkyc = 2 -> để lần sau ko quét lại nữa
+                cus.setStatus(4);
+                affiliateRepository.save(cus);
             }
         }
-        return "ok";
     }
 
-    private ResponseEntity<String> hyperLeadAPI(HypPostBack req) {
+    private JsonNode hyperLeadAPI(HypPostBack req) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -1700,7 +1679,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
             Map<String, Object> params = mapper.convertValue(req, Map.class);
 
-            logger.info("[Call api Hyperlead] request : {}", params);
+            logger.info("[Hyperlead API] request => {}", params);
 
             ResponseEntity<String> responseEntity = restTemplate.exchange(
                     Constants.HYPER_LEAD_URI + "/v1/3gang/postback.json?" +
@@ -1714,13 +1693,14 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     request,
                     String.class,
                     params);
+            JsonNode root = mapper.readTree(responseEntity.getBody());
+            logger.info("[[Hyperlead API]] response => transaction_id: {} {}", req.getTransaction_id(), root);
 
-            logger.info("[Call api Hyperlead] response : {}", responseEntity.getBody());
+            return root;
 
-            return responseEntity;
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            logger.info("[Call api Hyperlead] error : {}", e.getMessage());
+            logger.info("[[Hyperlead API]] error => transaction_id: {} {}", req.getTransaction_id(), e.getMessage());
             return null;
         }
     }
