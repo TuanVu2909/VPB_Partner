@@ -23,6 +23,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,6 +34,9 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.UUID;
 
+import com.lendbiz.p2p.api.entity.affiliate.GMAffiliateEntity;
+import com.lendbiz.p2p.api.repository.*;
+import com.lendbiz.p2p.api.request.hyperlead.HypPostBack;
 import com.lendbiz.p2p.api.service.VNPTService;
 import com.lendbiz.p2p.api.service.base.BaseService;
 import lombok.SneakyThrows;
@@ -106,47 +111,6 @@ import com.lendbiz.p2p.api.entity.Version3Gang;
 import com.lendbiz.p2p.api.entity.WithdrawBearRequest;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.producer.ProducerMessage;
-import com.lendbiz.p2p.api.repository.AccountAssetRepository;
-import com.lendbiz.p2p.api.repository.AccountInvestRepository;
-import com.lendbiz.p2p.api.repository.AccountNotificationsRepository;
-import com.lendbiz.p2p.api.repository.BankAccountRepository;
-import com.lendbiz.p2p.api.repository.BankRepository;
-import com.lendbiz.p2p.api.repository.BaoVietRepo;
-import com.lendbiz.p2p.api.repository.CfMastRepository;
-import com.lendbiz.p2p.api.repository.CoinRepo;
-import com.lendbiz.p2p.api.repository.ContractInfoRepository;
-import com.lendbiz.p2p.api.repository.FirstPasswordRepository;
-import com.lendbiz.p2p.api.repository.FundInvestDetailRepository;
-import com.lendbiz.p2p.api.repository.FundInvestRepository;
-import com.lendbiz.p2p.api.repository.FundListRepository;
-import com.lendbiz.p2p.api.repository.GetRateRepository;
-import com.lendbiz.p2p.api.repository.GetReferenceRepo;
-import com.lendbiz.p2p.api.repository.InvestAssetsRepository;
-import com.lendbiz.p2p.api.repository.InvestPackageDetailRepository;
-import com.lendbiz.p2p.api.repository.InvestPackageRepository;
-import com.lendbiz.p2p.api.repository.NAVRepository;
-import com.lendbiz.p2p.api.repository.NinePayDepositRepo;
-import com.lendbiz.p2p.api.repository.NotifyRepo;
-import com.lendbiz.p2p.api.repository.PackageFilterRepository;
-import com.lendbiz.p2p.api.repository.PayRepo;
-import com.lendbiz.p2p.api.repository.PkgFundInfoRepository;
-import com.lendbiz.p2p.api.repository.PortfolioRepository;
-import com.lendbiz.p2p.api.repository.ProductGMRepository;
-import com.lendbiz.p2p.api.repository.PushRepository;
-import com.lendbiz.p2p.api.repository.RateConfigRepo;
-import com.lendbiz.p2p.api.repository.RateRepo;
-import com.lendbiz.p2p.api.repository.RegisterRepository;
-import com.lendbiz.p2p.api.repository.RelationRepo;
-import com.lendbiz.p2p.api.repository.ResendOtpRepository;
-import com.lendbiz.p2p.api.repository.StatementsRepository;
-import com.lendbiz.p2p.api.repository.SumGrowthRepository;
-import com.lendbiz.p2p.api.repository.TermRepo;
-import com.lendbiz.p2p.api.repository.TransFerCodeRepo;
-import com.lendbiz.p2p.api.repository.UpdateAccountRepository;
-import com.lendbiz.p2p.api.repository.UserInfoRepository;
-import com.lendbiz.p2p.api.repository.UserOnlineRepository;
-import com.lendbiz.p2p.api.repository.VerifyAccountRepository;
-import com.lendbiz.p2p.api.repository.Version3GangRepository;
 import com.lendbiz.p2p.api.request.ATRequest;
 import com.lendbiz.p2p.api.request.BearRequest;
 import com.lendbiz.p2p.api.request.CashOutRequest;
@@ -278,6 +242,9 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Qualifier("version3GangRepository")
     @Autowired
     Version3GangRepository version3GangRepository;
+
+    @Autowired
+    AffiliateRepository affiliateRepository;
 
     @Override
     public ResponseEntity<?> checkVersion3GangOutdated(String version) {
@@ -1605,6 +1572,135 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
         } else {
             logger.info("Status <> 200 accessTradePostBack fail");
+        }
+    }
+
+    // status:0 -> tìm tất cả thằng nào đã DKTK chưa confirm affiliate
+    @Override
+    @SneakyThrows
+    public void jobHandleAffiliate1(){
+        List<GMAffiliateEntity> dbd = affiliateRepository.findAllByStatus(0);
+        for(GMAffiliateEntity cus : dbd) {
+            HypPostBack req = new HypPostBack();
+            req.setClick_id(cus.getPublicSherId());
+            req.setTransaction_id(cus.getCustId());
+            req.setStatus_code(0); // cái này hyperLead define: 0 -> Insert new transaction, 1 -> Approve transaction, -1 -> Cancel transaction
+            req.setStatus_message("isRegister");
+            JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
+            if(root != null && "200".equals(root.get("status_code").asText())){
+                // update status = 1 -> để lần sau ko quét lại nữa
+                cus.setStatus(1);
+                affiliateRepository.save(cus);
+            }
+        }
+    }
+
+    // status:2 -> tìm tất cả thằng nào có thay đổi state (eKYC hoặc saving)
+    @Override
+    @SneakyThrows
+    public void jobHandleAffiliate2() {
+        List<GMAffiliateEntity> dbd = affiliateRepository.findAllByStatus(2);
+        for(GMAffiliateEntity cus : dbd) {
+            HypPostBack req = new HypPostBack();
+            req.setClick_id(cus.getPublicSherId());
+            req.setTransaction_id(cus.getCustId());
+            req.setStatus_code(0); // cái này hyperLead define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
+
+            if(cus.getIsEkyc() == 1){ // đã eKYC thành công
+                req.setStatus_message("isEkyc");
+                JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
+                if(root != null && "200".equals(root.get("status_code").asText())){
+                    // update IsEkyc = 2 -> để lần sau ko quét lại nữa
+                    cus.setIsEkyc(2);
+                    affiliateRepository.save(cus);
+                }
+            }
+
+            if(cus.getIsSaving() == 1){ // đã tích lũy tối thiểu 50k thành công
+                req.setStatus_message("isSaving");
+                JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
+                if (root != null && "200".equals(root.get("status_code").asText())){
+                    // update Saving = 2 -> để lần sau ko quét lại nữa
+                    cus.setIsSaving(2);
+                    affiliateRepository.save(cus);
+                }
+            }
+
+            // (case này sau 30 ngày sẽ nhảy vào)
+            if(cus.getIsSaving() == 2){
+                LocalDate date1 = cus.getStartDate().toLocalDate(); // từ lúc tạo TK
+                LocalDate date2 = LocalDate.now(); // ngày hiện tại
+                Period period = Period.between(date1, date2);
+                // nhưng sau ngày thứ 30 (hoặc 1 tháng) mà status vẫn = 2 => hủy đơn
+                if(period.getYears() == 0 && (period.getMonths() >= 1)){
+                    req.setStatus_code(-1); // cái này hyperLead define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
+                    req.setStatus_message("cancel");
+                    JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
+                    if (root != null && "200".equals(root.get("status_code").asText())){
+                        // update Status = -1 -> để lần sau ko quét lại nữa
+                        cus.setStatus(10); // đã gửi sang hyperlead hủy đơn
+                        affiliateRepository.save(cus);
+                    }
+                }
+            }
+        }
+    }
+
+    // status:3 -> tìm tất cả thằng nào tích lũy từ 50K trở lên ít nhất 7 ngày
+    @Override
+    @SneakyThrows
+    public void jobHandleAffiliate3(){
+        List<GMAffiliateEntity> dbd = affiliateRepository.findAllByStatus(3);
+        for(GMAffiliateEntity cus : dbd) {
+            HypPostBack req = new HypPostBack();
+            req.setClick_id(cus.getPublicSherId());
+            req.setTransaction_id(cus.getCustId());
+            req.setStatus_code(1); // cái này hyperLead define: 0 -> Insert new transaction, 1 -> Approve transaction, -1 -> Cancel transaction
+            req.setStatus_message("approve");
+            JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
+            if(root != null && "200".equals(root.get("status_code").asText())){
+                // update IsEkyc = 2 -> để lần sau ko quét lại nữa
+                cus.setStatus(4);
+                affiliateRepository.save(cus);
+            }
+        }
+    }
+
+    private JsonNode hyperLeadAPI(HypPostBack req) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<?> request = new HttpEntity(headers);
+            ObjectMapper mapper = new ObjectMapper();
+
+            req.setApi_key(Constants.HYPER_LEAD_API_KEY);
+            req.setPostback_type(Constants.HYPER_LEAD_POSTBACK_TYPE);
+
+            Map<String, Object> params = mapper.convertValue(req, Map.class);
+
+            logger.info("[Hyperlead API] request => {}", params);
+
+            ResponseEntity<String> responseEntity = restTemplate.exchange(
+                    Constants.HYPER_LEAD_URI + "/v1/3gang/postback.json?" +
+                            "api_key={api_key}&" +
+                            "postback_type={postback_type}&" +
+                            "click_id={click_id}&" +
+                            "transaction_id={transaction_id}&" +
+                            "status_code={status_code}&" +
+                            "status_message={status_message}",
+                    HttpMethod.GET,
+                    request,
+                    String.class,
+                    params);
+            JsonNode root = mapper.readTree(responseEntity.getBody());
+            logger.info("[Hyperlead API] response => {transaction_id: {}} {}", req.getTransaction_id(), root);
+
+            return root;
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            logger.info("[Hyperlead API] error => {transaction_id: {}} {}", req.getTransaction_id(), e.getMessage());
+            return null;
         }
     }
 

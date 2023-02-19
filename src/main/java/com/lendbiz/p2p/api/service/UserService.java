@@ -128,4 +128,10 @@ public interface UserService {
 
 	public void autoSignContract();
 
+	void jobHandleAffiliate1();
+
+	void jobHandleAffiliate2();
+
+	void jobHandleAffiliate3();
+
 }
