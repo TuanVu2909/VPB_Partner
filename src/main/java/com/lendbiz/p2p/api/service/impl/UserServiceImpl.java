@@ -17,7 +17,6 @@ package com.lendbiz.p2p.api.service.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -36,8 +35,9 @@ import java.util.UUID;
 
 import com.lendbiz.p2p.api.entity.affiliate.GMAffiliateEntity;
 import com.lendbiz.p2p.api.repository.*;
+import com.lendbiz.p2p.api.request.accesstrade.AccCreate;
+import com.lendbiz.p2p.api.request.accesstrade.AccUpdate;
 import com.lendbiz.p2p.api.request.hyperlead.HypPostBack;
-import com.lendbiz.p2p.api.service.VNPTService;
 import com.lendbiz.p2p.api.service.base.BaseService;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
@@ -64,11 +64,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.core.ApiFuture;
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteResult;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
@@ -111,7 +108,6 @@ import com.lendbiz.p2p.api.entity.Version3Gang;
 import com.lendbiz.p2p.api.entity.WithdrawBearRequest;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.producer.ProducerMessage;
-import com.lendbiz.p2p.api.request.ATRequest;
 import com.lendbiz.p2p.api.request.BearRequest;
 import com.lendbiz.p2p.api.request.CashOutRequest;
 import com.lendbiz.p2p.api.request.Converter;
@@ -127,7 +123,6 @@ import com.lendbiz.p2p.api.request.SignContractRequestV2;
 import com.lendbiz.p2p.api.request.UpdateAccountRequest;
 import com.lendbiz.p2p.api.request.UpdateBiometricRequest;
 import com.lendbiz.p2p.api.request.UpdateNotificationsRequest;
-import com.lendbiz.p2p.api.request.accesstrade.Item;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.response.PkgFundDetail;
 import com.lendbiz.p2p.api.response.PkgFundResponse;
@@ -1487,110 +1482,52 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         return true;
     }
 
-    public void accessTradePostBack(String trackingId, String custId) throws JsonProcessingException {
-        logger.info("---------Start call api accessTradePostBack---------------");
-        final String uri = Constants.ACCESS_TRADE_URI;
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Token S6neiB7J1g6ojpmQz83EoFf83oxDHGbS");
-        Converter converter = new Converter();
-
-        ATRequest atRequest = new ATRequest();
-        atRequest.setConversionID(custId);
-        atRequest.setConversionResultID("30");
-
-        Item item = new Item();
-        item.setCategory("nap_tien");
-        item.setCategoryID("1");
-        item.setID(custId);
-        item.setName("nap_tien");
-        item.setPrice(0);
-        item.setQuantity(1);
-        item.setSku("sku");
-
-        Item[] itemList = new Item[1];
-        itemList[0] = item;
-
-        atRequest.setItems(itemList);
-        atRequest.setTrackingID(trackingId);
-        atRequest.setTransactionID(custId);
-        atRequest.setTransactionValue(0);
-        atRequest.setTransactionDiscount(0);
-        String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
-        atRequest.setTransactionTime(converter.parseDateTimeString((timeStamp)));
-
-        HttpEntity<String> request = new HttpEntity<String>(converter.toJsonString(atRequest), headers);
-
-        System.out.println(request.toString());
-
-        ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(uri, request, String.class);
-
-        // mapping response
-        if (responseEntityStr.getStatusCodeValue() == 200) {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode root;
-            logger.info("[Call api accessTradePostBack otp] response : {}", responseEntityStr.getBody());
-            try {
-                root = mapper.readTree(responseEntityStr.getBody());
-                logger.info("accessTradePostBack response : {}", responseEntityStr.getBody());
-            } catch (JsonProcessingException e) {
-                logger.info("JsonProcessingException : {}", e.getMessage());
-            }
-
-        } else {
-            logger.info("Status <> 200 accessTradePostBack fail");
-        }
-    }
-
-    public void accessTradeUpdate(String custId, String status) throws JsonProcessingException {
-        logger.info("---------Start call api accessTradePostBack---------------");
-        final String uri = Constants.ACCESS_TRADE_UPDATE_URI;
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Token S6neiB7J1g6ojpmQz83EoFf83oxDHGbS");
-
-        String requestJson = "{\"transaction_id\":\"" + custId + "\",\"status\":\"" + status
-                + "\",\"items\":[{\"id\":\"" + custId + "\",\"status\":" + Integer.parseInt(status) + "}]}";
-
-        HttpEntity<String> request = new HttpEntity<String>(requestJson, headers);
-
-        System.out.println(request.toString());
-
-        ResponseEntity<String> responseEntityStr = restTemplate.exchange(uri, HttpMethod.PUT, request, String.class);
-
-        // mapping response
-        if (responseEntityStr.getStatusCodeValue() == 200) {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode root;
-            logger.info("[Call api accessTradePostBack otp] response : {}", responseEntityStr.getBody());
-            try {
-                root = mapper.readTree(responseEntityStr.getBody());
-                logger.info("accessTradePostBack response : {}", responseEntityStr.getBody());
-            } catch (JsonProcessingException e) {
-                logger.info("JsonProcessingException : {}", e.getMessage());
-            }
-
-        } else {
-            logger.info("Status <> 200 accessTradePostBack fail");
-        }
-    }
-
     // status:0 -> tìm tất cả thằng nào đã DKTK chưa confirm affiliate
     @Override
     @SneakyThrows
     public void jobHandleAffiliate1(){
         List<GMAffiliateEntity> dbd = affiliateRepository.findAllByStatus(0);
-        for(GMAffiliateEntity cus : dbd) {
-            HypPostBack req = new HypPostBack();
-            req.setClick_id(cus.getPublicSherId());
-            req.setTransaction_id(cus.getCustId());
-            req.setStatus_code(0); // cái này hyperLead define: 0 -> Insert new transaction, 1 -> Approve transaction, -1 -> Cancel transaction
-            req.setStatus_message("isRegister");
-            JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
-            if(root != null && "200".equals(root.get("status_code").asText())){
-                // update status = 1 -> để lần sau ko quét lại nữa
-                cus.setStatus(1);
-                affiliateRepository.save(cus);
+        for(GMAffiliateEntity cus : dbd){
+            if("hyperlead".equals(cus.getSource())){
+                HypPostBack req = new HypPostBack();
+                req.setClick_id(cus.getPublicSherId());
+                req.setTransaction_id(cus.getCustId());
+                req.setStatus_code(0); // cái này hyperLead define: 0 -> Insert new transaction, 1 -> Approve transaction, -1 -> Cancel transaction
+                req.setStatus_message("isRegister");
+                JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
+                if(root != null && "200".equals(root.get("status_code").asText())){
+                    // update status = 1 -> để lần sau ko quét lại nữa
+                    cus.setStatus(1);
+                    affiliateRepository.save(cus);
+                }
+            }
+            if("accesstrade".equals(cus.getSource())){
+                AccCreate req = new AccCreate();
+                req.setTracking_id(cus.getPublicSherId());
+                req.setTransaction_id(cus.getCustId());
+                int count = 0;
+                for(int i=1; i<=3; i++){ // tạo luôn 3 record vs status = 0 đẩy sang accesstrade
+                    if(i==1) req.setConversion_id("isRegister");
+                    if(i==2) req.setConversion_id("isEkyc");
+                    if(i==3) req.setConversion_id("isSaving");
+                    JsonNode root = this.accessTradeCreateAPI(req);// postBack sang accesstrade
+                    if(root != null && "00".equals(root.get("code").asText())){
+                        count++;
+                    }
+                    if(count == 3){
+                        AccUpdate reqU = new AccUpdate();
+                        reqU.setTransaction_id(cus.getCustId());
+                        reqU.setConversion_id("isRegister");
+                        reqU.setStatus("1");
+                        reqU.setRejected_reason("");
+                        JsonNode rootU = this.accessTradeUpdateAPI(reqU);// postBack sang accesstrade
+                        if(rootU != null && "00".equals(rootU.get("code").asText())){
+                            // update status = 1 -> để lần sau ko quét lại nữa
+                            cus.setStatus(1);
+                            affiliateRepository.save(cus);
+                        }
+                    }
+                }
             }
         }
     }
@@ -1601,45 +1538,86 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     public void jobHandleAffiliate2() {
         List<GMAffiliateEntity> dbd = affiliateRepository.findAllByStatus(2);
         for(GMAffiliateEntity cus : dbd) {
-            HypPostBack req = new HypPostBack();
-            req.setClick_id(cus.getPublicSherId());
-            req.setTransaction_id(cus.getCustId());
-            req.setStatus_code(0); // cái này hyperLead define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
+            if("hyperlead".equals(cus.getSource())){
+                HypPostBack req = new HypPostBack();
+                req.setClick_id(cus.getPublicSherId());
+                req.setTransaction_id(cus.getCustId());
+                req.setStatus_code(0); // cái này hyperLead define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
 
-            if(cus.getIsEkyc() == 1){ // đã eKYC thành công
-                req.setStatus_message("isEkyc");
-                JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
-                if(root != null && "200".equals(root.get("status_code").asText())){
-                    // update IsEkyc = 2 -> để lần sau ko quét lại nữa
-                    cus.setIsEkyc(2);
-                    affiliateRepository.save(cus);
+                if(cus.getIsEkyc() == 1){ // đã eKYC thành công
+                    req.setStatus_message("isEkyc");
+                    JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
+                    if(root != null && "200".equals(root.get("status_code").asText())){
+                        // update IsEkyc = 2 -> để lần sau ko quét lại nữa
+                        cus.setIsEkyc(2);
+                        affiliateRepository.save(cus);
+                    }
+                }
+
+                if(cus.getIsSaving() == 1){ // đã tích lũy tối thiểu 50k thành công
+                    req.setStatus_message("isSaving");
+                    JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
+                    if (root != null && "200".equals(root.get("status_code").asText())){
+                        // update Saving = 2 -> để lần sau ko quét lại nữa
+                        cus.setIsSaving(2);
+                        affiliateRepository.save(cus);
+                    }
+                }
+
+                // (case này sau 30 ngày sẽ nhảy vào)
+                if(cus.getIsSaving() == 2){
+                    LocalDate date1 = cus.getStartDate().toLocalDate(); // từ lúc tạo TK
+                    LocalDate date2 = LocalDate.now(); // ngày hiện tại
+                    Period period = Period.between(date1, date2);
+                    // nhưng sau ngày thứ 30 (hoặc 1 tháng) mà status vẫn = 2 => hủy đơn
+                    if(period.getYears() == 0 && (period.getMonths() >= 1)){
+                        req.setStatus_code(-1); // cái này hyperLead define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
+                        req.setStatus_message("cancel");
+                        JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
+                        if (root != null && "200".equals(root.get("status_code").asText())){
+                            // update Status = -1 -> để lần sau ko quét lại nữa
+                            cus.setStatus(10); // đã gửi sang hyperlead hủy đơn
+                            affiliateRepository.save(cus);
+                        }
+                    }
                 }
             }
+            if("accesstrade".equals(cus.getSource())){
+                AccUpdate req = new AccUpdate();
+                req.setTransaction_id(cus.getCustId());
 
-            if(cus.getIsSaving() == 1){ // đã tích lũy tối thiểu 50k thành công
-                req.setStatus_message("isSaving");
-                JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
-                if (root != null && "200".equals(root.get("status_code").asText())){
-                    // update Saving = 2 -> để lần sau ko quét lại nữa
+                if(cus.getIsEkyc() == 1){
+                    req.setConversion_id("isEkyc");
+                    req.setStatus("1");
+                    req.setRejected_reason("");
+                    JsonNode root = this.accessTradeUpdateAPI(req);// postBack sang accesstrade
+                    if(root != null && "00".equals(root.get("code").asText())){
+                        // update status = 1 -> để lần sau ko quét lại nữa
+                        cus.setIsEkyc(2);
+                        affiliateRepository.save(cus);
+                    }
+                }
+
+                if(cus.getIsSaving() == 1){
                     cus.setIsSaving(2);
                     affiliateRepository.save(cus);
                 }
-            }
 
-            // (case này sau 30 ngày sẽ nhảy vào)
-            if(cus.getIsSaving() == 2){
-                LocalDate date1 = cus.getStartDate().toLocalDate(); // từ lúc tạo TK
-                LocalDate date2 = LocalDate.now(); // ngày hiện tại
-                Period period = Period.between(date1, date2);
-                // nhưng sau ngày thứ 30 (hoặc 1 tháng) mà status vẫn = 2 => hủy đơn
-                if(period.getYears() == 0 && (period.getMonths() >= 1)){
-                    req.setStatus_code(-1); // cái này hyperLead define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
-                    req.setStatus_message("cancel");
-                    JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
-                    if (root != null && "200".equals(root.get("status_code").asText())){
-                        // update Status = -1 -> để lần sau ko quét lại nữa
-                        cus.setStatus(10); // đã gửi sang hyperlead hủy đơn
-                        affiliateRepository.save(cus);
+                // (case này sau 30 ngày sẽ nhảy vào)
+                if(cus.getIsSaving() == 2){
+                    LocalDate date1 = cus.getStartDate().toLocalDate(); // từ lúc tạo TK
+                    LocalDate date2 = LocalDate.now(); // ngày hiện tại
+                    Period period = Period.between(date1, date2);
+                    // nhưng sau ngày thứ 30 (hoặc 1 tháng) mà status vẫn = 2 => hủy đơn
+                    if(period.getYears() == 0 && (period.getMonths() >= 1)){
+                        req.setStatus("2"); // cái này hyperLead define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
+                        req.setRejected_reason("Tài khoản này 30 ngày chưa có hoạt động tích lũy/đầu tư");
+                        JsonNode root = this.accessTradeUpdateAPI(req);// postBack sang hyperLead
+                        if(root != null && "00".equals(root.get("code").asText())){
+                            // update status = 10 -> để lần sau ko quét lại nữa
+                            cus.setStatus(10);
+                            affiliateRepository.save(cus);
+                        }
                     }
                 }
             }
@@ -1649,19 +1627,34 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     // status:3 -> tìm tất cả thằng nào tích lũy từ 50K trở lên ít nhất 7 ngày
     @Override
     @SneakyThrows
-    public void jobHandleAffiliate3(){
+    public void jobHandleAffiliate3() {
         List<GMAffiliateEntity> dbd = affiliateRepository.findAllByStatus(3);
         for(GMAffiliateEntity cus : dbd) {
-            HypPostBack req = new HypPostBack();
-            req.setClick_id(cus.getPublicSherId());
-            req.setTransaction_id(cus.getCustId());
-            req.setStatus_code(1); // cái này hyperLead define: 0 -> Insert new transaction, 1 -> Approve transaction, -1 -> Cancel transaction
-            req.setStatus_message("approve");
-            JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
-            if(root != null && "200".equals(root.get("status_code").asText())){
-                // update IsEkyc = 2 -> để lần sau ko quét lại nữa
-                cus.setStatus(4);
-                affiliateRepository.save(cus);
+            if("hyperlead".equals(cus.getSource())){
+                HypPostBack req = new HypPostBack();
+                req.setClick_id(cus.getPublicSherId());
+                req.setTransaction_id(cus.getCustId());
+                req.setStatus_code(1); // cái này hyperLead define: 0 -> Insert new transaction, 1 -> Approve transaction, -1 -> Cancel transaction
+                req.setStatus_message("approve");
+                JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
+                if(root != null && "200".equals(root.get("status_code").asText())){
+                    // update IsEkyc = 2 -> để lần sau ko quét lại nữa
+                    cus.setStatus(4);
+                    affiliateRepository.save(cus);
+                }
+            }
+            if("accesstrade".equals(cus.getSource())){
+                AccUpdate req = new AccUpdate();
+                req.setTransaction_id(cus.getCustId());
+                req.setConversion_id("isSaving");
+                req.setStatus("1");
+                req.setRejected_reason("");
+                JsonNode root = this.accessTradeUpdateAPI(req);// postBack sang accesstrade
+                if(root != null && "00".equals(root.get("code").asText())){
+                    // update status = 1 -> để lần sau ko quét lại nữa
+                    cus.setStatus(4);
+                    affiliateRepository.save(cus);
+                }
             }
         }
     }
@@ -1698,10 +1691,76 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             return root;
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             logger.info("[Hyperlead API] error => {transaction_id: {}} {}", req.getTransaction_id(), e.getMessage());
             return null;
         }
     }
 
+    private JsonNode accessTradeCreateAPI(AccCreate req) {
+        try {
+            Map<String, Object> item = new HashMap<>();
+            item.put("id", "");
+            item.put("sku", "");
+            item.put("price", 0);
+            item.put("quantity", 0);
+            item.put("category_id", "");
+
+            String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
+            req.setTransaction_time(timeStamp);
+            req.setConversion_result_id("30");
+            req.setTransaction_value(0);
+            List<Object> items = new ArrayList<>();
+            items.add(item);
+            req.setItems(items);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", Constants.ACCESS_TRADE_TOKEN);
+            HttpEntity<String> request = new HttpEntity(req, headers);
+            ObjectMapper mapper = new ObjectMapper();
+
+            logger.info("[accesstrade API] request => {}", request);
+
+            ResponseEntity<String> responseEntityStr = restTemplate.exchange(
+                    Constants.ACCESS_TRADE_URI,
+                    HttpMethod.POST,
+                    request,
+                    String.class);
+
+            JsonNode root = mapper.readTree(responseEntityStr.getBody());
+            logger.info("[accesstrade API] response => {transaction_id: {}} {}", req.getTransaction_id(), root);
+            return root;
+        }
+        catch (Exception e) {
+            logger.info("[accesstrade API] error => {transaction_id: {}} {}", req.getTransaction_id(), e.getMessage());
+            return null;
+        }
+    }
+
+    private JsonNode accessTradeUpdateAPI(AccUpdate req) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", Constants.ACCESS_TRADE_TOKEN);
+            HttpEntity<String> request = new HttpEntity(req, headers);
+            ObjectMapper mapper = new ObjectMapper();
+
+            logger.info("[accesstrade API] request => {}", request);
+
+            ResponseEntity<String> responseEntityStr = restTemplate.exchange(
+                    Constants.ACCESS_TRADE_URI,
+                    HttpMethod.PUT,
+                    request,
+                    String.class);
+
+            JsonNode root = mapper.readTree(responseEntityStr.getBody());
+            logger.info("[accesstrade API] response => {transaction_id: {}} {}", req.getTransaction_id(), root);
+            return root;
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            logger.info("[accesstrade API] error => {transaction_id: {}} {}", req.getTransaction_id(), e.getMessage());
+            return null;
+        }
+    }
 }

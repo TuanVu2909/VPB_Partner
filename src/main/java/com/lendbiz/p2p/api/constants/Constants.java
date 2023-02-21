@@ -128,11 +128,12 @@ public class Constants {
 
 		public static final String TOPIC_SAVE_ID_CARD = "topic_save_id_card_test";
 		public static final String GROUP_SAVE_ID_CARD = "group_save_id_card_test";
+
 	}
 
 	// accesstrade
 	public static final String ACCESS_TRADE_URI = "https://api.accesstrade.vn/v1/postbacks/conversions";
-	public static final String ACCESS_TRADE_UPDATE_URI = "https://api.accesstrade.vn/v1/postbacks/conversions";
+	public static final String ACCESS_TRADE_TOKEN = "Token S6neiB7J1g6ojpmQz83EoFf83oxDHGbS";
 
 	// hyperlead
 	public static final String HYPER_LEAD_URI = "https://s2s.riofintech.net";

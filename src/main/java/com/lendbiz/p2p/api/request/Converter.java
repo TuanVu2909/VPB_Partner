@@ -46,15 +46,6 @@ public class Converter {
     public static OffsetTime parseTimeString(String str) {
         return ZonedDateTime.from(Converter.TIME_FORMATTER.parse(str)).toOffsetDateTime().toOffsetTime();
     }
-    // Serialize/deserialize helpers
-
-    public static ATRequest fromJsonString(String json) throws IOException {
-        return getObjectReader().readValue(json);
-    }
-
-    public static String toJsonString(ATRequest obj) throws JsonProcessingException {
-        return getObjectWriter().writeValueAsString(obj);
-    }
 
     private static ObjectReader reader;
     private static ObjectWriter writer;
@@ -72,8 +63,8 @@ public class Converter {
             }
         });
         mapper.registerModule(module);
-        reader = mapper.readerFor(ATRequest.class);
-        writer = mapper.writerFor(ATRequest.class);
+        //reader = mapper.readerFor(ATRequest.class);
+        //writer = mapper.writerFor(ATRequest.class);
     }
 
     private static ObjectReader getObjectReader() {

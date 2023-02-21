@@ -21,112 +21,112 @@ import org.springframework.web.multipart.MultipartFile;
  ***********************************************************************/
 public interface UserService {
 
-	public ResponseEntity<?> checkVersion3GangOutdated(String version);
+	ResponseEntity<?> checkVersion3GangOutdated(String version);
 
-	public ResponseEntity<?> checkExistedAccount(LoginRequest loginRequest);
+	ResponseEntity<?> checkExistedAccount(LoginRequest loginRequest);
 
-	public ResponseEntity<?> login(LoginRequest loginRequest);
+	ResponseEntity<?> login(LoginRequest loginRequest);
 
 	// ReqJoin
-	public ResponseEntity<?> register(ReqJoinRequest reqJoinRequest);
+	ResponseEntity<?> register(ReqJoinRequest reqJoinRequest);
 
-	public ResponseEntity<?> resendOtp(ReqJoinRequest reqJoinRequest);
+	ResponseEntity<?> resendOtp(ReqJoinRequest reqJoinRequest);
 
-	public ResponseEntity<?> verifyAcc(VerifyAccountInput input);
+	ResponseEntity<?> verifyAcc(VerifyAccountInput input);
 
-	public ResponseEntity<?> updateBioState(UpdateBiometricRequest request);
+	ResponseEntity<?> updateBioState(UpdateBiometricRequest request);
 
-	public ResponseEntity<?> getUserInfo(String mobile);
+	ResponseEntity<?> getUserInfo(String mobile);
 
-	public ResponseEntity<?> setAccountPassword(SetAccountPasswordRequest setAccountPasswordRequest);
+	ResponseEntity<?> setAccountPassword(SetAccountPasswordRequest setAccountPasswordRequest);
 
-	public ResponseEntity<?> updateAccountInfo(UpdateAccountRequest updateRequest);
+	ResponseEntity<?> updateAccountInfo(UpdateAccountRequest updateRequest);
 
-	public ResponseEntity<?> updateBankAccountInfo(UpdateAccountRequest updateRequest);
+	ResponseEntity<?> updateBankAccountInfo(UpdateAccountRequest updateRequest);
 
-	public ResponseEntity<?> createBear(AccountInput input);
+	ResponseEntity<?> createBear(AccountInput input);
 
-	public ResponseEntity<?> withdrawBear(WithdrawBearRequest input);
+	ResponseEntity<?> withdrawBear(WithdrawBearRequest input);
 
-	public ResponseEntity<?> getAccountAsset(String custId);
+	ResponseEntity<?> getAccountAsset(String custId);
 
-	public ResponseEntity<?> getAccountInvest(String custId);
+	ResponseEntity<?> getAccountInvest(String custId);
 
-	public ResponseEntity<?> getPortfolioInvest(String custId);
+	ResponseEntity<?> getPortfolioInvest(String custId);
 
-	public ResponseEntity<?> getAccountNotifications(String custId);
+	ResponseEntity<?> getAccountNotifications(String custId);
 
-	public ResponseEntity<?> updateNotifications(UpdateNotificationsRequest request);
+	ResponseEntity<?> updateNotifications(UpdateNotificationsRequest request);
 
-	public ResponseEntity<?> getStatements(String custId);
+	ResponseEntity<?> getStatements(String custId);
 
-	public ResponseEntity<?> getProduct();
+	ResponseEntity<?> getProduct();
 
-	public ResponseEntity<?> getPayType();
+	ResponseEntity<?> getPayType();
 
-	public ResponseEntity<?> getRate(String term, String productId, String amount);
+	ResponseEntity<?> getRate(String term, String productId, String amount);
 
-	public ResponseEntity<?> getConfigRate();
+	ResponseEntity<?> getConfigRate();
 
-	public ResponseEntity<?> getTerm(String productId);
+	ResponseEntity<?> getTerm(String productId);
 
-	public ResponseEntity<?> getAccountInvestByProduct(AccountInput accountInput);
+	ResponseEntity<?> getAccountInvestByProduct(AccountInput accountInput);
 
-	public ResponseEntity<?> getProductInfo(BearRequest bearRequest);
+	ResponseEntity<?> getProductInfo(BearRequest bearRequest);
 
-	public ResponseEntity<?> getTransHistory(String customerId);
+	ResponseEntity<?> getTransHistory(String customerId);
 
-	public ResponseEntity<?> getCoin(String cif);
+	ResponseEntity<?> getCoin(String cif);
 
-	public ResponseEntity<?> getRefList(String cif);
+	ResponseEntity<?> getRefList(String cif);
 
-	public ResponseEntity<?> changeCoin(AccountInput input);
+	ResponseEntity<?> changeCoin(AccountInput input);
 
-	public ResponseEntity<?> updateReferenceId(AccountInput input);
+	ResponseEntity<?> updateReferenceId(AccountInput input);
 
-	public ResponseEntity<?> getBankInfo();
+	ResponseEntity<?> getBankInfo();
 
-	public ResponseEntity<?> getInsurancePackage();
+	ResponseEntity<?> getInsurancePackage();
 
-	public ResponseEntity<?> getRelation();
+	ResponseEntity<?> getRelation();
 
-	public ResponseEntity<?> createInsurance(InsuranceRequest insuranceRequest);
+	ResponseEntity<?> createInsurance(InsuranceRequest insuranceRequest);
 
-	public ResponseEntity<?> createNavDaily(GmFundNavRequest request);
+	ResponseEntity<?> createNavDaily(GmFundNavRequest request);
 
-	public ResponseEntity<?> createFundInvest(GmFundNavRequest request);
+	ResponseEntity<?> createFundInvest(GmFundNavRequest request);
 
-	public ResponseEntity<?> getFundList();
+	ResponseEntity<?> getFundList();
 
-	public ResponseEntity<?> getInvestPackage();
+	ResponseEntity<?> getInvestPackage();
 
-	public ResponseEntity<?> getInvestPackageDetail(String pkId);
+	ResponseEntity<?> getInvestPackageDetail(String pkId);
 
-	public ResponseEntity<?> getFundNAV();
+	ResponseEntity<?> getFundNAV();
 
-	public ResponseEntity<?> getFundNAByFundID(String fid);
+	ResponseEntity<?> getFundNAByFundID(String fid);
 
-	public ResponseEntity<?> createFundInvestOptionally(GmFundNavRequest request);
+	ResponseEntity<?> createFundInvestOptionally(GmFundNavRequest request);
 
-	public ResponseEntity<?> getFundInvest(String cid);
+	ResponseEntity<?> getFundInvest(String cid);
 
-	public ResponseEntity<?> endBear(String cid, String documentNo);
+	ResponseEntity<?> endBear(String cid, String documentNo);
 
-	public ResponseEntity<?> getEndRate(GetEndRateRequest request);
+	ResponseEntity<?> getEndRate(GetEndRateRequest request);
 
-	public ResponseEntity<?> getFundInvestDetail(String cid, String packageId);
+	ResponseEntity<?> getFundInvestDetail(String cid, String packageId);
 
-	public ResponseEntity<?> savePkgFundInfo(PkgSumFundRequest request);
+	ResponseEntity<?> savePkgFundInfo(PkgSumFundRequest request);
 
-	public ResponseEntity<?> getPkgFundInfo();
+	ResponseEntity<?> getPkgFundInfo();
 
-	public ResponseEntity<?> genTransferCode(String amount, String cif);
+	ResponseEntity<?> genTransferCode(String amount, String cif);
 
-	public ResponseEntity<?> withdraw(CashOutRequest request);
+	ResponseEntity<?> withdraw(CashOutRequest request);
 
 	String checkSession(String session);
 
-	public void autoSignContract();
+	void autoSignContract();
 
 	void jobHandleAffiliate1();
 

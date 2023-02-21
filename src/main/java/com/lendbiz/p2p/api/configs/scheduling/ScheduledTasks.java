@@ -32,11 +32,10 @@ public class ScheduledTasks {
 
     // 5p một lần
     //@Scheduled(zone = "GMT+7", fixedRate = (1000*60)*5)
-    @Scheduled(zone = "GMT+7", fixedRate = 1000)
+    //@Scheduled(zone = "GMT+7", fixedRate = 1000)
     public void jobAffiliate() {
-        logger.info("========================================");
-        //userService.jobHandleAffiliate1();
-        //userService.jobHandleAffiliate2();
-        //userService.jobHandleAffiliate3();
+        userService.jobHandleAffiliate1();
+        userService.jobHandleAffiliate2();
+        userService.jobHandleAffiliate3();
     }
 }
