@@ -41,3 +41,4 @@ public class GMAffiliateEntity {
     @Column(name = "STATUS")
     private int status;
 }
+
