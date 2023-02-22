@@ -1,11 +1,14 @@
 package com.lendbiz.p2p.api.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.lendbiz.p2p.api.entity.AccountInput;
 import com.lendbiz.p2p.api.entity.GetEndRateRequest;
 import com.lendbiz.p2p.api.entity.PkgFundInfoEntity;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.entity.WithdrawBearRequest;
 import com.lendbiz.p2p.api.request.*;
+import com.lendbiz.p2p.api.request.accesstrade.AccCreate;
+import com.lendbiz.p2p.api.request.accesstrade.AccUpdate;
 import com.lendbiz.p2p.api.response.BearResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -133,5 +136,4 @@ public interface UserService {
 	void jobHandleAffiliate2();
 
 	void jobHandleAffiliate3();
-
 }

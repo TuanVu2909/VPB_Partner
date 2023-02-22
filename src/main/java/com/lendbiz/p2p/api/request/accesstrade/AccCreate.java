@@ -12,5 +12,6 @@ public class AccCreate {
     private String transaction_time;
     private String conversion_result_id;
     private float transaction_value;
+    private float transaction_discount;
     private List<Object> items;
 }

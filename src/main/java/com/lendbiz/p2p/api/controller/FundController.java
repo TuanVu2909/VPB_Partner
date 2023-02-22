@@ -1,5 +1,8 @@
 package com.lendbiz.p2p.api.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.lendbiz.p2p.api.request.accesstrade.AccCreate;
+import com.lendbiz.p2p.api.request.accesstrade.AccUpdate;
 import com.lendbiz.p2p.api.request.amber.*;
 import com.lendbiz.p2p.api.service.FundService;
 // import com.twilio.Twilio;
@@ -19,14 +22,6 @@ public class FundController {
 
     @Autowired
     private FundService fundService;
-    @Autowired
-    private UserService userService;
-
-    @GetMapping("/test")
-    public String testAPI () {
-        userService.jobHandleAffiliate1();
-        return "Ping success !";
-    }
 
 //    @GetMapping(value = "/sendSMS")
 //    public ResponseEntity<String> sendSMS() {

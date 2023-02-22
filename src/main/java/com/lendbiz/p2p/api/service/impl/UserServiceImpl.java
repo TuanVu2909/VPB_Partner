@@ -1503,29 +1503,30 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             }
             if("accesstrade".equals(cus.getSource())){
                 AccCreate req = new AccCreate();
-                req.setTracking_id(cus.getPublicSherId());
+                req.setConversion_id(cus.getCustId());
                 req.setTransaction_id(cus.getCustId());
-                int count = 0;
-                for(int i=1; i<=3; i++){ // tạo luôn 3 record vs status = 0 đẩy sang accesstrade
-                    if(i==1) req.setConversion_id("isRegister");
-                    if(i==2) req.setConversion_id("isEkyc");
-                    if(i==3) req.setConversion_id("isSaving");
-                    JsonNode root = this.accessTradeCreateAPI(req);// postBack sang accesstrade
-                    if(root != null && "00".equals(root.get("code").asText())){
-                        count++;
-                    }
-                    if(count == 3){
-                        AccUpdate reqU = new AccUpdate();
-                        reqU.setTransaction_id(cus.getCustId());
-                        reqU.setConversion_id("isRegister");
-                        reqU.setStatus("1");
-                        reqU.setRejected_reason("");
-                        JsonNode rootU = this.accessTradeUpdateAPI(reqU);// postBack sang accesstrade
-                        if(rootU != null && "00".equals(rootU.get("code").asText())){
-                            // update status = 1 -> để lần sau ko quét lại nữa
-                            cus.setStatus(1);
-                            affiliateRepository.save(cus);
-                        }
+                req.setTracking_id(cus.getPublicSherId());
+
+                JsonNode root = this.accessTradeCreateAPI(req);// postBack sang accesstrade
+                if(root != null && "00".equals(root.get("code").asText())){
+                    AccUpdate reqU = new AccUpdate();
+                    reqU.setTransaction_id(cus.getCustId());
+                    reqU.setStatus(0); // accesstrade 0 -> processing, 1 -> aprove, 2 -> reject
+                    reqU.setRejected_reason("");
+
+                    Map<String, Object> item = new HashMap<>();
+                    item.put("id", "isRegister");
+                    item.put("status", 1);
+                    List<Object> items = new ArrayList<>();
+                    items.add(item);
+
+                    reqU.setItems(items);
+
+                    JsonNode rootU = this.accessTradeUpdateAPI(reqU);// postBack sang accesstrade
+                    if(rootU != null && "00".equals(rootU.get("code").asText())){
+                        // update status = 1 -> để lần sau ko quét lại nữa
+                        cus.setStatus(1);
+                        affiliateRepository.save(cus);
                     }
                 }
             }
@@ -1587,9 +1588,17 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 req.setTransaction_id(cus.getCustId());
 
                 if(cus.getIsEkyc() == 1){
-                    req.setConversion_id("isEkyc");
-                    req.setStatus("1");
+                    req.setStatus(0);
                     req.setRejected_reason("");
+
+                    Map<String, Object> item = new HashMap<>();
+                    item.put("id", "isEkyc");
+                    item.put("status", 1);
+                    List<Object> items = new ArrayList<>();
+                    items.add(item);
+
+                    req.setItems(items);
+
                     JsonNode root = this.accessTradeUpdateAPI(req);// postBack sang accesstrade
                     if(root != null && "00".equals(root.get("code").asText())){
                         // update status = 1 -> để lần sau ko quét lại nữa
@@ -1599,8 +1608,23 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 }
 
                 if(cus.getIsSaving() == 1){
-                    cus.setIsSaving(2);
-                    affiliateRepository.save(cus);
+                    req.setStatus(0); // accesstrade 0 -> processing, 1 -> aprove, 2 -> reject
+                    req.setRejected_reason("");
+
+                    Map<String, Object> item = new HashMap<>();
+                    item.put("id", "isSaving");
+                    item.put("status", 0);
+                    List<Object> items = new ArrayList<>();
+                    items.add(item);
+
+                    req.setItems(items);
+
+                    JsonNode root = this.accessTradeUpdateAPI(req);// postBack sang accesstrade
+                    if(root != null && "00".equals(root.get("code").asText())){
+                        // update status = 1 -> để lần sau ko quét lại nữa
+                        cus.setIsSaving(2);
+                        affiliateRepository.save(cus);
+                    }
                 }
 
                 // (case này sau 30 ngày sẽ nhảy vào)
@@ -1610,8 +1634,17 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     Period period = Period.between(date1, date2);
                     // nhưng sau ngày thứ 30 (hoặc 1 tháng) mà status vẫn = 2 => hủy đơn
                     if(period.getYears() == 0 && (period.getMonths() >= 1)){
-                        req.setStatus("2"); // cái này hyperLead define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
-                        req.setRejected_reason("Tài khoản này 30 ngày chưa có hoạt động tích lũy/đầu tư");
+                        req.setStatus(2); // accesstrade 0 -> processing, 1 -> aprove, 2 -> reject
+                        req.setRejected_reason("Tài khoản này 30 ngày chưa có hoạt động tích lũy hoặc tích lũy chưa đủ 7 ngày");
+
+                        Map<String, Object> item = new HashMap<>();
+                        item.put("id", "isSaving");
+                        item.put("status", 2);
+                        List<Object> items = new ArrayList<>();
+                        items.add(item);
+
+                        req.setItems(items);
+
                         JsonNode root = this.accessTradeUpdateAPI(req);// postBack sang hyperLead
                         if(root != null && "00".equals(root.get("code").asText())){
                             // update status = 10 -> để lần sau ko quét lại nữa
@@ -1646,9 +1679,17 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             if("accesstrade".equals(cus.getSource())){
                 AccUpdate req = new AccUpdate();
                 req.setTransaction_id(cus.getCustId());
-                req.setConversion_id("isSaving");
-                req.setStatus("1");
+                req.setStatus(1); // accesstrade 0 -> processing, 1 -> aprove, 2 -> reject
                 req.setRejected_reason("");
+
+                Map<String, Object> item = new HashMap<>();
+                item.put("id", "isSaving");
+                item.put("status", 1);
+                List<Object> items = new ArrayList<>();
+                items.add(item);
+
+                req.setItems(items);
+
                 JsonNode root = this.accessTradeUpdateAPI(req);// postBack sang accesstrade
                 if(root != null && "00".equals(root.get("code").asText())){
                     // update status = 1 -> để lần sau ko quét lại nữa
@@ -1659,7 +1700,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         }
     }
 
-    private JsonNode hyperLeadAPI(HypPostBack req) {
+    public JsonNode hyperLeadAPI(HypPostBack req) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -1671,7 +1712,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
             Map<String, Object> params = mapper.convertValue(req, Map.class);
 
-            logger.info("[Hyperlead API] request => {}", params);
+            logger.info("[HYPERLEAD_API]_REQUEST => {}", params);
 
             ResponseEntity<String> responseEntity = restTemplate.exchange(
                     Constants.HYPER_LEAD_URI + "/v1/3gang/postback.json?" +
@@ -1686,40 +1727,66 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     String.class,
                     params);
             JsonNode root = mapper.readTree(responseEntity.getBody());
-            logger.info("[Hyperlead API] response => {transaction_id: {}} {}", req.getTransaction_id(), root);
+            logger.info("[HYPERLEAD_API]_RESPONSE => {transaction_id: {}} {}", req.getTransaction_id(), root);
 
             return root;
 
         } catch (Exception e) {
-            logger.info("[Hyperlead API] error => {transaction_id: {}} {}", req.getTransaction_id(), e.getMessage());
+            logger.info("[HYPERLEAD_API]_ERROR => {transaction_id: {}} {}", req.getTransaction_id(), e.getMessage());
             return null;
         }
     }
 
-    private JsonNode accessTradeCreateAPI(AccCreate req) {
+    public JsonNode accessTradeCreateAPI(AccCreate req) {
         try {
-            Map<String, Object> item = new HashMap<>();
-            item.put("id", "");
-            item.put("sku", "");
-            item.put("price", 0);
-            item.put("quantity", 0);
-            item.put("category_id", "");
-
-            String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
-            req.setTransaction_time(timeStamp);
-            req.setConversion_result_id("30");
-            req.setTransaction_value(0);
-            List<Object> items = new ArrayList<>();
-            items.add(item);
-            req.setItems(items);
-
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", Constants.ACCESS_TRADE_TOKEN);
+
+            req.setConversion_result_id("30");
+            String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
+            req.setTransaction_time(timeStamp);
+            req.setTransaction_value(0);
+            req.setTransaction_discount(0);
+
+            Map<String, Object> isRegister = new HashMap<>();
+            isRegister.put("id", "isRegister");
+            isRegister.put("sku", "isRegister");
+            isRegister.put("name", "isRegister");
+            isRegister.put("price", 0);
+            isRegister.put("quantity", 1);
+            isRegister.put("category", "isRegister");
+            isRegister.put("category_id", "isRegister");
+
+            Map<String, Object> isEkyc = new HashMap<>();
+            isEkyc.put("id", "isEkyc");
+            isEkyc.put("sku", "isEkyc");
+            isEkyc.put("name", "isEkyc");
+            isEkyc.put("price", 0);
+            isEkyc.put("quantity", 1);
+            isEkyc.put("category", "isEkyc");
+            isEkyc.put("category_id", "isEkyc");
+
+            Map<String, Object> isSaving = new HashMap<>();
+            isSaving.put("id", "isSaving");
+            isSaving.put("sku", "isSaving");
+            isSaving.put("name", "isSaving");
+            isSaving.put("price", 0);
+            isSaving.put("quantity", 1);
+            isSaving.put("category", "isSaving");
+            isSaving.put("category_id", "isSaving");
+
+            List<Object> items = new ArrayList<>();
+            items.add(isRegister);
+            items.add(isEkyc);
+            items.add(isSaving);
+
+            req.setItems(items);
+
             HttpEntity<String> request = new HttpEntity(req, headers);
             ObjectMapper mapper = new ObjectMapper();
 
-            logger.info("[accesstrade API] request => {}", request);
+            logger.info("[ACCESSTRADE_CREATE_API]_REQUEST => {}", request);
 
             ResponseEntity<String> responseEntityStr = restTemplate.exchange(
                     Constants.ACCESS_TRADE_URI,
@@ -1727,17 +1794,18 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     request,
                     String.class);
 
+            logger.info("[ACCESSTRADE_CREATE_API]_RESPONSE => {transaction_id: {}} {}", req.getTransaction_id(), responseEntityStr);
+
             JsonNode root = mapper.readTree(responseEntityStr.getBody());
-            logger.info("[accesstrade API] response => {transaction_id: {}} {}", req.getTransaction_id(), root);
             return root;
         }
         catch (Exception e) {
-            logger.info("[accesstrade API] error => {transaction_id: {}} {}", req.getTransaction_id(), e.getMessage());
+            logger.info("[ACCESSTRADE_CREATE_API]_ERROR => {transaction_id: {}} {}", req.getTransaction_id(), e.getMessage());
             return null;
         }
     }
 
-    private JsonNode accessTradeUpdateAPI(AccUpdate req) {
+    public JsonNode accessTradeUpdateAPI(AccUpdate req) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -1745,7 +1813,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             HttpEntity<String> request = new HttpEntity(req, headers);
             ObjectMapper mapper = new ObjectMapper();
 
-            logger.info("[accesstrade API] request => {}", request);
+            logger.info("[ACCESSTRADE_UPDATE_API]_REQUEST => {}", request);
 
             ResponseEntity<String> responseEntityStr = restTemplate.exchange(
                     Constants.ACCESS_TRADE_URI,
@@ -1753,13 +1821,14 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     request,
                     String.class);
 
+            logger.info("[ACCESSTRADE_UPDATE_API]_RESPONSE => {transaction_id: {}} {}", req.getTransaction_id(), responseEntityStr);
+
             JsonNode root = mapper.readTree(responseEntityStr.getBody());
-            logger.info("[accesstrade API] response => {transaction_id: {}} {}", req.getTransaction_id(), root);
             return root;
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
-            logger.info("[accesstrade API] error => {transaction_id: {}} {}", req.getTransaction_id(), e.getMessage());
+            logger.info("[ACCESSTRADE_UPDATE_API]_ERROR => {transaction_id: {}} {}", req.getTransaction_id(), e.getMessage());
             return null;
         }
     }
