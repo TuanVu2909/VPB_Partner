@@ -1532,7 +1532,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     // status:0 -> tìm tất cả thằng nào đã DKTK chưa confirm affiliate
     @Override
     @SneakyThrows
-    public void jobHandleAffiliate1(){
+    public void jobHandleAffiliate0(){
         List<GMAffiliateEntity> dbd = affiliateRepository.findAllByStatus(0);
         for(GMAffiliateEntity cus : dbd){
             if("hyperlead".equals(cus.getSource())){
@@ -1580,6 +1580,56 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         }
     }
 
+    // status:1 -> tìm tất cả thằng nào đã DKTK 30 ngày trôi qua không có hoạt dộng gì => reject
+    @Override
+    @SneakyThrows
+    public void jobHandleAffiliate1(){
+        List<GMAffiliateEntity> dbd = affiliateRepository.findAllByStatus(1);
+        for(GMAffiliateEntity cus : dbd){
+            LocalDate date1 = cus.getStartDate().toLocalDate(); // từ lúc tạo TK
+            LocalDate date2 = LocalDate.now(); // ngày hiện tại
+            Period period = Period.between(date1, date2);
+            // (case này sau 30 ngày sẽ nhảy vào)
+            // record của vòng for này mà status vẫn = 2 => hủy đơn
+            if(period.getYears() == 0 && (period.getMonths() >= 1)){
+                if("hyperlead".equals(cus.getSource())){
+                    HypPostBack req = new HypPostBack();
+                    req.setClick_id(cus.getPublicSherId());
+                    req.setTransaction_id(cus.getCustId());
+                    req.setStatus_code(-1); // cái này hyperLead define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
+                    req.setStatus_message("cancel");
+                    JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
+                    if (root != null && "200".equals(root.get("status_code").asText())){
+                        // update Status = -1 -> để lần sau ko quét lại nữa
+                        cus.setStatus(10); // đã gửi sang hyperlead hủy đơn
+                        affiliateRepository.save(cus);
+                    }
+                }
+                if("accesstrade".equals(cus.getSource())){
+                    AccUpdate req = new AccUpdate();
+                    req.setTransaction_id(cus.getCustId());
+                    req.setStatus(2); // accesstrade 0 -> processing, 1 -> aprove, 2 -> reject
+                    req.setRejected_reason("Tài khoản này 30 ngày chưa có hoạt động tích lũy hoặc tích lũy chưa đủ 7 ngày");
+
+                    Map<String, Object> item = new HashMap<>();
+                    item.put("id", "isSaving");
+                    item.put("status", 2);
+                    List<Object> items = new ArrayList<>();
+                    items.add(item);
+
+                    req.setItems(items);
+
+                    JsonNode root = this.accessTradeUpdateAPI(req);// postBack sang hyperLead
+                    if(root != null && "00".equals(root.get("code").asText())){
+                        // update status = 10 -> để lần sau ko quét lại nữa
+                        cus.setStatus(10);
+                        affiliateRepository.save(cus);
+                    }
+                }
+            }
+        }
+    }
+
     // status:2 -> tìm tất cả thằng nào có thay đổi state (eKYC hoặc saving)
     @Override
     @SneakyThrows
@@ -1612,21 +1662,19 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     }
                 }
 
+                LocalDate date1 = cus.getStartDate().toLocalDate(); // từ lúc tạo TK
+                LocalDate date2 = LocalDate.now(); // ngày hiện tại
+                Period period = Period.between(date1, date2);
                 // (case này sau 30 ngày sẽ nhảy vào)
-                if(cus.getIsSaving() == 2){
-                    LocalDate date1 = cus.getStartDate().toLocalDate(); // từ lúc tạo TK
-                    LocalDate date2 = LocalDate.now(); // ngày hiện tại
-                    Period period = Period.between(date1, date2);
-                    // nhưng sau ngày thứ 30 (hoặc 1 tháng) mà status vẫn = 2 => hủy đơn
-                    if(period.getYears() == 0 && (period.getMonths() >= 1)){
-                        req.setStatus_code(-1); // cái này hyperLead define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
-                        req.setStatus_message("cancel");
-                        JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
-                        if (root != null && "200".equals(root.get("status_code").asText())){
-                            // update Status = -1 -> để lần sau ko quét lại nữa
-                            cus.setStatus(10); // đã gửi sang hyperlead hủy đơn
-                            affiliateRepository.save(cus);
-                        }
+                // record của vòng for này mà status vẫn = 2 => hủy đơn
+                if(period.getYears() == 0 && (period.getMonths() >= 1)){
+                    req.setStatus_code(-1); // cái này hyperLead define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
+                    req.setStatus_message("cancel");
+                    JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
+                    if (root != null && "200".equals(root.get("status_code").asText())){
+                        // update Status = -1 -> để lần sau ko quét lại nữa
+                        cus.setStatus(10); // đã gửi sang hyperlead hủy đơn
+                        affiliateRepository.save(cus);
                     }
                 }
             }
@@ -1674,30 +1722,28 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     }
                 }
 
+                LocalDate date1 = cus.getStartDate().toLocalDate(); // từ lúc tạo TK
+                LocalDate date2 = LocalDate.now(); // ngày hiện tại
+                Period period = Period.between(date1, date2);
                 // (case này sau 30 ngày sẽ nhảy vào)
-                if(cus.getIsSaving() == 2){
-                    LocalDate date1 = cus.getStartDate().toLocalDate(); // từ lúc tạo TK
-                    LocalDate date2 = LocalDate.now(); // ngày hiện tại
-                    Period period = Period.between(date1, date2);
-                    // nhưng sau ngày thứ 30 (hoặc 1 tháng) mà status vẫn = 2 => hủy đơn
-                    if(period.getYears() == 0 && (period.getMonths() >= 1)){
-                        req.setStatus(2); // accesstrade 0 -> processing, 1 -> aprove, 2 -> reject
-                        req.setRejected_reason("Tài khoản này 30 ngày chưa có hoạt động tích lũy hoặc tích lũy chưa đủ 7 ngày");
+                // record của vòng for này mà status vẫn = 2 => hủy đơn
+                if(period.getYears() == 0 && (period.getMonths() >= 1)){
+                    req.setStatus(2); // accesstrade 0 -> processing, 1 -> aprove, 2 -> reject
+                    req.setRejected_reason("Tài khoản này 30 ngày chưa có hoạt động tích lũy hoặc tích lũy chưa đủ 7 ngày");
 
-                        Map<String, Object> item = new HashMap<>();
-                        item.put("id", "isSaving");
-                        item.put("status", 2);
-                        List<Object> items = new ArrayList<>();
-                        items.add(item);
+                    Map<String, Object> item = new HashMap<>();
+                    item.put("id", "isSaving");
+                    item.put("status", 2);
+                    List<Object> items = new ArrayList<>();
+                    items.add(item);
 
-                        req.setItems(items);
+                    req.setItems(items);
 
-                        JsonNode root = this.accessTradeUpdateAPI(req);// postBack sang hyperLead
-                        if(root != null && "00".equals(root.get("code").asText())){
-                            // update status = 10 -> để lần sau ko quét lại nữa
-                            cus.setStatus(10);
-                            affiliateRepository.save(cus);
-                        }
+                    JsonNode root = this.accessTradeUpdateAPI(req);// postBack sang hyperLead
+                    if(root != null && "00".equals(root.get("code").asText())){
+                        // update status = 10 -> để lần sau ko quét lại nữa
+                        cus.setStatus(10);
+                        affiliateRepository.save(cus);
                     }
                 }
             }

@@ -30,10 +30,11 @@ public class ScheduledTasks {
         fundService.getTokenAFM();
     }
 
-    // 1h một lần
-    @Scheduled(zone = "GMT+7", fixedRate = (1000*60)*60)
+    // 15p một lần
+    @Scheduled(zone = "GMT+7", fixedRate = (1000*60)*15)
     //@Scheduled(zone = "GMT+7", fixedRate = 1000)
     public void jobAffiliate() {
+        userService.jobHandleAffiliate0();
         userService.jobHandleAffiliate1();
         userService.jobHandleAffiliate2();
         userService.jobHandleAffiliate3();
