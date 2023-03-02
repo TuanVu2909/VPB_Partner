@@ -131,6 +131,8 @@ public interface UserService {
 
 	void autoSignContract();
 
+	void jobHandleAffiliate0();
+
 	void jobHandleAffiliate1();
 
 	void jobHandleAffiliate2();
