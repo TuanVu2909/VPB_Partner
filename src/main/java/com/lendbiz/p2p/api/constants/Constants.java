@@ -138,7 +138,7 @@ public class Constants {
 	// hyperlead
 	public static final String HYPER_LEAD_URI = "https://s2s.riofintech.net";
 	public static final String HYPER_LEAD_API_KEY = "k97Ocp5U6VoAMgGW";
-	public static final String HYPER_LEAD_POSTBACK_TYPE = "cpl_standard_postback";
+	public static final String HYPER_LEAD_POSTBACK_TYPE = "forced_update";
 
 	// VNPT
 	public static final String VNPT_DOMAIN = "https://api.idg.vnpt.vn";
