@@ -119,6 +119,7 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
             // ngày hiện tại khac ngày eKYC -> reset lại ngày, so lần call API
             else{
                 bgEkyc.setEkycDate(currentDate);
+                bgEkyc.setApiCompare(1);
                 bgEkyc.setApiOrc(1);
             }
         }
@@ -304,10 +305,11 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
                 // Lưu số lần call API vertifyIdentity vào DB
                 bgEkyc.setApiCompare(bgEkyc.getApiCompare() + 1); // default ApiCompare = 0
             }
-            // ngày hiện tại khac ngày eKYC -> reset lại ngày, so lần call API
+            // ngày hiện tại khac ngày eKYC(currentDate>lastDate) -> reset lại ngày, so lần call API
             else{
                 bgEkyc.setEkycDate(currentDate);
                 bgEkyc.setApiCompare(1);
+                bgEkyc.setApiOrc(1);
             }
         }
         this.bgEkycRepository.save(bgEkyc);
