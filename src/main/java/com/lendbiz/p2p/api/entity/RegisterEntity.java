@@ -18,6 +18,7 @@ import javax.persistence.*;
                                 @StoredProcedureParameter(name = "Pv_custId", mode = ParameterMode.IN, type = String.class),
                                 @StoredProcedureParameter(name = "Pv_source", mode = ParameterMode.IN, type = String.class),
                                 @StoredProcedureParameter(name = "Pv_medium", mode = ParameterMode.IN, type = String.class),
+                                @StoredProcedureParameter(name = "Pv_platform", mode = ParameterMode.IN, type = String.class)
                 }) //
 })
 public class RegisterEntity {

@@ -309,7 +309,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     reqJoinRequest.setDeviceId(loginRequest.getDeviceId());
                     registerRepository.register(reqJoinRequest.getMobile(),
                             reqJoinRequest.getDeviceId(), custId, reqJoinRequest.getUtmSource(),
-                            reqJoinRequest.getUtmMedium());
+                            reqJoinRequest.getUtmMedium(), null);
                 }
 
                 if (!loginRequest.getDeviceId().equalsIgnoreCase(user.getDeviceId())) {
@@ -322,7 +322,6 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         } else {
             throw new BusinessException(ErrorCode.FAIL_LOGIN, ErrorCode.FAIL_LOGIN_DESCRIPTION);
         }
-
     }
 
     @Override
@@ -339,7 +338,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
                         RegisterEntity regEntity = registerRepository.register(reqJoinRequest.getMobile(),
                                 reqJoinRequest.getDeviceId(), custId, reqJoinRequest.getUtmSource(),
-                                reqJoinRequest.getUtmMedium());
+                                reqJoinRequest.getUtmMedium(), reqJoinRequest.getPlatform());
 
                         if (regEntity.getErrorCode() == 1) {
                             throw new BusinessException(Constants.FAIL, regEntity.getCustId());
@@ -376,7 +375,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 // String custId = getCustId(lstCfmast);
                 RegisterEntity regEntity = registerRepository.register(reqJoinRequest.getMobile(),
                         reqJoinRequest.getDeviceId(), custId, reqJoinRequest.getUtmSource(),
-                        reqJoinRequest.getUtmMedium());
+                        reqJoinRequest.getUtmMedium(), reqJoinRequest.getPlatform());
 
                 if (regEntity.getErrorCode() == 1) {
                     throw new BusinessException(Constants.FAIL, regEntity.getCustId());
@@ -393,16 +392,16 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             // return response(toResult(response.get(0)));
             // String custId = getCustId(lstCfmast);
             RegisterEntity regEntity = registerRepository.register(reqJoinRequest.getMobile(),
-                    reqJoinRequest.getDeviceId(), custId, reqJoinRequest.getUtmSource(), reqJoinRequest.getUtmMedium());
+                    reqJoinRequest.getDeviceId(), custId, reqJoinRequest.getUtmSource(), reqJoinRequest.getUtmMedium(),
+                    reqJoinRequest.getPlatform()
+            );
 
             if (regEntity.getErrorCode() == 1) {
                 throw new BusinessException(Constants.FAIL, regEntity.getCustId());
             } else {
                 return response(toResult(regEntity));
             }
-
         }
-
     }
 
     @Override
