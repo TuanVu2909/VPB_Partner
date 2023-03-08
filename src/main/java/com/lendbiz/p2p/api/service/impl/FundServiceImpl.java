@@ -232,6 +232,8 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             if(data.get("EC").equals("0")) {
                 ArrayList<Object> lst = (ArrayList<Object>) data.get("DT");
                 Map<String, Object> map = (Map<String, Object>) lst.get(0);
+                String status_id = map.get("status").toString();
+                String status_vsd_id = map.get("status_vsd").toString();
                 map.put("status_code", map.get("status"));
                 map.put("status_vsd_code", map.get("status_vsd"));
                 map.put("status", Constants.AFM_INFO_STATUS.get(map.get("status")));
@@ -242,6 +244,8 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                 if(saveData != null) {
                     saveData.setStatus(map.get("status").toString());
                     saveData.setStatusVsd(map.get("status_vsd").toString());
+                    saveData.setStatus_id(status_id);
+                    saveData.setStatus_vsd_id(status_vsd_id);
                     this.afmAccountInfoRepository.save(saveData);
                 }
             }
@@ -351,7 +355,8 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                                 Constants.AFM_DEAL_STATUS.get(map.get("status")).toString(),
                                 map.get("custodycd").toString(),
                                 map.get("symbol").toString(),
-                                map.get("orderid").toString()
+                                map.get("orderid").toString(),
+                                map.get("status").toString()
                         );
                         map.put("status_code", map.get("status"));
                         map.put("status", Constants.AFM_DEAL_STATUS.get(map.get("status")));
@@ -409,7 +414,8 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                                 Constants.AFM_DEAL_STATUS.get(map.get("status")).toString(),
                                 map.get("custodycd").toString(),
                                 map.get("symbol").toString(),
-                                map.get("orderid").toString()
+                                map.get("orderid").toString(),
+                                map.get("status").toString()
                         );
 
                         map.put("status_code", map.get("status"));
@@ -525,6 +531,13 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             Map<String, Object> data = new HashMap<>((Map<? extends String, ?>) responseEntity.getBody());
             if(data.get("EC").equals("0")) {
                 Map<String, Object> dt = new HashMap<>((Map<? extends String, ?>) data.get("DT"));
+                String status_id = "";
+                for(Map.Entry<String, Object> entry: Constants.AFM_DEAL_STATUS.entrySet()) {
+                    if(dt.get("status").toString().equals(entry.getValue())) {
+                        status_id = entry.getKey();
+                        break;
+                    }
+                }
                 this.afmHisOrderRepository.saveData(
                         dt.get("custodycd").toString(),
                         dt.get("symbol").toString(),
@@ -535,7 +548,8 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                         dt.get("status").toString(),
                         dt.get("amt").toString(),
                         dt.get("qtty").toString(),
-                        dt.get("orderid").toString()
+                        dt.get("orderid").toString(),
+                        status_id
                 );
             }
             return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, data));
