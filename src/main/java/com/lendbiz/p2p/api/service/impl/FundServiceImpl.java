@@ -239,6 +239,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                 map.put("status", Constants.AFM_INFO_STATUS.get(map.get("status")));
                 map.put("status_vsd", Constants.AFM_STATUS_VSD.get(map.get("status_vsd")));
                 data.put("DT", map);
+                data.put("EM", Constants.AFM_STATUS_VSD.get(map.get("status_vsd")));
 
                 AFMAccountInfoEntity saveData = this.afmAccountInfoRepository.findByMobile(bodies.getMobile());
                 if(saveData != null) {
