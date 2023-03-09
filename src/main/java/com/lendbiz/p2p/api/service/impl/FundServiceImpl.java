@@ -232,6 +232,7 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
             if(data.get("EC").equals("0")) {
                 ArrayList<Object> lst = (ArrayList<Object>) data.get("DT");
                 Map<String, Object> map = (Map<String, Object>) lst.get(0);
+                String em = Constants.AFM_STATUS_VSD.get(map.get("status_vsd")).toString();
                 String status_id = map.get("status").toString();
                 String status_vsd_id = map.get("status_vsd").toString();
                 map.put("status_code", map.get("status"));
@@ -239,7 +240,8 @@ public class FundServiceImpl extends BaseResponse<FundService> implements FundSe
                 map.put("status", Constants.AFM_INFO_STATUS.get(map.get("status")));
                 map.put("status_vsd", Constants.AFM_STATUS_VSD.get(map.get("status_vsd")));
                 data.put("DT", map);
-                data.put("EM", Constants.AFM_STATUS_VSD.get(map.get("status_vsd")));
+                data.remove("EM");
+                data.put("EM", em);
 
                 AFMAccountInfoEntity saveData = this.afmAccountInfoRepository.findByMobile(bodies.getMobile());
                 if(saveData != null) {
