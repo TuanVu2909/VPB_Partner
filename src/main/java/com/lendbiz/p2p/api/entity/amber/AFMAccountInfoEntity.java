@@ -32,4 +32,8 @@ public class AFMAccountInfoEntity {
     private String statusVsd;
     @Column(name = "CREATE_DATE")
     private String createDate;
+    @Column(name = "STATUS_ID")
+    private String status_id;
+    @Column(name = "STATUS_VSD_ID")
+    private String status_vsd_id;
 }

@@ -6,7 +6,6 @@ import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.vnpt.BgEkycEntity;
 import com.lendbiz.p2p.api.exception.BusinessException;
-import com.lendbiz.p2p.api.producer.ProducerMessage;
 import com.lendbiz.p2p.api.repository.BgEkycRepository;
 import com.lendbiz.p2p.api.repository.CfMastRepository;
 import com.lendbiz.p2p.api.response.BaseResponse;
@@ -47,9 +46,6 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
     @Qualifier("cfMastRepository")
     @Autowired
     CfMastRepository cfMastRepo;
-
-    @Autowired
-    ProducerMessage producerMessage;
 
     public String uploadImage(MultipartFile image, String title, String description){
         // Phí 0 vnd
@@ -94,8 +90,8 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
         String hashImgBackId = this.uploadImage(imgBackId, "imgBackId", "imgBackId");
         logger.info("============= Start eKYC vertifyIdentity (VNPT) =============");
 
-        saveFileKafka(imgFrontId, mobile, 0);
-        saveFileKafka(imgBackId, mobile, 1);
+        BaseService.saveFileKafka(imgFrontId, mobile, 0);
+        BaseService.saveFileKafka(imgBackId, mobile, 1);
 
         // Phí 800 vnd
         BgEkycEntity bgEkyc = this.bgEkycRepository.findByMobileSms(mobile);
@@ -284,7 +280,7 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
         String hashImgSelfie = this.uploadImage(imgSelfie, "imgSelfie", "imgSelfie");
 
         logger.info("============= Start eKYC vertifySelfie (VNPT) =============");
-        saveFileKafka(imgSelfie, mobile, 2);
+        BaseService.saveFileKafka(imgSelfie, mobile, 2);
 
         // Phí 800 vnd
         BgEkycEntity bgEkyc = this.bgEkycRepository.findByMobileSms(mobile);
@@ -363,21 +359,4 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
         return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, root.get("object")));
     }
 
-    public void saveFileKafka(MultipartFile file, String mobile, int type) {
-        try {
-            byte[] fileContent = Base64.encodeBase64(file.getBytes());
-            String data = new String(fileContent, "UTF-8");
-
-            Map<String, Object> map = new HashMap<>();
-            map.put("mobile", mobile);
-            map.put("file", data);
-            map.put("fileName", type + "_" + file.getOriginalFilename());
-
-            JSONObject jsonObjectLogs = new JSONObject(map);
-            producerMessage.sendSaveIdCard(jsonObjectLogs.toString());
-
-        } catch (Exception e) {
-            logger.info(e.getMessage());
-        }
-    }
 }

@@ -31,4 +31,6 @@ public class AFMHisOrderEntity {
     private String orderqtty;
     @Column(name = "ORDERID")
     private String orderid;
+    @Column(name = "STATUS_ID")
+    private String status_id;
 }

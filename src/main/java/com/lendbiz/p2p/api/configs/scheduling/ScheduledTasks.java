@@ -22,7 +22,7 @@ public class ScheduledTasks {
 //    @Scheduled(zone = "GMT+7", fixedRate = 1000)
 //    public void scheduleTask() {
 //        // call send email method here
-//        logger.info("+++++++++++++ 123123 +++++++++++++++");
+//        logger.info(!!!!!!!!!!!!!!!!!!!);
 //    }
     // 5 phút một lần
     @Scheduled(zone = "GMT+7", cron = "0 */5 * ? * *")
