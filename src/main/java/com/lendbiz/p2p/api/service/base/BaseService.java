@@ -9,22 +9,32 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.CfMast;
 import com.lendbiz.p2p.api.exception.BusinessException;
+import org.apache.commons.codec.binary.Base64;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.multipart.MultipartFile;
+import com.lendbiz.p2p.api.producer.ProducerMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BaseService {
 
-	public BaseService(Environment env) {
-	}
+	@Autowired
+	static
+	ProducerMessage producerMessage;
 
-	protected Logger logger = LoggerFactory.getLogger(this.getClass());
+//	public BaseService(Environment env) {
+//	}
+
+	protected static Logger logger = LoggerFactory.getLogger(BaseService.class);
 
 	public static ByteArrayResource convertFile(MultipartFile sourceImage) {
 		ByteArrayResource resource = null;
@@ -76,5 +86,23 @@ public class BaseService {
 			custId = lstCfmast.get(0).getCustid();
 		}
 		return custId;
+	}
+
+	public static void saveFileKafka(MultipartFile file, String mobile, int type) {
+		try {
+			byte[] fileContent = Base64.encodeBase64(file.getBytes());
+			String data = new String(fileContent, "UTF-8");
+
+			Map<String, Object> map = new HashMap<>();
+			map.put("mobile", mobile);
+			map.put("file", data);
+			map.put("fileName", type + "_" + file.getOriginalFilename());
+
+			JSONObject jsonObjectLogs = new JSONObject(map);
+			producerMessage.sendSaveIdCard(jsonObjectLogs.toString());
+
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+		}
 	}
 }

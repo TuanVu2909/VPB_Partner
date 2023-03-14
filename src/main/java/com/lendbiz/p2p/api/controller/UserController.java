@@ -5,14 +5,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.UUID;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.service.*;
-import lombok.SneakyThrows;
 import org.apache.commons.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.lendbiz.p2p.api.configs.JwtProvider;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
@@ -60,8 +55,6 @@ import com.lendbiz.p2p.api.request.UpdateNotificationsRequest;
 import com.lendbiz.p2p.api.request.VerifyEmailRequest;
 import com.lendbiz.p2p.api.response.InfoIdentity;
 import com.lendbiz.p2p.api.response.MyResponse;
-import com.lendbiz.p2p.api.service.impl.UserServiceImpl;
-
 import lombok.extern.log4j.Log4j2;
 
 /***********************************************************************
