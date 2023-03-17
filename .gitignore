@@ -40,3 +40,5 @@ out/
 *.gz
 *.log
 *.gz
+*.docx
+*.pdf
