@@ -52,5 +52,7 @@ public class PortfolioInvest {
     private long endInterest;
     @Column(name = "STATUS_INVEST")
     private int status;
+    @Column(name = "REMAINDAY")
+    private int remainDay;
 
 }
