@@ -27,9 +27,7 @@ import java.util.Map;
 
 public class BaseService {
 
-	@Autowired
-	static
-	ProducerMessage producerMessage;
+
 
 //	public BaseService(Environment env) {
 //	}
@@ -86,23 +84,5 @@ public class BaseService {
 			custId = lstCfmast.get(0).getCustid();
 		}
 		return custId;
-	}
-
-	public static void saveFileKafka(MultipartFile file, String mobile, int type) {
-		try {
-			byte[] fileContent = Base64.encodeBase64(file.getBytes());
-			String data = new String(fileContent, "UTF-8");
-
-			Map<String, Object> map = new HashMap<>();
-			map.put("mobile", mobile);
-			map.put("file", data);
-			map.put("fileName", type + "_" + file.getOriginalFilename());
-
-			JSONObject jsonObjectLogs = new JSONObject(map);
-			producerMessage.sendSaveIdCard(jsonObjectLogs.toString());
-
-		} catch (Exception e) {
-			logger.info(e.getMessage());
-		}
 	}
 }
