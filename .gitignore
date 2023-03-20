@@ -42,3 +42,6 @@ out/
 *.gz
 *.docx
 *.pdf
+src/main/resources/application.properties
+gradlew.bat
+gradle/wrapper/gradle-wrapper.properties
