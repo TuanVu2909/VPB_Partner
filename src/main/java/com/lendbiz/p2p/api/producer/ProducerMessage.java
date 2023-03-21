@@ -33,4 +33,14 @@ public class ProducerMessage {
         log.info(String.format("#### -> Producing message save id card  ->"));
         this.kafkaTemplate.send(Constants.KAFKA.TOPIC_SAVE_ID_CARD, smsJsonData);
     }
+
+    public void sendCreateBear(String topicName, String key, String value) {
+        log.info(String.format("#### -> Producing message sendCreateBear APIGATEWAY -> " + key + " " + value));
+        this.kafkaTemplate.send(topicName, key, value);
+    }
+    
+    public void sendErrorCreateBear(String topicName, String key, String value) {
+        log.info(String.format("#### -> Producing error message sendErrorCreateBear APIGATEWAY -> " + key + " " + value));
+        this.kafkaTemplate.send(topicName, key, value);
+    }
 }
