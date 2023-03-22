@@ -38,6 +38,9 @@ import com.lendbiz.p2p.api.repository.*;
 import com.lendbiz.p2p.api.request.accesstrade.AccCreate;
 import com.lendbiz.p2p.api.request.accesstrade.AccUpdate;
 import com.lendbiz.p2p.api.request.hyperlead.HypPostBack;
+import com.lendbiz.p2p.api.request.amber.CCQInfoRequest;
+import com.lendbiz.p2p.api.request.hyperlead.HypPostBack;
+import com.lendbiz.p2p.api.service.VNPTService;
 import com.lendbiz.p2p.api.service.base.BaseService;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
@@ -64,8 +67,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.core.ApiFuture;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteResult;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
@@ -108,6 +114,47 @@ import com.lendbiz.p2p.api.entity.Version3Gang;
 import com.lendbiz.p2p.api.entity.WithdrawBearRequest;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.producer.ProducerMessage;
+import com.lendbiz.p2p.api.repository.AccountAssetRepository;
+import com.lendbiz.p2p.api.repository.AccountInvestRepository;
+import com.lendbiz.p2p.api.repository.AccountNotificationsRepository;
+import com.lendbiz.p2p.api.repository.BankAccountRepository;
+import com.lendbiz.p2p.api.repository.BankRepository;
+import com.lendbiz.p2p.api.repository.BaoVietRepo;
+import com.lendbiz.p2p.api.repository.CfMastRepository;
+import com.lendbiz.p2p.api.repository.CoinRepo;
+import com.lendbiz.p2p.api.repository.ContractInfoRepository;
+import com.lendbiz.p2p.api.repository.FirstPasswordRepository;
+import com.lendbiz.p2p.api.repository.FundInvestDetailRepository;
+import com.lendbiz.p2p.api.repository.FundInvestRepository;
+import com.lendbiz.p2p.api.repository.FundListRepository;
+import com.lendbiz.p2p.api.repository.GetRateRepository;
+import com.lendbiz.p2p.api.repository.GetReferenceRepo;
+import com.lendbiz.p2p.api.repository.InvestAssetsRepository;
+import com.lendbiz.p2p.api.repository.InvestPackageDetailRepository;
+import com.lendbiz.p2p.api.repository.InvestPackageRepository;
+import com.lendbiz.p2p.api.repository.NAVRepository;
+import com.lendbiz.p2p.api.repository.NinePayDepositRepo;
+import com.lendbiz.p2p.api.repository.NotifyRepo;
+import com.lendbiz.p2p.api.repository.PackageFilterRepository;
+import com.lendbiz.p2p.api.repository.PayRepo;
+import com.lendbiz.p2p.api.repository.PkgFundInfoRepository;
+import com.lendbiz.p2p.api.repository.PortfolioRepository;
+import com.lendbiz.p2p.api.repository.ProductGMRepository;
+import com.lendbiz.p2p.api.repository.PushRepository;
+import com.lendbiz.p2p.api.repository.RateConfigRepo;
+import com.lendbiz.p2p.api.repository.RateRepo;
+import com.lendbiz.p2p.api.repository.RegisterRepository;
+import com.lendbiz.p2p.api.repository.RelationRepo;
+import com.lendbiz.p2p.api.repository.ResendOtpRepository;
+import com.lendbiz.p2p.api.repository.StatementsRepository;
+import com.lendbiz.p2p.api.repository.SumGrowthRepository;
+import com.lendbiz.p2p.api.repository.TermRepo;
+import com.lendbiz.p2p.api.repository.TransFerCodeRepo;
+import com.lendbiz.p2p.api.repository.UpdateAccountRepository;
+import com.lendbiz.p2p.api.repository.UserInfoRepository;
+import com.lendbiz.p2p.api.repository.UserOnlineRepository;
+import com.lendbiz.p2p.api.repository.VerifyAccountRepository;
+import com.lendbiz.p2p.api.repository.Version3GangRepository;
 import com.lendbiz.p2p.api.request.BearRequest;
 import com.lendbiz.p2p.api.request.CashOutRequest;
 import com.lendbiz.p2p.api.request.Converter;
@@ -1254,11 +1301,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 //                jsonResponse = scanner.useDelimiter("/A").hasNext() ? scanner.next() : "";
 //                scanner.close();
 //            }
-//
 //            logger.info("jsonResponse:\n" + jsonResponse);
-//
 //            logger.info("successfully!");
-//
 //        } catch (Throwable t) {
 //            t.printStackTrace();
 //        }
@@ -1484,7 +1528,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     @SneakyThrows
     public void jobHandleAffiliate0(){
-        List<GMAffiliateEntity> dbd = affiliateRepository.findAllByStatus(0);
+        List<GMAffiliateEntity> dbd = affiliateRepository.getAllByStatusAndSource(0);
         for(GMAffiliateEntity cus : dbd){
             if("hyperlead".equals(cus.getSource())){
                 HypPostBack req = new HypPostBack();
@@ -1496,7 +1540,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 if(root != null && "200".equals(root.get("status_code").asText())){
                     // update status = 1 -> để lần sau ko quét lại nữa
                     cus.setStatus(1);
-                    affiliateRepository.save(cus);
+                    affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
                 }
             }
             if("accesstrade".equals(cus.getSource())){
@@ -1524,7 +1568,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     if(rootU != null && "00".equals(rootU.get("code").asText())){
                         // update status = 1 -> để lần sau ko quét lại nữa
                         cus.setStatus(1);
-                        affiliateRepository.save(cus);
+                        affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
                     }
                 }
             }
@@ -1535,7 +1579,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     @SneakyThrows
     public void jobHandleAffiliate1(){
-        List<GMAffiliateEntity> dbd = affiliateRepository.findAllByStatus(1);
+        List<GMAffiliateEntity> dbd = affiliateRepository.getAllByStatusAndSource(1);
         for(GMAffiliateEntity cus : dbd){
             LocalDate date1 = cus.getStartDate().toLocalDate(); // từ lúc tạo TK
             LocalDate date2 = LocalDate.now(); // ngày hiện tại
@@ -1553,7 +1597,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     if (root != null && "200".equals(root.get("status_code").asText())){
                         // update Status = -1 -> để lần sau ko quét lại nữa
                         cus.setStatus(10); // đã gửi sang hyperlead hủy đơn
-                        affiliateRepository.save(cus);
+                        affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
                     }
                 }
                 if("accesstrade".equals(cus.getSource())){
@@ -1574,7 +1618,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     if(root != null && "00".equals(root.get("code").asText())){
                         // update status = 10 -> để lần sau ko quét lại nữa
                         cus.setStatus(10);
-                        affiliateRepository.save(cus);
+                        affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
                     }
                 }
             }
@@ -1585,7 +1629,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     @SneakyThrows
     public void jobHandleAffiliate2() {
-        List<GMAffiliateEntity> dbd = affiliateRepository.findAllByStatus(2);
+        List<GMAffiliateEntity> dbd = affiliateRepository.getAllByStatusAndSource(2);
         for(GMAffiliateEntity cus : dbd) {
             if("hyperlead".equals(cus.getSource())){
                 HypPostBack req = new HypPostBack();
@@ -1599,7 +1643,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     if(root != null && "200".equals(root.get("status_code").asText())){
                         // update IsEkyc = 2 -> để lần sau ko quét lại nữa
                         cus.setIsEkyc(2);
-                        affiliateRepository.save(cus);
+                        affiliateRepository.updateByIsEkyc(cus.getIsEkyc(), cus.getCustId());
                     }
                 }
 
@@ -1609,7 +1653,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     if (root != null && "200".equals(root.get("status_code").asText())){
                         // update Saving = 2 -> để lần sau ko quét lại nữa
                         cus.setIsSaving(2);
-                        affiliateRepository.save(cus);
+                        affiliateRepository.updateByIsSaving(cus.getIsSaving(), cus.getCustId());
                     }
                 }
 
@@ -1625,7 +1669,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     if (root != null && "200".equals(root.get("status_code").asText())){
                         // update Status = -1 -> để lần sau ko quét lại nữa
                         cus.setStatus(10); // đã gửi sang hyperlead hủy đơn
-                        affiliateRepository.save(cus);
+                        affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
                     }
                 }
             }
@@ -1649,7 +1693,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     if(root != null && "00".equals(root.get("code").asText())){
                         // update status = 1 -> để lần sau ko quét lại nữa
                         cus.setIsEkyc(2);
-                        affiliateRepository.save(cus);
+                        affiliateRepository.updateByIsEkyc(cus.getIsEkyc(), cus.getCustId());
                     }
                 }
 
@@ -1669,7 +1713,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     if(root != null && "00".equals(root.get("code").asText())){
                         // update status = 1 -> để lần sau ko quét lại nữa
                         cus.setIsSaving(2);
-                        affiliateRepository.save(cus);
+                        affiliateRepository.updateByIsSaving(cus.getIsSaving(), cus.getCustId());
                     }
                 }
 
@@ -1694,7 +1738,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     if(root != null && "00".equals(root.get("code").asText())){
                         // update status = 10 -> để lần sau ko quét lại nữa
                         cus.setStatus(10);
-                        affiliateRepository.save(cus);
+                        affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
                     }
                 }
             }
@@ -1705,7 +1749,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     @SneakyThrows
     public void jobHandleAffiliate3() {
-        List<GMAffiliateEntity> dbd = affiliateRepository.findAllByStatus(3);
+        List<GMAffiliateEntity> dbd = affiliateRepository.getAllByStatusAndSource(3);
         for(GMAffiliateEntity cus : dbd) {
             if("hyperlead".equals(cus.getSource())){
                 HypPostBack req = new HypPostBack();
@@ -1717,7 +1761,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 if(root != null && "200".equals(root.get("status_code").asText())){
                     // update IsEkyc = 2 -> để lần sau ko quét lại nữa
                     cus.setStatus(4);
-                    affiliateRepository.save(cus);
+                    affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
                 }
             }
             if("accesstrade".equals(cus.getSource())){
@@ -1738,7 +1782,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 if(root != null && "00".equals(root.get("code").asText())){
                     // update status = 1 -> để lần sau ko quét lại nữa
                     cus.setStatus(4);
-                    affiliateRepository.save(cus);
+                    affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
                 }
             }
         }
@@ -1788,7 +1832,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             headers.set("Authorization", Constants.ACCESS_TRADE_TOKEN);
 
             req.setConversion_result_id("30");
-            String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
+            String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
             req.setTransaction_time(timeStamp);
             req.setTransaction_value(0);
             req.setTransaction_discount(0);
