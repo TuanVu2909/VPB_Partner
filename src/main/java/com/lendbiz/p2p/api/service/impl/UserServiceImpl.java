@@ -112,6 +112,7 @@ import com.lendbiz.p2p.api.entity.UserOnline;
 import com.lendbiz.p2p.api.entity.VerifyAccountInput;
 import com.lendbiz.p2p.api.entity.Version3Gang;
 import com.lendbiz.p2p.api.entity.WithdrawBearRequest;
+import com.lendbiz.p2p.api.entity.affiliate.GMAffiliateEntity;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.producer.ProducerMessage;
 import com.lendbiz.p2p.api.repository.AccountAssetRepository;
@@ -157,19 +158,20 @@ import com.lendbiz.p2p.api.repository.VerifyAccountRepository;
 import com.lendbiz.p2p.api.repository.Version3GangRepository;
 import com.lendbiz.p2p.api.request.BearRequest;
 import com.lendbiz.p2p.api.request.CashOutRequest;
-import com.lendbiz.p2p.api.request.Converter;
 import com.lendbiz.p2p.api.request.CreatePolicyPartnerRq;
 import com.lendbiz.p2p.api.request.GmFundNavRequest;
 import com.lendbiz.p2p.api.request.InsuranceRequest;
 import com.lendbiz.p2p.api.request.LoginRequest;
 import com.lendbiz.p2p.api.request.PkgSumFundRequest;
 import com.lendbiz.p2p.api.request.ReqJoinRequest;
-import com.lendbiz.p2p.api.request.SendOTPRequest;
 import com.lendbiz.p2p.api.request.SetAccountPasswordRequest;
 import com.lendbiz.p2p.api.request.SignContractRequestV2;
 import com.lendbiz.p2p.api.request.UpdateAccountRequest;
 import com.lendbiz.p2p.api.request.UpdateBiometricRequest;
 import com.lendbiz.p2p.api.request.UpdateNotificationsRequest;
+import com.lendbiz.p2p.api.request.accesstrade.AccCreate;
+import com.lendbiz.p2p.api.request.accesstrade.AccUpdate;
+import com.lendbiz.p2p.api.request.hyperlead.HypPostBack;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.response.PkgFundDetail;
 import com.lendbiz.p2p.api.response.PkgFundResponse;
@@ -177,8 +179,12 @@ import com.lendbiz.p2p.api.response.SignPdfResponse;
 import com.lendbiz.p2p.api.service.FilesStorageService;
 import com.lendbiz.p2p.api.service.SavisService;
 import com.lendbiz.p2p.api.service.UserService;
+import com.lendbiz.p2p.api.service.base.BaseService;
 import com.lendbiz.p2p.api.utils.StringUtil;
 import com.lendbiz.p2p.api.utils.Utils;
+
+import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 
 /***********************************************************************
  *
@@ -190,6 +196,7 @@ import com.lendbiz.p2p.api.utils.Utils;
  *
  ***********************************************************************/
 @Service("userService")
+@Log4j2
 public class UserServiceImpl extends BaseResponse<UserService> implements UserService {
     @Autowired
     InvestPackageDetailRepository investPackageDetailRepository;
@@ -440,8 +447,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             // String custId = getCustId(lstCfmast);
             RegisterEntity regEntity = registerRepository.register(reqJoinRequest.getMobile(),
                     reqJoinRequest.getDeviceId(), custId, reqJoinRequest.getUtmSource(), reqJoinRequest.getUtmMedium(),
-                    reqJoinRequest.getPlatform()
-            );
+                    reqJoinRequest.getPlatform());
 
             if (regEntity.getErrorCode() == 1) {
                 throw new BusinessException(Constants.FAIL, regEntity.getCustId());
@@ -506,7 +512,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             String contractUrl = "https://bagang.lendbiz.vn/lendbiz/view/2/" + userPhone;
             String inviteFriendTitle = "50.000 VND";
             String inviteFriendCash = "15.000 VND";
-            String inviteFriendDescription = "Mời bạn bè sử dụng 3Gang để cùng nhận thưởng. Với mỗi tài khoản mở thành công, phát sinh giao dịch tích lũy có kỳ hạn với số tiền từ 50.000 VND trở lên trong thời gian tối thiểu 1 tháng.\n" +
+            String inviteFriendDescription = "Mời bạn bè sử dụng 3Gang để cùng nhận thưởng. Với mỗi tài khoản mở thành công, phát sinh giao dịch tích lũy có kỳ hạn với số tiền từ 50.000 VND trở lên trong thời gian tối thiểu 1 tháng.\n"
+                    +
                     "Bạn sẽ nhận được 50.000 VND và người được giới thiệu cũng sẽ nhận được 15.000 VND vào tài khoản 3Gang.\n"
                     + "Giá trị tiền thưởng sẽ tăng lên nếu bạn giới thiệu thêm nhiều bạn bè cùng sử dụng 3Gang khi:\n"
                     + " 1. Giới thiệu từ 1-5 người, tiền thưởng là 50.000 VND/người được giới thiệu mới.\n"
@@ -639,29 +646,35 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     public ResponseEntity<?> createBear(AccountInput input) {
         try {
-            NotifyEntity notify = notifyRepo.createBear(input.getCustId(), input.getProductId(),
-                    input.getTerm(),
-                    Float.valueOf(input.getRate()),
-                    input.getAmt(),
-                    input.getContractId(), input.getPayType());
-            if (!notify.getPStatus().equals("01")) {
-                throw new BusinessException(notify.getPStatus(), notify.getDes());
-            }
-            return response(toResult(notify));
+            // NotifyEntity notify = notifyRepo.createBear(input.getCustId(),
+            // input.getProductId(),
+            // input.getTerm(),
+            // Float.valueOf(input.getRate()),
+            // input.getAmt(),
+            // input.getContractId(), input.getPayType());
+
+            JSONObject jsonObjectLogs = new JSONObject(input);
+            producerMessage.sendCreateBear("CREATE_BEAR_TOPIC",  input.getCustId(), jsonObjectLogs.toString());
+
+            return response(toResult("OK"));
+
         } catch (Exception e) {
-            throw new BusinessException(Constants.FAIL, e.getMessage());
+            log.error(e.getMessage());
+            throw new BusinessException(Constants.FAIL, ErrorCode.ERROR_500_DESCRIPTION);
         }
     }
 
     @Override
     public ResponseEntity<?> withdrawBear(WithdrawBearRequest request) {
         try {
-            NotifyEntity notify = notifyRepo.withdrawBear(request.getCustId(), request.getAmt(),
-                    request.getDocNo());
-            if (!notify.getPStatus().equals("01")) {
-                throw new BusinessException(notify.getPStatus(), notify.getDes());
-            }
-            return response(toResult(notify));
+            // NotifyEntity notify = notifyRepo.withdrawBear(request.getCustId(), request.getAmt(),
+            //         request.getDocNo());
+            // if (!notify.getPStatus().equals("01")) {
+            //     throw new BusinessException(notify.getPStatus(), notify.getDes());
+            // }
+            JSONObject jsonObjectLogs = new JSONObject(request);
+            producerMessage.sendCreateBear("WITHDRAW_BEAR_TOPIC",  request.getCustId(), jsonObjectLogs.toString());
+            return response(toResult("OK"));
         } catch (Exception e) {
             logger.info(e.getMessage());
             throw new BusinessException(Constants.FAIL, e.getMessage());
@@ -1051,12 +1064,22 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     }
 
     @Override
-    public ResponseEntity<?> endBear(String cid, String documentNo) {
-        NotifyEntity notify = notifyRepo.endBear(cid, documentNo);
-        if (!notify.getPStatus().equals("01")) {
-            throw new BusinessException(notify.getPStatus(), notify.getDes());
+    public ResponseEntity<?> endBear(AccountInput input) {
+        // NotifyEntity notify = notifyRepo.endBear(cid, documentNo);
+        // if (!notify.getPStatus().equals("01")) {
+        //     throw new BusinessException(notify.getPStatus(), notify.getDes());
+        // }
+        try {
+            JSONObject jsonObjectLogs = new JSONObject(input);
+            producerMessage.sendCreateBear("END_BEAR_TOPIC",  input.getCustId(), jsonObjectLogs.toString());
+
+            return response(toResult("OK"));
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
         }
-        return response(toResult(notify));
+
+
+      
     }
 
     @Override
@@ -1534,23 +1557,24 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 HypPostBack req = new HypPostBack();
                 req.setClick_id(cus.getPublicSherId());
                 req.setTransaction_id(cus.getCustId());
-                req.setStatus_code(0); // cái này hyperLead define: 0 -> Insert new transaction, 1 -> Approve transaction, -1 -> Cancel transaction
+                req.setStatus_code(0); // cái này hyperLead define: 0 -> Insert new transaction, 1 -> Approve
+                                       // transaction, -1 -> Cancel transaction
                 req.setStatus_message("isRegister");
                 JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
-                if(root != null && "200".equals(root.get("status_code").asText())){
+                if (root != null && "200".equals(root.get("status_code").asText())) {
                     // update status = 1 -> để lần sau ko quét lại nữa
                     cus.setStatus(1);
                     affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
                 }
             }
-            if("accesstrade".equals(cus.getSource())){
+            if ("accesstrade".equals(cus.getSource())) {
                 AccCreate req = new AccCreate();
                 req.setConversion_id(cus.getCustId());
                 req.setTransaction_id(cus.getCustId());
                 req.setTracking_id(cus.getPublicSherId());
 
                 JsonNode root = this.accessTradeCreateAPI(req);// postBack sang accesstrade
-                if(root != null && "00".equals(root.get("code").asText())){
+                if (root != null && "00".equals(root.get("code").asText())) {
                     AccUpdate reqU = new AccUpdate();
                     reqU.setTransaction_id(cus.getCustId());
                     reqU.setStatus(0); // accesstrade 0 -> processing, 1 -> aprove, 2 -> reject
@@ -1565,7 +1589,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     reqU.setItems(items);
 
                     JsonNode rootU = this.accessTradeUpdateAPI(reqU);// postBack sang accesstrade
-                    if(rootU != null && "00".equals(rootU.get("code").asText())){
+                    if (rootU != null && "00".equals(rootU.get("code").asText())) {
                         // update status = 1 -> để lần sau ko quét lại nữa
                         cus.setStatus(1);
                         affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
@@ -1575,7 +1599,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         }
     }
 
-    // status:1 -> tìm tất cả thằng nào đã DKTK 30 ngày trôi qua không có hoạt dộng gì => reject
+    // status:1 -> tìm tất cả thằng nào đã DKTK 30 ngày trôi qua không có hoạt dộng
+    // gì => reject
     @Override
     @SneakyThrows
     public void jobHandleAffiliate1(){
@@ -1586,25 +1611,27 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             Period period = Period.between(date1, date2);
             // (case này sau 30 ngày sẽ nhảy vào)
             // record của vòng for này mà status vẫn = 2 => hủy đơn
-            if(period.getYears() == 0 && (period.getMonths() >= 1)){
-                if("hyperlead".equals(cus.getSource())){
+            if (period.getYears() == 0 && (period.getMonths() >= 1)) {
+                if ("hyperlead".equals(cus.getSource())) {
                     HypPostBack req = new HypPostBack();
                     req.setClick_id(cus.getPublicSherId());
                     req.setTransaction_id(cus.getCustId());
-                    req.setStatus_code(-1); // cái này hyperLead define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
+                    req.setStatus_code(-1); // cái này hyperLead define: 0 -> default, 1 -> user tích lũy thành công 50k
+                                            // trở lên, -1 -> không saving đủ 7 ngày
                     req.setStatus_message("cancel");
                     JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
-                    if (root != null && "200".equals(root.get("status_code").asText())){
+                    if (root != null && "200".equals(root.get("status_code").asText())) {
                         // update Status = -1 -> để lần sau ko quét lại nữa
                         cus.setStatus(10); // đã gửi sang hyperlead hủy đơn
                         affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
                     }
                 }
-                if("accesstrade".equals(cus.getSource())){
+                if ("accesstrade".equals(cus.getSource())) {
                     AccUpdate req = new AccUpdate();
                     req.setTransaction_id(cus.getCustId());
                     req.setStatus(2); // accesstrade 0 -> processing, 1 -> aprove, 2 -> reject
-                    req.setRejected_reason("Tài khoản này 30 ngày chưa có hoạt động tích lũy hoặc tích lũy chưa đủ 7 ngày");
+                    req.setRejected_reason(
+                            "Tài khoản này 30 ngày chưa có hoạt động tích lũy hoặc tích lũy chưa đủ 7 ngày");
 
                     Map<String, Object> item = new HashMap<>();
                     item.put("id", "isSaving");
@@ -1615,7 +1642,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     req.setItems(items);
 
                     JsonNode root = this.accessTradeUpdateAPI(req);// postBack sang hyperLead
-                    if(root != null && "00".equals(root.get("code").asText())){
+                    if (root != null && "00".equals(root.get("code").asText())) {
                         // update status = 10 -> để lần sau ko quét lại nữa
                         cus.setStatus(10);
                         affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
@@ -1635,22 +1662,23 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 HypPostBack req = new HypPostBack();
                 req.setClick_id(cus.getPublicSherId());
                 req.setTransaction_id(cus.getCustId());
-                req.setStatus_code(0); // cái này hyperLead define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
+                req.setStatus_code(0); // cái này hyperLead define: 0 -> default, 1 -> user tích lũy thành công 50k trở
+                                       // lên, -1 -> không saving đủ 7 ngày
 
-                if(cus.getIsEkyc() == 1){ // đã eKYC thành công
+                if (cus.getIsEkyc() == 1) { // đã eKYC thành công
                     req.setStatus_message("isEkyc");
                     JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
-                    if(root != null && "200".equals(root.get("status_code").asText())){
+                    if (root != null && "200".equals(root.get("status_code").asText())) {
                         // update IsEkyc = 2 -> để lần sau ko quét lại nữa
                         cus.setIsEkyc(2);
                         affiliateRepository.updateByIsEkyc(cus.getIsEkyc(), cus.getCustId());
                     }
                 }
 
-                if(cus.getIsSaving() == 1){ // đã tích lũy tối thiểu 50k thành công
+                if (cus.getIsSaving() == 1) { // đã tích lũy tối thiểu 50k thành công
                     req.setStatus_message("isSaving");
                     JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
-                    if (root != null && "200".equals(root.get("status_code").asText())){
+                    if (root != null && "200".equals(root.get("status_code").asText())) {
                         // update Saving = 2 -> để lần sau ko quét lại nữa
                         cus.setIsSaving(2);
                         affiliateRepository.updateByIsSaving(cus.getIsSaving(), cus.getCustId());
@@ -1662,22 +1690,23 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 Period period = Period.between(date1, date2);
                 // (case này sau 30 ngày sẽ nhảy vào)
                 // record của vòng for này mà status vẫn = 2 => hủy đơn
-                if(period.getYears() == 0 && (period.getMonths() >= 1)){
-                    req.setStatus_code(-1); // cái này hyperLead define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
+                if (period.getYears() == 0 && (period.getMonths() >= 1)) {
+                    req.setStatus_code(-1); // cái này hyperLead define: 0 -> default, 1 -> user tích lũy thành công 50k
+                                            // trở lên, -1 -> không saving đủ 7 ngày
                     req.setStatus_message("cancel");
                     JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
-                    if (root != null && "200".equals(root.get("status_code").asText())){
+                    if (root != null && "200".equals(root.get("status_code").asText())) {
                         // update Status = -1 -> để lần sau ko quét lại nữa
                         cus.setStatus(10); // đã gửi sang hyperlead hủy đơn
                         affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
                     }
                 }
             }
-            if("accesstrade".equals(cus.getSource())){
+            if ("accesstrade".equals(cus.getSource())) {
                 AccUpdate req = new AccUpdate();
                 req.setTransaction_id(cus.getCustId());
 
-                if(cus.getIsEkyc() == 1){
+                if (cus.getIsEkyc() == 1) {
                     req.setStatus(0);
                     req.setRejected_reason("");
 
@@ -1690,14 +1719,14 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     req.setItems(items);
 
                     JsonNode root = this.accessTradeUpdateAPI(req);// postBack sang accesstrade
-                    if(root != null && "00".equals(root.get("code").asText())){
+                    if (root != null && "00".equals(root.get("code").asText())) {
                         // update status = 1 -> để lần sau ko quét lại nữa
                         cus.setIsEkyc(2);
                         affiliateRepository.updateByIsEkyc(cus.getIsEkyc(), cus.getCustId());
                     }
                 }
 
-                if(cus.getIsSaving() == 1){
+                if (cus.getIsSaving() == 1) {
                     req.setStatus(0); // accesstrade 0 -> processing, 1 -> aprove, 2 -> reject
                     req.setRejected_reason("");
 
@@ -1710,7 +1739,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     req.setItems(items);
 
                     JsonNode root = this.accessTradeUpdateAPI(req);// postBack sang accesstrade
-                    if(root != null && "00".equals(root.get("code").asText())){
+                    if (root != null && "00".equals(root.get("code").asText())) {
                         // update status = 1 -> để lần sau ko quét lại nữa
                         cus.setIsSaving(2);
                         affiliateRepository.updateByIsSaving(cus.getIsSaving(), cus.getCustId());
@@ -1722,9 +1751,10 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 Period period = Period.between(date1, date2);
                 // (case này sau 30 ngày sẽ nhảy vào)
                 // record của vòng for này mà status vẫn = 2 => hủy đơn
-                if(period.getYears() == 0 && (period.getMonths() >= 1)){
+                if (period.getYears() == 0 && (period.getMonths() >= 1)) {
                     req.setStatus(2); // accesstrade 0 -> processing, 1 -> aprove, 2 -> reject
-                    req.setRejected_reason("Tài khoản này 30 ngày chưa có hoạt động tích lũy hoặc tích lũy chưa đủ 7 ngày");
+                    req.setRejected_reason(
+                            "Tài khoản này 30 ngày chưa có hoạt động tích lũy hoặc tích lũy chưa đủ 7 ngày");
 
                     Map<String, Object> item = new HashMap<>();
                     item.put("id", "isSaving");
@@ -1735,7 +1765,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     req.setItems(items);
 
                     JsonNode root = this.accessTradeUpdateAPI(req);// postBack sang hyperLead
-                    if(root != null && "00".equals(root.get("code").asText())){
+                    if (root != null && "00".equals(root.get("code").asText())) {
                         // update status = 10 -> để lần sau ko quét lại nữa
                         cus.setStatus(10);
                         affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
@@ -1755,16 +1785,17 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 HypPostBack req = new HypPostBack();
                 req.setClick_id(cus.getPublicSherId());
                 req.setTransaction_id(cus.getCustId());
-                req.setStatus_code(1); // cái này hyperLead define: 0 -> Insert new transaction, 1 -> Approve transaction, -1 -> Cancel transaction
+                req.setStatus_code(1); // cái này hyperLead define: 0 -> Insert new transaction, 1 -> Approve
+                                       // transaction, -1 -> Cancel transaction
                 req.setStatus_message("approve");
                 JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
-                if(root != null && "200".equals(root.get("status_code").asText())){
+                if (root != null && "200".equals(root.get("status_code").asText())) {
                     // update IsEkyc = 2 -> để lần sau ko quét lại nữa
                     cus.setStatus(4);
                     affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
                 }
             }
-            if("accesstrade".equals(cus.getSource())){
+            if ("accesstrade".equals(cus.getSource())) {
                 AccUpdate req = new AccUpdate();
                 req.setTransaction_id(cus.getCustId());
                 req.setStatus(1); // accesstrade 0 -> processing, 1 -> aprove, 2 -> reject
@@ -1779,7 +1810,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 req.setItems(items);
 
                 JsonNode root = this.accessTradeUpdateAPI(req);// postBack sang accesstrade
-                if(root != null && "00".equals(root.get("code").asText())){
+                if (root != null && "00".equals(root.get("code").asText())) {
                     // update status = 1 -> để lần sau ko quét lại nữa
                     cus.setStatus(4);
                     affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
@@ -1882,13 +1913,14 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     request,
                     String.class);
 
-            logger.info("[ACCESSTRADE_CREATE_API]_RESPONSE => {transaction_id: {}} {}", req.getTransaction_id(), responseEntityStr);
+            logger.info("[ACCESSTRADE_CREATE_API]_RESPONSE => {transaction_id: {}} {}", req.getTransaction_id(),
+                    responseEntityStr);
 
             JsonNode root = mapper.readTree(responseEntityStr.getBody());
             return root;
-        }
-        catch (Exception e) {
-            logger.info("[ACCESSTRADE_CREATE_API]_ERROR => {transaction_id: {}} {}", req.getTransaction_id(), e.getMessage());
+        } catch (Exception e) {
+            logger.info("[ACCESSTRADE_CREATE_API]_ERROR => {transaction_id: {}} {}", req.getTransaction_id(),
+                    e.getMessage());
             return null;
         }
     }
@@ -1909,14 +1941,15 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     request,
                     String.class);
 
-            logger.info("[ACCESSTRADE_UPDATE_API]_RESPONSE => {transaction_id: {}} {}", req.getTransaction_id(), responseEntityStr);
+            logger.info("[ACCESSTRADE_UPDATE_API]_RESPONSE => {transaction_id: {}} {}", req.getTransaction_id(),
+                    responseEntityStr);
 
             JsonNode root = mapper.readTree(responseEntityStr.getBody());
             return root;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
-            logger.info("[ACCESSTRADE_UPDATE_API]_ERROR => {transaction_id: {}} {}", req.getTransaction_id(), e.getMessage());
+            logger.info("[ACCESSTRADE_UPDATE_API]_ERROR => {transaction_id: {}} {}", req.getTransaction_id(),
+                    e.getMessage());
             return null;
         }
     }
