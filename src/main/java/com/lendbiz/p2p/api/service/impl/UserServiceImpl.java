@@ -55,11 +55,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -646,17 +649,36 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     public ResponseEntity<?> createBear(AccountInput input) {
         try {
-            // NotifyEntity notify = notifyRepo.createBear(input.getCustId(),
-            // input.getProductId(),
-            // input.getTerm(),
-            // Float.valueOf(input.getRate()),
-            // input.getAmt(),
-            // input.getContractId(), input.getPayType());
+            NotifyEntity notify = notifyRepo.checkCreateBear(input.getCustId(),
+                    input.getProductId(),
+                    input.getTerm(),
+                    Float.valueOf(input.getRate()),
+                    input.getAmt(),
+                    input.getContractId(), input.getPayType());
+
+            if (!notify.getPStatus().equals("01")) {
+                throw new BusinessException(notify.getPStatus(), notify.getDes());
+            }
 
             JSONObject jsonObjectLogs = new JSONObject(input);
-            producerMessage.sendCreateBear("CREATE_BEAR_TOPIC",  input.getCustId(), jsonObjectLogs.toString());
+            ListenableFuture<SendResult<String, String>> future = producerMessage.sendSavingMessage("CREATE_BEAR_TOPIC",
+                    input.getCustId(), jsonObjectLogs.toString());
 
-            return response(toResult("OK"));
+            future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+                @Override
+                public void onSuccess(SendResult<String, String> result) {
+                    log.info("Sent message: " + input.getCustId());
+                    log.info("Offset: " + result.getRecordMetadata().offset());
+                }
+
+                @Override
+                public void onFailure(Throwable ex) {
+                    System.err.println("Error sending message: " + ex.getMessage());
+                    throw new BusinessException(Constants.FAIL, ErrorCode.ERROR_500_DESCRIPTION);
+                }
+            });
+
+            return response(toResult("OK message: " + input.getCustId()));
 
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -667,14 +689,32 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     public ResponseEntity<?> withdrawBear(WithdrawBearRequest request) {
         try {
-            // NotifyEntity notify = notifyRepo.withdrawBear(request.getCustId(), request.getAmt(),
-            //         request.getDocNo());
-            // if (!notify.getPStatus().equals("01")) {
-            //     throw new BusinessException(notify.getPStatus(), notify.getDes());
-            // }
+            NotifyEntity notify = notifyRepo.checkWithdrawBear(request.getCustId(),
+                    request.getAmt(),
+                    request.getDocNo());
+            if (!notify.getPStatus().equals("01")) {
+                throw new BusinessException(notify.getPStatus(), notify.getDes());
+            }
+
             JSONObject jsonObjectLogs = new JSONObject(request);
-            producerMessage.sendCreateBear("WITHDRAW_BEAR_TOPIC",  request.getCustId(), jsonObjectLogs.toString());
-            return response(toResult("OK"));
+            ListenableFuture<SendResult<String, String>> future = producerMessage
+                    .sendSavingMessage("WITHDRAW_BEAR_TOPIC", request.getCustId(), jsonObjectLogs.toString());
+
+            future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+                @Override
+                public void onSuccess(SendResult<String, String> result) {
+                    log.info("Sent message: " + request.getCustId());
+                    log.info("Offset: " + result.getRecordMetadata().offset());
+                }
+
+                @Override
+                public void onFailure(Throwable ex) {
+                    log.info("Error sending message: " + ex.getMessage());
+                    throw new BusinessException(Constants.FAIL, ErrorCode.ERROR_500_DESCRIPTION);
+                }
+            });
+
+            return response(toResult("OK message: " + request.getCustId()));
         } catch (Exception e) {
             logger.info(e.getMessage());
             throw new BusinessException(Constants.FAIL, e.getMessage());
@@ -1064,22 +1104,38 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     }
 
     @Override
-    public ResponseEntity<?> endBear(AccountInput input) {
-        // NotifyEntity notify = notifyRepo.endBear(cid, documentNo);
-        // if (!notify.getPStatus().equals("01")) {
-        //     throw new BusinessException(notify.getPStatus(), notify.getDes());
-        // }
+    public ResponseEntity<?> endBear(AccountInput request) {
         try {
-            JSONObject jsonObjectLogs = new JSONObject(input);
-            producerMessage.sendCreateBear("END_BEAR_TOPIC",  input.getCustId(), jsonObjectLogs.toString());
+            NotifyEntity notify = notifyRepo.checkEndBear(request.getCustId(), request.getDoc_no());
+            if (!notify.getPStatus().equals("01")) {
+                throw new BusinessException(notify.getPStatus(), notify.getDes());
+            }
 
-            return response(toResult("OK"));
+            JSONObject jsonObjectLogs = new JSONObject(request);
+
+            ListenableFuture<SendResult<String, String>> future = producerMessage
+                    .sendSavingMessage("END_BEAR_TOPIC", request.getCustId(), jsonObjectLogs.toString());
+
+            future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+                @Override
+                public void onSuccess(SendResult<String, String> result) {
+                    log.info("Sent message: " + request.getCustId());
+                    log.info("Offset: " + result.getRecordMetadata().offset());
+                }
+
+                @Override
+                public void onFailure(Throwable ex) {
+                    log.info("Error sending message: " + ex.getMessage());
+                    throw new BusinessException(Constants.FAIL, ErrorCode.ERROR_500_DESCRIPTION);
+                }
+            });
+
+            return response(toResult("OK message: " + request.getCustId()));
+
         } catch (Exception e) {
             throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
         }
 
-
-      
     }
 
     @Override
@@ -1286,49 +1342,50 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     public String sendOtp(String mobile, String otp, String message) {
         String jsonResponse = "";
-//        try {
-//            URL url = new URL("http://45.117.83.201:9095/otp/send-otp");
-//            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-//            con.setUseCaches(false);
-//            con.setDoOutput(true);
-//            con.setDoInput(true);
-//
-//            con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-//            con.setRequestProperty("token",
-//                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c24iOiJsYmNhcGl0YWwiLCJzaWQiOiJhYTgwMjIzNS04OTU1LTQ2ZDYtYmRmYi0xZDhjZmExYmYzODEiLCJvYnQiOiIiLCJvYmoiOiIiLCJuYmYiOjE2NjU5NzQyMDksImV4cCI6MTY2NTk3NzgwOSwiaWF0IjoxNjY1OTc0MjA5fQ.qqitpQMIkzk3OJJD-Mj5hYCwZ5cJ_EyVSWnsdE0BrjI");
-//            con.setRequestMethod("POST");
-//
-//            SendOTPRequest request = new SendOTPRequest();
-//            request.setMobile(mobile);
-//            request.setCode(otp);
-//            request.setMessage(message);
-//            JSONObject jsonObject = new JSONObject(request);
-//
-//            logger.info("strJsonBody:\n" + jsonObject.toString());
-//
-//            byte[] sendBytes = jsonObject.toString().getBytes("UTF-8");
-//            con.setFixedLengthStreamingMode(sendBytes.length);
-//
-//            OutputStream outputStream = con.getOutputStream();
-//            outputStream.write(sendBytes);
-//
-//            int httpResponse = con.getResponseCode();
-//            logger.info("httpResponse: " + httpResponse);
-//
-//            if (httpResponse >= HttpURLConnection.HTTP_OK && httpResponse < HttpURLConnection.HTTP_BAD_REQUEST) {
-//                Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
-//                jsonResponse = scanner.useDelimiter("/A").hasNext() ? scanner.next() : "";
-//                scanner.close();
-//            } else {
-//                Scanner scanner = new Scanner(con.getErrorStream(), "UTF-8");
-//                jsonResponse = scanner.useDelimiter("/A").hasNext() ? scanner.next() : "";
-//                scanner.close();
-//            }
-//            logger.info("jsonResponse:\n" + jsonResponse);
-//            logger.info("successfully!");
-//        } catch (Throwable t) {
-//            t.printStackTrace();
-//        }
+        // try {
+        // URL url = new URL("http://45.117.83.201:9095/otp/send-otp");
+        // HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        // con.setUseCaches(false);
+        // con.setDoOutput(true);
+        // con.setDoInput(true);
+        //
+        // con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+        // con.setRequestProperty("token",
+        // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c24iOiJsYmNhcGl0YWwiLCJzaWQiOiJhYTgwMjIzNS04OTU1LTQ2ZDYtYmRmYi0xZDhjZmExYmYzODEiLCJvYnQiOiIiLCJvYmoiOiIiLCJuYmYiOjE2NjU5NzQyMDksImV4cCI6MTY2NTk3NzgwOSwiaWF0IjoxNjY1OTc0MjA5fQ.qqitpQMIkzk3OJJD-Mj5hYCwZ5cJ_EyVSWnsdE0BrjI");
+        // con.setRequestMethod("POST");
+        //
+        // SendOTPRequest request = new SendOTPRequest();
+        // request.setMobile(mobile);
+        // request.setCode(otp);
+        // request.setMessage(message);
+        // JSONObject jsonObject = new JSONObject(request);
+        //
+        // logger.info("strJsonBody:\n" + jsonObject.toString());
+        //
+        // byte[] sendBytes = jsonObject.toString().getBytes("UTF-8");
+        // con.setFixedLengthStreamingMode(sendBytes.length);
+        //
+        // OutputStream outputStream = con.getOutputStream();
+        // outputStream.write(sendBytes);
+        //
+        // int httpResponse = con.getResponseCode();
+        // logger.info("httpResponse: " + httpResponse);
+        //
+        // if (httpResponse >= HttpURLConnection.HTTP_OK && httpResponse <
+        // HttpURLConnection.HTTP_BAD_REQUEST) {
+        // Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
+        // jsonResponse = scanner.useDelimiter("/A").hasNext() ? scanner.next() : "";
+        // scanner.close();
+        // } else {
+        // Scanner scanner = new Scanner(con.getErrorStream(), "UTF-8");
+        // jsonResponse = scanner.useDelimiter("/A").hasNext() ? scanner.next() : "";
+        // scanner.close();
+        // }
+        // logger.info("jsonResponse:\n" + jsonResponse);
+        // logger.info("successfully!");
+        // } catch (Throwable t) {
+        // t.printStackTrace();
+        // }
         return jsonResponse;
     }
 
@@ -1550,10 +1607,10 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     // status:0 -> tìm tất cả thằng nào đã DKTK chưa confirm affiliate
     @Override
     @SneakyThrows
-    public void jobHandleAffiliate0(){
+    public void jobHandleAffiliate0() {
         List<GMAffiliateEntity> dbd = affiliateRepository.getAllByStatusAndSource(0);
-        for(GMAffiliateEntity cus : dbd){
-            if("hyperlead".equals(cus.getSource())){
+        for (GMAffiliateEntity cus : dbd) {
+            if ("hyperlead".equals(cus.getSource())) {
                 HypPostBack req = new HypPostBack();
                 req.setClick_id(cus.getPublicSherId());
                 req.setTransaction_id(cus.getCustId());
@@ -1603,9 +1660,9 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     // gì => reject
     @Override
     @SneakyThrows
-    public void jobHandleAffiliate1(){
+    public void jobHandleAffiliate1() {
         List<GMAffiliateEntity> dbd = affiliateRepository.getAllByStatusAndSource(1);
-        for(GMAffiliateEntity cus : dbd){
+        for (GMAffiliateEntity cus : dbd) {
             LocalDate date1 = cus.getStartDate().toLocalDate(); // từ lúc tạo TK
             LocalDate date2 = LocalDate.now(); // ngày hiện tại
             Period period = Period.between(date1, date2);
@@ -1657,8 +1714,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @SneakyThrows
     public void jobHandleAffiliate2() {
         List<GMAffiliateEntity> dbd = affiliateRepository.getAllByStatusAndSource(2);
-        for(GMAffiliateEntity cus : dbd) {
-            if("hyperlead".equals(cus.getSource())){
+        for (GMAffiliateEntity cus : dbd) {
+            if ("hyperlead".equals(cus.getSource())) {
                 HypPostBack req = new HypPostBack();
                 req.setClick_id(cus.getPublicSherId());
                 req.setTransaction_id(cus.getCustId());
@@ -1780,8 +1837,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @SneakyThrows
     public void jobHandleAffiliate3() {
         List<GMAffiliateEntity> dbd = affiliateRepository.getAllByStatusAndSource(3);
-        for(GMAffiliateEntity cus : dbd) {
-            if("hyperlead".equals(cus.getSource())){
+        for (GMAffiliateEntity cus : dbd) {
+            if ("hyperlead".equals(cus.getSource())) {
                 HypPostBack req = new HypPostBack();
                 req.setClick_id(cus.getPublicSherId());
                 req.setTransaction_id(cus.getCustId());
@@ -1947,7 +2004,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             JsonNode root = mapper.readTree(responseEntityStr.getBody());
             return root;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.info(e.getMessage());
             logger.info("[ACCESSTRADE_UPDATE_API]_ERROR => {transaction_id: {}} {}", req.getTransaction_id(),
                     e.getMessage());
             return null;

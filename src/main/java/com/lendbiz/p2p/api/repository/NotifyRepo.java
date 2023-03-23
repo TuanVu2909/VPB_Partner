@@ -16,14 +16,14 @@ public interface NotifyRepo extends JpaRepository<NotifyEntity, String> {
     @Procedure("NotifyEntity.changeCoin")
     NotifyEntity changeCoin(@Param("pv_custId") String pv_custId, @Param("pv_coinAmount") String pv_coinAmount);
 
-    @Procedure("NotifyEntity.endBear")
-    NotifyEntity endBear(@Param("pv_custId") String pv_custId, @Param("pv_documentNo") String pv_documentNo);
+    @Procedure("NotifyEntity.checkEndBear")
+    NotifyEntity checkEndBear(@Param("pv_custId") String pv_custId, @Param("pv_documentNo") String pv_documentNo);
 
     @Procedure("NotifyEntity.updateReferenceId")
     NotifyEntity updateReferenceId(@Param("pv_custId") String pv_custId, @Param("pv_refId") String pv_refId);
 
-    @Procedure("NotifyEntity.createBear")
-    NotifyEntity createBear(@Param("pv_custId") String pv_custId
+    @Procedure("NotifyEntity.checkCreateBear")
+    NotifyEntity checkCreateBear(@Param("pv_custId") String pv_custId
             , @Param("pv_pid") String pv_pid
             , @Param("pv_term") String pv_term
             , @Param("pv_rate") Float pv_rate
@@ -31,13 +31,13 @@ public interface NotifyRepo extends JpaRepository<NotifyEntity, String> {
             , @Param("pv_contractId") String pv_contractId
             , @Param("pv_payType") String pv_payType);
 
-    @Procedure("NotifyEntity.withdrawBear")
-    NotifyEntity withdrawBear(@Param("pv_custId") String pv_custId
+    @Procedure("NotifyEntity.checkWithdrawBear")
+    NotifyEntity checkWithdrawBear(@Param("pv_custId") String pv_custId
             , @Param("pv_amt") String pv_amt
             , @Param("pv_documentNo") String pv_contractId);
 
 
-    @Procedure("NotifyEntity.createNavDaily")
+    @Procedure("NotifyEntity.checkCreateNavDaily")
     NotifyEntity createNavDaily(@Param("pv_fundId") String pv_fundId
             , @Param("pv_nav") String pv_nav
             , @Param("pv_navDate") String pv_navDate);

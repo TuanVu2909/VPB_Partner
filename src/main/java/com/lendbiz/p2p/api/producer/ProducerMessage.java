@@ -3,7 +3,9 @@ package com.lendbiz.p2p.api.producer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
+import org.springframework.util.concurrent.ListenableFuture;
 
 import com.lendbiz.p2p.api.constants.Constants;
 
@@ -34,9 +36,9 @@ public class ProducerMessage {
         this.kafkaTemplate.send(Constants.KAFKA.TOPIC_SAVE_ID_CARD, smsJsonData);
     }
 
-    public void sendCreateBear(String topicName, String key, String value) {
+    public ListenableFuture<SendResult<String, String>> sendSavingMessage(String topicName, String key, String value) {
         log.info(String.format("#### -> Producing message sendCreateBear APIGATEWAY -> " + key + " " + value));
-        this.kafkaTemplate.send(topicName, key, value);
+        return this.kafkaTemplate.send(topicName, key, value);
     }
     
     public void sendErrorCreateBear(String topicName, String key, String value) {
