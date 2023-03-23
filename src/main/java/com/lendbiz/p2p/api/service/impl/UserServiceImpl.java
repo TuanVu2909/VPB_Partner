@@ -642,7 +642,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             // input.getContractId(), input.getPayType());
 
             JSONObject jsonObjectLogs = new JSONObject(input);
-            producerMessage.sendCreateBear("CREATE_BEAR_TOPIC", input.getCustId(), jsonObjectLogs.toString());
+            producerMessage.sendCreateBear("CREATE_BEAR_TOPIC",  input.getCustId(), jsonObjectLogs.toString());
 
             return response(toResult("OK"));
 
@@ -655,12 +655,14 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     public ResponseEntity<?> withdrawBear(WithdrawBearRequest request) {
         try {
-            NotifyEntity notify = notifyRepo.withdrawBear(request.getCustId(), request.getAmt(),
-                    request.getDocNo());
-            if (!notify.getPStatus().equals("01")) {
-                throw new BusinessException(notify.getPStatus(), notify.getDes());
-            }
-            return response(toResult(notify));
+            // NotifyEntity notify = notifyRepo.withdrawBear(request.getCustId(), request.getAmt(),
+            //         request.getDocNo());
+            // if (!notify.getPStatus().equals("01")) {
+            //     throw new BusinessException(notify.getPStatus(), notify.getDes());
+            // }
+            JSONObject jsonObjectLogs = new JSONObject(request);
+            producerMessage.sendCreateBear("WITHDRAW_BEAR_TOPIC",  request.getCustId(), jsonObjectLogs.toString());
+            return response(toResult("OK"));
         } catch (Exception e) {
             logger.info(e.getMessage());
             throw new BusinessException(Constants.FAIL, e.getMessage());
@@ -1050,12 +1052,22 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     }
 
     @Override
-    public ResponseEntity<?> endBear(String cid, String documentNo) {
-        NotifyEntity notify = notifyRepo.endBear(cid, documentNo);
-        if (!notify.getPStatus().equals("01")) {
-            throw new BusinessException(notify.getPStatus(), notify.getDes());
+    public ResponseEntity<?> endBear(AccountInput input) {
+        // NotifyEntity notify = notifyRepo.endBear(cid, documentNo);
+        // if (!notify.getPStatus().equals("01")) {
+        //     throw new BusinessException(notify.getPStatus(), notify.getDes());
+        // }
+        try {
+            JSONObject jsonObjectLogs = new JSONObject(input);
+            producerMessage.sendCreateBear("END_BEAR_TOPIC",  input.getCustId(), jsonObjectLogs.toString());
+
+            return response(toResult("OK"));
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
         }
-        return response(toResult(notify));
+
+
+      
     }
 
     @Override

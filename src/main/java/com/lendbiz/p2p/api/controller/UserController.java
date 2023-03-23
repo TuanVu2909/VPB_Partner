@@ -222,7 +222,7 @@ public class UserController extends BaseResponse<UserService> {
             @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
             throws BusinessException {
         log.info("[" + requestId + "] << end bear >>");
-        return userService.endBear(accountInput.getCustId(), accountInput.getDoc_no());
+        return userService.endBear(accountInput);
     }
 
     @PostMapping("/end-rate-cal")

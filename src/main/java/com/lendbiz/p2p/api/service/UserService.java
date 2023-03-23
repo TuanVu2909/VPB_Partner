@@ -113,7 +113,7 @@ public interface UserService {
 
 	ResponseEntity<?> getFundInvest(String cid);
 
-	ResponseEntity<?> endBear(String cid, String documentNo);
+	ResponseEntity<?> endBear(AccountInput accountInput);
 
 	ResponseEntity<?> getEndRate(GetEndRateRequest request);
 
