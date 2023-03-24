@@ -648,77 +648,82 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> createBear(AccountInput input) {
+        NotifyEntity notify;
         try {
-            NotifyEntity notify = notifyRepo.checkCreateBear(input.getCustId(),
+            notify = notifyRepo.checkCreateBear(input.getCustId(),
                     input.getProductId(),
                     input.getTerm(),
                     Float.valueOf(input.getRate()),
                     input.getAmt(),
                     input.getContractId(), input.getPayType());
 
-            if (!notify.getPStatus().equals("01")) {
-                throw new BusinessException(notify.getPStatus(), notify.getDes());
-            }
-
-            JSONObject jsonObjectLogs = new JSONObject(input);
-            ListenableFuture<SendResult<String, String>> future = producerMessage.sendSavingMessage("CREATE_BEAR_TOPIC",
-                    input.getCustId(), jsonObjectLogs.toString());
-
-            future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
-                @Override
-                public void onSuccess(SendResult<String, String> result) {
-                    log.info("Sent message: " + input.getCustId());
-                    log.info("Offset: " + result.getRecordMetadata().offset());
-                }
-
-                @Override
-                public void onFailure(Throwable ex) {
-                    System.err.println("Error sending message: " + ex.getMessage());
-                    throw new BusinessException(Constants.FAIL, ErrorCode.ERROR_500_DESCRIPTION);
-                }
-            });
-
-            return response(toResult("OK message: " + input.getCustId()));
-
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new BusinessException(Constants.FAIL, ErrorCode.ERROR_500_DESCRIPTION);
         }
+
+        if (!notify.getPStatus().equals("01")) {
+            throw new BusinessException(Constants.FAIL, notify.getDes());
+        }
+
+        JSONObject jsonObjectLogs = new JSONObject(input);
+        ListenableFuture<SendResult<String, String>> future = producerMessage.sendSavingMessage("CREATE_BEAR_TOPIC",
+                input.getCustId(), jsonObjectLogs.toString());
+
+        future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+            @Override
+            public void onSuccess(SendResult<String, String> result) {
+                log.info("Sent message: " + input.getCustId());
+                log.info("Offset: " + result.getRecordMetadata().offset());
+            }
+
+            @Override
+            public void onFailure(Throwable ex) {
+                System.err.println("Error sending message: " + ex.getMessage());
+                throw new BusinessException(Constants.FAIL, ErrorCode.ERROR_500_DESCRIPTION);
+            }
+        });
+
+        return response(toResult("OK message: " + input.getCustId()));
+
     }
 
     @Override
     public ResponseEntity<?> withdrawBear(WithdrawBearRequest request) {
+        NotifyEntity notify;
         try {
-            NotifyEntity notify = notifyRepo.checkWithdrawBear(request.getCustId(),
+            notify = notifyRepo.checkWithdrawBear(request.getCustId(),
                     request.getAmt(),
                     request.getDocNo());
-            if (!notify.getPStatus().equals("01")) {
-                throw new BusinessException(notify.getPStatus(), notify.getDes());
-            }
 
-            JSONObject jsonObjectLogs = new JSONObject(request);
-            ListenableFuture<SendResult<String, String>> future = producerMessage
-                    .sendSavingMessage("WITHDRAW_BEAR_TOPIC", request.getCustId(), jsonObjectLogs.toString());
-
-            future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
-                @Override
-                public void onSuccess(SendResult<String, String> result) {
-                    log.info("Sent message: " + request.getCustId());
-                    log.info("Offset: " + result.getRecordMetadata().offset());
-                }
-
-                @Override
-                public void onFailure(Throwable ex) {
-                    log.info("Error sending message: " + ex.getMessage());
-                    throw new BusinessException(Constants.FAIL, ErrorCode.ERROR_500_DESCRIPTION);
-                }
-            });
-
-            return response(toResult("OK message: " + request.getCustId()));
         } catch (Exception e) {
             logger.info(e.getMessage());
             throw new BusinessException(Constants.FAIL, e.getMessage());
         }
+        if (!notify.getPStatus().equals("01")) {
+            throw new BusinessException(Constants.FAIL, notify.getDes());
+        }
+
+        JSONObject jsonObjectLogs = new JSONObject(request);
+        ListenableFuture<SendResult<String, String>> future = producerMessage
+                .sendSavingMessage("WITHDRAW_BEAR_TOPIC", request.getCustId(), jsonObjectLogs.toString());
+
+        future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+            @Override
+            public void onSuccess(SendResult<String, String> result) {
+                log.info("Sent message: " + request.getCustId());
+                log.info("Offset: " + result.getRecordMetadata().offset());
+            }
+
+            @Override
+            public void onFailure(Throwable ex) {
+                log.info("Error sending message: " + ex.getMessage());
+                throw new BusinessException(Constants.FAIL, ErrorCode.ERROR_500_DESCRIPTION);
+            }
+        });
+
+        return response(toResult("OK message: " + request.getCustId()));
+
     }
 
     @Override
@@ -1105,36 +1110,37 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> endBear(AccountInput request) {
+        NotifyEntity notify;
         try {
-            NotifyEntity notify = notifyRepo.checkEndBear(request.getCustId(), request.getDoc_no());
-            if (!notify.getPStatus().equals("01")) {
-                throw new BusinessException(notify.getPStatus(), notify.getDes());
-            }
-
-            JSONObject jsonObjectLogs = new JSONObject(request);
-
-            ListenableFuture<SendResult<String, String>> future = producerMessage
-                    .sendSavingMessage("END_BEAR_TOPIC", request.getCustId(), jsonObjectLogs.toString());
-
-            future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
-                @Override
-                public void onSuccess(SendResult<String, String> result) {
-                    log.info("Sent message: " + request.getCustId());
-                    log.info("Offset: " + result.getRecordMetadata().offset());
-                }
-
-                @Override
-                public void onFailure(Throwable ex) {
-                    log.info("Error sending message: " + ex.getMessage());
-                    throw new BusinessException(Constants.FAIL, ErrorCode.ERROR_500_DESCRIPTION);
-                }
-            });
-
-            return response(toResult("OK message: " + request.getCustId()));
-
+            notify = notifyRepo.checkEndBear(request.getCustId(), request.getDoc_no());
         } catch (Exception e) {
             throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
         }
+        
+        if (!notify.getPStatus().equals("01")) {
+            throw new BusinessException(Constants.FAIL, notify.getDes());
+        }
+
+        JSONObject jsonObjectLogs = new JSONObject(request);
+
+        ListenableFuture<SendResult<String, String>> future = producerMessage
+                .sendSavingMessage("END_BEAR_TOPIC", request.getCustId(), jsonObjectLogs.toString());
+
+        future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+            @Override
+            public void onSuccess(SendResult<String, String> result) {
+                log.info("Sent message: " + request.getCustId());
+                log.info("Offset: " + result.getRecordMetadata().offset());
+            }
+
+            @Override
+            public void onFailure(Throwable ex) {
+                log.info("Error sending message: " + ex.getMessage());
+                throw new BusinessException(Constants.FAIL, ErrorCode.ERROR_500_DESCRIPTION);
+            }
+        });
+
+        return response(toResult("OK message: " + request.getCustId()));
 
     }
 
