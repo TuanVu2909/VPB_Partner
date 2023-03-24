@@ -138,4 +138,6 @@ public interface UserService {
 	void jobHandleAffiliate2();
 
 	void jobHandleAffiliate3();
+
+	ResponseEntity<?> getSavingProducts();
 }

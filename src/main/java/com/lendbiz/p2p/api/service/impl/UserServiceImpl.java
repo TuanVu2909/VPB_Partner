@@ -1116,7 +1116,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         } catch (Exception e) {
             throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
         }
-        
+
         if (!notify.getPStatus().equals("01")) {
             throw new BusinessException(Constants.FAIL, notify.getDes());
         }
@@ -2014,6 +2014,18 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             logger.info("[ACCESSTRADE_UPDATE_API]_ERROR => {transaction_id: {}} {}", req.getTransaction_id(),
                     e.getMessage());
             return null;
+        }
+    }
+
+    @Autowired
+    SavingProductsRepository productsRepository;
+
+    @Override
+    public ResponseEntity<?> getSavingProducts() {
+        try {
+            return response(toResult(productsRepository.findViaProcedure()));
+        } catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, e.getMessage());
         }
     }
 }

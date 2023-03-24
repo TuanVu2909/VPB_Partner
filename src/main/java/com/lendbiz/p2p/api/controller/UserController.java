@@ -858,4 +858,15 @@ public class UserController extends BaseResponse<UserService> {
 
     }
 
+    @GetMapping("/get-saving-products")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getSavingProduct(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId)
+            throws BusinessException {
+        log.info("[" + requestId + "] << getSavingProduct >>");
+        String requestString = "";
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
+        return userService.getSavingProducts();
+    }
+
 }
