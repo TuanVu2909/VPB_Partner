@@ -30,5 +30,7 @@ public class SavingProductsEntity {
     private String color;
     @Column(name = "PRODUCTID")
     private int idProduct;
+    @Column(name = "RATE")
+    private double rate;
 
 }
