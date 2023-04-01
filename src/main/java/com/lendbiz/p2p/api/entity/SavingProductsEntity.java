@@ -22,6 +22,8 @@ import lombok.ToString;
 @ToString
 public class SavingProductsEntity {
     @Id
+    @Column(name = "ID")
+    private int id;
     @Column(name = "CURRENTINDEX")
     private int currIndex;
     @Column(name = "MONTH")
