@@ -215,7 +215,7 @@ public class UserController extends BaseResponse<UserService> {
             @RequestHeader("requestId") String requestId, @RequestBody AccountInput accountInput)
             throws BusinessException {
         log.info("[" + requestId + "] << end bear >>");
-        return userService.endBear(accountInput.getCustId(), accountInput.getDoc_no());
+        return userService.endBear(accountInput);
     }
 
     @PostMapping("/end-rate-cal")
@@ -844,12 +844,23 @@ public class UserController extends BaseResponse<UserService> {
         }
     }
 
-    @Scheduled(initialDelay = 1 * 60, fixedDelay = 2 * 5000)
+    // @Scheduled(initialDelay = 1 * 60, fixedDelay = 2 * 5000)
     public void autoSign()
             throws BusinessException {
 
         userService.autoSignContract();
 
+    }
+
+    @GetMapping("/get-saving-products")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getSavingProduct(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId)
+            throws BusinessException {
+        log.info("[" + requestId + "] << getSavingProduct >>");
+        String requestString = "";
+        loggingGetRequest.logRequest(httpServletRequest, requestString);
+        return userService.getSavingProducts();
     }
 
 }

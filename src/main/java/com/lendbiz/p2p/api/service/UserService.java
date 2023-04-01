@@ -114,7 +114,7 @@ public interface UserService {
 
 	ResponseEntity<?> getFundInvest(String cid);
 
-	ResponseEntity<?> endBear(String cid, String documentNo);
+	ResponseEntity<?> endBear(AccountInput accountInput);
 
 	ResponseEntity<?> getEndRate(GetEndRateRequest request);
 
@@ -139,4 +139,6 @@ public interface UserService {
 	void jobHandleAffiliate2();
 
 	void jobHandleAffiliate3();
+
+	ResponseEntity<?> getSavingProducts();
 }

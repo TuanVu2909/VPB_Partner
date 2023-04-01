@@ -1,5 +1,6 @@
 HELP.md
 .gradle
+.idea
 build/
 .idea
 !gradle/wrapper/gradle-wrapper.jar
@@ -43,6 +44,3 @@ out/
 *.gz
 *.docx
 *.pdf
-src/main/resources/application.properties
-gradlew.bat
-gradle/wrapper/gradle-wrapper.properties
