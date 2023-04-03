@@ -19,6 +19,7 @@ public class FundController {
     @Autowired
     private FundService fundService;
 
+
 //    @GetMapping(value = "/sendSMS")
 //    public ResponseEntity<String> sendSMS() {
 //
@@ -29,6 +30,7 @@ public class FundController {
 //
 //        return new ResponseEntity<>("Message sent successfully", HttpStatus.OK);
 //    }
+
 
     @GetMapping("bgaccountinfo")
     public ResponseEntity<?> getBGAccountInfo (
