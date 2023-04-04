@@ -385,14 +385,20 @@ public class UserController extends BaseResponse<UserService> {
     @PostMapping("/3gang/ekyc/vertify-identity")
     public ResponseEntity<?> vertifyId(
             @RequestParam("imgFrontId") MultipartFile imgFrontId,
-            @RequestParam("imgBackId")  MultipartFile imgBackId,
-            @RequestHeader("session") String session
-            )
-    {
-        if (session == null || session.equals("")) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "mobile is not empty")) , HttpStatus.OK);
-        if(imgFrontId.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgFrontId is not empty")) , HttpStatus.OK);
-        if(imgBackId.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgBackId is not empty")), HttpStatus.OK);
-        //return vnptService.vertifyIdentity(imgFrontId, imgBackId, session);
+            @RequestParam("imgBackId") MultipartFile imgBackId,
+            @RequestHeader("session") String session) {
+        if (session == null || session.equals(""))
+            return new ResponseEntity<>(
+                    response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "mobile is not empty")), HttpStatus.OK);
+        if (imgFrontId.getSize() <= 0)
+            return new ResponseEntity<>(
+                    response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgFrontId is not empty")),
+                    HttpStatus.OK);
+        if (imgBackId.getSize() <= 0)
+            return new ResponseEntity<>(
+                    response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgBackId is not empty")),
+                    HttpStatus.OK);
+        // return vnptService.vertifyIdentity(imgFrontId, imgBackId, session);
         throw new BusinessException("-1000", "Phiên bản test bỏ chức năng eKYC. Liên hệ Admin để eKYC");
     }
 
@@ -400,13 +406,19 @@ public class UserController extends BaseResponse<UserService> {
     public ResponseEntity<?> vertifySelfie(
             @RequestParam("imgFrontId") MultipartFile imgFrontId,
             @RequestParam("imgSelfie") MultipartFile imgSelfie,
-            @RequestHeader("session") String session
-    )
-    {
-        if (session == null || session.equals("")) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "mobile is not empty")) , HttpStatus.OK);
-        if(imgFrontId.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgFrontId is not empty")) , HttpStatus.OK);
-        if(imgSelfie.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgSelfie is not empty")), HttpStatus.OK);
-        //return vnptService.vertifySelfie(imgFrontId, imgSelfie, session);
+            @RequestHeader("session") String session) {
+        if (session == null || session.equals(""))
+            return new ResponseEntity<>(
+                    response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "mobile is not empty")), HttpStatus.OK);
+        if (imgFrontId.getSize() <= 0)
+            return new ResponseEntity<>(
+                    response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgFrontId is not empty")),
+                    HttpStatus.OK);
+        if (imgSelfie.getSize() <= 0)
+            return new ResponseEntity<>(
+                    response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgSelfie is not empty")),
+                    HttpStatus.OK);
+        // return vnptService.vertifySelfie(imgFrontId, imgSelfie, session);
         throw new BusinessException("-1000", "Phiên bản test bỏ chức năng eKYC. Liên hệ Admin để eKYC");
     }
     // Authorization
@@ -803,10 +815,6 @@ public class UserController extends BaseResponse<UserService> {
 
     }
 
-    public static void main(String[] args) {
-        System.out.println(WordUtils.capitalize("LÊ HOÀNG NGUYÊN".toLowerCase()));
-    }
-
     @RequestMapping("/view/{typeContract}/{phone}")
     public void showPDF(HttpServletResponse response, @PathVariable String typeContract, @PathVariable String phone)
             throws IOException {
@@ -867,6 +875,37 @@ public class UserController extends BaseResponse<UserService> {
         String requestString = "";
         loggingGetRequest.logRequest(httpServletRequest, requestString);
         return userService.getSavingProducts();
+    }
+
+    @GetMapping("/login-background/{image}")
+    public void showLoginBackground(HttpServletResponse response,
+            @PathVariable String image)
+            throws IOException {
+        response.setContentType("image/png");
+
+        String urlImage = "";
+
+        InputStream inputStream = null;
+
+        urlImage = "images/background/" + image + ".png";
+
+        System.out.println(urlImage);
+
+        File file = new File(urlImage);
+        try {
+            inputStream = new FileInputStream(file);
+            int nRead;
+            while ((nRead = inputStream.read()) != -1) {
+                response.getWriter().write(nRead);
+            }
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        }
     }
 
 }
