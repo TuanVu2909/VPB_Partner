@@ -684,7 +684,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         }
 
         JSONObject jsonObjectLogs = new JSONObject(input);
-        ListenableFuture<SendResult<String, String>> future = producerMessage.sendSavingMessage("CREATE_BEAR_TOPIC",
+        ListenableFuture<SendResult<String, String>> future = producerMessage.sendSavingMessage("CREATE_BEAR_TOPIC_TEST",
                 input.getCustId(), jsonObjectLogs.toString());
 
         future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
@@ -723,7 +723,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
         JSONObject jsonObjectLogs = new JSONObject(request);
         ListenableFuture<SendResult<String, String>> future = producerMessage
-                .sendSavingMessage("WITHDRAW_BEAR_TOPIC",
+                .sendSavingMessage("WITHDRAW_BEAR_TOPIC_TEST",
                         request.getCustId(), jsonObjectLogs.toString());
 
         future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
@@ -1142,7 +1142,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         JSONObject jsonObjectLogs = new JSONObject(request);
 
         ListenableFuture<SendResult<String, String>> future = producerMessage
-                .sendSavingMessage("END_BEAR_TOPIC", request.getCustId(),
+                .sendSavingMessage("END_BEAR_TOPIC_TEST", request.getCustId(),
                         jsonObjectLogs.toString());
 
         future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
