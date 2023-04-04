@@ -238,68 +238,68 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
 
     @Override
     public ResponseEntity<?> getCardProducts(String serviceId) {
-        throw new BusinessException(ErrorCode.FAILED_TO_EXECUTE, ErrorCode.FAILED_TO_EXECUTE_DESCRIPTION);
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-//        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-//        HashMap<String, String> fieldMap = new HashMap<>();
-//
-//        fieldMap.put("type", "1");
-//        fieldMap.put("service_id", serviceId);
-//        String[] rq9Pay = Utils.getSignatureNinePay(fieldMap);
-//
-//        map.add("request_id", rq9Pay[0]);
-//        map.add("partner_id", PARTNER_KEY);
-//        map.add("service_id", serviceId);
-//        map.add("signature", rq9Pay[1]);
-//
-//        System.out.println(rq9Pay[1]);
-//
-//        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
-//
-//        ResponseEntity<String> responseEntityStr;
-//        try {
-//            responseEntityStr = restTemplate.postForEntity(Constants.NINE_PAY_PRODUCTS, request, String.class);
-//        } catch (Exception e) {
-//            throw new BusinessException(Constants.FAIL, e.getMessage());
-//        }
-//        // mapping response
-//        if (responseEntityStr.getStatusCodeValue() == 200) {
-//            ObjectMapper mapper = new ObjectMapper();
-//            JsonNode root;
-//            logger.info("[Call api get otp] response : {}", responseEntityStr.getBody());
-//            try {
-//                root = mapper.readTree(responseEntityStr.getBody());
-//                if (root.get("success").toString().equals("false")) {
-//                    throw new BusinessException(root.get("error").get("code").toString(),
-//                            root.get("error").get("message").toString());
-//                }
-//                ProductResponse[] myObjects = mapper.readValue(root.get("data").get("products").toString(),
-//                        ProductResponse[].class);
-//                if (myObjects.length == 0) {
-//                    throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
-//                }
-//                ArrayList<Product9PayCardEntity> arrayList = new ArrayList<>();
-//                for (int i = 0; i < myObjects.length; i++) {
-//                    Product9PayCardEntity entity = new Product9PayCardEntity();
-//                    entity.setId(myObjects[i].getId());
-//                    entity.setDes(myObjects[i].getDescription());
-//                    entity.setName(myObjects[i].getName());
-//                    entity.setPrice(myObjects[i].getPrice());
-//                    entity.setService_id(myObjects[i].getService().getId());
-//                    entity.setProvider_id(myObjects[i].getProvider().getId());
-//                    arrayList.add(entity);
-//                }
-//                Iterable<Product9PayCardEntity> list = arrayList;
-//                c9payProductRepo.saveAll(list);
-//                return response(toResult(myObjects));
-//            } catch (JsonProcessingException e) {
-//                throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
-//            }
-//
-//        } else {
-//            throw new BusinessException(ErrorCode.FAILED_TO_EXECUTE, ErrorCode.FAILED_TO_EXECUTE_DESCRIPTION);
-//        }
+        // throw new BusinessException(ErrorCode.FAILED_TO_EXECUTE, ErrorCode.FAILED_TO_EXECUTE_DESCRIPTION);
+       HttpHeaders headers = new HttpHeaders();
+       headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+       MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+       HashMap<String, String> fieldMap = new HashMap<>();
+
+       fieldMap.put("type", "1");
+       fieldMap.put("service_id", serviceId);
+       String[] rq9Pay = Utils.getSignatureNinePay(fieldMap);
+
+       map.add("request_id", rq9Pay[0]);
+       map.add("partner_id", PARTNER_KEY);
+       map.add("service_id", serviceId);
+       map.add("signature", rq9Pay[1]);
+
+       System.out.println(rq9Pay[1]);
+
+       HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+
+       ResponseEntity<String> responseEntityStr;
+       try {
+           responseEntityStr = restTemplate.postForEntity(Constants.NINE_PAY_PRODUCTS, request, String.class);
+       } catch (Exception e) {
+           throw new BusinessException(Constants.FAIL, e.getMessage());
+       }
+       // mapping response
+       if (responseEntityStr.getStatusCodeValue() == 200) {
+           ObjectMapper mapper = new ObjectMapper();
+           JsonNode root;
+           logger.info("[Call api get otp] response : {}", responseEntityStr.getBody());
+           try {
+               root = mapper.readTree(responseEntityStr.getBody());
+               if (root.get("success").toString().equals("false")) {
+                   throw new BusinessException(root.get("error").get("code").toString(),
+                           root.get("error").get("message").toString());
+               }
+               ProductResponse[] myObjects = mapper.readValue(root.get("data").get("products").toString(),
+                       ProductResponse[].class);
+               if (myObjects.length == 0) {
+                   throw new BusinessException(ErrorCode.NO_DATA, ErrorCode.NO_DATA_DESCRIPTION);
+               }
+               ArrayList<Product9PayCardEntity> arrayList = new ArrayList<>();
+               for (int i = 0; i < myObjects.length; i++) {
+                   Product9PayCardEntity entity = new Product9PayCardEntity();
+                   entity.setId(myObjects[i].getId());
+                   entity.setDes(myObjects[i].getDescription());
+                   entity.setName(myObjects[i].getName());
+                   entity.setPrice(myObjects[i].getPrice());
+                   entity.setService_id(myObjects[i].getService().getId());
+                   entity.setProvider_id(myObjects[i].getProvider().getId());
+                   arrayList.add(entity);
+               }
+               Iterable<Product9PayCardEntity> list = arrayList;
+               c9payProductRepo.saveAll(list);
+               return response(toResult(myObjects));
+           } catch (JsonProcessingException e) {
+               throw new BusinessException(ErrorCode.FAILED_TO_JSON, ErrorCode.FAILED_TO_JSON_DESCRIPTION);
+           }
+
+       } else {
+           throw new BusinessException(ErrorCode.FAILED_TO_EXECUTE, ErrorCode.FAILED_TO_EXECUTE_DESCRIPTION);
+       }
     }
 
     static Integer PRODUCT_9PAY_ID = 0;
