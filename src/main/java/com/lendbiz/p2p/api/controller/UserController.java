@@ -392,8 +392,8 @@ public class UserController extends BaseResponse<UserService> {
         if (session == null || session.equals("")) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "mobile is not empty")) , HttpStatus.OK);
         if(imgFrontId.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgFrontId is not empty")) , HttpStatus.OK);
         if(imgBackId.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgBackId is not empty")), HttpStatus.OK);
-        //return vnptService.vertifyIdentity(imgFrontId, imgBackId, session);
-        throw new BusinessException("-1000", "Phiên bản test bỏ chức năng eKYC. Liên hệ Admin để eKYC");
+        return vnptService.vertifyIdentity(imgFrontId, imgBackId, session);
+        //throw new BusinessException("-1000", "Phiên bản test bỏ chức năng eKYC. Liên hệ Admin để eKYC");
     }
 
     @PostMapping("/3gang/ekyc/vertify-selfie")
@@ -406,8 +406,8 @@ public class UserController extends BaseResponse<UserService> {
         if (session == null || session.equals("")) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "mobile is not empty")) , HttpStatus.OK);
         if(imgFrontId.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgFrontId is not empty")) , HttpStatus.OK);
         if(imgSelfie.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgSelfie is not empty")), HttpStatus.OK);
-        //return vnptService.vertifySelfie(imgFrontId, imgSelfie, session);
-        throw new BusinessException("-1000", "Phiên bản test bỏ chức năng eKYC. Liên hệ Admin để eKYC");
+        return vnptService.vertifySelfie(imgFrontId, imgSelfie, session);
+        //throw new BusinessException("-1000", "Phiên bản test bỏ chức năng eKYC. Liên hệ Admin để eKYC");
     }
     // Authorization
 
