@@ -438,8 +438,12 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             // List<Object> response = (ArrayList) pkgFilterRepo.reqJoin(reqJoinRequest);
             // return response(toResult(response.get(0)));
             // String custId = getCustId(lstCfmast);
+            String utmSourceConv = reqJoinRequest.getUtmSource() == null
+                                || "".equals(reqJoinRequest.getUtmSource())
+                                || "------".equals(reqJoinRequest.getUtmSource()) ? "3Gang" : reqJoinRequest.getUtmSource();
+
             RegisterEntity regEntity = registerRepository.register(reqJoinRequest.getMobile(),
-                    reqJoinRequest.getDeviceId(), custId, reqJoinRequest.getUtmSource(), reqJoinRequest.getUtmMedium(),
+                    reqJoinRequest.getDeviceId(), custId, utmSourceConv, reqJoinRequest.getUtmMedium(),
                     reqJoinRequest.getPlatform());
 
             if (regEntity.getErrorCode() == 1) {
