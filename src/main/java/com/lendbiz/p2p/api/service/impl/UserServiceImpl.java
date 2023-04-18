@@ -514,7 +514,9 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             BankAccountEntity bank = bankAccountRepository.getUserBankAccount(custId);
             String userPhone = user.getMobileSms();
             String urlAvatar = "";
+            String urlBackgroundImage = "";
             String directPathAvatar = "images/" + user.getCustid() + "/avatar/";
+            String loginBackground = "images/background/";
             String lbcAccount = "4585326647075";
             String lbcName = "CONG TY CO PHAN LENDBIZ CAPITAL";
             String ruleAgreementUrl = "https://bagang.lendbiz.vn/lendbiz/view/1/" + userPhone;
@@ -548,6 +550,20 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 logger.info(e.getMessage());
             }
 
+            try {
+                File folder = new File(loginBackground);
+                for (final File fileEntry : folder.listFiles()) {
+                    if (fileEntry.isDirectory()) {
+                        urlBackgroundImage = "";
+                    } else {
+                        urlBackgroundImage = "https://bagang.lendbiz.vn/lendbiz/login-background/"
+                                + FilenameUtils.removeExtension(fileEntry.getName());
+                    }
+                }
+            } catch (Exception e) {
+                logger.info(e.getMessage());
+            }
+
             if (bank == null) {
                 bank = new BankAccountEntity();
                 bank.setBankAcName("------");
@@ -559,6 +575,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             map.put("user", user);
             map.put("bank", bank);
             map.put("avatar", urlAvatar);
+            map.put("urlLoginImage", urlBackgroundImage);
             map.put("lbcAccount", lbcAccount);
             map.put("lbcName", lbcName);
             map.put("ruleAgreementUrl", ruleAgreementUrl);
@@ -673,7 +690,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         }
 
         JSONObject jsonObjectLogs = new JSONObject(input);
-        ListenableFuture<SendResult<String, String>> future = producerMessage.sendSavingMessage("CREATE_BEAR_TOPIC",
+        ListenableFuture<SendResult<String, String>> future = producerMessage.sendSavingMessage("CREATE_BEAR_TOPIC_TEST",
                 input.getCustId(), jsonObjectLogs.toString());
 
         future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
@@ -712,7 +729,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
         JSONObject jsonObjectLogs = new JSONObject(request);
         ListenableFuture<SendResult<String, String>> future = producerMessage
-                .sendSavingMessage("WITHDRAW_BEAR_TOPIC",
+                .sendSavingMessage("WITHDRAW_BEAR_TOPIC_TEST",
                         request.getCustId(), jsonObjectLogs.toString());
 
         future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
@@ -1131,7 +1148,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         JSONObject jsonObjectLogs = new JSONObject(request);
 
         ListenableFuture<SendResult<String, String>> future = producerMessage
-                .sendSavingMessage("END_BEAR_TOPIC", request.getCustId(),
+                .sendSavingMessage("END_BEAR_TOPIC_TEST", request.getCustId(),
                         jsonObjectLogs.toString());
 
         future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {

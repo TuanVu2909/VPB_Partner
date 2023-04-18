@@ -863,4 +863,35 @@ public class UserController extends BaseResponse<UserService> {
         return userService.getSavingProducts();
     }
 
+    @GetMapping("/login-background/{image}")
+    public void showLoginBackground(HttpServletResponse response,
+            @PathVariable String image)
+            throws IOException {
+        response.setContentType("image/png");
+
+        String urlImage = "";
+
+        InputStream inputStream = null;
+
+        urlImage = "images/background/" + image + ".png";
+
+        System.out.println(urlImage);
+
+        File file = new File(urlImage);
+        try {
+            inputStream = new FileInputStream(file);
+            int nRead;
+            while ((nRead = inputStream.read()) != -1) {
+                response.getWriter().write(nRead);
+            }
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        }
+    }
+
 }
