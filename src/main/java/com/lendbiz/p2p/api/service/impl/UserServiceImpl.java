@@ -354,8 +354,13 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     ReqJoinRequest reqJoinRequest = new ReqJoinRequest();
                     reqJoinRequest.setMobile(loginRequest.getUsername());
                     reqJoinRequest.setDeviceId(loginRequest.getDeviceId());
+
+                    String utmSourceConv = reqJoinRequest.getUtmSource() == null
+                            || "".equals(reqJoinRequest.getUtmSource())
+                            || "------".equals(reqJoinRequest.getUtmSource()) ? "3gang" : reqJoinRequest.getUtmSource();
+
                     registerRepository.register(reqJoinRequest.getMobile(),
-                            reqJoinRequest.getDeviceId(), custId, reqJoinRequest.getUtmSource(),
+                            reqJoinRequest.getDeviceId(), custId, utmSourceConv,
                             reqJoinRequest.getUtmMedium(), null);
                 }
 
@@ -383,8 +388,12 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
                     if (userOnlineRepo.checkAccountMappingExist(custId) == 0) {
 
+                        String utmSourceConv = reqJoinRequest.getUtmSource() == null
+                                || "".equals(reqJoinRequest.getUtmSource())
+                                || "------".equals(reqJoinRequest.getUtmSource()) ? "3gang" : reqJoinRequest.getUtmSource();
+
                         RegisterEntity regEntity = registerRepository.register(reqJoinRequest.getMobile(),
-                                reqJoinRequest.getDeviceId(), custId, reqJoinRequest.getUtmSource(),
+                                reqJoinRequest.getDeviceId(), custId, utmSourceConv,
                                 reqJoinRequest.getUtmMedium(), reqJoinRequest.getPlatform());
 
                         if (regEntity.getErrorCode() == 1) {
@@ -420,8 +429,11 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 // List<Object> response = (ArrayList) pkgFilterRepo.reqJoin(reqJoinRequest);
                 // return response(toResult(response.get(0)));
                 // String custId = getCustId(lstCfmast);
+                String utmSourceConv = reqJoinRequest.getUtmSource() == null
+                        || "".equals(reqJoinRequest.getUtmSource())
+                        || "------".equals(reqJoinRequest.getUtmSource()) ? "3gang" : reqJoinRequest.getUtmSource();
                 RegisterEntity regEntity = registerRepository.register(reqJoinRequest.getMobile(),
-                        reqJoinRequest.getDeviceId(), custId, reqJoinRequest.getUtmSource(),
+                        reqJoinRequest.getDeviceId(), custId, utmSourceConv,
                         reqJoinRequest.getUtmMedium(), reqJoinRequest.getPlatform());
 
                 if (regEntity.getErrorCode() == 1) {
@@ -440,7 +452,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             // String custId = getCustId(lstCfmast);
             String utmSourceConv = reqJoinRequest.getUtmSource() == null
                                 || "".equals(reqJoinRequest.getUtmSource())
-                                || "------".equals(reqJoinRequest.getUtmSource()) ? "3Gang" : reqJoinRequest.getUtmSource();
+                                || "------".equals(reqJoinRequest.getUtmSource()) ? "3gang" : reqJoinRequest.getUtmSource();
 
             RegisterEntity regEntity = registerRepository.register(reqJoinRequest.getMobile(),
                     reqJoinRequest.getDeviceId(), custId, utmSourceConv, reqJoinRequest.getUtmMedium(),
@@ -1615,46 +1627,49 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     public void jobHandleAffiliate0(){
         List<GMAffiliateEntity> dbd = affiliateRepository.getAllByStatusAndSource(0);
         for(GMAffiliateEntity cus : dbd){
-            if("hyperlead".equals(cus.getSource())){
-                HypPostBack req = new HypPostBack();
-                req.setClick_id(cus.getPublicSherId());
-                req.setTransaction_id(cus.getCustId());
-                req.setStatus_code(0); // cái này hyperLead define: 0 -> Insert new transaction, 1 -> Approve
-                                       // transaction, -1 -> Cancel transaction
-                req.setStatus_message("isRegister");
-                JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
-                if (root != null && "200".equals(root.get("status_code").asText())) {
-                    // update status = 1 -> để lần sau ko quét lại nữa
-                    cus.setStatus(1);
-                    affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
-                }
-            }
-            if ("accesstrade".equals(cus.getSource())) {
-                AccCreate req = new AccCreate();
-                req.setConversion_id(cus.getCustId());
-                req.setTransaction_id(cus.getCustId());
-                req.setTracking_id(cus.getPublicSherId());
-
-                JsonNode root = this.accessTradeCreateAPI(req);// postBack sang accesstrade
-                if (root != null && "00".equals(root.get("code").asText())) {
-                    AccUpdate reqU = new AccUpdate();
-                    reqU.setTransaction_id(cus.getCustId());
-                    reqU.setStatus(0); // accesstrade 0 -> processing, 1 -> aprove, 2 -> reject
-                    reqU.setRejected_reason("");
-
-                    Map<String, Object> item = new HashMap<>();
-                    item.put("id", "isRegister");
-                    item.put("status", 1);
-                    List<Object> items = new ArrayList<>();
-                    items.add(item);
-
-                    reqU.setItems(items);
-
-                    JsonNode rootU = this.accessTradeUpdateAPI(reqU);// postBack sang accesstrade
-                    if (rootU != null && "00".equals(rootU.get("code").asText())) {
+            CfMast cfmast = cfMastRepository.findByCustid(cus.getCustId()).get();
+            if(!"P".equals(cfmast.getStatus())){
+                if("hyperlead".equals(cus.getSource())){
+                    HypPostBack req = new HypPostBack();
+                    req.setClick_id(cus.getPublicSherId());
+                    req.setTransaction_id(cus.getCustId());
+                    req.setStatus_code(0); // cái này hyperLead define: 0 -> Insert new transaction, 1 -> Approve
+                    // transaction, -1 -> Cancel transaction
+                    req.setStatus_message("isRegister");
+                    JsonNode root = this.hyperLeadAPI(req);// postBack sang hyperLead
+                    if (root != null && "200".equals(root.get("status_code").asText())) {
                         // update status = 1 -> để lần sau ko quét lại nữa
                         cus.setStatus(1);
                         affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
+                    }
+                }
+                if ("accesstrade".equals(cus.getSource())) {
+                    AccCreate req = new AccCreate();
+                    req.setConversion_id(cus.getCustId());
+                    req.setTransaction_id(cus.getCustId());
+                    req.setTracking_id(cus.getPublicSherId());
+
+                    JsonNode root = this.accessTradeCreateAPI(req);// postBack sang accesstrade
+                    if (root != null && "00".equals(root.get("code").asText())) {
+                        AccUpdate reqU = new AccUpdate();
+                        reqU.setTransaction_id(cus.getCustId());
+                        reqU.setStatus(0); // accesstrade 0 -> processing, 1 -> aprove, 2 -> reject
+                        reqU.setRejected_reason("");
+
+                        Map<String, Object> item = new HashMap<>();
+                        item.put("id", "isRegister");
+                        item.put("status", 1);
+                        List<Object> items = new ArrayList<>();
+                        items.add(item);
+
+                        reqU.setItems(items);
+
+                        JsonNode rootU = this.accessTradeUpdateAPI(reqU);// postBack sang accesstrade
+                        if (rootU != null && "00".equals(rootU.get("code").asText())) {
+                            // update status = 1 -> để lần sau ko quét lại nữa
+                            cus.setStatus(1);
+                            affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
+                        }
                     }
                 }
             }
