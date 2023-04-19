@@ -690,7 +690,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         }
 
         JSONObject jsonObjectLogs = new JSONObject(input);
-        ListenableFuture<SendResult<String, String>> future = producerMessage.sendSavingMessage("CREATE_BEAR_TOPIC_TEST",
+        ListenableFuture<SendResult<String, String>> future = producerMessage.sendSavingMessage("CREATE_BEAR_TOPIC",
                 input.getCustId(), jsonObjectLogs.toString());
 
         future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
