@@ -127,6 +127,8 @@ public class Constants {
 		public static final String GROUP_SAVE_ID_CARD = "group_save_id_card";
 		public static final String TOPIC_3GANG_PARTITIONS = "3gang-partitions-log";
 		public static final String GROUP_3GANG_PARTITIONS = "group_3gang_partitions";
+		public static final String TOPIC_UPDATE_CUSTOMER = "topic_update_customer";
+		public static final String GROUP_UPDATE_CUSTOMER = "group_update_customer";
 	}
 
 	// accesstrade

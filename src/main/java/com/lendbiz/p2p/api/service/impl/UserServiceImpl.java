@@ -616,6 +616,16 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
     @Override
     public ResponseEntity<?> updateAccountInfo(UpdateAccountRequest updateRequest) {
+
+        String jsonData = null;
+        try {
+            jsonData = new ObjectMapper().writeValueAsString(updateRequest);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        log.info("[KAFKA_TOPIC_UPDATE_CUSTOMER]_PRODUCER -> " + jsonData);
+        producerMessage.sendUpdateCustomer(jsonData);
+
         UpdateAccountEntity entity;
         try {
             entity = accountRepository.updateAccount(updateRequest.getCustId(), updateRequest.getFullName(),

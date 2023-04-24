@@ -45,4 +45,9 @@ public class ProducerMessage {
         log.info(String.format("#### -> Producing error message sendErrorCreateBear APIGATEWAY -> " + key + " " + value));
         this.kafkaTemplate.send(topicName, key, value);
     }
+
+    public void sendUpdateCustomer(String smsJsonData) {
+        log.info(String.format("#### -> Producing message sendUpdateCustomer  ->"));
+        this.kafkaTemplate.send(Constants.KAFKA.TOPIC_UPDATE_CUSTOMER, smsJsonData);
+    }
 }
