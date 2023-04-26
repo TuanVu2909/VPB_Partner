@@ -173,6 +173,7 @@ import com.lendbiz.p2p.api.service.FilesStorageService;
 import com.lendbiz.p2p.api.service.SavisService;
 import com.lendbiz.p2p.api.service.UserService;
 import com.lendbiz.p2p.api.service.base.BaseService;
+import com.lendbiz.p2p.api.utils.CRCUtil;
 import com.lendbiz.p2p.api.utils.StringUtil;
 import com.lendbiz.p2p.api.utils.Utils;
 
@@ -390,7 +391,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
                         String utmSourceConv = reqJoinRequest.getUtmSource() == null
                                 || "".equals(reqJoinRequest.getUtmSource())
-                                || "------".equals(reqJoinRequest.getUtmSource()) ? "3gang" : reqJoinRequest.getUtmSource();
+                                || "------".equals(reqJoinRequest.getUtmSource()) ? "3gang"
+                                        : reqJoinRequest.getUtmSource();
 
                         RegisterEntity regEntity = registerRepository.register(reqJoinRequest.getMobile(),
                                 reqJoinRequest.getDeviceId(), custId, utmSourceConv,
@@ -451,8 +453,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             // return response(toResult(response.get(0)));
             // String custId = getCustId(lstCfmast);
             String utmSourceConv = reqJoinRequest.getUtmSource() == null
-                                || "".equals(reqJoinRequest.getUtmSource())
-                                || "------".equals(reqJoinRequest.getUtmSource()) ? "3gang" : reqJoinRequest.getUtmSource();
+                    || "".equals(reqJoinRequest.getUtmSource())
+                    || "------".equals(reqJoinRequest.getUtmSource()) ? "3gang" : reqJoinRequest.getUtmSource();
 
             RegisterEntity regEntity = registerRepository.register(reqJoinRequest.getMobile(),
                     reqJoinRequest.getDeviceId(), custId, utmSourceConv, reqJoinRequest.getUtmMedium(),
@@ -1282,8 +1284,15 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         if (entity == null) {
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         }
-        // ninePayDepositRepo.insertApiTrans(amount, entity.getTransferCode());
-        return response(toResult(entity));
+        String charForCRC = Constants.QRCODE_NAPAS_FIRST + entity.getTransferCode() + Constants.QRCODE_NAPAS_CRC;
+
+        String qrCodeString = charForCRC + CRCUtil.getCRC(charForCRC);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("transferCode", entity.getTransferCode());
+        map.put("qrCodeString", qrCodeString);
+
+        return response(toResult(map));
     }
 
     @Override
@@ -1651,12 +1660,12 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     // status:0 -> tìm tất cả thằng nào đã DKTK chưa confirm affiliate
     @Override
     @SneakyThrows
-    public void jobHandleAffiliate0(){
+    public void jobHandleAffiliate0() {
         List<GMAffiliateEntity> dbd = affiliateRepository.getAllByStatusAndSource(0);
-        for(GMAffiliateEntity cus : dbd){
+        for (GMAffiliateEntity cus : dbd) {
             CfMast cfmast = cfMastRepository.findByCustid(cus.getCustId()).get();
-            if(!"P".equals(cfmast.getStatus())){
-                if("hyperlead".equals(cus.getSource())){
+            if (!"P".equals(cfmast.getStatus())) {
+                if ("hyperlead".equals(cus.getSource())) {
                     HypPostBack req = new HypPostBack();
                     req.setClick_id(cus.getPublicSherId());
                     req.setTransaction_id(cus.getCustId());
@@ -1707,9 +1716,9 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     // gì => reject
     @Override
     @SneakyThrows
-    public void jobHandleAffiliate1(){
+    public void jobHandleAffiliate1() {
         List<GMAffiliateEntity> dbd = affiliateRepository.getAllByStatusAndSource(1);
-        for(GMAffiliateEntity cus : dbd){
+        for (GMAffiliateEntity cus : dbd) {
             LocalDate date1 = cus.getStartDate().toLocalDate(); // từ lúc tạo TK
             LocalDate date2 = LocalDate.now(); // ngày hiện tại
             Period period = Period.between(date1, date2);
@@ -1761,8 +1770,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @SneakyThrows
     public void jobHandleAffiliate2() {
         List<GMAffiliateEntity> dbd = affiliateRepository.getAllByStatusAndSource(2);
-        for(GMAffiliateEntity cus : dbd) {
-            if("hyperlead".equals(cus.getSource())){
+        for (GMAffiliateEntity cus : dbd) {
+            if ("hyperlead".equals(cus.getSource())) {
                 HypPostBack req = new HypPostBack();
                 req.setClick_id(cus.getPublicSherId());
                 req.setTransaction_id(cus.getCustId());
@@ -1884,8 +1893,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @SneakyThrows
     public void jobHandleAffiliate3() {
         List<GMAffiliateEntity> dbd = affiliateRepository.getAllByStatusAndSource(3);
-        for(GMAffiliateEntity cus : dbd) {
-            if("hyperlead".equals(cus.getSource())){
+        for (GMAffiliateEntity cus : dbd) {
+            if ("hyperlead".equals(cus.getSource())) {
                 HypPostBack req = new HypPostBack();
                 req.setClick_id(cus.getPublicSherId());
                 req.setTransaction_id(cus.getCustId());
