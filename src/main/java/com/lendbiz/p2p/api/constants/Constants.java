@@ -202,4 +202,7 @@ public class Constants {
 		AFM_DEAL_STATUS.put("20", "Khớp tiền thành công");
 		AFM_DEAL_STATUS.put("21", "Khớp tiền không thành công");
 	}
+
+	public static final String QRCODE_NAPAS_FIRST = "00020101021238570010A00000072701270006970422011345853266470750208QRIBFTTA53037045405300005802VN62370107NPS68690822";
+	public static final String QRCODE_NAPAS_CRC = "6304";
 }

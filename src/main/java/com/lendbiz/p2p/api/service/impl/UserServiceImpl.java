@@ -174,6 +174,7 @@ import com.lendbiz.p2p.api.service.FilesStorageService;
 import com.lendbiz.p2p.api.service.SavisService;
 import com.lendbiz.p2p.api.service.UserService;
 import com.lendbiz.p2p.api.service.base.BaseService;
+import com.lendbiz.p2p.api.utils.CRCUtil;
 import com.lendbiz.p2p.api.utils.StringUtil;
 import com.lendbiz.p2p.api.utils.Utils;
 
@@ -391,7 +392,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
                         String utmSourceConv = reqJoinRequest.getUtmSource() == null
                                 || "".equals(reqJoinRequest.getUtmSource())
-                                || "------".equals(reqJoinRequest.getUtmSource()) ? "3gang" : reqJoinRequest.getUtmSource();
+                                || "------".equals(reqJoinRequest.getUtmSource()) ? "3gang"
+                                        : reqJoinRequest.getUtmSource();
 
                         RegisterEntity regEntity = registerRepository.register(reqJoinRequest.getMobile(),
                                 reqJoinRequest.getDeviceId(), custId, utmSourceConv,
@@ -452,8 +454,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             // return response(toResult(response.get(0)));
             // String custId = getCustId(lstCfmast);
             String utmSourceConv = reqJoinRequest.getUtmSource() == null
-                                || "".equals(reqJoinRequest.getUtmSource())
-                                || "------".equals(reqJoinRequest.getUtmSource()) ? "3gang" : reqJoinRequest.getUtmSource();
+                    || "".equals(reqJoinRequest.getUtmSource())
+                    || "------".equals(reqJoinRequest.getUtmSource()) ? "3gang" : reqJoinRequest.getUtmSource();
 
             RegisterEntity regEntity = registerRepository.register(reqJoinRequest.getMobile(),
                     reqJoinRequest.getDeviceId(), custId, utmSourceConv, reqJoinRequest.getUtmMedium(),
@@ -1283,8 +1285,15 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         if (entity == null) {
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         }
-        // ninePayDepositRepo.insertApiTrans(amount, entity.getTransferCode());
-        return response(toResult(entity));
+        String charForCRC = Constants.QRCODE_NAPAS_FIRST + entity.getTransferCode() + Constants.QRCODE_NAPAS_CRC;
+
+        String qrCodeString = charForCRC + CRCUtil.getCRC(charForCRC);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("transferCode", entity.getTransferCode());
+        map.put("qrCodeString", qrCodeString);
+
+        return response(toResult(map));
     }
 
     @Override
