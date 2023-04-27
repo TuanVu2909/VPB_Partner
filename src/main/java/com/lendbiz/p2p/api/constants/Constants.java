@@ -140,6 +140,9 @@ public class Constants {
 	public static final String HYPER_LEAD_API_KEY = "k97Ocp5U6VoAMgGW";
 	public static final String HYPER_LEAD_POSTBACK_TYPE = "forced_update";
 
+	// mosaic
+	public static final String MOSAIC_URI = "https://api.dinos.vn";
+
 	// VNPT
 	public static final String VNPT_DOMAIN = "https://api.idg.vnpt.vn";
 	// Account trial

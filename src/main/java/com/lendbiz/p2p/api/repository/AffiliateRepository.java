@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface AffiliateRepository extends JpaRepository<GMAffiliateEntity, String> {
 
-    @Query(value = "SELECT * FROM gmaffiliate g WHERE (g.source = 'accesstrade' OR g.source = 'hyperlead') AND g.status = ?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM gmaffiliate g WHERE g.source IN ('accesstrade', 'hyperlead', 'mosaic') AND g.status = ?1", nativeQuery = true)
     List<GMAffiliateEntity> getAllByStatusAndSource (int status);
 
     @Transactional

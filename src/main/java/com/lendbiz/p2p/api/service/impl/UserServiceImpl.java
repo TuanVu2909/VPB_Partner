@@ -33,6 +33,7 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.UUID;
 
+import com.lendbiz.p2p.api.request.mosaic.MosaicPostBack;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -1656,6 +1657,19 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         for(GMAffiliateEntity cus : dbd){
             CfMast cfmast = cfMastRepository.findByCustid(cus.getCustId()).get();
             if(!"P".equals(cfmast.getStatus())){
+                if("mosaic".equals(cus.getSource())){
+                    MosaicPostBack req = new MosaicPostBack();
+                    req.setClick_id(cus.getPublicSherId());
+                    req.setComment(cus.getCustId());
+                    req.setStatus_code(0); // cái này mosaic define: 0 -> Insert new transaction, 1 -> Approve, -1 -> Cancel transaction
+                    req.setNote("isRegister");
+                    JsonNode root = this.mosaicAPI(req);// postBack sang mosaic
+                    if (root != null && "success".equals(root.get("status").asText())) {
+                        // update status = 1 -> để lần sau ko quét lại nữa
+                        cus.setStatus(1);
+                        affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
+                    }
+                }
                 if("hyperlead".equals(cus.getSource())){
                     HypPostBack req = new HypPostBack();
                     req.setClick_id(cus.getPublicSherId());
@@ -1716,6 +1730,19 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             // (case này sau 30 ngày sẽ nhảy vào)
             // record của vòng for này mà status vẫn = 2 => hủy đơn
             if (period.getYears() == 0 && (period.getMonths() >= 1)) {
+                if ("mosaic".equals(cus.getSource())) {
+                    MosaicPostBack req = new MosaicPostBack();
+                    req.setClick_id(cus.getPublicSherId());
+                    req.setComment(cus.getCustId());
+                    req.setStatus_code(-1); // cái này mosaic define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
+                    req.setNote("cancel");
+                    JsonNode root = this.mosaicAPI(req);// postBack sang mosaic
+                    if (root != null && "success".equals(root.get("status").asText())) {
+                        // update Status = -1 -> để lần sau ko quét lại nữa
+                        cus.setStatus(10); // đã gửi sang hyperlead hủy đơn
+                        affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
+                    }
+                }
                 if ("hyperlead".equals(cus.getSource())) {
                     HypPostBack req = new HypPostBack();
                     req.setClick_id(cus.getPublicSherId());
@@ -1762,6 +1789,47 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     public void jobHandleAffiliate2() {
         List<GMAffiliateEntity> dbd = affiliateRepository.getAllByStatusAndSource(2);
         for(GMAffiliateEntity cus : dbd) {
+            if("mosaic".equals(cus.getSource())){
+                MosaicPostBack req = new MosaicPostBack();
+                req.setClick_id(cus.getPublicSherId());
+                req.setComment(cus.getCustId());
+                req.setStatus_code(0); // cái này mosaic define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
+                if (cus.getIsEkyc() == 1) { // đã eKYC thành công
+                    req.setNote("isEkyc");
+                    JsonNode root = this.mosaicAPI(req);// postBack sang mosaic
+                    if (root != null && "success".equals(root.get("status").asText())) {
+                        // update IsEkyc = 2 -> để lần sau ko quét lại nữa
+                        cus.setIsEkyc(2);
+                        affiliateRepository.updateByIsEkyc(cus.getIsEkyc(), cus.getCustId());
+                    }
+                }
+
+                if (cus.getIsSaving() == 1) { // đã tích lũy tối thiểu 50k thành công
+                    req.setNote("isSaving");
+                    JsonNode root = this.mosaicAPI(req);// postBack sang mosaic
+                    if (root != null && "success".equals(root.get("status").asText())) {
+                        // update Saving = 2 -> để lần sau ko quét lại nữa
+                        cus.setIsSaving(2);
+                        affiliateRepository.updateByIsSaving(cus.getIsSaving(), cus.getCustId());
+                    }
+                }
+
+                LocalDate date1 = cus.getStartDate().toLocalDate(); // từ lúc tạo TK
+                LocalDate date2 = LocalDate.now(); // ngày hiện tại
+                Period period = Period.between(date1, date2);
+                // (case này sau 30 ngày sẽ nhảy vào)
+                // record của vòng for này mà status vẫn = 2 => hủy đơn
+                if (period.getYears() == 0 && (period.getMonths() >= 1)) {
+                    req.setStatus_code(-1); // cái này mosaic define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
+                    req.setNote("cancel");
+                    JsonNode root = this.mosaicAPI(req);// postBack sang mosaic
+                    if (root != null && "success".equals(root.get("status").asText())) {
+                        // update Status = -1 -> để lần sau ko quét lại nữa
+                        cus.setStatus(10); // đã gửi sang mosaic hủy đơn
+                        affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
+                    }
+                }
+            }
             if("hyperlead".equals(cus.getSource())){
                 HypPostBack req = new HypPostBack();
                 req.setClick_id(cus.getPublicSherId());
@@ -1885,6 +1953,20 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     public void jobHandleAffiliate3() {
         List<GMAffiliateEntity> dbd = affiliateRepository.getAllByStatusAndSource(3);
         for(GMAffiliateEntity cus : dbd) {
+            if("mosaic".equals(cus.getSource())){
+                MosaicPostBack req = new MosaicPostBack();
+                req.setClick_id(cus.getPublicSherId());
+                req.setComment(cus.getCustId());
+                req.setStatus_code(1); // cái này mosaic define: 0 -> Insert new transaction, 1 -> Approve
+                // transaction, -1 -> Cancel transaction
+                req.setNote("approve");
+                JsonNode root = this.mosaicAPI(req);// postBack sang mosaic
+                if (root != null && "success".equals(root.get("status").asText())) {
+                    // update IsEkyc = 2 -> để lần sau ko quét lại nữa
+                    cus.setStatus(4);
+                    affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
+                }
+            }
             if("hyperlead".equals(cus.getSource())){
                 HypPostBack req = new HypPostBack();
                 req.setClick_id(cus.getPublicSherId());
@@ -1920,6 +2002,38 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
                 }
             }
+        }
+    }
+
+    public JsonNode mosaicAPI(MosaicPostBack req) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<?> request = new HttpEntity(headers);
+            ObjectMapper mapper = new ObjectMapper();
+
+            Map<String, Object> params = mapper.convertValue(req, Map.class);
+
+            logger.info("[MOSAIC_API]_REQUEST => {}", params);
+
+            ResponseEntity<String> responseEntity = restTemplate.exchange(
+                    Constants.MOSAIC_URI + "/api/v1/post_back_campaign_redirect?" +
+                            "click_id={click_id}&" +
+                            "comment={comment}&" +
+                            "status_code={status_code}&" +
+                            "note={note}",
+                    HttpMethod.GET,
+                    request,
+                    String.class,
+                    params);
+            JsonNode root = mapper.readTree(responseEntity.getBody());
+            logger.info("[MOSAIC_API]_RESPONSE => {custid: {}} {}", req.getComment(), root);
+
+            return root;
+
+        } catch (Exception e) {
+            logger.info("[MOSAIC_API]_ERROR => {custid: {}} {}", req.getComment(), e.getMessage());
+            return null;
         }
     }
 
