@@ -11,6 +11,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdviceAdapter;
 
+import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.service.LoggingService;
 
 @ControllerAdvice
@@ -31,6 +32,7 @@ public class CustomRequestBodyAdviceAdapter extends RequestBodyAdviceAdapter {
     @Override
     public Object afterBodyRead(Object body, HttpInputMessage inputMessage, MethodParameter parameter, Type targetType,
             Class<? extends HttpMessageConverter<?>> converterType) {
+
         loggingService.logRequest(httpServletRequest, body);
 
         return super.afterBodyRead(body, inputMessage, parameter, targetType, converterType);

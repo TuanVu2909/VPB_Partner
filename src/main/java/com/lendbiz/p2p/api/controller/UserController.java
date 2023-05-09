@@ -13,6 +13,7 @@ import org.apache.commons.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,6 +29,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.configs.JwtProvider;
 import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
@@ -112,6 +116,10 @@ public class UserController extends BaseResponse<UserService> {
     public ResponseEntity<?> login(HttpServletRequest httpServletRequest, @RequestHeader("requestId") String requestId,
             @RequestBody LoginRequest loginRequest) {
         log.info("[" + requestId + "] << login >>");
+
+        if (UserController.isStop.equals("YES")) {
+            throw new BusinessException(ErrorCode.UNKNOWN_ERROR, "Hệ thống đang bảo trì!");
+        }
 
         return userService.login(loginRequest);
     }
@@ -381,13 +389,19 @@ public class UserController extends BaseResponse<UserService> {
     @PostMapping("/3gang/ekyc/vertify-identity")
     public ResponseEntity<?> vertifyId(
             @RequestParam("imgFrontId") MultipartFile imgFrontId,
-            @RequestParam("imgBackId")  MultipartFile imgBackId,
-            @RequestHeader("session") String session
-            )
-    {
-        if (session == null || session.equals("")) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "mobile is not empty")) , HttpStatus.OK);
-        if(imgFrontId.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgFrontId is not empty")) , HttpStatus.OK);
-        if(imgBackId.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgBackId is not empty")), HttpStatus.OK);
+            @RequestParam("imgBackId") MultipartFile imgBackId,
+            @RequestHeader("session") String session) {
+        if (session == null || session.equals(""))
+            return new ResponseEntity<>(
+                    response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "mobile is not empty")), HttpStatus.OK);
+        if (imgFrontId.getSize() <= 0)
+            return new ResponseEntity<>(
+                    response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgFrontId is not empty")),
+                    HttpStatus.OK);
+        if (imgBackId.getSize() <= 0)
+            return new ResponseEntity<>(
+                    response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgBackId is not empty")),
+                    HttpStatus.OK);
         return vnptService.vertifyIdentity(imgFrontId, imgBackId, session);
     }
 
@@ -395,12 +409,18 @@ public class UserController extends BaseResponse<UserService> {
     public ResponseEntity<?> vertifySelfie(
             @RequestParam("imgFrontId") MultipartFile imgFrontId,
             @RequestParam("imgSelfie") MultipartFile imgSelfie,
-            @RequestHeader("session") String session
-    )
-    {
-        if (session == null || session.equals("")) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "mobile is not empty")) , HttpStatus.OK);
-        if(imgFrontId.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgFrontId is not empty")) , HttpStatus.OK);
-        if(imgSelfie.getSize()<=0) return new ResponseEntity<>(response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgSelfie is not empty")), HttpStatus.OK);
+            @RequestHeader("session") String session) {
+        if (session == null || session.equals(""))
+            return new ResponseEntity<>(
+                    response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "mobile is not empty")), HttpStatus.OK);
+        if (imgFrontId.getSize() <= 0)
+            return new ResponseEntity<>(
+                    response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgFrontId is not empty")),
+                    HttpStatus.OK);
+        if (imgSelfie.getSize() <= 0)
+            return new ResponseEntity<>(
+                    response(toResult(Constants.FAIL, Constants.MESSAGE_FAIL, "imgSelfie is not empty")),
+                    HttpStatus.OK);
         return vnptService.vertifySelfie(imgFrontId, imgSelfie, session);
     }
     // Authorization
@@ -717,6 +737,7 @@ public class UserController extends BaseResponse<UserService> {
     public ResponseEntity<?> withdraw(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestBody CashOutRequest request)
             throws BusinessException {
+
         log.info("[" + requestId + "] << withdraw >>");
         return userService.withdraw(request);
     }
@@ -892,6 +913,17 @@ public class UserController extends BaseResponse<UserService> {
                 inputStream.close();
             }
         }
+    }
+
+    public static String isStop = "NO";
+
+    @KafkaListener(topics = "MAINTENANCE", groupId = "MAINTENANCE_GROUP")
+    @Transactional(readOnly = true)
+    public void consumeAutoCashOut(String isStop) {
+        log.info(String.format("#### -> System maintenance-> %s", isStop));
+
+        UserController.isStop = isStop;
+
     }
 
 }

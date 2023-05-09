@@ -290,6 +290,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     AffiliateRepository affiliateRepository;
 
+    
+
     @Override
     public ResponseEntity<?> checkVersion3GangOutdated(String version) {
         // List<Object> response;
