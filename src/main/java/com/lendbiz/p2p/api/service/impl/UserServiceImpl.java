@@ -1287,7 +1287,13 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         if (entity == null) {
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         }
-        String charForCRC = Constants.QRCODE_NAPAS_FIRST + entity.getTransferCode() + Constants.QRCODE_NAPAS_CRC;
+
+        String amountLength = "05";
+        if (amount.length() < 10) {
+            amountLength = "0" + amount.length();
+        }
+
+        String charForCRC = Constants.QRCODE_NAPAS_FIRST + amountLength + amount + Constants.QRCODE_NAPAS_SECOND + entity.getTransferCode() + Constants.QRCODE_NAPAS_CRC;
 
         String qrCodeString = charForCRC + CRCUtil.getCRC(charForCRC);
 
