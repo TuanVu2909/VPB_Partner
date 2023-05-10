@@ -7,9 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.ToString;
-
-@ToString
 @Entity
 @Table(name = "IDCARD_INFO")
 public class IdCard {

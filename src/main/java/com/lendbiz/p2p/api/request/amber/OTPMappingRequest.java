@@ -1,8 +1,8 @@
 package com.lendbiz.p2p.api.request.amber;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class OTPMappingRequest extends IdentityCustomerRequest {
     private String otp;
 }

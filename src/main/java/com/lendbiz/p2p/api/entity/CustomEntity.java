@@ -2,11 +2,9 @@ package com.lendbiz.p2p.api.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 public class CustomEntity {
 
     private String errorCode;
@@ -19,14 +17,6 @@ public class CustomEntity {
 
     public CustomEntity(Object object) {
         super();
-        this.result = object;
-    }
-
-    public Object getResult() {
-        return this.result;
-    }
-
-    public void setResult(Object object) {
         this.result = object;
     }
 

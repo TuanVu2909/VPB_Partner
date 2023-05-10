@@ -14,7 +14,6 @@ import lombok.ToString;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class SignContractRequestV2 {
 
 	private String page;

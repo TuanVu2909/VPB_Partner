@@ -1,8 +1,10 @@
 package com.lendbiz.p2p.api.request.amber;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class DealCCQRequest extends CCQInfoRequest{
     private String custodycd;
     private String orderid;
