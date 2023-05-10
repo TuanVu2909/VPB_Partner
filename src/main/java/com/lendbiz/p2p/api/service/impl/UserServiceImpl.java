@@ -1294,7 +1294,6 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         }
 
         String charForCRC = Constants.QRCODE_NAPAS_FIRST + amountLength + amount + Constants.QRCODE_NAPAS_SECOND + entity.getTransferCode() + Constants.QRCODE_NAPAS_CRC;
-
         String qrCodeString = charForCRC + CRCUtil.getCRC(charForCRC);
 
         Map<String, Object> map = new HashMap<>();
