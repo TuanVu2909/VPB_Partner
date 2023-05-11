@@ -1,0 +1,57 @@
+package com.lendbiz.p2p.api.entity;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+import javax.persistence.*;
+
+@Entity
+@Getter
+@Setter
+@ToString
+@NamedStoredProcedureQueries({ //
+                @NamedStoredProcedureQuery(name = "WheelEntity.updateWheelConfig", resultClasses = WheelEntity.class, procedureName = "PKG_API.update_wheelconfig", parameters = { //
+                                @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
+                                @StoredProcedureParameter(name = "pv_id", mode = ParameterMode.IN, type = Integer.class),
+                                @StoredProcedureParameter(name = "pv_rate", mode = ParameterMode.IN, type = Integer.class),
+                                @StoredProcedureParameter(name = "pv_giftid", mode = ParameterMode.IN, type = Integer.class),
+                                @StoredProcedureParameter(name = "pv_groupid", mode = ParameterMode.IN, type = Integer.class),
+                                @StoredProcedureParameter(name = "pv_status", mode = ParameterMode.IN, type = Integer.class),
+                }),
+                @NamedStoredProcedureQuery(name = "WheelEntity.updateWheelGroupTime", resultClasses = WheelEntity.class, procedureName = "PKG_API.update_wheelgrouptime", parameters = { //
+                                @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
+                                @StoredProcedureParameter(name = "pv_groupid", mode = ParameterMode.IN, type = Integer.class),
+                                @StoredProcedureParameter(name = "pv_fromtime", mode = ParameterMode.IN, type = String.class),
+                                @StoredProcedureParameter(name = "pv_totime", mode = ParameterMode.IN, type = String.class),
+                                @StoredProcedureParameter(name = "pv_fromdate", mode = ParameterMode.IN, type = String.class),
+                                @StoredProcedureParameter(name = "pv_todate", mode = ParameterMode.IN, type = String.class),
+                                @StoredProcedureParameter(name = "pv_status", mode = ParameterMode.IN, type = Integer.class),
+                                @StoredProcedureParameter(name = "pv_maxprize", mode = ParameterMode.IN, type = Integer.class),
+                }),
+
+                @NamedStoredProcedureQuery(name = "WheelEntity.updateWheelPrize", resultClasses = WheelEntity.class, procedureName = "PKG_API.update_wheelprize", parameters = { //
+                                @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
+                                @StoredProcedureParameter(name = "pv_id", mode = ParameterMode.IN, type = Integer.class),
+                                @StoredProcedureParameter(name = "pv_name", mode = ParameterMode.IN, type = String.class),
+                                @StoredProcedureParameter(name = "pv_status", mode = ParameterMode.IN, type = Integer.class),
+                                @StoredProcedureParameter(name = "pv_ramount", mode = ParameterMode.IN, type = Integer.class),
+
+                }),
+
+                @NamedStoredProcedureQuery(name = "WheelEntity.insertWheelHistory", resultClasses = WheelEntity.class, procedureName = "PKG_API.insert_wheelhistory", parameters = { //
+                                @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
+                                @StoredProcedureParameter(name = "pv_custid", mode = ParameterMode.IN, type = String.class),
+                                @StoredProcedureParameter(name = "pv_status", mode = ParameterMode.IN, type = Integer.class),
+                                @StoredProcedureParameter(name = "pv_giftid", mode = ParameterMode.IN, type = Integer.class),
+
+                })
+})
+public class WheelEntity {
+        @Id
+        @Column(name = "ERRCODE")
+        private int errCode;
+
+        @Column(name = "ERRMESSAGE")
+        private String errMessage;
+}
