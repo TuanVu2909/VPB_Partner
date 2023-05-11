@@ -12,7 +12,7 @@ import java.util.Map;
  * @create-time Apr 9, 2021 10:57:18 AM
  *
  ***********************************************************************/
-public class Constants {
+public class Constants_test {
 
 	public static final String SUCCESS = "00";
 	public static final String FAIL = "01";
@@ -105,13 +105,11 @@ public class Constants {
 	public static final String NINE_PAY_CARD = "https://stg-api-console.9pay.mobi/service/wh/order/card";
 	public static final String NINE_PAY_INFO_TRANS = "https://stg-api-console.9pay.mobi/service/wh/order/check-info";
 	public static final String NINE_PAY_BALANCE = "https://stg-api-console.9pay.mobi/service/account/balance";
-
 	public static final String SIGN_IMAGE_DEFAULT = "default_docs\\success.png";
 	public static final String THRESHOLD = "0.75";
 
 	// MBBANK
 	public static final String HMAC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgcaKR79S/g+e+kCvGBAa957NCgAnuS4IEIUcAgoDfOSfTRaXeMHYnCD6b8apuoxAF7rA0/oLXJM0flhztNSpzW8oHVBksO5wZlFnT0U5eftfWixxoZHRJHPIQlcoXHAPt6oUiKqIpAnMdYP269gPZDiW75k9D6FfxosymXqVWO9F6yUbYU/REbQl8sn5H04q9IKeIW5MOtmMFGrGxZKecjW+a/Km3FIPfl4INM01rOJRWTCCfq0GimaYdy9JYcaNxM1QBqmy1UdyxAE9MKN4QsQqL3xLZDxt1ykcsLgF1BaF3OT7s4btZp88y0AuJ7LObVxS1wHevatvJl5f5DLq0QIDAQAB";
-
 	public static final String MB_TRANSFER = "https://api-sandbox.mbbank.com.vn/ms/funds-partner/transfer-fund/v1.0/make-transfer-partner";
 	public static final String MB_GET_TOKEN_URL = "https://api-sandbox.mbbank.com.vn/oauth2/v1/token";
 	public static final String MB_GET_NAME_URL = "https://api-sandbox.mbbank.com.vn/ms/onbehalfpayment/v1.0/onbehalfpayment/v1.0/account/credit/name";
@@ -160,7 +158,6 @@ public class Constants {
 	public static final String VNPT_ID = "edf6fbf8-6468-3377-e053-63199f0aea8b";
 	public static final String VNPT_KEY = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJ4DZir0axuFUoNmqUfzteiLjcx29ly/pDcFiMG/pFk5I/9z8eKvzw6WcfCG0VFY38FjBEA0sdtU2uhWfmxMBbsCAwEAAQ==";
 	public static final String VNPT_TOKEN = "bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlZGY2ZjlhOC1mYzcxLTY2ZDQtZTA1My02MjE5OWYwYWNlNTgiLCJhdWQiOlsicmVzdHNlcnZpY2UiXSwidXNlcl9uYW1lIjoibmd1eWVubGhuZ3V5ZW5AZ21haWwuY29tIiwic2NvcGUiOlsicmVhZCJdLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdCIsIm5hbWUiOiJuZ3V5ZW5saG5ndXllbkBnbWFpbC5jb20iLCJ1dWlkX2FjY291bnQiOiJlZGY2ZjlhOC1mYzcxLTY2ZDQtZTA1My02MjE5OWYwYWNlNTgiLCJhdXRob3JpdGllcyI6WyJVU0VSIl0sImp0aSI6ImVkYjg1NzUzLTIxMWEtNGZhMC1iYTJmLTI1M2I3ZDkyYjI2ZCIsImNsaWVudF9pZCI6ImFkbWluYXBwIn0.Ug0_c8cU8unP_J1E81sxHWBHcjISS1U-yVasD9q13gF6AgnYtsn3YMH4tbMIpQ-urQ1SuRtNWP4CTA3ywlPU_Y7tx0dkJ6FRnZjarfpsviGun1zafy5iccXOJGP47Hvjai34yk-hEQ_BZgjFy9s9kl56KqAyEXStwhNU5umyr-6Qj11c9BEXCnmOUc8tWC8VJ_uy9wc4zV8gw468XiZHAsZ9LzjwyMkf050DkK2EGoA4TMHlhuFaLo6xB5uR4X1wHiYhNyoDTp_8MmwwfpkoUbHo9ZIP3OTJ9DQ5zEIvtzQAbo8IepVuwPmb_lucO5v8AflXLOJBKLlottgutjsRdQ";
-
 
 	// FUND AMBER
 	public static final String AMBER_URL = "https://online.ambercapital.vn"; // link golive
