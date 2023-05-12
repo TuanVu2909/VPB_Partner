@@ -78,6 +78,7 @@ import com.lendbiz.p2p.api.entity.FirstPasswordEntity;
 import com.lendbiz.p2p.api.entity.FundInvestDetailEntity;
 import com.lendbiz.p2p.api.entity.FundInvestEntity;
 import com.lendbiz.p2p.api.entity.FundListEntity;
+import com.lendbiz.p2p.api.entity.GameTurnEntity;
 import com.lendbiz.p2p.api.entity.GetEndRateRequest;
 import com.lendbiz.p2p.api.entity.GmFundNAVEntity;
 import com.lendbiz.p2p.api.entity.InvestAssets;
@@ -120,6 +121,7 @@ import com.lendbiz.p2p.api.repository.FirstPasswordRepository;
 import com.lendbiz.p2p.api.repository.FundInvestDetailRepository;
 import com.lendbiz.p2p.api.repository.FundInvestRepository;
 import com.lendbiz.p2p.api.repository.FundListRepository;
+import com.lendbiz.p2p.api.repository.GameTurnRepository;
 import com.lendbiz.p2p.api.repository.GetRateRepository;
 import com.lendbiz.p2p.api.repository.GetReferenceRepo;
 import com.lendbiz.p2p.api.repository.InvestAssetsRepository;
@@ -290,7 +292,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     AffiliateRepository affiliateRepository;
 
-    
+    @Autowired
+    GameTurnRepository gameTurnRepository;
 
     @Override
     public ResponseEntity<?> checkVersion3GangOutdated(String version) {
@@ -517,6 +520,16 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         try {
             UserInfoEntity user = userInfoRepository.getUserInfo(custId);
             BankAccountEntity bank = bankAccountRepository.getUserBankAccount(custId);
+            GameTurnEntity gameTurn = new GameTurnEntity();
+            try {
+                gameTurn = gameTurnRepository.getGameTurn(custId, 1);
+                if(gameTurn == null) gameTurn = new GameTurnEntity(0);
+
+            } catch (Exception e) {
+                log.info(e.getMessage());
+                gameTurn.setRestCount(0);
+            }
+           
             String userPhone = user.getMobileSms();
             String urlAvatar = "";
             String urlBackgroundImage = "";
@@ -590,6 +603,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             map.put("inviteFriendDescription", inviteFriendDescription);
             map.put("xuTitle", xuTitle);
             map.put("xuDescription", xuDescription);
+            map.put("gameTurn", gameTurn.getRestCount());
 
             return response(toResult(map));
 

@@ -11,15 +11,15 @@ import javax.persistence.*;
 @Setter
 @ToString
 @NamedStoredProcedureQueries({ //
-                @NamedStoredProcedureQuery(name = "WheelEntity.updateWheelConfig", resultClasses = WheelEntity.class, procedureName = "PKG_API.update_wheelconfig", parameters = { //
+                @NamedStoredProcedureQuery(name = "GameEntity.updateGameConfig", resultClasses = GameEntity.class, procedureName = "PKG_API.update_gameconfig", parameters = { //
                                 @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
                                 @StoredProcedureParameter(name = "pv_id", mode = ParameterMode.IN, type = Integer.class),
-                                @StoredProcedureParameter(name = "pv_rate", mode = ParameterMode.IN, type = Integer.class),
+                                @StoredProcedureParameter(name = "pv_rate", mode = ParameterMode.IN, type = Double.class),
                                 @StoredProcedureParameter(name = "pv_giftid", mode = ParameterMode.IN, type = Integer.class),
                                 @StoredProcedureParameter(name = "pv_groupid", mode = ParameterMode.IN, type = Integer.class),
                                 @StoredProcedureParameter(name = "pv_status", mode = ParameterMode.IN, type = Integer.class),
                 }),
-                @NamedStoredProcedureQuery(name = "WheelEntity.updateWheelGroupTime", resultClasses = WheelEntity.class, procedureName = "PKG_API.update_wheelgrouptime", parameters = { //
+                @NamedStoredProcedureQuery(name = "GameEntity.updateGameGroupTime", resultClasses = GameEntity.class, procedureName = "PKG_API.update_gamegrouptime", parameters = { //
                                 @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
                                 @StoredProcedureParameter(name = "pv_groupid", mode = ParameterMode.IN, type = Integer.class),
                                 @StoredProcedureParameter(name = "pv_fromtime", mode = ParameterMode.IN, type = String.class),
@@ -30,7 +30,7 @@ import javax.persistence.*;
                                 @StoredProcedureParameter(name = "pv_maxprize", mode = ParameterMode.IN, type = Integer.class),
                 }),
 
-                @NamedStoredProcedureQuery(name = "WheelEntity.updateWheelPrize", resultClasses = WheelEntity.class, procedureName = "PKG_API.update_wheelprize", parameters = { //
+                @NamedStoredProcedureQuery(name = "GameEntity.updateGamePrize", resultClasses = GameEntity.class, procedureName = "PKG_API.update_gameprize", parameters = { //
                                 @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
                                 @StoredProcedureParameter(name = "pv_id", mode = ParameterMode.IN, type = Integer.class),
                                 @StoredProcedureParameter(name = "pv_name", mode = ParameterMode.IN, type = String.class),
@@ -39,7 +39,7 @@ import javax.persistence.*;
 
                 }),
 
-                @NamedStoredProcedureQuery(name = "WheelEntity.insertWheelHistory", resultClasses = WheelEntity.class, procedureName = "PKG_API.insert_wheelhistory", parameters = { //
+                @NamedStoredProcedureQuery(name = "GameEntity.insertGameHistory", resultClasses = GameEntity.class, procedureName = "PKG_API.insert_gamehistory", parameters = { //
                                 @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
                                 @StoredProcedureParameter(name = "pv_custid", mode = ParameterMode.IN, type = String.class),
                                 @StoredProcedureParameter(name = "pv_status", mode = ParameterMode.IN, type = Integer.class),
@@ -47,7 +47,7 @@ import javax.persistence.*;
 
                 })
 })
-public class WheelEntity {
+public class GameEntity {
         @Id
         @Column(name = "ERRCODE")
         private int errCode;

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -13,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lendbiz.p2p.api.exception.BusinessException;
-import com.lendbiz.p2p.api.request.WheelConfigUpdateRequest;
-import com.lendbiz.p2p.api.service.WheelService;
+import com.lendbiz.p2p.api.request.GameConfigUpdateRequest;
+import com.lendbiz.p2p.api.service.GameService;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -28,36 +29,47 @@ import lombok.extern.log4j.Log4j2;
  *
  ***********************************************************************/
 @RestController
-@RequestMapping("/lendbiz/wheel")
+@RequestMapping("/lendbiz/game")
 @CrossOrigin(origins = "*")
-public class WheelController {
+public class GameController {
 
     @Autowired
-    WheelService wheelService;
+    GameService gameService;
 
-    @PostMapping("/update-wheel")
+    @PostMapping("/update-game")
     @Transactional(readOnly = true)
-    public ResponseEntity<?> updateWheel(HttpServletRequest httpServletRequest,
+    public ResponseEntity<?> updateGame(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestHeader("apiType") int apiType,
-            @RequestBody WheelConfigUpdateRequest request)
+            @RequestBody GameConfigUpdateRequest request)
             throws BusinessException {
         if (apiType == 1) {
-            return wheelService.updateWheelConfig(request);
+            return gameService.updateGameConfig(request);
         }
 
         if (apiType == 2) {
-            return wheelService.updateWheelGroupTime(request);
+            return gameService.updateGameGroupTime(request);
         }
 
         if (apiType == 3) {
-            return wheelService.updateWheelPrize(request);
+            return gameService.updateGamePrize(request);
         }
 
         if (apiType == 4) {
-            return wheelService.insertWheelHistory(request);
+            return gameService.insertGameHistory(request);
         }
 
-        throw new BusinessException("Thiếu apiType trong header: 1 - update wheelConfig | 2 - updateWeelGroupTime | 3 - updateWheelPrize | 4 - insert play log");
+        throw new BusinessException(
+                "Thiếu apiType trong header: 1 - update GameConfig | 2 - updateGameGroupTime | 3 - updateGamePrize | 4 - insert play log");
+
+    }
+
+    @PostMapping("/get-game-config")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getGameConfig(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId,
+            @RequestBody GameConfigUpdateRequest request)
+            throws BusinessException {
+        return gameService.getGameConfig(request);
 
     }
 

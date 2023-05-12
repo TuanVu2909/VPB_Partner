@@ -153,6 +153,7 @@ public class UserController extends BaseResponse<UserService> {
     }
 
     @GetMapping("/get-user-info")
+    @Transactional(readOnly = true)
     public ResponseEntity<?> getUserInfo(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId, @RequestParam String mobile)
             throws BusinessException {
@@ -818,9 +819,9 @@ public class UserController extends BaseResponse<UserService> {
 
     }
 
-    public static void main(String[] args) {
-        System.out.println(WordUtils.capitalize("LÊ HOÀNG NGUYÊN".toLowerCase()));
-    }
+    // public static void main(String[] args) {
+    //     System.out.println(WordUtils.capitalize("LÊ HOÀNG NGUYÊN".toLowerCase()));
+    // }
 
     @RequestMapping("/view/{typeContract}/{phone}")
     public void showPDF(HttpServletResponse response, @PathVariable String typeContract, @PathVariable String phone)

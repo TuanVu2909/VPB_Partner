@@ -11,21 +11,22 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @ToString
-public class WheelConfigUpdateRequest {
+public class GameConfigUpdateRequest {
 
     private int id;
-    private int rate;
+    private double rate;
     private int giftId;
     private int groupId;
     private int status;
 
     private String custId;
     private String name;
-    private int rAmount;
+    private int prizeAmount;
     private String fromTime;
     private String toTime;
     private String toDate;
     private String fromDate;
     private int maxPrize;
+    private int gameId;
 
 }

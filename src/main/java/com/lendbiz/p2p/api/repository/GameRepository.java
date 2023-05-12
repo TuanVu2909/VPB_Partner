@@ -4,19 +4,19 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 
-import com.lendbiz.p2p.api.entity.WheelEntity;
+import com.lendbiz.p2p.api.entity.GameEntity;
 
-public interface WheelRepository extends JpaRepository<WheelEntity, String> {
+public interface GameRepository extends JpaRepository<GameEntity, String> {
 
-        @Procedure("WheelEntity.updateWheelConfig")
-        WheelEntity updateWheelConfig(@Param("pv_id") int id,
-                        @Param("pv_rate") int rate,
+        @Procedure("GameEntity.updateGameConfig")
+        GameEntity updateGameConfig(@Param("pv_id") int id,
+                        @Param("pv_rate") double rate,
                         @Param("pv_giftid") int giftId,
                         @Param("pv_groupid") int groupId,
                         @Param("pv_status") int status);
 
-        @Procedure("WheelEntity.updateWheelGroupTime")
-        WheelEntity updateWheelGroupTime(@Param("pv_groupid") int groupId,
+        @Procedure("GameEntity.updateGameGroupTime")
+        GameEntity updateGameGroupTime(@Param("pv_groupid") int groupId,
                         @Param("pv_fromtime") String fromTime,
                         @Param("pv_totime") String toTime,
                         @Param("pv_fromdate") String fromDate,
@@ -24,14 +24,14 @@ public interface WheelRepository extends JpaRepository<WheelEntity, String> {
                         @Param("pv_status") int status,
                         @Param("pv_maxprize") int maxPrize);
 
-        @Procedure("WheelEntity.updateWheelPrize")
-        WheelEntity updateWheelPrize(@Param("pv_id") int id,
+        @Procedure("GameEntity.updateGamePrize")
+        GameEntity updateGamePrize(@Param("pv_id") int id,
                         @Param("pv_name") String name,
                         @Param("pv_status") int status,
                         @Param("pv_ramount") int rAmount);
 
-        @Procedure("WheelEntity.insertWheelHistory")
-        WheelEntity insertWheelHistory(@Param("pv_custid") String custId,
+        @Procedure("GameEntity.insertGameHistory")
+        GameEntity insertGameHistory(@Param("pv_custid") String custId,
                         @Param("pv_status") int status,
                         @Param("pv_giftid") int giftId);
 
