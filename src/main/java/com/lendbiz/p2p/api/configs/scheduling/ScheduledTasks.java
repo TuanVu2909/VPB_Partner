@@ -25,13 +25,13 @@ public class ScheduledTasks {
 //        logger.info(!!!!!!!!!!!!!!!!!!!);
 //    }
     // 5 phút một lần
-    @Scheduled(zone = "GMT+7", cron = "0 */5 * ? * *")
+    //@Scheduled(zone = "GMT+7", cron = "0 */5 * ? * *")
     public void scheduleTaskGetToken() {
         fundService.getTokenAFM();
     }
 
     // 15p một lần
-    @Scheduled(zone = "GMT+7", fixedRate = (1000*60)*15)
+    //@Scheduled(zone = "GMT+7", fixedRate = (1000*60)*15)
     public void jobAffiliate() {
         userService.jobHandleAffiliate0();
         userService.jobHandleAffiliate1();
