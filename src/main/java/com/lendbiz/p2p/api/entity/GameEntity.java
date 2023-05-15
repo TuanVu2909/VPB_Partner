@@ -53,5 +53,5 @@ public class GameEntity {
         private int errCode;
 
         @Column(name = "ERRMESSAGE")
-        private String errMessage;
+        private int errMessage;
 }
