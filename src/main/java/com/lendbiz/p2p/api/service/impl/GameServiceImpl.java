@@ -56,8 +56,13 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
 
     @Override
     public ResponseEntity<?> insertGameHistory(GameConfigUpdateRequest request) {
-        return response(toResult(gameRepository.insertGameHistory(request.getCustId(), request.getStatus(),
-                request.getGiftId())));
+        try {
+            return response(toResult(gameRepository.insertGameHistory(request.getCustId(), request.getStatus(),
+            request.getGiftId())));
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.ERROR_500, e.getMessage());
+        }
+    
     }
 
 }

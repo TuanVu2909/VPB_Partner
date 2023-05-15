@@ -918,7 +918,7 @@ public class UserController extends BaseResponse<UserService> {
 
     public static String isStop = "NO";
 
-    @KafkaListener(topics = "MAINTENANCE", groupId = "MAINTENANCE_GROUP")
+    @KafkaListener(topics = "MAINTENANCE_TEST", groupId = "MAINTENANCE_GROUP_TEST")
     @Transactional(readOnly = true)
     public void consumeAutoCashOut(String isStop) {
         log.info(String.format("#### -> System maintenance-> %s", isStop));
