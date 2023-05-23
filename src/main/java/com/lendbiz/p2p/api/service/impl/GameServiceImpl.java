@@ -24,7 +24,7 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
     @Override
     public ResponseEntity<?> getGameConfig(GameConfigUpdateRequest request) {
         try {
-            return response(toResult(gameConfigRepository.getGameConfig(
+            return response(toResult(gameConfigRepository.getGameConfig(request.getCustId(),
                     request.getGroupId(), request.getFromTime(), request.getToTime(), request.getFromDate(),
                     request.getToDate())));
         } catch (Exception e) {

@@ -716,7 +716,7 @@ public class UserController extends BaseResponse<UserService> {
         // Random().nextInt(999999));
 
         Mail mail = new Mail();
-        mail.setMailFrom("tuht@lendbiz.vn");
+        mail.setMailFrom("cskh@lendbiz.vn");
         mail.setMailTo(request.getEmail());
         mail.setMailSubject("[3Gang] Xác thực email");
         mail.setMailContent("Mã xác thực email 3Gang của bạn là: " + request.getOtp());
