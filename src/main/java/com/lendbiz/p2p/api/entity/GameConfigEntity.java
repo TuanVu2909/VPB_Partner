@@ -15,7 +15,7 @@ import javax.persistence.*;
 @NamedStoredProcedureQueries({ //
                 @NamedStoredProcedureQuery(name = "GameConfigEntity.getGameConfig", resultClasses = GameConfigEntity.class, procedureName = "PKG_API.get_gameconfig", parameters = { //
                                 @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
-                                @StoredProcedureParameter(name = "pv_custId", mode = ParameterMode.IN, type = String.class),
+                                @StoredProcedureParameter(name = "pv_custid", mode = ParameterMode.IN, type = String.class),
                                 @StoredProcedureParameter(name = "pv_groupid", mode = ParameterMode.IN, type = Integer.class),
                                 @StoredProcedureParameter(name = "pv_fromtime", mode = ParameterMode.IN, type = String.class),
                                 @StoredProcedureParameter(name = "pv_totime", mode = ParameterMode.IN, type = String.class),
