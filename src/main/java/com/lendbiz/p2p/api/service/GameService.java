@@ -8,6 +8,8 @@ public interface GameService {
 
     ResponseEntity<?> getGameConfig(GameConfigUpdateRequest request);
 
+    ResponseEntity<?> getGameTurn(GameConfigUpdateRequest request);
+
     ResponseEntity<?> updateGameConfig(GameConfigUpdateRequest request);
 
     ResponseEntity<?> updateGameGroupTime(GameConfigUpdateRequest request);

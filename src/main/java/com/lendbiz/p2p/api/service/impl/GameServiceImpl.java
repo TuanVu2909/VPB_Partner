@@ -8,6 +8,7 @@ import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.GameConfigRepository;
 import com.lendbiz.p2p.api.repository.GameRepository;
+import com.lendbiz.p2p.api.repository.GameTurnRepository;
 import com.lendbiz.p2p.api.request.GameConfigUpdateRequest;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.service.GameService;
@@ -21,12 +22,26 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
     @Autowired
     GameConfigRepository gameConfigRepository;
 
+    @Autowired
+    GameTurnRepository gameTurnRepository;
+
     @Override
     public ResponseEntity<?> getGameConfig(GameConfigUpdateRequest request) {
         try {
             return response(toResult(gameConfigRepository.getGameConfig(request.getCustId(),
                     request.getGroupId(), request.getFromTime(), request.getToTime(), request.getFromDate(),
                     request.getToDate())));
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
+        }
+
+    }
+
+    @Override
+    public ResponseEntity<?> getGameTurn(GameConfigUpdateRequest request) {
+        try {
+            return response(toResult(gameTurnRepository.getGameTurn(request.getCustId(),
+                    1)));
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
         }
@@ -58,11 +73,11 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
     public ResponseEntity<?> insertGameHistory(GameConfigUpdateRequest request) {
         try {
             return response(toResult(gameRepository.insertGameHistory(request.getCustId(), request.getStatus(),
-            request.getGiftId(), request.getRate(), request.getId())));
+                    request.getGiftId(), request.getRate(), request.getId())));
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.ERROR_500, e.getMessage());
         }
-    
+
     }
 
 }

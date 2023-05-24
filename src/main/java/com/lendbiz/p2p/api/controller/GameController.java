@@ -73,4 +73,14 @@ public class GameController {
 
     }
 
+    @PostMapping("/get-game-turn")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getGameTurn(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId,
+            @RequestBody GameConfigUpdateRequest request)
+            throws BusinessException {
+        return gameService.getGameTurn(request);
+
+    }
+
 }

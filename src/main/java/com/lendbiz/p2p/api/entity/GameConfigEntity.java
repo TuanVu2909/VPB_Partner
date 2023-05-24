@@ -22,7 +22,14 @@ import javax.persistence.*;
                                 @StoredProcedureParameter(name = "pv_fromdate", mode = ParameterMode.IN, type = String.class),
                                 @StoredProcedureParameter(name = "pv_todate", mode = ParameterMode.IN, type = String.class),
 
-                })
+                }),
+
+                @NamedStoredProcedureQuery(name = "GameConfigEntity.getGameTurn", resultClasses = GameConfigEntity.class, procedureName = "PKG_API.get_gameturn", parameters = { //
+                        @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
+                        @StoredProcedureParameter(name = "pv_custid", mode = ParameterMode.IN, type = String.class),
+                        @StoredProcedureParameter(name = "pv_gameid", mode = ParameterMode.IN, type = Integer.class)
+
+        })
 })
 public class GameConfigEntity {
         @Id
