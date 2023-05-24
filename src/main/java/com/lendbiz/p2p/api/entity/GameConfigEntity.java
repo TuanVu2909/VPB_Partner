@@ -52,4 +52,7 @@ public class GameConfigEntity {
 
         @Column(name = "MAXPRIZE")
         private Integer maxPrize;
+
+        @Column(name = "CONFIGID")
+        private Integer configId;
 }
