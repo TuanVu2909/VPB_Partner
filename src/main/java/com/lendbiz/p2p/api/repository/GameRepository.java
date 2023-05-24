@@ -33,6 +33,8 @@ public interface GameRepository extends JpaRepository<GameEntity, String> {
         @Procedure("GameEntity.insertGameHistory")
         GameEntity insertGameHistory(@Param("pv_custid") String custId,
                         @Param("pv_status") int status,
-                        @Param("pv_giftid") int giftId);
+                        @Param("pv_giftid") int giftId,
+                        @Param("pv_rate") double rate,
+                        @Param("pv_configid") int configId);
 
 }
