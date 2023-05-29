@@ -1,5 +1,6 @@
 package com.lendbiz.p2p.api.configs.scheduling;
 
+import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.service.FundService;
 import com.lendbiz.p2p.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,12 @@ public class ScheduledTasks {
 //        // call send email method here
 //        logger.info(!!!!!!!!!!!!!!!!!!!);
 //    }
+
+    //@Scheduled(initialDelay = 1 * 60, fixedDelay = 2 * 5000)
+    public void autoSign() throws BusinessException {
+        userService.autoSignContract();
+    }
+
     // 5 phút một lần
     //@Scheduled(zone = "GMT+7", cron = "0 */5 * ? * *")
     public void scheduleTaskGetToken() {

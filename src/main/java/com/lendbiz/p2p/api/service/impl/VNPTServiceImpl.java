@@ -51,7 +51,7 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
     @Autowired
     ProducerMessage producerMessage;
 
-    public String uploadImage(MultipartFile image, String title, String description){
+    public String uploadImage(MultipartFile image, String title, String description) {
         // Phí 0 vnd
         HttpHeaders headers = new HttpHeaders();
         MultiValueMap<String, Object> bodies = new LinkedMultiValueMap<>();
@@ -89,13 +89,12 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
 
     @SneakyThrows
     @Override
-    public ResponseEntity<?> vertifyIdentity(MultipartFile imgFrontId, MultipartFile imgBackId, String mobile){
+    public ResponseEntity<?> vertifyIdentity(MultipartFile imgFrontId, MultipartFile imgBackId, String mobile) {
         String hashImgFrontId = this.uploadImage(imgFrontId, "imgFrontId", "imgFrontId");
         String hashImgBackId = this.uploadImage(imgBackId, "imgBackId", "imgBackId");
-        logger.info("============= Start eKYC vertifyIdentity (VNPT) =============");
 
-        this.saveFileKafka(imgFrontId, mobile, 0);
-        this.saveFileKafka(imgBackId, mobile, 1);
+        //this.saveFileKafka(imgFrontId, mobile, 0);
+        //this.saveFileKafka(imgBackId, mobile, 1);
 
         // Phí 800 vnd
         BgEkycEntity bgEkyc = this.bgEkycRepository.findByMobileSms(mobile);
@@ -135,53 +134,78 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
         headers.set("Token-key", Constants.VNPT_KEY);
 
         bodies.put("img_front", hashImgFrontId);
-        bodies.put("img_back", hashImgBackId);
         bodies.put("client_session", mobile);
+
+        // check giay tờ thật giả
+        HttpEntity<?> requestLiveCard = new HttpEntity(bodies, headers);
+        JsonNode rootLiveCard = null;
+        try {
+            ResponseEntity<String> responseEntity = restTemplate.exchange(
+                    Constants.VNPT_DOMAIN + "/ai/v1/card/liveness",
+                    HttpMethod.POST,
+                    requestLiveCard,
+                    String.class,
+                    (Object) null);
+
+            rootLiveCard = mapper.readTree(responseEntity.getBody());
+        }
+        catch (Exception e){
+            throw new BusinessException(Constants.FAIL, Constants.MESSAGE_FAIL);
+        }
+
+        if(rootLiveCard == null){throw new BusinessException(ErrorCode.VNPT_CARD_LIVENESS, ErrorCode.VNPT_CARD_LIVENESS_DESC);}
+
+        if(!"success".equals(rootLiveCard.get("object").get("liveness").asText())){
+            throw new BusinessException(ErrorCode.VNPT_CARD_FAKE, ErrorCode.VNPT_CARD_FAKE_DESC);
+        }
+
+        // xủ lý tiếp (bóc tách orc)
+        bodies.put("img_back", hashImgBackId);
         bodies.put("type", -1); // -1: CMND, CCCD cũ/ mới
         bodies.put("token", Constants.VNPT_ID);
 
-        HttpEntity<?> request = new HttpEntity(bodies, headers);
-        JsonNode root = null;
+        HttpEntity<?> requestOrc = new HttpEntity(bodies, headers);
+        JsonNode rootOrc = null;
         try {
             ResponseEntity<String> responseEntity = restTemplate.exchange(
                     Constants.VNPT_DOMAIN + "/ai/v1/ocr/id",
                     HttpMethod.POST,
-                    request,
+                    requestOrc,
                     String.class,
                     (Object) null);
 
-            root = mapper.readTree(responseEntity.getBody());
+            rootOrc = mapper.readTree(responseEntity.getBody());
         }
         catch (Exception e){
-            root = BaseService.stringToRoot(e.getMessage());
-            if(root.get("statusCode").asInt() == 400){
-                if(root.get("message").asText().equals("IDG-00010003")){
+            rootOrc = BaseService.stringToRoot(e.getMessage());
+            if(rootOrc.get("statusCode").asInt() == 400){
+                if(rootOrc.get("message").asText().equals("IDG-00010003")){
                     throw new BusinessException(ErrorCode.VNPT_INVALID_INPUT, ErrorCode.VNPT_INVALID_INPUT_DESC);
                 }
-                if(root.get("message").asText().equals("IDG-00010202")){
+                if(rootOrc.get("message").asText().equals("IDG-00010202")){
                     throw new BusinessException(ErrorCode.VNPT_NO_IMAGE, ErrorCode.VNPT_NO_IMAGE_DESC);
                 }
-                if(root.get("message").asText().equals("IDG-00010445")){
+                if(rootOrc.get("message").asText().equals("IDG-00010445")){
                     throw new BusinessException(ErrorCode.VNPT_INVALID_INPUT, ErrorCode.VNPT_INVALID_INPUT_DESC);
                 }
-                if(root.get("message").asText().equals("IDG-00010448")){
+                if(rootOrc.get("message").asText().equals("IDG-00010448")){
                     throw new BusinessException(ErrorCode.VNPT_ID_FRONT_INVALID, ErrorCode.VNPT_ID_FRONT_INVALID_DESC);
                 }
-                if(root.get("message").asText().equals("IDG-00010449")){
+                if(rootOrc.get("message").asText().equals("IDG-00010449")){
                     throw new BusinessException(ErrorCode.VNPT_ID_BACK_INVALID, ErrorCode.VNPT_ID_BACK_INVALID_DESC);
                 }
                 else {
-                    throw new BusinessException(ErrorCode.UNKNOWN_ERROR, root.get("errors").asText());
+                    throw new BusinessException(ErrorCode.UNKNOWN_ERROR, rootOrc.get("errors").asText());
                 }
             }
         }
         // field common
         // idFontType,idBackType -> loai giay to:  2 -> HC, 3 -> CMQD, 4 -> BLX
         // idFontType,idBackType -> loai giay to:  0 -> CM9, 1 -> CCCD,CM12, 5 -> CCGC
-        String idFontType = root.get("object").get("type_id").asText();
-        String idBackType = root.get("object").get("back_type_id").asText();
+        String idFontType = rootOrc.get("object").get("type_id").asText();
+        String idBackType = rootOrc.get("object").get("back_type_id").asText();
 
-        if(root.get("statusCode").asInt() == 200){
+        if(rootOrc.get("statusCode").asInt() == 200){
 //            if(root.get("object").has("dupplication_warning")){
 //                if("true".equals(root.get("object").get("dupplication_warning").asText())){
 //                    throw new BusinessException(ErrorCode.VNPT_INVALID_INPUT, ErrorCode.VNPT_INVALID_INPUT_DESC);
@@ -194,47 +218,43 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
             if(!idFontType.equals(idBackType)){
                 throw new BusinessException(ErrorCode.VNPT_INVALID_ID_TYPE, ErrorCode.VNPT_INVALID_ID_TYPE_DESC);
             }
-            if(!(root.get("object").get("checking_result_front").get("corner_cut_result").asText().equals("0"))){
+            if(!(rootOrc.get("object").get("checking_result_front").get("corner_cut_result").asText().equals("0"))){
                 throw new BusinessException(ErrorCode.VNPT_ID_FRONT_COVER, ErrorCode.VNPT_ID_FRONT_COVER_DESC);
             }
-            if(!(root.get("object").get("checking_result_back").get("corner_cut_result").asText().equals("0"))){
+            if(!(rootOrc.get("object").get("checking_result_back").get("corner_cut_result").asText().equals("0"))){
                 throw new BusinessException(ErrorCode.VNPT_ID_BACK_COVER, ErrorCode.VNPT_ID_BACK_COVER_DESC);
             }
-            if(root.get("object").get("tampering").get("is_legal").asText().equals("no") ||
-                    root.get("object").get("id_fake_warning").asText().equals("yes")){
+            if(rootOrc.get("object").get("tampering").get("is_legal").asText().equals("no") ||
+                    rootOrc.get("object").get("id_fake_warning").asText().equals("yes")){
                 throw new BusinessException(ErrorCode.VNPT_INVALID_INPUT_DESC, ErrorCode.VNPT_INVALID_INPUT_DESC);
             }
-            if(root.get("object").get("expire_warning").asText().equals("yes") ||
-                    root.get("object").get("back_expire_warning").asText().equals("yes")){
+            if(rootOrc.get("object").get("expire_warning").asText().equals("yes") ||
+                    rootOrc.get("object").get("back_expire_warning").asText().equals("yes")){
                 throw new BusinessException(ErrorCode.VNPT_ID_EXPIRED, ErrorCode.VNPT_ID_EXPIRED_DESC);
             }
-            if(root.get("object").get("corner_warning").asText().equals("yes") ||
-                    root.get("object").get("back_corner_warning").asText().equals("yes")){
+            if(rootOrc.get("object").get("corner_warning").asText().equals("yes") ||
+                    rootOrc.get("object").get("back_corner_warning").asText().equals("yes")){
                 throw new BusinessException(ErrorCode.VNPT_ID_NO_CORNER, ErrorCode.VNPT_ID_NO_CORNER_DESC);
             }
             // CCGC
             if(idFontType.equals("5") && idBackType.equals("5")){
-                if(root.get("object").get("match_front_back").get("match_sex").asText().equals("no") ||
-                        root.get("object").get("match_front_back").get("match_bod").asText().equals("no") ||
-                        root.get("object").get("match_front_back").get("match_id").asText().equals("no") ||
-                        root.get("object").get("match_front_back").get("match_valid_date").asText().equals("no") ||
-                        root.get("object").get("match_front_back").get("match_name").asText().equals("no")
+                if(rootOrc.get("object").get("match_front_back").get("match_sex").asText().equals("no") ||
+                        rootOrc.get("object").get("match_front_back").get("match_bod").asText().equals("no") ||
+                        rootOrc.get("object").get("match_front_back").get("match_id").asText().equals("no") ||
+                        rootOrc.get("object").get("match_front_back").get("match_valid_date").asText().equals("no") ||
+                        rootOrc.get("object").get("match_front_back").get("match_name").asText().equals("no")
                 ){ throw new BusinessException(ErrorCode.VNPT_ID_NO_MATCH, ErrorCode.VNPT_ID_NO_MATCH_DESC); }
             }
 
-            if(cfMastRepo.findByIdCode(root.get("object").get("id").asText(), mobile).size() > 0){
+            if(cfMastRepo.findByIdCode(rootOrc.get("object").get("id").asText(), mobile).size() > 0){
                 throw new BusinessException(ErrorCode.USER_EXISTED, ErrorCode.USER_EXISTED_DESCRIPTION);
             }
-//            String []birth = root.get("object").get("birth_day").asText().split("/");
-//            String currentYear = new SimpleDateFormat("yyyy").format(new Date());
-//            if(Integer.parseInt(currentYear) - Integer.parseInt(birth[2]) < 18){
-//                throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_OLD_INVALID);
-//            }
+
             Date nDate;
             try {
-                nDate = Utils.convertStringToDateTechcombank(root.get("object").get("birth_day").asText());
+                nDate = Utils.convertStringToDateTechcombank(rootOrc.get("object").get("birth_day").asText());
             } catch (Exception e) {
-                nDate = Utils.convertStringToDate3Gang(root.get("object").get("birth_day").asText());
+                nDate = Utils.convertStringToDate3Gang(rootOrc.get("object").get("birth_day").asText());
             }
 
             LocalDate startDate = nDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -243,10 +263,11 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
             if (yearOld.getYears() < 18) {
                 throw new BusinessException(ErrorCode.FAILED_IDENTITY, ErrorCode.FAILED_OLD_INVALID);
             }
+
             // Đến đây là vertifyIdentity không có lỗi -> insert vào DB
             // Xử lý những field có thể bị null
-            String convNationality = "-".equals(root.get("object").get("nationality").asText()) ? "N/A" : root.get("object").get("nationality").asText();
-            String baseStr = root.get("object").get("gender").asText();
+            String convNationality = "-".equals(rootOrc.get("object").get("nationality").asText()) ? "N/A" : rootOrc.get("object").get("nationality").asText();
+            String baseStr = rootOrc.get("object").get("gender").asText();
             String convGender = "";
             // 001:Nam, 002:Nữ, 003:Khác
             if("Nam".equals(baseStr)){
@@ -256,20 +277,20 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
             } else {
                 convGender = "001";
             }
-            String convValidDate = "-".equals(root.get("object").get("valid_date").asText()) ? "31/12/9999" : root.get("object").get("valid_date").asText();
+            String convValidDate = "-".equals(rootOrc.get("object").get("valid_date").asText()) ? "31/12/9999" : rootOrc.get("object").get("valid_date").asText();
 
-            bgEkyc.setIdNo(root.get("object").get("id").asText());
-            bgEkyc.setTypeId(root.get("object").get("type_id").asInt());
-            bgEkyc.setCardType(root.get("object").get("card_type").asText());
-            bgEkyc.setName(root.get("object").get("name").asText());
-            bgEkyc.setBirthDay(root.get("object").get("birth_day").asText());
+            bgEkyc.setIdNo(rootOrc.get("object").get("id").asText());
+            bgEkyc.setTypeId(rootOrc.get("object").get("type_id").asInt());
+            bgEkyc.setCardType(rootOrc.get("object").get("card_type").asText());
+            bgEkyc.setName(rootOrc.get("object").get("name").asText());
+            bgEkyc.setBirthDay(rootOrc.get("object").get("birth_day").asText());
             bgEkyc.setNationality(convNationality);
             bgEkyc.setGender(convGender);
-            bgEkyc.setOriginLocation(root.get("object").get("origin_location").asText().replaceAll("\n", ", "));
-            bgEkyc.setRecentLocation(root.get("object").get("recent_location").asText().replaceAll("\n", ", "));
-            bgEkyc.setIssueDate(root.get("object").get("issue_date").asText());
+            bgEkyc.setOriginLocation(rootOrc.get("object").get("origin_location").asText().replaceAll("\n", ", "));
+            bgEkyc.setRecentLocation(rootOrc.get("object").get("recent_location").asText().replaceAll("\n", ", "));
+            bgEkyc.setIssueDate(rootOrc.get("object").get("issue_date").asText());
             bgEkyc.setValidDate(convValidDate);
-            bgEkyc.setIssuePlace(root.get("object").get("issue_place").asText().replaceAll("\n", ", "));
+            bgEkyc.setIssuePlace(rootOrc.get("object").get("issue_place").asText().replaceAll("\n", ", "));
             bgEkyc.setOrcSuccess("YES");
 
             this.bgEkycRepository.save(bgEkyc);
@@ -279,18 +300,17 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
 
     @SneakyThrows
     @Override
-    public ResponseEntity<?> vertifySelfie(MultipartFile imgFrontId, MultipartFile imgSelfie, String mobile){
+    public ResponseEntity<?> vertifySelfie(MultipartFile imgFrontId, MultipartFile imgSelfie, String mobile) {
         String hashImgFrontId = this.uploadImage(imgFrontId, "imgFrontId", "imgFrontId");
         String hashImgSelfie = this.uploadImage(imgSelfie, "imgSelfie", "imgSelfie");
 
-        logger.info("============= Start eKYC vertifySelfie (VNPT) =============");
-        this.saveFileKafka(imgSelfie, mobile, 2);
+        //this.saveFileKafka(imgSelfie, mobile, 2);
 
         // Phí 800 vnd
         BgEkycEntity bgEkyc = this.bgEkycRepository.findByMobileSms(mobile);
         String currentDate = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
         // chua co data
-        if(bgEkyc == null){
+        if(bgEkyc == null) {
             bgEkyc = new BgEkycEntity();
             bgEkyc.setMobileSms(mobile);
             bgEkyc.setEkycDate(currentDate);
@@ -298,15 +318,15 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
             bgEkyc.setApiCompare(bgEkyc.getApiCompare() + 1); // default ApiCompare = 0
         }
         // có data
-        else{
+        else {
             // ngày hiện tại là ngày eKYC -> check số lần ekyc
-            if(currentDate.equals(bgEkyc.getEkycDate())){
+            if(currentDate.equals(bgEkyc.getEkycDate())) {
                 if(bgEkyc.getApiCompare()>=3) throw new BusinessException(ErrorCode.EKYC_LIMIT, ErrorCode.EKYC_LIMIT_DESC);
                 // Lưu số lần call API vertifyIdentity vào DB
                 bgEkyc.setApiCompare(bgEkyc.getApiCompare() + 1); // default ApiCompare = 0
             }
             // ngày hiện tại khac ngày eKYC(currentDate>lastDate) -> reset lại ngày, so lần call API
-            else{
+            else {
                 bgEkyc.setEkycDate(currentDate);
                 bgEkyc.setApiCompare(1);
                 bgEkyc.setApiOrc(1);
@@ -323,44 +343,68 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
         headers.set("Token-id", Constants.VNPT_ID);
         headers.set("Token-key", Constants.VNPT_KEY);
 
-        bodies.put("img_front", hashImgFrontId);
         bodies.put("img_face", hashImgSelfie);
         bodies.put("client_session", mobile);
         bodies.put("token", Constants.VNPT_ID);
 
-        HttpEntity<?> request = new HttpEntity(bodies, headers);
-        JsonNode root;
+        // check khuon mat that gia
+        HttpEntity<?> requestFF = new HttpEntity(bodies, headers);
+        JsonNode rootFF = null;
+
+        try {
+            ResponseEntity<String> responseEntity = restTemplate.exchange(
+                    Constants.VNPT_DOMAIN + "/ai/v1/face/liveness",
+                    HttpMethod.POST,
+                    requestFF,
+                    String.class,
+                    (Object) null);
+            rootFF = mapper.readTree(responseEntity.getBody());
+        }
+        catch (Exception e) {
+
+        }
+
+        if(rootFF == null) { throw new BusinessException(ErrorCode.VNPT_FACE_LIVENESS, ErrorCode.VNPT_FACE_LIVENESS_DESC); }
+
+        if(!"success".equals(rootFF.get("object").get("liveness").asText())) {
+            throw new BusinessException(ErrorCode.VNPT_FACE_FAKE, ErrorCode.VNPT_FACE_FAKE_DESC);
+        }
+
+        bodies.put("img_front", hashImgFrontId);
+
+        HttpEntity<?> requestCompare = new HttpEntity(bodies, headers);
+        JsonNode rootCompare;
         try {
             ResponseEntity<String> responseEntity = restTemplate.exchange(
                     Constants.VNPT_DOMAIN + "/ai/v1/face/compare",
                     HttpMethod.POST,
-                    request,
+                    requestCompare,
                     String.class,
                     (Object) null);
-            root = mapper.readTree(responseEntity.getBody());
+            rootCompare = mapper.readTree(responseEntity.getBody());
         }
-        catch (Exception e){
-            root = BaseService.stringToRoot(e.getMessage());
-            if(root.get("statusCode").asInt() == 400){
+        catch (Exception e) {
+            rootCompare = BaseService.stringToRoot(e.getMessage());
+            if(rootCompare.get("statusCode").asInt() == 400){
                 throw new BusinessException(ErrorCode.VNPT_FACE_NO_FIND, ErrorCode.VNPT_FACE_NO_FIND_DESC);
             }
             else {
-                throw new BusinessException(ErrorCode.UNKNOWN_ERROR, root.get("errors").asText());
+                throw new BusinessException(ErrorCode.UNKNOWN_ERROR, rootCompare.get("errors").asText());
             }
         }
 
-        if(root.get("statusCode").asInt() == 200){
-            if(root.get("object").get("multiple_faces").asBoolean() == true){
+        if(rootCompare.get("statusCode").asInt() == 200) {
+            if(rootCompare.get("object").get("multiple_faces").asBoolean() == true) {
                 throw new BusinessException(ErrorCode.VNPT_MULTIPLE_FACES, ErrorCode.VNPT_MULTIPLE_FACES_DESC);
             }
-            if(root.get("object").get("msg").asText().equals("NOMATCH")){
+            if(rootCompare.get("object").get("msg").asText().equals("NOMATCH")) {
                 throw new BusinessException(ErrorCode.VNPT_FACE_NO_MATCH, ErrorCode.VNPT_FACE_NO_MATCH_DESC);
             }
         }
 
         bgEkyc.setCompareSuccess("YES");
         this.bgEkycRepository.save(bgEkyc);
-        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, root.get("object")));
+        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, rootCompare.get("object")));
     }
 
     public void saveFileKafka(MultipartFile file, String mobile, int type) {

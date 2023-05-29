@@ -132,7 +132,19 @@ public class ErrorCode {
     public static final String VNPT_FACE_NO_FIND = "36";
     public static final String VNPT_FACE_NO_FIND_DESC = "Không tìm thấy khuôn mặt!";
 
-    public static final String EKYC_LIMIT = "37";
+    public static final String VNPT_CARD_LIVENESS = "37";
+    public static final String VNPT_CARD_LIVENESS_DESC = "Không kiểm tra được giấy tờ thật giả";
+
+    public static final String VNPT_CARD_FAKE = "38";
+    public static final String VNPT_CARD_FAKE_DESC = "Không phải giấy tờ thật";
+
+    public static final String VNPT_FACE_LIVENESS = "39";
+    public static final String VNPT_FACE_LIVENESS_DESC = "Không kiểm tra được khuôn mặt thật giả";
+
+    public static final String VNPT_FACE_FAKE = "40";
+    public static final String VNPT_FACE_FAKE_DESC = "Không phải khuôn mặt thật";
+
+    public static final String EKYC_LIMIT = "41";
     public static final String EKYC_LIMIT_DESC = "Bạn đã vượt quá số lần eKYC trong ngày hôm nay (tối đa 3 lần), vui lòng thử lại vào ngày mai";
 
     public static final String SESSION_TIMEOUT = "901";
