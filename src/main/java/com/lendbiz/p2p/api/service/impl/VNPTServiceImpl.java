@@ -133,7 +133,7 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
         headers.set("Token-id", Constants.VNPT_ID);
         headers.set("Token-key", Constants.VNPT_KEY);
 
-        bodies.put("img_front", hashImgFrontId);
+        bodies.put("img", hashImgFrontId);
         bodies.put("client_session", mobile);
 
         // check giay tờ thật giả
@@ -160,6 +160,8 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
         }
 
         // xủ lý tiếp (bóc tách orc)
+        bodies.remove("img");
+        bodies.put("img_front", hashImgFrontId);
         bodies.put("img_back", hashImgBackId);
         bodies.put("type", -1); // -1: CMND, CCCD cũ/ mới
         bodies.put("token", Constants.VNPT_ID);
@@ -206,11 +208,7 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
         String idBackType = rootOrc.get("object").get("back_type_id").asText();
 
         if(rootOrc.get("statusCode").asInt() == 200){
-//            if(root.get("object").has("dupplication_warning")){
-//                if("true".equals(root.get("object").get("dupplication_warning").asText())){
-//                    throw new BusinessException(ErrorCode.VNPT_INVALID_INPUT, ErrorCode.VNPT_INVALID_INPUT_DESC);
-//                }
-//            }
+
             if(idFontType.equals("2") || idFontType.equals("3") || idFontType.equals("4") ||
                     idBackType.equals("2") || idBackType.equals("3") || idBackType.equals("4")){
                 throw new BusinessException(ErrorCode.VNPT_INVALID_TYPE, ErrorCode.VNPT_INVALID_TYPE_DESC);
@@ -343,7 +341,7 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
         headers.set("Token-id", Constants.VNPT_ID);
         headers.set("Token-key", Constants.VNPT_KEY);
 
-        bodies.put("img_face", hashImgSelfie);
+        bodies.put("img", hashImgSelfie);
         bodies.put("client_session", mobile);
         bodies.put("token", Constants.VNPT_ID);
 
@@ -361,7 +359,7 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
             rootFF = mapper.readTree(responseEntity.getBody());
         }
         catch (Exception e) {
-
+            throw new BusinessException(Constants.FAIL, Constants.MESSAGE_FAIL);
         }
 
         if(rootFF == null) { throw new BusinessException(ErrorCode.VNPT_FACE_LIVENESS, ErrorCode.VNPT_FACE_LIVENESS_DESC); }
@@ -370,6 +368,8 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
             throw new BusinessException(ErrorCode.VNPT_FACE_FAKE, ErrorCode.VNPT_FACE_FAKE_DESC);
         }
 
+        bodies.remove("img");
+        bodies.put("img_face", hashImgSelfie);
         bodies.put("img_front", hashImgFrontId);
 
         HttpEntity<?> requestCompare = new HttpEntity(bodies, headers);
