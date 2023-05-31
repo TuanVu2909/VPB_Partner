@@ -424,5 +424,4 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
             logger.info(e.getMessage());
         }
     }
-
 }
