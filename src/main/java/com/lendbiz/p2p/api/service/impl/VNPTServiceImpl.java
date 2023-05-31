@@ -98,31 +98,31 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
 
         // Phí 800 vnd
         BgEkycEntity bgEkyc = this.bgEkycRepository.findByMobileSms(mobile);
-        String currentDate = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
+//        String currentDate = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
         // chua co data
-        if(bgEkyc == null){
-            bgEkyc = new BgEkycEntity();
-            bgEkyc.setMobileSms(mobile);
-            bgEkyc.setEkycDate(currentDate);
-            // Lưu số lần call API vertifyIdentity vào DB
-            bgEkyc.setApiOrc(bgEkyc.getApiOrc() + 1); // default ApiOrc = 0
-        }
-        // có data
-        else {
-            // ngày hiện tại là ngày eKYC -> check số lần ekyc
-            if(currentDate.equals(bgEkyc.getEkycDate())){
-                if(bgEkyc.getApiOrc()>=3) throw new BusinessException(ErrorCode.EKYC_LIMIT, ErrorCode.EKYC_LIMIT_DESC);
-                // Lưu số lần call API vertifyIdentity vào DB
-                bgEkyc.setApiOrc(bgEkyc.getApiOrc() + 1); // default ApiOrc = 0
-            }
-            // ngày hiện tại khac ngày eKYC -> reset lại ngày, so lần call API
-            else{
-                bgEkyc.setEkycDate(currentDate);
-                bgEkyc.setApiCompare(1);
-                bgEkyc.setApiOrc(1);
-            }
-        }
-        this.bgEkycRepository.save(bgEkyc);
+//        if(bgEkyc == null){
+//            bgEkyc = new BgEkycEntity();
+//            bgEkyc.setMobileSms(mobile);
+//            bgEkyc.setEkycDate(currentDate);
+//            // Lưu số lần call API vertifyIdentity vào DB
+//            bgEkyc.setApiOrc(bgEkyc.getApiOrc() + 1); // default ApiOrc = 0
+//        }
+//        // có data
+//        else {
+//            // ngày hiện tại là ngày eKYC -> check số lần ekyc
+//            if(currentDate.equals(bgEkyc.getEkycDate())){
+//                if(bgEkyc.getApiOrc()>=3) throw new BusinessException(ErrorCode.EKYC_LIMIT, ErrorCode.EKYC_LIMIT_DESC);
+//                // Lưu số lần call API vertifyIdentity vào DB
+//                bgEkyc.setApiOrc(bgEkyc.getApiOrc() + 1); // default ApiOrc = 0
+//            }
+//            // ngày hiện tại khac ngày eKYC -> reset lại ngày, so lần call API
+//            else{
+//                bgEkyc.setEkycDate(currentDate);
+//                bgEkyc.setApiCompare(1);
+//                bgEkyc.setApiOrc(1);
+//            }
+//        }
+//        this.bgEkycRepository.save(bgEkyc);
 
         HttpHeaders headers = new HttpHeaders();
         Map<String, Object> bodies = new HashMap<>();
@@ -306,31 +306,31 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
 
         // Phí 800 vnd
         BgEkycEntity bgEkyc = this.bgEkycRepository.findByMobileSms(mobile);
-        String currentDate = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
-        // chua co data
-        if(bgEkyc == null) {
-            bgEkyc = new BgEkycEntity();
-            bgEkyc.setMobileSms(mobile);
-            bgEkyc.setEkycDate(currentDate);
-            // Lưu số lần call API vertifyIdentity vào DB
-            bgEkyc.setApiCompare(bgEkyc.getApiCompare() + 1); // default ApiCompare = 0
-        }
-        // có data
-        else {
-            // ngày hiện tại là ngày eKYC -> check số lần ekyc
-            if(currentDate.equals(bgEkyc.getEkycDate())) {
-                if(bgEkyc.getApiCompare()>=3) throw new BusinessException(ErrorCode.EKYC_LIMIT, ErrorCode.EKYC_LIMIT_DESC);
-                // Lưu số lần call API vertifyIdentity vào DB
-                bgEkyc.setApiCompare(bgEkyc.getApiCompare() + 1); // default ApiCompare = 0
-            }
-            // ngày hiện tại khac ngày eKYC(currentDate>lastDate) -> reset lại ngày, so lần call API
-            else {
-                bgEkyc.setEkycDate(currentDate);
-                bgEkyc.setApiCompare(1);
-                bgEkyc.setApiOrc(1);
-            }
-        }
-        this.bgEkycRepository.save(bgEkyc);
+//        String currentDate = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
+//        // chua co data
+//        if(bgEkyc == null) {
+//            bgEkyc = new BgEkycEntity();
+//            bgEkyc.setMobileSms(mobile);
+//            bgEkyc.setEkycDate(currentDate);
+//            // Lưu số lần call API vertifyIdentity vào DB
+//            bgEkyc.setApiCompare(bgEkyc.getApiCompare() + 1); // default ApiCompare = 0
+//        }
+//        // có data
+//        else {
+//            // ngày hiện tại là ngày eKYC -> check số lần ekyc
+//            if(currentDate.equals(bgEkyc.getEkycDate())) {
+//                if(bgEkyc.getApiCompare()>=3) throw new BusinessException(ErrorCode.EKYC_LIMIT, ErrorCode.EKYC_LIMIT_DESC);
+//                // Lưu số lần call API vertifyIdentity vào DB
+//                bgEkyc.setApiCompare(bgEkyc.getApiCompare() + 1); // default ApiCompare = 0
+//            }
+//            // ngày hiện tại khac ngày eKYC(currentDate>lastDate) -> reset lại ngày, so lần call API
+//            else {
+//                bgEkyc.setEkycDate(currentDate);
+//                bgEkyc.setApiCompare(1);
+//                bgEkyc.setApiOrc(1);
+//            }
+//        }
+//        this.bgEkycRepository.save(bgEkyc);
 
         HttpHeaders headers = new HttpHeaders();
         Map<String, Object> bodies = new HashMap<>();
