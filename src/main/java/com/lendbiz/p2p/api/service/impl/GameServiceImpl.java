@@ -5,8 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.lendbiz.p2p.api.constants.ErrorCode;
+import com.lendbiz.p2p.api.entity.GameHistoryEntity;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.GameConfigRepository;
+import com.lendbiz.p2p.api.repository.GameHistoryRepository;
 import com.lendbiz.p2p.api.repository.GameRepository;
 import com.lendbiz.p2p.api.repository.GameTurnRepository;
 import com.lendbiz.p2p.api.request.GameConfigUpdateRequest;
@@ -25,6 +27,9 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
     @Autowired
     GameTurnRepository gameTurnRepository;
 
+    @Autowired
+    GameHistoryRepository gameHistoryRepository;
+
     @Override
     public ResponseEntity<?> getGameConfig(GameConfigUpdateRequest request) {
         try {
@@ -41,6 +46,18 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
     public ResponseEntity<?> getGameTurn(GameConfigUpdateRequest request) {
         try {
             return response(toResult(gameTurnRepository.getGameTurn(request.getCustId(),
+                    1)));
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
+        }
+
+    }
+
+    @Override
+    public ResponseEntity<?> getGameHistory(GameConfigUpdateRequest request) {
+        try {
+
+            return response(toResult(gameHistoryRepository.getGameHistory(request.getCustId(),
                     1)));
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());

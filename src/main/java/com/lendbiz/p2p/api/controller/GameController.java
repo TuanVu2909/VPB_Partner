@@ -83,4 +83,14 @@ public class GameController {
 
     }
 
+    @PostMapping("/get-game-his")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getGameHistory(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId,
+            @RequestBody GameConfigUpdateRequest request)
+            throws BusinessException {
+        return gameService.getGameHistory(request);
+
+    }
+
 }
