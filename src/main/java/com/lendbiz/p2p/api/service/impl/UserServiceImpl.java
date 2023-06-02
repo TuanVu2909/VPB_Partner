@@ -84,6 +84,7 @@ import com.lendbiz.p2p.api.entity.GmFundNAVEntity;
 import com.lendbiz.p2p.api.entity.InvestAssets;
 import com.lendbiz.p2p.api.entity.InvestPackageDetailEntity;
 import com.lendbiz.p2p.api.entity.InvestPackageEntity;
+import com.lendbiz.p2p.api.entity.KafkaProducerRequest;
 import com.lendbiz.p2p.api.entity.NotificationsEntity;
 import com.lendbiz.p2p.api.entity.NotificationsPushEntity;
 import com.lendbiz.p2p.api.entity.NotifyEntity;
@@ -523,13 +524,14 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             GameTurnEntity gameTurn = new GameTurnEntity();
             try {
                 gameTurn = gameTurnRepository.getGameTurn(custId, 1);
-                if(gameTurn == null) gameTurn = new GameTurnEntity(0);
+                if (gameTurn == null)
+                    gameTurn = new GameTurnEntity(0);
 
             } catch (Exception e) {
                 log.info(e.getMessage());
                 gameTurn.setRestCount(0);
             }
-           
+
             String userPhone = user.getMobileSms();
             String urlAvatar = "";
             String urlBackgroundImage = "";
@@ -702,6 +704,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     public ResponseEntity<?> createBear(AccountInput input) {
         NotifyEntity notify;
+        KafkaProducerRequest<AccountInput> kafkaRquest = new KafkaProducerRequest<AccountInput>();
         try {
             notify = notifyRepo.checkCreateBear(input.getCustId(),
                     input.getProductId(),
@@ -709,6 +712,9 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     Float.valueOf(input.getRate()),
                     input.getAmt(),
                     input.getContractId(), input.getPayType());
+
+            kafkaRquest.setMethod("C");
+            kafkaRquest.setObject(input);
 
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -719,8 +725,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             throw new BusinessException(Constants.FAIL, notify.getDes());
         }
 
-        JSONObject jsonObjectLogs = new JSONObject(input);
-        ListenableFuture<SendResult<String, String>> future = producerMessage.sendSavingMessage("CREATE_BEAR_TOPIC_TEST",
+        JSONObject jsonObjectLogs = new JSONObject(kafkaRquest);
+        ListenableFuture<SendResult<String, String>> future = producerMessage.sendSavingMessage("SAVING_TOPIC_TEST",
                 input.getCustId(), jsonObjectLogs.toString());
 
         future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
@@ -744,10 +750,14 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     public ResponseEntity<?> withdrawBear(WithdrawBearRequest request) {
         NotifyEntity notify;
+        KafkaProducerRequest<WithdrawBearRequest> kafkaRquest = new KafkaProducerRequest<WithdrawBearRequest>();
         try {
             notify = notifyRepo.checkWithdrawBear(request.getCustId(),
                     request.getAmt(),
                     request.getDocNo());
+
+            kafkaRquest.setMethod("W");
+            kafkaRquest.setObject(request);
 
         } catch (Exception e) {
             logger.info(e.getMessage());
@@ -757,7 +767,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             throw new BusinessException(Constants.FAIL, notify.getDes());
         }
 
-        JSONObject jsonObjectLogs = new JSONObject(request);
+        JSONObject jsonObjectLogs = new JSONObject(kafkaRquest);
         ListenableFuture<SendResult<String, String>> future = producerMessage
                 .sendSavingMessage("WITHDRAW_BEAR_TOPIC_TEST",
                         request.getCustId(), jsonObjectLogs.toString());
@@ -1165,8 +1175,12 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Override
     public ResponseEntity<?> endBear(AccountInput request) {
         NotifyEntity notify;
+        KafkaProducerRequest<AccountInput> kafkaRquest = new KafkaProducerRequest<AccountInput>();
         try {
             notify = notifyRepo.checkEndBear(request.getCustId(), request.getDoc_no());
+
+            kafkaRquest.setMethod("E");
+            kafkaRquest.setObject(request);
         } catch (Exception e) {
             throw new BusinessException(Constants.FAIL, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
         }
@@ -1175,7 +1189,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             throw new BusinessException(Constants.FAIL, notify.getDes());
         }
 
-        JSONObject jsonObjectLogs = new JSONObject(request);
+        JSONObject jsonObjectLogs = new JSONObject(kafkaRquest);
 
         ListenableFuture<SendResult<String, String>> future = producerMessage
                 .sendSavingMessage("END_BEAR_TOPIC_TEST", request.getCustId(),
@@ -1308,7 +1322,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             amountLength = "0" + amount.length();
         }
 
-        String charForCRC = Constants.QRCODE_NAPAS_FIRST + amountLength + amount + Constants.QRCODE_NAPAS_SECOND + entity.getTransferCode() + Constants.QRCODE_NAPAS_CRC;
+        String charForCRC = Constants.QRCODE_NAPAS_FIRST + amountLength + amount + Constants.QRCODE_NAPAS_SECOND
+                + entity.getTransferCode() + Constants.QRCODE_NAPAS_CRC;
         String qrCodeString = charForCRC + CRCUtil.getCRC(charForCRC);
 
         Map<String, Object> map = new HashMap<>();
@@ -1683,16 +1698,17 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     // status:0 -> tìm tất cả thằng nào đã DKTK chưa confirm affiliate
     @Override
     @SneakyThrows
-    public void jobHandleAffiliate0(){
+    public void jobHandleAffiliate0() {
         List<GMAffiliateEntity> dbd = affiliateRepository.getAllByStatusAndSource(0);
-        for(GMAffiliateEntity cus : dbd){
+        for (GMAffiliateEntity cus : dbd) {
             CfMast cfmast = cfMastRepository.findByCustid(cus.getCustId()).get();
-            if(!"P".equals(cfmast.getStatus())){
-                if("mosaic".equals(cus.getSource())){
+            if (!"P".equals(cfmast.getStatus())) {
+                if ("mosaic".equals(cus.getSource())) {
                     MosaicPostBack req = new MosaicPostBack();
                     req.setClick_id(cus.getPublicSherId());
                     req.setComment(cus.getCustId());
-                    req.setStatus_code(0); // cái này mosaic define: 0 -> Insert new transaction, 1 -> Approve, -1 -> Cancel transaction
+                    req.setStatus_code(0); // cái này mosaic define: 0 -> Insert new transaction, 1 -> Approve, -1 ->
+                                           // Cancel transaction
                     req.setNote("isRegister");
                     JsonNode root = this.mosaicAPI(req);// postBack sang mosaic
                     if (root != null && "success".equals(root.get("status").asText())) {
@@ -1701,7 +1717,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                         affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
                     }
                 }
-                if("hyperlead".equals(cus.getSource())){
+                if ("hyperlead".equals(cus.getSource())) {
                     HypPostBack req = new HypPostBack();
                     req.setClick_id(cus.getPublicSherId());
                     req.setTransaction_id(cus.getCustId());
@@ -1752,9 +1768,9 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     // gì => reject
     @Override
     @SneakyThrows
-    public void jobHandleAffiliate1(){
+    public void jobHandleAffiliate1() {
         List<GMAffiliateEntity> dbd = affiliateRepository.getAllByStatusAndSource(1);
-        for(GMAffiliateEntity cus : dbd){
+        for (GMAffiliateEntity cus : dbd) {
             LocalDate date1 = cus.getStartDate().toLocalDate(); // từ lúc tạo TK
             LocalDate date2 = LocalDate.now(); // ngày hiện tại
             Period period = Period.between(date1, date2);
@@ -1765,7 +1781,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     MosaicPostBack req = new MosaicPostBack();
                     req.setClick_id(cus.getPublicSherId());
                     req.setComment(cus.getCustId());
-                    req.setStatus_code(-1); // cái này mosaic define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
+                    req.setStatus_code(-1); // cái này mosaic define: 0 -> default, 1 -> user tích lũy thành công 50k
+                                            // trở lên, -1 -> không saving đủ 7 ngày
                     req.setNote("cancel");
                     JsonNode root = this.mosaicAPI(req);// postBack sang mosaic
                     if (root != null && "success".equals(root.get("status").asText())) {
@@ -1819,12 +1836,13 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @SneakyThrows
     public void jobHandleAffiliate2() {
         List<GMAffiliateEntity> dbd = affiliateRepository.getAllByStatusAndSource(2);
-        for(GMAffiliateEntity cus : dbd) {
-            if("mosaic".equals(cus.getSource())){
+        for (GMAffiliateEntity cus : dbd) {
+            if ("mosaic".equals(cus.getSource())) {
                 MosaicPostBack req = new MosaicPostBack();
                 req.setClick_id(cus.getPublicSherId());
                 req.setComment(cus.getCustId());
-                req.setStatus_code(0); // cái này mosaic define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
+                req.setStatus_code(0); // cái này mosaic define: 0 -> default, 1 -> user tích lũy thành công 50k trở
+                                       // lên, -1 -> không saving đủ 7 ngày
                 if (cus.getIsEkyc() == 1) { // đã eKYC thành công
                     req.setNote("isEkyc");
                     JsonNode root = this.mosaicAPI(req);// postBack sang mosaic
@@ -1851,7 +1869,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 // (case này sau 30 ngày sẽ nhảy vào)
                 // record của vòng for này mà status vẫn = 2 => hủy đơn
                 if (period.getYears() == 0 && (period.getMonths() >= 1)) {
-                    req.setStatus_code(-1); // cái này mosaic define: 0 -> default, 1 -> user tích lũy thành công 50k trở lên, -1 -> không saving đủ 7 ngày
+                    req.setStatus_code(-1); // cái này mosaic define: 0 -> default, 1 -> user tích lũy thành công 50k
+                                            // trở lên, -1 -> không saving đủ 7 ngày
                     req.setNote("cancel");
                     JsonNode root = this.mosaicAPI(req);// postBack sang mosaic
                     if (root != null && "success".equals(root.get("status").asText())) {
@@ -1861,7 +1880,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     }
                 }
             }
-            if("hyperlead".equals(cus.getSource())){
+            if ("hyperlead".equals(cus.getSource())) {
                 HypPostBack req = new HypPostBack();
                 req.setClick_id(cus.getPublicSherId());
                 req.setTransaction_id(cus.getCustId());
@@ -1983,8 +2002,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @SneakyThrows
     public void jobHandleAffiliate3() {
         List<GMAffiliateEntity> dbd = affiliateRepository.getAllByStatusAndSource(3);
-        for(GMAffiliateEntity cus : dbd) {
-            if("mosaic".equals(cus.getSource())){
+        for (GMAffiliateEntity cus : dbd) {
+            if ("mosaic".equals(cus.getSource())) {
                 MosaicPostBack req = new MosaicPostBack();
                 req.setClick_id(cus.getPublicSherId());
                 req.setComment(cus.getCustId());
@@ -1998,7 +2017,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     affiliateRepository.updateByStatus(cus.getStatus(), cus.getCustId());
                 }
             }
-            if("hyperlead".equals(cus.getSource())){
+            if ("hyperlead".equals(cus.getSource())) {
                 HypPostBack req = new HypPostBack();
                 req.setClick_id(cus.getPublicSherId());
                 req.setTransaction_id(cus.getCustId());
