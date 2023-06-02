@@ -866,6 +866,14 @@ public class UserController extends BaseResponse<UserService> {
         }
     }
 
+    // @Scheduled(initialDelay = 1 * 60, fixedDelay = 2 * 5000)
+    public void autoSign()
+            throws BusinessException {
+
+        userService.autoSignContract();
+
+    }
+
     @GetMapping("/get-saving-products")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getSavingProduct(HttpServletRequest httpServletRequest,
