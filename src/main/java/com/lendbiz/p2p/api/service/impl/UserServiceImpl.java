@@ -769,7 +769,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
         JSONObject jsonObjectLogs = new JSONObject(kafkaRquest);
         ListenableFuture<SendResult<String, String>> future = producerMessage
-                .sendSavingMessage("WITHDRAW_BEAR_TOPIC_TEST",
+                .sendSavingMessage("SAVING_TOPIC_TEST",
                         request.getCustId(), jsonObjectLogs.toString());
 
         future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
@@ -1192,7 +1192,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         JSONObject jsonObjectLogs = new JSONObject(kafkaRquest);
 
         ListenableFuture<SendResult<String, String>> future = producerMessage
-                .sendSavingMessage("END_BEAR_TOPIC_TEST", request.getCustId(),
+                .sendSavingMessage("SAVING_TOPIC_TEST", request.getCustId(),
                         jsonObjectLogs.toString());
 
         future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
