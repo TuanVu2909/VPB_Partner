@@ -58,7 +58,7 @@ public class GameConfigEntity {
         private String toDate;
 
         @Column(name = "MAXPRIZE")
-        private Integer maxPrize;
+        private BigInteger maxPrize;
 
         @Column(name = "CONFIGID")
         private Integer configId;
