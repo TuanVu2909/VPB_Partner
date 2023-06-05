@@ -12,6 +12,8 @@ public interface GameService {
 
     ResponseEntity<?> getGameHistory(GameConfigUpdateRequest request);
 
+    ResponseEntity<?> getGameWin();
+
     ResponseEntity<?> updateGameConfig(GameConfigUpdateRequest request);
 
     ResponseEntity<?> updateGameGroupTime(GameConfigUpdateRequest request);

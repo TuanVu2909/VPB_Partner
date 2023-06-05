@@ -93,4 +93,13 @@ public class GameController {
 
     }
 
+    @GetMapping("/get-game-win")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getGameWin(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId)
+            throws BusinessException {
+        return gameService.getGameWin();
+
+    }
+
 }

@@ -11,6 +11,7 @@ import com.lendbiz.p2p.api.repository.GameConfigRepository;
 import com.lendbiz.p2p.api.repository.GameHistoryRepository;
 import com.lendbiz.p2p.api.repository.GameRepository;
 import com.lendbiz.p2p.api.repository.GameTurnRepository;
+import com.lendbiz.p2p.api.repository.GetGameWinRepository;
 import com.lendbiz.p2p.api.request.GameConfigUpdateRequest;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.service.GameService;
@@ -29,6 +30,9 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
 
     @Autowired
     GameHistoryRepository gameHistoryRepository;
+
+    @Autowired
+    GetGameWinRepository gameWinRepository;
 
     @Override
     public ResponseEntity<?> getGameConfig(GameConfigUpdateRequest request) {
@@ -95,6 +99,15 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
             throw new BusinessException(ErrorCode.ERROR_500, e.getMessage());
         }
 
+    }
+
+    @Override
+    public ResponseEntity<?> getGameWin() {
+        try {
+            return response(toResult(gameWinRepository.getGameWin()));
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
+        }
     }
 
 }
