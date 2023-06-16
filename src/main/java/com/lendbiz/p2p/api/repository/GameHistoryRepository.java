@@ -14,4 +14,8 @@ public interface GameHistoryRepository extends JpaRepository<GameHistoryEntity, 
         List<GameHistoryEntity> getGameHistory(@Param("pv_custid") String custId,
                         @Param("pv_gameid") int gameId);
 
+        @Procedure("GameHistoryEntity.getAdminGameHistory")
+        List<GameHistoryEntity> getAdminGameHistory(@Param("pv_custid") String custId,
+                        @Param("pv_gameid") int gameId);
+
 }

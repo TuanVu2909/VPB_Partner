@@ -93,6 +93,16 @@ public class GameController {
 
     }
 
+    @PostMapping("/get-admin-game-his")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getAdminGameHistory(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId,
+            @RequestBody GameConfigUpdateRequest request)
+            throws BusinessException {
+        return gameService.getAdminGameHistory(request);
+
+    }
+
     @GetMapping("/get-game-win")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getGameWin(HttpServletRequest httpServletRequest,
