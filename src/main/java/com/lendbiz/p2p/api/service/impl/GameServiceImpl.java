@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.GameHistoryEntity;
 import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.repository.GameAdminHistoryRepository;
 import com.lendbiz.p2p.api.repository.GameConfigRepository;
 import com.lendbiz.p2p.api.repository.GameHistoryRepository;
 import com.lendbiz.p2p.api.repository.GameRepository;
@@ -30,6 +31,9 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
 
     @Autowired
     GameHistoryRepository gameHistoryRepository;
+
+    @Autowired
+    GameAdminHistoryRepository adminHistoryRepository;
 
     @Autowired
     GetGameWinRepository gameWinRepository;
@@ -62,6 +66,18 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
         try {
 
             return response(toResult(gameHistoryRepository.getGameHistory(request.getCustId(),
+                    1)));
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
+        }
+
+    }
+
+    @Override
+    public ResponseEntity<?> getAdminGameHistory(GameConfigUpdateRequest request) {
+        try {
+
+            return response(toResult(adminHistoryRepository.getAdminGameHistory(request.getCustId(),
                     1)));
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
