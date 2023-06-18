@@ -198,9 +198,6 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class UserServiceImpl extends BaseResponse<UserService> implements UserService {
 
-    @Value("${saving.topic}")
-    public static String savingTopic;
-
     @Autowired
     InvestPackageDetailRepository investPackageDetailRepository;
     @Autowired
@@ -731,7 +728,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         }
 
         JSONObject jsonObjectLogs = new JSONObject(kafkaRquest);
-        ListenableFuture<SendResult<String, String>> future = producerMessage.sendSavingMessage(savingTopic,
+        ListenableFuture<SendResult<String, String>> future = producerMessage.sendSavingMessage("SAVING_TOPIC_TEST",
                 input.getCustId(), jsonObjectLogs.toString());
 
         future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
@@ -774,7 +771,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
         JSONObject jsonObjectLogs = new JSONObject(kafkaRquest);
         ListenableFuture<SendResult<String, String>> future = producerMessage
-                .sendSavingMessage(savingTopic,
+                .sendSavingMessage("SAVING_TOPIC_TEST",
                         request.getCustId(), jsonObjectLogs.toString());
 
         future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
@@ -1197,7 +1194,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         JSONObject jsonObjectLogs = new JSONObject(kafkaRquest);
 
         ListenableFuture<SendResult<String, String>> future = producerMessage
-                .sendSavingMessage(savingTopic, request.getCustId(),
+                .sendSavingMessage("SAVING_TOPIC_TEST", request.getCustId(),
                         jsonObjectLogs.toString());
 
         future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
