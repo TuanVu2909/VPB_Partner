@@ -40,6 +40,7 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -196,6 +197,10 @@ import lombok.extern.log4j.Log4j2;
 @Service("userService")
 @Log4j2
 public class UserServiceImpl extends BaseResponse<UserService> implements UserService {
+
+    @Value("${saving.topic}")
+    public static String savingTopic;
+
     @Autowired
     InvestPackageDetailRepository investPackageDetailRepository;
     @Autowired
@@ -726,7 +731,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         }
 
         JSONObject jsonObjectLogs = new JSONObject(kafkaRquest);
-        ListenableFuture<SendResult<String, String>> future = producerMessage.sendSavingMessage("SAVING_TOPIC_TEST",
+        ListenableFuture<SendResult<String, String>> future = producerMessage.sendSavingMessage(savingTopic,
                 input.getCustId(), jsonObjectLogs.toString());
 
         future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
@@ -769,7 +774,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
         JSONObject jsonObjectLogs = new JSONObject(kafkaRquest);
         ListenableFuture<SendResult<String, String>> future = producerMessage
-                .sendSavingMessage("SAVING_TOPIC_TEST",
+                .sendSavingMessage(savingTopic,
                         request.getCustId(), jsonObjectLogs.toString());
 
         future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
@@ -1192,7 +1197,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         JSONObject jsonObjectLogs = new JSONObject(kafkaRquest);
 
         ListenableFuture<SendResult<String, String>> future = producerMessage
-                .sendSavingMessage("SAVING_TOPIC_TEST", request.getCustId(),
+                .sendSavingMessage(savingTopic, request.getCustId(),
                         jsonObjectLogs.toString());
 
         future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
