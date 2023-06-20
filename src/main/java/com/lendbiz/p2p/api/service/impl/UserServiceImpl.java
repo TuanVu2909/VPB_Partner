@@ -1320,11 +1320,13 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         }
 
         String amountLength = "05";
-        if (amount.length() < 10) {
-            amountLength = "0" + amount.length();
+        String vAmount = String.valueOf(Math.round(Double.parseDouble(amount)));
+        
+        if (vAmount.length() < 10) {
+            amountLength = "0" + vAmount.length();
         }
 
-        String charForCRC = Constants.QRCODE_NAPAS_FIRST + amountLength + amount + Constants.QRCODE_NAPAS_SECOND
+        String charForCRC = Constants.QRCODE_NAPAS_FIRST + amountLength + vAmount + Constants.QRCODE_NAPAS_SECOND
                 + entity.getTransferCode() + Constants.QRCODE_NAPAS_CRC;
         String qrCodeString = charForCRC + CRCUtil.getCRC(charForCRC);
 

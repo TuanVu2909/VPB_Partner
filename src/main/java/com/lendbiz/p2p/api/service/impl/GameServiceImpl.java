@@ -1,6 +1,7 @@
 package com.lendbiz.p2p.api.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -21,6 +22,7 @@ import com.lendbiz.p2p.api.repository.GetGameWinRepository;
 import com.lendbiz.p2p.api.request.GameConfigUpdateRequest;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.service.GameService;
+import com.lendbiz.p2p.api.utils.GameConfigComparator;
 
 @Service
 public class GameServiceImpl extends BaseResponse<GameService> implements GameService {
@@ -95,13 +97,69 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
                         newChance.setRAmount(entity.get(i).getRAmount());
                         newChance.setRate(0.0);
                         newListEntity.add(newChance);
+                        isContinue = false;
                     }
 
-                    isContinue = false;
+                } else {
+                    GameConfigEntity newChance = new GameConfigEntity();
+                    newChance.setConfigId(entity.get(i).getConfigId());
+                    newChance.setFromDate(entity.get(i).getFromDate());
+                    newChance.setFromTime(entity.get(i).getFromTime());
+                    newChance.setToDate(entity.get(i).getToDate());
+                    newChance.setToTime(entity.get(i).getToTime());
+                    newChance.setId(entity.get(i).getId());
+                    newChance.setMaxPrize(entity.get(i).getMaxPrize());
+                    newChance.setName(entity.get(i).getName());
+                    newChance.setRAmount(entity.get(i).getRAmount());
+                    newChance.setRate(0.0);
+                    newListEntity.add(newChance);
                 }
-
             }
 
+            boolean isOk = false;
+            for (int i = 0; i < newListEntity.size(); i++) {
+                if (newListEntity.get(i).getRate() > 0) {
+                    isOk = true;
+                    break;
+                }
+            }
+
+            if (!isOk) {
+                List<GameConfigEntity> ifNothingReturn = new ArrayList<>();
+                for (int i = 0; i < newListEntity.size(); i++) {
+                    if (newListEntity.get(i).getId() == 1) {
+                        GameConfigEntity newChance = new GameConfigEntity();
+                        newChance.setConfigId(entity.get(i).getConfigId());
+                        newChance.setFromDate(entity.get(i).getFromDate());
+                        newChance.setFromTime(entity.get(i).getFromTime());
+                        newChance.setToDate(entity.get(i).getToDate());
+                        newChance.setToTime(entity.get(i).getToTime());
+                        newChance.setId(entity.get(i).getId());
+                        newChance.setMaxPrize(entity.get(i).getMaxPrize());
+                        newChance.setName(entity.get(i).getName());
+                        newChance.setRAmount(entity.get(i).getRAmount());
+                        newChance.setRate(100.0);
+                        ifNothingReturn.add(newChance);
+
+                    } else {
+                        GameConfigEntity newChance = new GameConfigEntity();
+                        newChance.setConfigId(entity.get(i).getConfigId());
+                        newChance.setFromDate(entity.get(i).getFromDate());
+                        newChance.setFromTime(entity.get(i).getFromTime());
+                        newChance.setToDate(entity.get(i).getToDate());
+                        newChance.setToTime(entity.get(i).getToTime());
+                        newChance.setId(entity.get(i).getId());
+                        newChance.setMaxPrize(entity.get(i).getMaxPrize());
+                        newChance.setName(entity.get(i).getName());
+                        newChance.setRAmount(entity.get(i).getRAmount());
+                        newChance.setRate(0.0);
+                        ifNothingReturn.add(newChance);
+                    }
+                }
+                Collections.sort(ifNothingReturn, new GameConfigComparator());
+                return response(toResult(ifNothingReturn));
+            }
+            Collections.sort(newListEntity, new GameConfigComparator());
             return response(toResult(newListEntity));
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
