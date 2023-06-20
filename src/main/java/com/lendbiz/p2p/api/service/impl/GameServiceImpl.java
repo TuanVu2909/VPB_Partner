@@ -11,9 +11,11 @@ import org.springframework.stereotype.Service;
 
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.GameConfigEntity;
+import com.lendbiz.p2p.api.entity.GameConfigLogEntity;
 import com.lendbiz.p2p.api.entity.GameHistoryEntity;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.GameAdminHistoryRepository;
+import com.lendbiz.p2p.api.repository.GameConfigLogRepo;
 import com.lendbiz.p2p.api.repository.GameConfigRepository;
 import com.lendbiz.p2p.api.repository.GameHistoryRepository;
 import com.lendbiz.p2p.api.repository.GameRepository;
@@ -44,6 +46,9 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
 
     @Autowired
     GetGameWinRepository gameWinRepository;
+
+    @Autowired
+    GameConfigLogRepo configLogRepo;
 
     @Override
     public ResponseEntity<?> getGameConfig(GameConfigUpdateRequest request) {
@@ -157,9 +162,95 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
                     }
                 }
                 Collections.sort(ifNothingReturn, new GameConfigComparator());
+                GameConfigLogEntity newLog = new GameConfigLogEntity();
+                for (int i = 0; i < ifNothingReturn.size(); i++) {
+
+                    newLog.setCustId(request.getCustId());
+                    newLog.setVqId(String.valueOf(System.currentTimeMillis()));
+                    if (ifNothingReturn.get(i).getId() == 1) {
+                        newLog.setL1(ifNothingReturn.get(i).getRate());
+                    }
+                    if (ifNothingReturn.get(i).getId() == 2) {
+                        newLog.setL2(ifNothingReturn.get(i).getRate());
+                    }
+                    if (ifNothingReturn.get(i).getId() == 3) {
+                        newLog.setL3(ifNothingReturn.get(i).getRate());
+                    }
+                    if (ifNothingReturn.get(i).getId() == 4) {
+                        newLog.setL4(ifNothingReturn.get(i).getRate());
+                    }
+                    if (ifNothingReturn.get(i).getId() == 5) {
+                        newLog.setL5(ifNothingReturn.get(i).getRate());
+                    }
+                    if (ifNothingReturn.get(i).getId() == 6) {
+                        newLog.setL6(ifNothingReturn.get(i).getRate());
+                    }
+                    if (ifNothingReturn.get(i).getId() == 7) {
+                        newLog.setL7(ifNothingReturn.get(i).getRate());
+                    }
+                    if (ifNothingReturn.get(i).getId() == 8) {
+                        newLog.setL8(ifNothingReturn.get(i).getRate());
+                    }
+                    if (ifNothingReturn.get(i).getId() == 9) {
+                        newLog.setL9(ifNothingReturn.get(i).getRate());
+                    }
+                    if (ifNothingReturn.get(i).getId() == 10) {
+                        newLog.setL10(ifNothingReturn.get(i).getRate());
+                    }
+
+                }
+
+                try {
+                    configLogRepo.save(newLog);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+
                 return response(toResult(ifNothingReturn));
             }
             Collections.sort(newListEntity, new GameConfigComparator());
+
+            GameConfigLogEntity newLog = new GameConfigLogEntity();
+            for (int i = 0; i < newListEntity.size(); i++) {
+                newLog.setCustId(request.getCustId());
+                newLog.setVqId(String.valueOf(System.currentTimeMillis()));
+                if (newListEntity.get(i).getId() == 1) {
+                    newLog.setL1(newListEntity.get(i).getRate());
+                }
+                if (newListEntity.get(i).getId() == 2) {
+                    newLog.setL2(newListEntity.get(i).getRate());
+                }
+                if (newListEntity.get(i).getId() == 3) {
+                    newLog.setL3(newListEntity.get(i).getRate());
+                }
+                if (newListEntity.get(i).getId() == 4) {
+                    newLog.setL4(newListEntity.get(i).getRate());
+                }
+                if (newListEntity.get(i).getId() == 5) {
+                    newLog.setL5(newListEntity.get(i).getRate());
+                }
+                if (newListEntity.get(i).getId() == 6) {
+                    newLog.setL6(newListEntity.get(i).getRate());
+                }
+                if (newListEntity.get(i).getId() == 7) {
+                    newLog.setL7(newListEntity.get(i).getRate());
+                }
+                if (newListEntity.get(i).getId() == 8) {
+                    newLog.setL8(newListEntity.get(i).getRate());
+                }
+                if (newListEntity.get(i).getId() == 9) {
+                    newLog.setL9(newListEntity.get(i).getRate());
+                }
+                if (newListEntity.get(i).getId() == 10) {
+                    newLog.setL10(newListEntity.get(i).getRate());
+                }
+
+            }
+            try {
+                configLogRepo.save(newLog);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
             return response(toResult(newListEntity));
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
