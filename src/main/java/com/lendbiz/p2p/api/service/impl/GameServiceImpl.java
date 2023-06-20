@@ -1,10 +1,15 @@
 package com.lendbiz.p2p.api.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.lendbiz.p2p.api.constants.ErrorCode;
+import com.lendbiz.p2p.api.entity.GameConfigEntity;
 import com.lendbiz.p2p.api.entity.GameHistoryEntity;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.GameAdminHistoryRepository;
@@ -41,9 +46,63 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
     @Override
     public ResponseEntity<?> getGameConfig(GameConfigUpdateRequest request) {
         try {
-            return response(toResult(gameConfigRepository.getGameConfig(request.getCustId(),
+
+            List<GameConfigEntity> entity = gameConfigRepository.getGameConfig(request.getCustId(),
                     request.getGroupId(), request.getFromTime(), request.getToTime(), request.getFromDate(),
-                    request.getToDate())));
+                    request.getToDate());
+
+            if (entity.get(0).getConfigId().intValue() == 7) {
+                return response(toResult(entity));
+            }
+
+            boolean isContinue = false;
+            List<GameConfigEntity> newListEntity = new ArrayList<>();
+            double totalChance = 0;
+
+            for (int i = 0; i < entity.size(); i++) {
+
+                if (!isContinue) {
+                    Random random = new Random();
+                    int chance = random.nextInt(200 - 1 + 1)
+                            + 1;
+                    if (chance <= totalChance) {
+                        GameConfigEntity newChance = new GameConfigEntity();
+                        newChance.setConfigId(entity.get(i).getConfigId());
+                        newChance.setFromDate(entity.get(i).getFromDate());
+                        newChance.setFromTime(entity.get(i).getFromTime());
+                        newChance.setToDate(entity.get(i).getToDate());
+                        newChance.setToTime(entity.get(i).getToTime());
+                        newChance.setId(entity.get(i).getId());
+                        newChance.setMaxPrize(entity.get(i).getMaxPrize());
+                        newChance.setName(entity.get(i).getName());
+                        newChance.setRAmount(entity.get(i).getRAmount());
+                        newChance.setRate(100.0);
+                        newListEntity.add(newChance);
+                        isContinue = true;
+                    }
+
+                    if (!isContinue) {
+                        totalChance = totalChance + entity.get(i).getRate() * 2;
+                        GameConfigEntity newChance = new GameConfigEntity();
+                        newChance.setConfigId(entity.get(i).getConfigId());
+                        newChance.setFromDate(entity.get(i).getFromDate());
+                        newChance.setFromTime(entity.get(i).getFromTime());
+                        newChance.setToDate(entity.get(i).getToDate());
+                        newChance.setToTime(entity.get(i).getToTime());
+                        newChance.setId(entity.get(i).getId());
+                        newChance.setMaxPrize(entity.get(i).getMaxPrize());
+                        newChance.setName(entity.get(i).getName());
+                        newChance.setRAmount(entity.get(i).getRAmount());
+                        newChance.setRate(0.0);
+                        newListEntity.add(newChance);
+                    }
+
+                    isContinue = false;
+                }
+
+            }
+
+            return response(toResult(newListEntity));
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
         }
