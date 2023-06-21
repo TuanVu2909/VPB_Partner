@@ -91,8 +91,6 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
                         newChance.setName(entity.get(i).getName());
                         newChance.setRAmount(entity.get(i).getRAmount());
                         newChance.setRate(100.0);
-                        request.setRate(newChance.getRate());
-                        request.setGiftId(newChance.getId());
                         newListEntity.add(newChance);
                         isContinue = true;
                     }
@@ -110,8 +108,6 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
                         newChance.setName(entity.get(i).getName());
                         newChance.setRAmount(entity.get(i).getRAmount());
                         newChance.setRate(0.0);
-                        request.setRate(newChance.getRate());
-                        request.setGiftId(newChance.getId());
                         newListEntity.add(newChance);
                         isContinue = false;
                     }
@@ -155,8 +151,6 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
                         newChance.setName(entity.get(i).getName());
                         newChance.setRAmount(entity.get(i).getRAmount());
                         newChance.setRate(100.0);
-                        request.setRate(newChance.getRate());
-                        request.setGiftId(newChance.getId());
                         ifNothingReturn.add(newChance);
 
                     } else {
