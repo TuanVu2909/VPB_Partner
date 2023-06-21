@@ -1,5 +1,7 @@
 package com.lendbiz.p2p.api.entity;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -49,4 +51,6 @@ public class GameConfigLogEntity {
     private double l9;
     @Column(name = "VMM")
     private double l10;
+    @Column(name = "LOGDATE")
+    private LocalDateTime logDate;
 }

@@ -1,5 +1,6 @@
 package com.lendbiz.p2p.api.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -58,6 +59,7 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
             String logId = String.valueOf(System.currentTimeMillis());
             newLog.setCustId(request.getCustId());
             newLog.setVqId(logId);
+            newLog.setLogDate(LocalDateTime.now());
 
             List<GameConfigEntity> entity = gameConfigRepository.getGameConfig(request.getCustId(),
                     request.getGroupId(), request.getFromTime(), request.getToTime(), request.getFromDate(),
@@ -210,8 +212,6 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
 
                 try {
                     configLogRepo.save(newLog);
-                    gameRepository.insertGameHistory(request.getCustId(), 1,
-                            request.getGiftId(), request.getRate(), request.getId(), logId);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -255,8 +255,6 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
             }
             try {
                 configLogRepo.save(newLog);
-                gameRepository.insertGameHistory(request.getCustId(), 1,
-                        request.getGiftId(), request.getRate(), request.getId(), logId);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
