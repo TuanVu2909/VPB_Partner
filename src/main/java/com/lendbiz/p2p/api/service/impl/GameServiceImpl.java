@@ -13,6 +13,7 @@ import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.GameConfigEntity;
 import com.lendbiz.p2p.api.entity.GameConfigLogEntity;
 import com.lendbiz.p2p.api.entity.GameHistoryEntity;
+import com.lendbiz.p2p.api.entity.ResCountEntity;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.GameAdminHistoryRepository;
 import com.lendbiz.p2p.api.repository.GameConfigLogRepo;
@@ -270,8 +271,11 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
     @Override
     public ResponseEntity<?> getGameTurn(GameConfigUpdateRequest request) {
         try {
-            return response(toResult(gameTurnRepository.getGameTurn(request.getCustId(),
-                    1)));
+            ResCountEntity e = new ResCountEntity();
+            e.setRestCount(gameTurnRepository.getGameTurn(request.getCustId(),
+                    1).getErrMessage());
+
+            return response(toResult(e));
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
         }
