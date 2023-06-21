@@ -11,9 +11,11 @@ import org.springframework.stereotype.Service;
 
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.GameConfigEntity;
+import com.lendbiz.p2p.api.entity.GameConfigLogEntity;
 import com.lendbiz.p2p.api.entity.GameHistoryEntity;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.GameAdminHistoryRepository;
+import com.lendbiz.p2p.api.repository.GameConfigLogRepo;
 import com.lendbiz.p2p.api.repository.GameConfigRepository;
 import com.lendbiz.p2p.api.repository.GameHistoryRepository;
 import com.lendbiz.p2p.api.repository.GameRepository;
@@ -45,9 +47,17 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
     @Autowired
     GetGameWinRepository gameWinRepository;
 
+    @Autowired
+    GameConfigLogRepo configLogRepo;
+
     @Override
     public ResponseEntity<?> getGameConfig(GameConfigUpdateRequest request) {
         try {
+
+            GameConfigLogEntity newLog = new GameConfigLogEntity();
+            String logId = String.valueOf(System.currentTimeMillis());
+            newLog.setCustId(request.getCustId());
+            newLog.setVqId(logId);
 
             List<GameConfigEntity> entity = gameConfigRepository.getGameConfig(request.getCustId(),
                     request.getGroupId(), request.getFromTime(), request.getToTime(), request.getFromDate(),
@@ -79,6 +89,8 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
                         newChance.setName(entity.get(i).getName());
                         newChance.setRAmount(entity.get(i).getRAmount());
                         newChance.setRate(100.0);
+                        request.setRate(newChance.getRate());
+                        request.setGiftId(newChance.getId());
                         newListEntity.add(newChance);
                         isContinue = true;
                     }
@@ -96,6 +108,8 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
                         newChance.setName(entity.get(i).getName());
                         newChance.setRAmount(entity.get(i).getRAmount());
                         newChance.setRate(0.0);
+                        request.setRate(newChance.getRate());
+                        request.setGiftId(newChance.getId());
                         newListEntity.add(newChance);
                         isContinue = false;
                     }
@@ -139,6 +153,8 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
                         newChance.setName(entity.get(i).getName());
                         newChance.setRAmount(entity.get(i).getRAmount());
                         newChance.setRate(100.0);
+                        request.setRate(newChance.getRate());
+                        request.setGiftId(newChance.getId());
                         ifNothingReturn.add(newChance);
 
                     } else {
@@ -157,9 +173,93 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
                     }
                 }
                 Collections.sort(ifNothingReturn, new GameConfigComparator());
+
+                for (int i = 0; i < ifNothingReturn.size(); i++) {
+                    if (ifNothingReturn.get(i).getId() == 1) {
+                        newLog.setL1(ifNothingReturn.get(i).getRate());
+                    }
+                    if (ifNothingReturn.get(i).getId() == 2) {
+                        newLog.setL2(ifNothingReturn.get(i).getRate());
+                    }
+                    if (ifNothingReturn.get(i).getId() == 3) {
+                        newLog.setL3(ifNothingReturn.get(i).getRate());
+                    }
+                    if (ifNothingReturn.get(i).getId() == 4) {
+                        newLog.setL4(ifNothingReturn.get(i).getRate());
+                    }
+                    if (ifNothingReturn.get(i).getId() == 5) {
+                        newLog.setL5(ifNothingReturn.get(i).getRate());
+                    }
+                    if (ifNothingReturn.get(i).getId() == 6) {
+                        newLog.setL6(ifNothingReturn.get(i).getRate());
+                    }
+                    if (ifNothingReturn.get(i).getId() == 7) {
+                        newLog.setL7(ifNothingReturn.get(i).getRate());
+                    }
+                    if (ifNothingReturn.get(i).getId() == 8) {
+                        newLog.setL8(ifNothingReturn.get(i).getRate());
+                    }
+                    if (ifNothingReturn.get(i).getId() == 9) {
+                        newLog.setL9(ifNothingReturn.get(i).getRate());
+                    }
+                    if (ifNothingReturn.get(i).getId() == 10) {
+                        newLog.setL10(ifNothingReturn.get(i).getRate());
+                    }
+
+                }
+
+                try {
+                    configLogRepo.save(newLog);
+                    gameRepository.insertGameHistory(request.getCustId(), 1,
+                            request.getGiftId(), request.getRate(), request.getId(), logId);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+
                 return response(toResult(ifNothingReturn));
             }
             Collections.sort(newListEntity, new GameConfigComparator());
+
+            for (int i = 0; i < newListEntity.size(); i++) {
+                if (newListEntity.get(i).getId() == 1) {
+                    newLog.setL1(newListEntity.get(i).getRate());
+                }
+                if (newListEntity.get(i).getId() == 2) {
+                    newLog.setL2(newListEntity.get(i).getRate());
+                }
+                if (newListEntity.get(i).getId() == 3) {
+                    newLog.setL3(newListEntity.get(i).getRate());
+                }
+                if (newListEntity.get(i).getId() == 4) {
+                    newLog.setL4(newListEntity.get(i).getRate());
+                }
+                if (newListEntity.get(i).getId() == 5) {
+                    newLog.setL5(newListEntity.get(i).getRate());
+                }
+                if (newListEntity.get(i).getId() == 6) {
+                    newLog.setL6(newListEntity.get(i).getRate());
+                }
+                if (newListEntity.get(i).getId() == 7) {
+                    newLog.setL7(newListEntity.get(i).getRate());
+                }
+                if (newListEntity.get(i).getId() == 8) {
+                    newLog.setL8(newListEntity.get(i).getRate());
+                }
+                if (newListEntity.get(i).getId() == 9) {
+                    newLog.setL9(newListEntity.get(i).getRate());
+                }
+                if (newListEntity.get(i).getId() == 10) {
+                    newLog.setL10(newListEntity.get(i).getRate());
+                }
+
+            }
+            try {
+                configLogRepo.save(newLog);
+                gameRepository.insertGameHistory(request.getCustId(), 1,
+                        request.getGiftId(), request.getRate(), request.getId(), logId);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
             return response(toResult(newListEntity));
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
@@ -226,8 +326,7 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
     @Override
     public ResponseEntity<?> insertGameHistory(GameConfigUpdateRequest request) {
         try {
-            return response(toResult(gameRepository.insertGameHistory(request.getCustId(), request.getStatus(),
-                    request.getGiftId(), request.getRate(), request.getId())));
+            return response(toResult(gameTurnRepository.getGameTurn(request.getCustId(), 1)));
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.ERROR_500, e.getMessage());
         }

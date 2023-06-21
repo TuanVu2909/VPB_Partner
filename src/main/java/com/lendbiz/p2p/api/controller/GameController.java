@@ -64,7 +64,7 @@ public class GameController {
     }
 
     @PostMapping("/get-game-config")
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<?> getGameConfig(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId,
             @RequestBody GameConfigUpdateRequest request)
