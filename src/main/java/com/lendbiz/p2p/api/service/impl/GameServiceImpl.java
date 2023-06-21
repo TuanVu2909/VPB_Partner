@@ -75,6 +75,7 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
             double totalChance = 0;
 
             for (int i = 0; i < entity.size(); i++) {
+                totalChance = totalChance + entity.get(i).getRate() * 2;
 
                 if (!isContinue) {
                     Random random = new Random();
@@ -97,7 +98,7 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
                     }
 
                     if (!isContinue) {
-                        totalChance = totalChance + entity.get(i).getRate() * 2;
+                        // totalChance = totalChance + entity.get(i).getRate() * 2;
                         GameConfigEntity newChance = new GameConfigEntity();
                         newChance.setConfigId(entity.get(i).getConfigId());
                         newChance.setFromDate(entity.get(i).getFromDate());
