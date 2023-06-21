@@ -54,6 +54,11 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
     public ResponseEntity<?> getGameConfig(GameConfigUpdateRequest request) {
         try {
 
+            GameConfigLogEntity newLog = new GameConfigLogEntity();
+            String logId = String.valueOf(System.currentTimeMillis());
+            newLog.setCustId(request.getCustId());
+            newLog.setVqId(logId);
+
             List<GameConfigEntity> entity = gameConfigRepository.getGameConfig(request.getCustId(),
                     request.getGroupId(), request.getFromTime(), request.getToTime(), request.getFromDate(),
                     request.getToDate());
@@ -84,6 +89,8 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
                         newChance.setName(entity.get(i).getName());
                         newChance.setRAmount(entity.get(i).getRAmount());
                         newChance.setRate(100.0);
+                        request.setRate(newChance.getRate());
+                        request.setGiftId(newChance.getId());
                         newListEntity.add(newChance);
                         isContinue = true;
                     }
@@ -101,6 +108,8 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
                         newChance.setName(entity.get(i).getName());
                         newChance.setRAmount(entity.get(i).getRAmount());
                         newChance.setRate(0.0);
+                        request.setRate(newChance.getRate());
+                        request.setGiftId(newChance.getId());
                         newListEntity.add(newChance);
                         isContinue = false;
                     }
@@ -144,6 +153,8 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
                         newChance.setName(entity.get(i).getName());
                         newChance.setRAmount(entity.get(i).getRAmount());
                         newChance.setRate(100.0);
+                        request.setRate(newChance.getRate());
+                        request.setGiftId(newChance.getId());
                         ifNothingReturn.add(newChance);
 
                     } else {
@@ -162,11 +173,8 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
                     }
                 }
                 Collections.sort(ifNothingReturn, new GameConfigComparator());
-                GameConfigLogEntity newLog = new GameConfigLogEntity();
-                for (int i = 0; i < ifNothingReturn.size(); i++) {
 
-                    newLog.setCustId(request.getCustId());
-                    newLog.setVqId(String.valueOf(System.currentTimeMillis()));
+                for (int i = 0; i < ifNothingReturn.size(); i++) {
                     if (ifNothingReturn.get(i).getId() == 1) {
                         newLog.setL1(ifNothingReturn.get(i).getRate());
                     }
@@ -202,6 +210,8 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
 
                 try {
                     configLogRepo.save(newLog);
+                    gameRepository.insertGameHistory(request.getCustId(), 1,
+                            request.getGiftId(), request.getRate(), request.getId(), logId);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -210,10 +220,7 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
             }
             Collections.sort(newListEntity, new GameConfigComparator());
 
-            GameConfigLogEntity newLog = new GameConfigLogEntity();
             for (int i = 0; i < newListEntity.size(); i++) {
-                newLog.setCustId(request.getCustId());
-                newLog.setVqId(String.valueOf(System.currentTimeMillis()));
                 if (newListEntity.get(i).getId() == 1) {
                     newLog.setL1(newListEntity.get(i).getRate());
                 }
@@ -248,6 +255,8 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
             }
             try {
                 configLogRepo.save(newLog);
+                gameRepository.insertGameHistory(request.getCustId(), 1,
+                        request.getGiftId(), request.getRate(), request.getId(), logId);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
@@ -317,8 +326,7 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
     @Override
     public ResponseEntity<?> insertGameHistory(GameConfigUpdateRequest request) {
         try {
-            return response(toResult(gameRepository.insertGameHistory(request.getCustId(), request.getStatus(),
-                    request.getGiftId(), request.getRate(), request.getId())));
+            return response(toResult(gameTurnRepository.getGameTurn(request.getCustId(), 1)));
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.ERROR_500, e.getMessage());
         }
