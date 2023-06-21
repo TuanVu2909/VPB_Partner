@@ -46,7 +46,6 @@ import javax.persistence.*;
                                 @StoredProcedureParameter(name = "pv_giftid", mode = ParameterMode.IN, type = Integer.class),
                                 @StoredProcedureParameter(name = "pv_rate", mode = ParameterMode.IN, type = Double.class),
                                 @StoredProcedureParameter(name = "pv_configid", mode = ParameterMode.IN, type = Integer.class),
-                                @StoredProcedureParameter(name = "pv_logid", mode = ParameterMode.IN, type = String.class),
 
                 })
 })

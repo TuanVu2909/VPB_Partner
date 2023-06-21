@@ -35,7 +35,6 @@ public interface GameRepository extends JpaRepository<GameEntity, String> {
                         @Param("pv_status") int status,
                         @Param("pv_giftid") int giftId,
                         @Param("pv_rate") double rate,
-                        @Param("pv_configid") int configId,
-                        @Param("pv_logid") String logid);
+                        @Param("pv_configid") int configId);
 
 }
