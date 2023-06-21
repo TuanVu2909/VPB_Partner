@@ -527,11 +527,11 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             try {
                 gameTurn = gameTurnRepository.getGameTurn(custId, 1);
                 if (gameTurn == null)
-                    gameTurn = new GameTurnEntity(0);
+                    gameTurn = new GameTurnEntity(0, 0);
 
             } catch (Exception e) {
                 log.info(e.getMessage());
-                gameTurn.setRestCount(0);
+                gameTurn.setErrMessage(0);
             }
 
             String userPhone = user.getMobileSms();
@@ -607,7 +607,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             map.put("inviteFriendDescription", inviteFriendDescription);
             map.put("xuTitle", xuTitle);
             map.put("xuDescription", xuDescription);
-            map.put("gameTurn", gameTurn.getRestCount());
+            map.put("gameTurn", gameTurn.getErrMessage());
             map.put("gameEnable", true);
 
             return response(toResult(map));

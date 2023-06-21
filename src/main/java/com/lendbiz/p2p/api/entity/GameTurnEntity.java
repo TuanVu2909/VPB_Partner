@@ -26,7 +26,10 @@ import javax.persistence.*;
 public class GameTurnEntity {
 
         @Id
-        @Column(name = "RESTCOUNT")
-        private int restCount;
+        @Column(name = "ERRCODE")
+        private int errCode;
+
+        @Column(name = "ERRMESSAGE")
+        private int errMessage;
 
 }
