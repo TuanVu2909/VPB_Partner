@@ -25,11 +25,11 @@ import javax.persistence.*;
                 }),
 
                 @NamedStoredProcedureQuery(name = "GameConfigEntity.getGameTurn", resultClasses = GameConfigEntity.class, procedureName = "PKG_API.get_gameturn", parameters = { //
-                        @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
-                        @StoredProcedureParameter(name = "pv_custid", mode = ParameterMode.IN, type = String.class),
-                        @StoredProcedureParameter(name = "pv_gameid", mode = ParameterMode.IN, type = Integer.class)
+                                @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
+                                @StoredProcedureParameter(name = "pv_custid", mode = ParameterMode.IN, type = String.class),
+                                @StoredProcedureParameter(name = "pv_gameid", mode = ParameterMode.IN, type = Integer.class)
 
-        })
+                })
 })
 public class GameConfigEntity {
         @Id
@@ -62,4 +62,7 @@ public class GameConfigEntity {
 
         @Column(name = "CONFIGID")
         private Integer configId;
+        
+        @Column(name = "GROUPID")
+        private Integer groupId;
 }

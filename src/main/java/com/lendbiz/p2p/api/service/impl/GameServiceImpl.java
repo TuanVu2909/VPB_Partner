@@ -65,7 +65,7 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
                     request.getGroupId(), request.getFromTime(), request.getToTime(), request.getFromDate(),
                     request.getToDate());
 
-            if (entity.get(0).getConfigId().intValue() == 7) {
+            if (entity.get(0).getGroupId().intValue() == 7) {
                 Collections.sort(entity, new GameConfigComparator());
                 return response(toResult(entity));
             }
