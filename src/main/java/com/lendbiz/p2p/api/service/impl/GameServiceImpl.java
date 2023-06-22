@@ -93,6 +93,7 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
                         newChance.setName(entity.get(i).getName());
                         newChance.setRAmount(entity.get(i).getRAmount());
                         newChance.setRate(100.0);
+                        newChance.setGroupId(entity.get(i).getGroupId());
                         newListEntity.add(newChance);
                         isContinue = true;
                     }
@@ -110,6 +111,7 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
                         newChance.setName(entity.get(i).getName());
                         newChance.setRAmount(entity.get(i).getRAmount());
                         newChance.setRate(0.0);
+                        newChance.setGroupId(entity.get(i).getGroupId());
                         newListEntity.add(newChance);
                         isContinue = false;
                     }
@@ -126,6 +128,7 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
                     newChance.setName(entity.get(i).getName());
                     newChance.setRAmount(entity.get(i).getRAmount());
                     newChance.setRate(0.0);
+                    newChance.setGroupId(entity.get(i).getGroupId());
                     newListEntity.add(newChance);
                 }
             }
@@ -153,6 +156,7 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
                         newChance.setName(entity.get(i).getName());
                         newChance.setRAmount(entity.get(i).getRAmount());
                         newChance.setRate(100.0);
+                        newChance.setGroupId(entity.get(i).getGroupId());
                         ifNothingReturn.add(newChance);
 
                     } else {
@@ -167,6 +171,7 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
                         newChance.setName(entity.get(i).getName());
                         newChance.setRAmount(entity.get(i).getRAmount());
                         newChance.setRate(0.0);
+                        newChance.setGroupId(entity.get(i).getGroupId());
                         ifNothingReturn.add(newChance);
                     }
                 }
