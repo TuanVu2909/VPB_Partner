@@ -123,6 +123,16 @@ public class GameController {
 
     }
 
+        @PostMapping("/get-admin-rate-by-day")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getAdminGameRateByDay(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId,
+            @RequestBody GameConfigUpdateRequest request)
+            throws BusinessException {
+        return gameService.getAdminRateByDay(request);
+
+    }
+
     @GetMapping("/get-game-win")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getGameWin(HttpServletRequest httpServletRequest,
