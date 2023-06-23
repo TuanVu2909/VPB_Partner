@@ -12,6 +12,6 @@ public interface GameAdminRateByDayRepository extends JpaRepository<AdminGameRat
 
         @Procedure("AdminGameRateByDayEntity.getAdminRateByDay")
         List<AdminGameRateByDayEntity> getAdminRateByDay(@Param("pv_custid") String custId,
-                        @Param("pv_gameid") int gameId);
+                        @Param("pv_date") String date);
 
 }
