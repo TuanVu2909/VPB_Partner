@@ -16,6 +16,10 @@ public interface GameService {
 
     ResponseEntity<?> getAdminGameUser(GameConfigUpdateRequest request);
 
+    ResponseEntity<?> getAdminRateByDay(GameConfigUpdateRequest request);
+
+    ResponseEntity<?> getAdminTotalPrize(GameConfigUpdateRequest request);
+
     ResponseEntity<?> getGameWin();
 
     ResponseEntity<?> updateGameConfig(GameConfigUpdateRequest request);
