@@ -16,6 +16,7 @@ import com.lendbiz.p2p.api.entity.GameConfigLogEntity;
 import com.lendbiz.p2p.api.entity.GameHistoryEntity;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.GameAdminHistoryRepository;
+import com.lendbiz.p2p.api.repository.GameAdminUserRepository;
 import com.lendbiz.p2p.api.repository.GameConfigLogRepo;
 import com.lendbiz.p2p.api.repository.GameConfigRepository;
 import com.lendbiz.p2p.api.repository.GameHistoryRepository;
@@ -50,6 +51,9 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
 
     @Autowired
     GameConfigLogRepo configLogRepo;
+
+    @Autowired
+    GameAdminUserRepository adminUserRepository;
 
     @Override
     public ResponseEntity<?> getGameConfig(GameConfigUpdateRequest request) {
@@ -294,6 +298,18 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
         try {
 
             return response(toResult(adminHistoryRepository.getAdminGameHistory(request.getCustId(),
+                    1)));
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
+        }
+
+    }
+
+    @Override
+    public ResponseEntity<?> getAdminGameUser(GameConfigUpdateRequest request) {
+        try {
+
+            return response(toResult(adminUserRepository.getAdminGameUser(request.getCustId(),
                     1)));
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
