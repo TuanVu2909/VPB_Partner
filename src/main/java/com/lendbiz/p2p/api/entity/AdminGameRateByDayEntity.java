@@ -1,14 +1,20 @@
 package com.lendbiz.p2p.api.entity;
 
+import java.math.BigInteger;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedStoredProcedureQueries;
+import javax.persistence.NamedStoredProcedureQuery;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureParameter;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.math.BigInteger;
-
-import javax.persistence.*;
 
 @Entity
 @Getter
@@ -29,6 +35,9 @@ import javax.persistence.*;
 public class AdminGameRateByDayEntity {
 
         @Id
+        @Column(name = "ROWNUM")
+        private int rowNum;
+
         @Column(name = "NAME")
         private String name;
 

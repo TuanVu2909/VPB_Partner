@@ -123,7 +123,7 @@ public class GameController {
 
     }
 
-        @PostMapping("/get-admin-rate-by-day")
+    @PostMapping("/get-admin-rate-by-day")
     @Transactional(readOnly = true)
     public ResponseEntity<?> getAdminGameRateByDay(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId,
