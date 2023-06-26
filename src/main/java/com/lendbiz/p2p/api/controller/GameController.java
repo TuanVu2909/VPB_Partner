@@ -15,9 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.request.GameConfigUpdateRequest;
+import com.lendbiz.p2p.api.request.GetRateByDayRequest;
 import com.lendbiz.p2p.api.service.GameService;
-
-import lombok.extern.log4j.Log4j2;
 
 /***********************************************************************
  *
@@ -56,6 +55,10 @@ public class GameController {
 
         if (apiType == 4) {
             return gameService.insertGameHistory(request);
+        }
+
+        if (apiType == 5) {
+            return gameService.updateGameConfig(request);
         }
 
         throw new BusinessException(
@@ -127,7 +130,7 @@ public class GameController {
     @Transactional(readOnly = true)
     public ResponseEntity<?> getAdminGameRateByDay(HttpServletRequest httpServletRequest,
             @RequestHeader("requestId") String requestId,
-            @RequestBody GameConfigUpdateRequest request)
+            @RequestBody GetRateByDayRequest request)
             throws BusinessException {
         return gameService.getAdminRateByDay(request);
 
@@ -139,6 +142,16 @@ public class GameController {
             @RequestHeader("requestId") String requestId)
             throws BusinessException {
         return gameService.getGameWin();
+
+    }
+
+    @GetMapping("/get-game-day")
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getGameDay(HttpServletRequest httpServletRequest,
+            @RequestHeader("requestId") String requestId)
+            throws BusinessException {
+
+        return gameService.getGameDay();
 
     }
 

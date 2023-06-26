@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +30,7 @@ import com.lendbiz.p2p.api.repository.GameRepository;
 import com.lendbiz.p2p.api.repository.GameTurnRepository;
 import com.lendbiz.p2p.api.repository.GetGameWinRepository;
 import com.lendbiz.p2p.api.request.GameConfigUpdateRequest;
+import com.lendbiz.p2p.api.request.GetRateByDayRequest;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.service.GameService;
 import com.lendbiz.p2p.api.utils.GameConfigComparator;
@@ -332,33 +332,11 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
     }
 
     @Override
-    public ResponseEntity<?> getAdminRateByDay(GameConfigUpdateRequest request) {
+    public ResponseEntity<?> getAdminRateByDay(GetRateByDayRequest request) {
         try {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            Date startDate = formatter.parse("2023-06-24");
-            Date endDate = formatter.parse("2023-07-20");
 
-            Calendar start = Calendar.getInstance();
-            start.setTime(startDate);
-            Calendar end = Calendar.getInstance();
-            end.setTime(endDate);
-
-            List<AdminGameRateByDayModal> lstRateByDay = new ArrayList<>();
-            for (Date date = start.getTime(); start.before(end); start.add(Calendar.DATE, 1), date = start.getTime()) {
-                String convertDate = Utils.convertDateToString(date);
-                AdminGameRateByDayModal newModal = new AdminGameRateByDayModal();
-                List<AdminGameRateByDayEntity> e = adminRateByDayRepository.getAdminRateByDay(request.getCustId(),
-                        convertDate);
-                if (e != null) {
-                    newModal.setDate(convertDate);
-                    newModal.setObj(e);
-
-                }
-
-                lstRateByDay.add(newModal);
-            }
-
-            return response(toResult(lstRateByDay));
+            return response(toResult(adminRateByDayRepository.getAdminRateByDay(request.getCustId(),
+                    request.getDate())));
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
         }
@@ -379,6 +357,14 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
 
     @Override
     public ResponseEntity<?> updateGameConfig(GameConfigUpdateRequest request) {
+
+        return response(toResult(gameRepository.updateGameConfig(request.getId(), request.getRate(),
+                request.getGiftId(), request.getGroupId(),
+                request.getStatus())));
+    }
+
+    @Override
+    public ResponseEntity<?> updateGameConfigAdmin(GameConfigUpdateRequest request) {
 
         return response(toResult(gameRepository.updateGameConfig(request.getId(), request.getRate(),
                 request.getGiftId(), request.getGroupId(),
@@ -413,6 +399,33 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
     public ResponseEntity<?> getGameWin() {
         try {
             return response(toResult(gameWinRepository.getGameWin()));
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getGameDay() {
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            Date startDate = formatter.parse("2023-06-24");
+            Date endDate = formatter.parse("2023-07-20");
+
+            Calendar start = Calendar.getInstance();
+            start.setTime(startDate);
+            Calendar end = Calendar.getInstance();
+            end.setTime(endDate);
+
+            List<AdminGameRateByDayModal> lstRateByDay = new ArrayList<>();
+            for (Date date = start.getTime(); start.before(end); start.add(Calendar.DATE, 1), date = start.getTime()) {
+                String convertDate = Utils.convertDateToString(date);
+                AdminGameRateByDayModal newModal = new AdminGameRateByDayModal();
+                newModal.setDate(convertDate);
+
+                lstRateByDay.add(newModal);
+            }
+
+            return response(toResult(lstRateByDay));
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.UNKNOWN_ERROR, e.getMessage());
         }

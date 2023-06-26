@@ -15,6 +15,10 @@ public interface GameRepository extends JpaRepository<GameEntity, String> {
                         @Param("pv_groupid") int groupId,
                         @Param("pv_status") int status);
 
+        @Procedure("GameEntity.updateGameConfigAdmin")
+        GameEntity updateGameConfigAdmin(@Param("pv_giftid") int giftid,
+                        @Param("pv_date") String date);
+
         @Procedure("GameEntity.updateGameGroupTime")
         GameEntity updateGameGroupTime(@Param("pv_groupid") int groupId,
                         @Param("pv_fromtime") String fromTime,
