@@ -58,7 +58,7 @@ public class GameController {
         }
 
         if (apiType == 5) {
-            return gameService.updateGameConfig(request);
+            return gameService.updateGameConfigAdmin(request);
         }
 
         throw new BusinessException(

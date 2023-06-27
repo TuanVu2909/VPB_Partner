@@ -21,8 +21,10 @@ import javax.persistence.*;
                 }),
                 @NamedStoredProcedureQuery(name = "GameEntity.updateGameConfigAdmin", resultClasses = GameEntity.class, procedureName = "PKG_API.update_gameconfigadmin", parameters = { //
                                 @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
-                                @StoredProcedureParameter(name = "pv_id", mode = ParameterMode.IN, type = Integer.class),
+                                @StoredProcedureParameter(name = "pv_giftid", mode = ParameterMode.IN, type = Integer.class),
                                 @StoredProcedureParameter(name = "pv_date", mode = ParameterMode.IN, type = String.class),
+                                @StoredProcedureParameter(name = "pv_rate", mode = ParameterMode.IN, type = Double.class),
+                                @StoredProcedureParameter(name = "pv_total", mode = ParameterMode.IN, type = Integer.class),
                 }),
                 @NamedStoredProcedureQuery(name = "GameEntity.updateGameGroupTime", resultClasses = GameEntity.class, procedureName = "PKG_API.update_gamegrouptime", parameters = { //
                                 @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),

@@ -366,9 +366,8 @@ public class GameServiceImpl extends BaseResponse<GameService> implements GameSe
     @Override
     public ResponseEntity<?> updateGameConfigAdmin(GameConfigUpdateRequest request) {
 
-        return response(toResult(gameRepository.updateGameConfig(request.getId(), request.getRate(),
-                request.getGiftId(), request.getGroupId(),
-                request.getStatus())));
+        return response(toResult(gameRepository.updateGameConfigAdmin(request.getGiftId(), request.getFromDate(),
+                request.getRate(), request.getMaxPrize())));
     }
 
     @Override
