@@ -23,10 +23,10 @@ import javax.persistence.*;
 })
 public class GetGameWinEntity {
 
-        @Id
         @Column(name = "ID")
         private int id;
 
+        @Id
         @Column(name = "TIMEWIN")
         private String time;
 
