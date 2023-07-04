@@ -93,8 +93,8 @@ public class VNPTServiceImpl extends BaseResponse<VNPTService> implements VNPTSe
         String hashImgFrontId = this.uploadImage(imgFrontId, "imgFrontId", "imgFrontId");
         String hashImgBackId = this.uploadImage(imgBackId, "imgBackId", "imgBackId");
 
-        //this.saveFileKafka(imgFrontId, mobile, 0);
-        //this.saveFileKafka(imgBackId, mobile, 1);
+        this.saveFileKafka(imgFrontId, mobile, 0);
+        this.saveFileKafka(imgBackId, mobile, 1);
 
         // Phí 800 vnd
         BgEkycEntity bgEkyc = this.bgEkycRepository.findByMobileSms(mobile);
