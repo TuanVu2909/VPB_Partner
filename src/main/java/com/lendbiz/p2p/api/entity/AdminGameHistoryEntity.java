@@ -26,6 +26,7 @@ import javax.persistence.*;
 })
 public class AdminGameHistoryEntity {
 
+        @Id
         @Column(name = "ROWNUM")
         private String rowNum;
 
@@ -38,7 +39,6 @@ public class AdminGameHistoryEntity {
         @Column(name = "PHONE")
         private String phone;
 
-        
         @Column(name = "LOGDATE")
         private String logDate;
 
