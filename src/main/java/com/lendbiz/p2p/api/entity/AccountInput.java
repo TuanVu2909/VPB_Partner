@@ -18,5 +18,6 @@ public class AccountInput {
     private String refId;
     private String coin;
     private String doc_no;
+    private String packageName;
     
 }
