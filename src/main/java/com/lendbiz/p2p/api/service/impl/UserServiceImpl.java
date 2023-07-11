@@ -718,6 +718,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             kafkaRquest.setMethod("C");
             kafkaRquest.setObject(input);
 
+            log.info(input.toString());
+
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new BusinessException(Constants.FAIL, ErrorCode.ERROR_500_DESCRIPTION);
