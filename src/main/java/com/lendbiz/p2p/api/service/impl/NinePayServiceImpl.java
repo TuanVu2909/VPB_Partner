@@ -310,7 +310,8 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
     @Override
     public ResponseEntity<?> buyCard(Input9Pay input9Pay) {
 
-        if (input9Pay.getTotalAmount() > 0 && checkBalanceBeforePay(input9Pay.getTotalAmount())) {
+        // if (input9Pay.getTotalAmount() > 0 && checkBalanceBeforePay(input9Pay.getTotalAmount())) {
+            if (input9Pay.getTotalAmount() > 0) {
             WithdrawEntity withdraw = withdrawRepo.subtractBalance(input9Pay.getCif(),
                     (int) input9Pay.getTotalAmount(), "11");
 
