@@ -298,6 +298,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     GameTurnRepository gameTurnRepository;
 
+    private String[] lstAccInvest = {"Mua sắm", "Du lịch", "Học tập", "Xe hơi", "Nhà", "Sự kiện", "Khác"};
+
     @Override
     public ResponseEntity<?> checkVersion3GangOutdated(String version) {
         // List<Object> response;
@@ -609,6 +611,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
             map.put("xuDescription", xuDescription);
             map.put("gameTurn", gameTurn.getRestCount());
             map.put("gameEnable", true);
+            map.put("ggpackages", lstAccInvest);
 
             return response(toResult(map));
 
