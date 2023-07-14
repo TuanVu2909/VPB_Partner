@@ -55,6 +55,6 @@ public class PortfolioInvest {
     @Column(name = "REMAINDAY")
     private int remainDay;
     @Column(name = "TARGETAMT")
-    private double targetAmount;
+    private long targetAmount;
 
 }
