@@ -716,7 +716,8 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     input.getTerm(),
                     Float.valueOf(input.getRate()),
                     input.getAmt(),
-                    input.getContractId(), input.getPayType());
+                    input.getContractId(), input.getPayType(),
+                    input.getTargetAmt());
 
             kafkaRquest.setMethod("C");
             kafkaRquest.setObject(input);

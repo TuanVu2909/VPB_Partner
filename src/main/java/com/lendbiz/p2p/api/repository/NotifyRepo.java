@@ -29,7 +29,8 @@ public interface NotifyRepo extends JpaRepository<NotifyEntity, String> {
             , @Param("pv_rate") Float pv_rate
             , @Param("pv_amt") String pv_amt
             , @Param("pv_contractId") String pv_contractId
-            , @Param("pv_payType") String pv_payType);
+            , @Param("pv_payType") String pv_payType
+            , @Param("pv_targetamt") String pv_targetamt);
 
     @Procedure("NotifyEntity.checkWithdrawBear")
     NotifyEntity checkWithdrawBear(@Param("pv_custId") String pv_custId
