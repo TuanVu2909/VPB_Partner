@@ -67,9 +67,9 @@ public class Constants {
 	public static final String ESIGN_REGISTER = "https://uat-gateway.digital-id.vn/ekyc-prod/1.0.1/call/register_user_face";
 	public static final String GET_OTP = "https://api-m.digital-id.vn/service-otp/v1/otp/generate";
 	public static final String VALIDATE_OTP = "https://api-m.digital-id.vn/service-otp/v1/otp/validate";
-	
+
 	public static final String SIGN_PDF = "https://api-m.digital-id.vn/signing/1.0/pdf";
-	
+
 	public static final String ESIGN_API_KEY = "apikey";
 	public static final String ESIGN_VALUE_HEADER = "eyJ4NXQiOiJOVGRtWmpNNFpEazNOalkwWXpjNU1tWm1PRGd3TVRFM01XWXdOREU1TVdSbFpEZzROemM0WkE9PSIsImtpZCI6ImdhdGV3YXlfY2VydGlmaWNhdGVfYWxpYXMiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbkBjYXJib24uc3VwZXIiLCJhcHBsaWNhdGlvbiI6eyJvd25lciI6ImFkbWluIiwidGllclF1b3RhVHlwZSI6bnVsbCwidGllciI6IlVubGltaXRlZCIsIm5hbWUiOiJMZW5kYml6IiwiaWQiOjExLCJ1dWlkIjoiNjA2MzU0MDYtZjY5YS00YTViLThhN2QtZjQ2ZWVjMTQ0ZmM1In0sImlzcyI6Imh0dHBzOlwvXC91YXQtYXBpcG9ydGFsLmRpZ2l0YWwtaWQudm46NDQzXC9vYXV0aDJcL3Rva2VuIiwidGllckluZm8iOnsiVW5saW1pdGVkIjp7InRpZXJRdW90YVR5cGUiOiJyZXF1ZXN0Q291bnQiLCJncmFwaFFMTWF4Q29tcGxleGl0eSI6MCwiZ3JhcGhRTE1heERlcHRoIjowLCJzdG9wT25RdW90YVJlYWNoIjp0cnVlLCJzcGlrZUFycmVzdExpbWl0IjowLCJzcGlrZUFycmVzdFVuaXQiOm51bGx9fSwia2V5dHlwZSI6IlBST0RVQ1RJT04iLCJwZXJtaXR0ZWRSZWZlcmVyIjoiIiwic3Vic2NyaWJlZEFQSXMiOlt7InN1YnNjcmliZXJUZW5hbnREb21haW4iOiJjYXJib24uc3VwZXIiLCJuYW1lIjoiZUtZQy1Qcm9kIiwiY29udGV4dCI6IlwvZWt5Yy1wcm9kXC8xLjAuMSIsInB1Ymxpc2hlciI6ImFkbWluIiwidmVyc2lvbiI6IjEuMC4xIiwic3Vic2NyaXB0aW9uVGllciI6IlVubGltaXRlZCJ9LHsic3Vic2NyaWJlclRlbmFudERvbWFpbiI6ImNhcmJvbi5zdXBlciIsIm5hbWUiOiJPQ1ItUHJvZCIsImNvbnRleHQiOiJcL29jci1wcm9kXC8xLjAuMSIsInB1Ymxpc2hlciI6ImFkbWluIiwidmVyc2lvbiI6IjEuMC4xIiwic3Vic2NyaXB0aW9uVGllciI6IlVubGltaXRlZCJ9XSwicGVybWl0dGVkSVAiOiIiLCJpYXQiOjE2MzUxNTA0OTAsImp0aSI6ImFiNmRjMWJhLTlmYTItNDJmYS1iYmE3LWRiYzU3ODMxN2NkMSJ9.f1Ylz7LI3RBEMocdKO3oUiAoM5K9NR6O6mTVVRPAumHowW4b2l9OM0985aImhBeEyAb8q47r3ZlQZ3xDdYQ24PL5geq9OsL4dilNtya9MB9VPD-_ZJGCrxKV-SxAVIulA5MPMGXenX4-CplCK_K8oIWipGSSBfOOVrw5xd8k04klEMuzxgO2hHq1bwR7APCFPWdorgcdWOKlqzPmQAJCWEdEJmchc1l6uQNxnxn_Tu4RM8WAxe7QMCAaZTO8HiWUiKKttszmcX6939cfYMTlGKsfj_WNXgYIZxgADfGW7x53cPx4nfH-JHSRlMX2Y8rYJ1jUueWRKl5Qa2xaFw1tIg==";
 	public static final String LENDBIZ = "LENDBIZ";
@@ -134,6 +134,9 @@ public class Constants {
 		public static final String GROUP_3GANG_PARTITIONS = "group_3gang_partitions-test";
 		public static final String TOPIC_UPDATE_CUSTOMER = "topic_update_customer-test";
 		public static final String GROUP_UPDATE_CUSTOMER = "group_update_customer-test";
+
+		public static final String TOPIC_API_PARTNER_LOG = "TOPIC_API_PARTNER_LOG";
+		public static final String GROUP_API_PARTNER_LOG = "GROUP_API_PARTNER_LOG";
 	}
 
 	// accesstrade
