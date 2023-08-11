@@ -380,7 +380,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                     userOnlineRepo.updateDeviceIdBioState(0, user.getCustId(), loginRequest.getDeviceId());
                 }
 
-                if (user.getVersion() == null) {
+                if (loginRequest.getVersion() == null) {
                     loginRequest.setVersion("");
                 }
                 
