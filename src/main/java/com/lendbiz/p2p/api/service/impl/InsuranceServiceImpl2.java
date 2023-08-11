@@ -41,10 +41,10 @@
 // @Service
 // public class InsuranceServiceImpl2 extends BaseResponse<InsuranceService> implements InsuranceService {
 //     static String BV_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZW5kYml6QGJhb3ZpZXQuY29tLnZuIiwiYXV0aCI6IlBFUk1fQUdSRUVNRU5UX0NSRUFURSxQRVJNX0FHUkVFTUVOVF9ERUxFVEUsUEVSTV9BR1JFRU1FTlRfRURJVCxQRVJNX0FHUkVFTUVOVF9WSUVXLFBFUk1fQ0FSVF9DUkVBVEUsUEVSTV9DQVJUX0RFTEVURSxQRVJNX0NBUlRfRURJVCxQRVJNX0NBUlRfVklFVyxQRVJNX0NPTlRBQ1RfQ1JFQVRFLFBFUk1fQ09OVEFDVF9ERUxFVEUsUEVSTV9DT05UQUNUX0VESVQsUEVSTV9DT05UQUNUX1ZJRVcsUEVSTV9QQVlfQ0hVWUVOX1RIVSxQRVJNX1BBWV9LSEFDSF9IQU5HX1RULFBFUk1fUEFZX1RIQU5IVE9BTl9TQVUsUEVSTV9QQVlfVk5QQVksUEVSTV9QUk9EVUNUX0JWR19DUkVBVEUsUEVSTV9QUk9EVUNUX0JWR19ERUxFVEUsUEVSTV9QUk9EVUNUX0JWR19FRElULFBFUk1fUFJPRFVDVF9CVkdfVklFVyxQRVJNX1JFUE9SVF9DT01NSVNTSU9OX1ZJRVcsUEVSTV9SRVBPUlRfSU5DT01FX1ZJRVcsUEVSTV9SRVBPUlRfTFYxLFBFUk1fUkVQT1JUX1RSQU5TRkVSX1ZJRVcsUk9MRV9BRE1JTixST0xFX0FHRU5DWSxST0xFX1JFUE9SVF9BR0VOQ1kiLCJleHAiOjE2NTg5MDk0NjN9.arF3Co76Il4yqGM3cg3V5mye0MFyz0nz2WlPZgoMoXUEg2VXb8slW7DQN6_QbRLMWtkBTdpjRCw30iIAerwR3A";
-//     static String BV_PREMIUM_URI = "https://agency-api-dev1.baoviet.com.vn/api/agency/product/bvg/premium";
-//     static String BV_PARTNER_URI = "https://agency-api-dev1.baoviet.com.vn/api/agency/product/bvg/createPolicy-Partner";
-//     static String BV_ODER_DOWNLOAD_URI = "https://agency-api-dev1.baoviet.com.vn/api/agency/document/download-file-agreement";
-//     static String BV_ODER_INFO_URI = "https://agency-api-dev1.baoviet.com.vn/api/agency/product/agreement/get-by-gycbhNumber";
+//     static String BV_PREMIUM_URI = "https://agency-api-dev.baoviet.com.vn/api/agency/product/bvg/premium";
+//     static String BV_PARTNER_URI = "https://agency-api-dev.baoviet.com.vn/api/agency/product/bvg/createPolicy-Partner";
+//     static String BV_ODER_DOWNLOAD_URI = "https://agency-api-dev.baoviet.com.vn/api/agency/document/download-file-agreement";
+//     static String BV_ODER_INFO_URI = "https://agency-api-dev.baoviet.com.vn/api/agency/product/agreement/get-by-gycbhNumber";
 //     @Autowired
 //     private RestTemplate restTemplate;
 //     @Autowired

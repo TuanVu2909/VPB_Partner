@@ -13,6 +13,7 @@ import com.lendbiz.p2p.api.request.CreatePolicyPartnerRequest;
 import com.lendbiz.p2p.api.request.CreatePolicyPartnerRq;
 import com.lendbiz.p2p.api.request.InsuranceRequest;
 import com.lendbiz.p2p.api.request.baovietEntity.AddressDistrictData;
+import com.lendbiz.p2p.api.request.baovietEntity.BvLogin;
 import com.lendbiz.p2p.api.request.baovietEntity.ImgGks;
 import com.lendbiz.p2p.api.request.baovietEntity.InvoiceInfo;
 import com.lendbiz.p2p.api.request.baovietEntity.ListBvgAddBaseVM;
@@ -41,10 +42,12 @@ import java.util.Optional;
 @Service
 public class InsuranceServiceImpl extends BaseResponse<InsuranceService> implements InsuranceService {
     static String BV_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZW5kYml6QGJhb3ZpZXQuY29tLnZuIiwiYXV0aCI6IlBFUk1fQUdSRUVNRU5UX0NSRUFURSxQRVJNX0FHUkVFTUVOVF9ERUxFVEUsUEVSTV9BR1JFRU1FTlRfRURJVCxQRVJNX0FHUkVFTUVOVF9WSUVXLFBFUk1fQ0FSVF9DUkVBVEUsUEVSTV9DQVJUX0RFTEVURSxQRVJNX0NBUlRfRURJVCxQRVJNX0NBUlRfVklFVyxQRVJNX0NPTlRBQ1RfQ1JFQVRFLFBFUk1fQ09OVEFDVF9ERUxFVEUsUEVSTV9DT05UQUNUX0VESVQsUEVSTV9DT05UQUNUX1ZJRVcsUEVSTV9QQVlfQ0hVWUVOX1RIVSxQRVJNX1BBWV9LSEFDSF9IQU5HX1RULFBFUk1fUEFZX1RIQU5IVE9BTl9TQVUsUEVSTV9QQVlfVk5QQVksUEVSTV9QUk9EVUNUX0JWR19DUkVBVEUsUEVSTV9QUk9EVUNUX0JWR19ERUxFVEUsUEVSTV9QUk9EVUNUX0JWR19FRElULFBFUk1fUFJPRFVDVF9CVkdfVklFVyxQRVJNX1JFUE9SVF9DT01NSVNTSU9OX1ZJRVcsUEVSTV9SRVBPUlRfSU5DT01FX1ZJRVcsUEVSTV9SRVBPUlRfTFYxLFBFUk1fUkVQT1JUX1RSQU5TRkVSX1ZJRVcsUk9MRV9BRE1JTixST0xFX0FHRU5DWSxST0xFX1JFUE9SVF9BR0VOQ1kiLCJleHAiOjE2NzAxMjIzNjB9.MD2o0C5EShRZdsQVj9Hy3axf-0uIhWPeBGC0ha0nvCmv_m7n0RPa4ii8LyycF8mq9kz7ouKsTQFoWDT0AMS-_w";
-    static String BV_PREMIUM_URI = "https://agency-api-dev1.baoviet.com.vn/api/agency/product/bvg/premium";
-    static String BV_PARTNER_URI = "https://agency-api-dev1.baoviet.com.vn/api/agency/product/bvg/createPolicy-Partner";
-    static String BV_ODER_DOWNLOAD_URI = "https://agency-api-dev1.baoviet.com.vn/api/agency/document/download-file-agreement";
-    static String BV_ODER_INFO_URI = "https://agency-api-dev1.baoviet.com.vn/api/agency/product/agreement/get-by-gycbhNumber";
+    static String BV_PREMIUM_URI = "https://agency-api-dev.baoviet.com.vn/api/agency/product/bvg/premium";
+    static String BV_PARTNER_URI = "https://agency-api-dev.baoviet.com.vn/api/agency/product/bvg/createPolicy-Partner";
+    static String BV_ODER_DOWNLOAD_URI = "https://agency-api-dev.baoviet.com.vn/api/agency/document/download-file-agreement";
+    static String BV_ODER_INFO_URI = "https://agency-api-dev.baoviet.com.vn/api/agency/product/agreement/get-by-gycbhNumber";
+    static String BV_API_LOGIN = "https://agency-api-dev.baoviet.com.vn/api/agency/account/login";
+
     @Autowired
     private RestTemplate restTemplate;
     @Autowired
@@ -58,12 +61,42 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
     @Autowired
     InsuranceListRepository insuranceListRepository;
 
+    public String getToken() {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Bearer " + BV_TOKEN);
+            BvLogin loginRequest = new BvLogin();
+            loginRequest.setUsername("lendbiz@baoviet.com.vn");
+            loginRequest.setPassword("Lendbiz@123");
+            JSONObject jsonObject = new JSONObject(loginRequest);
+
+            HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(), headers);
+            ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(BV_API_LOGIN, request,
+                    String.class);
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root;
+            try {
+                root = mapper.readTree(responseEntityStr.getBody());
+                return root.get("id_token").asText();
+            } catch (JsonMappingException e) {
+                e.printStackTrace();
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            throw new BusinessException("200", e.getMessage());
+        }
+
+        return null;
+    }
+
     @Override
     public ResponseEntity<?> premium(Premium premium) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer " + BV_TOKEN);
+            headers.set("Authorization", "Bearer " + getToken());
             JSONObject jsonObject = new JSONObject(premium);
 
             HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(), headers);
@@ -92,7 +125,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer " + BV_TOKEN);
+            headers.set("Authorization", "Bearer " + getToken());
             JSONObject jsonObject = new JSONObject(rq);
             System.out.println(jsonObject);
             HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(), headers);
@@ -117,7 +150,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer " + BV_TOKEN);
+            headers.set("Authorization", "Bearer " + getToken());
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("gycbhNumber", gycbhNumber);
 
@@ -153,7 +186,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             ;
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer " + BV_TOKEN);
+            headers.set("Authorization", "Bearer " + getToken());
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("gycbhNumber", gid);
             jsonObject.put("type", type);
@@ -368,7 +401,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer " + BV_TOKEN);
+            headers.set("Authorization", "Bearer " + getToken());
             JSONObject jsonObject = new JSONObject(request);
             System.out.println(jsonObject);
             HttpEntity<String> requestHttp = new HttpEntity<String>(jsonObject.toString(), headers);
@@ -447,7 +480,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer " + BV_TOKEN);
+            headers.set("Authorization", "Bearer " + getToken());
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("gycbhNumber", rId);
             HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(), headers);
