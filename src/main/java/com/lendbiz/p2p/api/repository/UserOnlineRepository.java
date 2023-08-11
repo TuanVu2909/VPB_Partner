@@ -55,4 +55,9 @@ public interface UserOnlineRepository extends JpaRepository<UserOnline, String> 
 	@Query(value = "update bg_account set biostate = ?1 where custid = ?2", nativeQuery = true)
 	int updateOnlyBioState(int state, String custId);
 
+	@Transactional
+	@Modifying
+	@Query(value = "update bg_account set version = ?1 where custid = ?2", nativeQuery = true)
+	void updateVersion(String version, String custId);
+
 }

@@ -47,8 +47,8 @@ public class UserOnline {
 	@Column(name = "STATUS")
 	private String status;
 	
-	@Column(name = "EMAIL")
-	private String email;
+	@Column(name = "VERSION")
+	private String version;
 	
 	@Column(name = "LAST_CHANGE")
 	private Date lastChange;

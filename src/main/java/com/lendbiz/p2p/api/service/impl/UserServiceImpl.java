@@ -298,7 +298,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
     @Autowired
     GameTurnRepository gameTurnRepository;
 
-    private String[] lstAccInvest = {"Mua sắm", "Du lịch", "Học tập", "Xe hơi", "Nhà", "Sự kiện", "Khác"};
+    private String[] lstAccInvest = { "Mua sắm", "Du lịch", "Học tập", "Xe hơi", "Nhà", "Sự kiện", "Khác" };
 
     @Override
     public ResponseEntity<?> checkVersion3GangOutdated(String version) {
@@ -378,6 +378,10 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
                 if (!loginRequest.getDeviceId().equalsIgnoreCase(user.getDeviceId())) {
                     userOnlineRepo.updateDeviceIdBioState(0, user.getCustId(), loginRequest.getDeviceId());
+                }
+
+                if (!loginRequest.getVersion().equalsIgnoreCase(user.getVersion())) {
+                    userOnlineRepo.updateVersion(loginRequest.getDeviceId(), user.getCustId());
                 }
 
             }
@@ -1327,7 +1331,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
 
         String amountLength = "05";
         String vAmount = String.valueOf(Math.round(Double.parseDouble(amount)));
-        
+
         if (vAmount.length() < 10) {
             amountLength = "0" + vAmount.length();
         }
