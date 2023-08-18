@@ -22,7 +22,7 @@ public interface ConfigService {
 
 	public ResponseEntity<?> getHolidayDate();
 
-	public ResponseEntity<?> getProductField();
+	public ResponseEntity<?> getProductField(String mobile);
 
 	public ResponseEntity<?> getProductConfig();
 

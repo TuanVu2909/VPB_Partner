@@ -34,9 +34,10 @@ public class ConfigController {
     @Transactional(readOnly = true)
     @GetMapping("/get-product-field")
     public ResponseEntity<?> getProductField(HttpServletRequest httpServletRequest,
-            @RequestHeader("requestId") String requestId) {
+            @RequestHeader("requestId") String requestId,
+            @RequestHeader("session") String mobile) {
 
-        return configService.getProductField();
+        return configService.getProductField(mobile);
     }
 
     @Transactional(readOnly = true)

@@ -77,11 +77,11 @@ public class ConfigServiceImpl extends BaseResponse<ConfigService> implements Co
 	}
 
 	@Override
-	public ResponseEntity<?> getProductField() {
+	public ResponseEntity<?> getProductField(String mobile) {
 
 		// return response(toResult(bgConfigRepository.findViaProcedure()));
 
-		List<BgConfigEntity> list = bgConfigRepository.findViaProcedure();
+		List<BgConfigEntity> list = bgConfigRepository.findViaProcedure(mobile);
 		if (list.size() == 0)
 			throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
 
