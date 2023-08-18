@@ -410,7 +410,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Bearer " + getToken());
             JSONObject jsonObject = new JSONObject(request);
-            System.out.println(jsonObject);
+            logger.info("[Create Insurance request]: " + jsonObject.toString());
             HttpEntity<String> requestHttp = new HttpEntity<String>(jsonObject.toString(), headers);
             ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(BV_PARTNER_URI, requestHttp,
                     String.class);
