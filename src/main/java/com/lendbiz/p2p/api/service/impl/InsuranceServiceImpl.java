@@ -100,6 +100,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Bearer " + getToken());
             JSONObject jsonObject = new JSONObject(premium);
+            logger.info("[Premium request]: " + jsonObject.toString());
 
             HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(), headers);
             ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(BV_PREMIUM_URI, request,
