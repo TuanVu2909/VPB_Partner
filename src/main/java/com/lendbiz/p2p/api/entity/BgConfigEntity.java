@@ -15,7 +15,8 @@ import lombok.ToString;
 @Entity
 @NamedStoredProcedureQueries({ //
         @NamedStoredProcedureQuery(name = "BgConfigEntity.findViaProcedure", procedureName = "PKG_API.GET_CONFIG_PRODUCT", resultClasses = BgConfigEntity.class, parameters = { //
-                @StoredProcedureParameter(name = "p_cursor", mode = ParameterMode.REF_CURSOR, type = Void.class) }) //
+                @StoredProcedureParameter(name = "p_cursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
+                @StoredProcedureParameter(name = "pv_mobile", mode = ParameterMode.IN, type = String.class) }) //
 })
 @Getter
 @Setter
