@@ -106,7 +106,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             JsonNode root;
             try {
                 root = mapper.readTree(responseEntityStr.getBody());
-                return response(toResult(root));
+                return response(toResult(new JSONObject(root).toString()));
             } catch (JsonMappingException e) {
                 e.printStackTrace();
             } catch (JsonProcessingException e) {
