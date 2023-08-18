@@ -8,6 +8,8 @@ import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.*;
 import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.model.bvpremium.PremiumConverter;
+import com.lendbiz.p2p.api.model.bvpremium.PremiumModel;
 import com.lendbiz.p2p.api.repository.*;
 import com.lendbiz.p2p.api.request.CreatePolicyPartnerRequest;
 import com.lendbiz.p2p.api.request.CreatePolicyPartnerRq;
@@ -102,11 +104,15 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(), headers);
             ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(BV_PREMIUM_URI, request,
                     String.class);
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode root;
+            // ObjectMapper mapper = new ObjectMapper();
+            // JsonNode root;
             try {
-                root = mapper.readTree(responseEntityStr.getBody());
-                return response(toResult(root));
+                // root = mapper.readTree(responseEntityStr.getBody());
+
+                PremiumModel model = new PremiumModel();
+                model = PremiumConverter.fromJsonString(responseEntityStr.getBody());
+
+                return response(toResult(model));
             } catch (JsonMappingException e) {
                 e.printStackTrace();
             } catch (JsonProcessingException e) {
