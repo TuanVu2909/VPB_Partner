@@ -227,6 +227,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
 
     @Override
     public ResponseEntity<?> createInsurance(InsuranceRequest insuranceRequest) {
+        logger.info("[InsuranceRequest]: " +new JSONObject(insuranceRequest).toString());
         String age = String.valueOf(Utils.getAge(insuranceRequest.getPv_beneficiaryBirthDate()));
         List<InsuranceAdditionPrice> listAdd = insuranceAdditionPriceRepository
                 .getInsuranceAdditionPrice(insuranceRequest.getPv_packageId(), age);
