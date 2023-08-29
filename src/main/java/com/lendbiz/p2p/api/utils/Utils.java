@@ -273,12 +273,13 @@ public class Utils {
             byte[] result = cipher.doFinal(cipherBytes);
             byte[] bytes = Hex.decodeHex(Hex.encodeHexString(result).toCharArray());
             String resultString = new String(bytes, "UTF-8");
-            upToNCharacters = resultString.substring(0, Math.min(resultString.length(), 15));
+            // upToNCharacters = resultString.substring(0, Math.min(resultString.length(), 15));
             // System.out.println("card_code : " + upToNCharacters);
+            return resultString.replaceAll("\\W", "");
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.NO_DATA, e.getMessage());
         }
-        return upToNCharacters;
+        
     }
 
     public static HashMap<String, String> createMessage(HashMap<String, String> map) {
