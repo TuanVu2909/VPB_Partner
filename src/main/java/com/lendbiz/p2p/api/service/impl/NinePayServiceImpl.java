@@ -418,6 +418,7 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
         }
 
         return null;
+        // throw new BusinessException(ErrorCode.UNKNOWN_ERROR, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
 
     }
 
