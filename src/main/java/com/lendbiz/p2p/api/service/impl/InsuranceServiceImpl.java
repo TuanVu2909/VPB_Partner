@@ -450,16 +450,18 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             request.setTotalPremium(insuranceRequest.getPv_isTotalFee());
 
             // request.setGiftCodeAgencyDiscount(0);
-            if (insuranceRequest.getQ1().equals("0")
-                    || insuranceRequest.getQ2().equals("0")
-                    || insuranceRequest.getQ3().equals("0")
-                    || insuranceRequest.getQ4().equals("0")) {
+            if (insuranceRequest.getQ1().equals("1")
+                    || insuranceRequest.getQ2().equals("1")
+                    || insuranceRequest.getQ3().equals("1")
+                    || insuranceRequest.getQ4().equals("1")) {
+
+                request.setTtskCheck("1");
+                insuranceRequest.setPv_isSick("1");
+            } else {
+
                 request.setTtskCheck("0");
                 insuranceRequest.setPv_isSick("0");
 
-            } else {
-                request.setTtskCheck("1");
-                insuranceRequest.setPv_isSick("1");
             }
 
             request.setTtskCheck(insuranceRequest.getPv_isSick());
