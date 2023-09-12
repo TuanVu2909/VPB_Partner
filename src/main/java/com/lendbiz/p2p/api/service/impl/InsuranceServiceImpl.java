@@ -226,6 +226,17 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
         return response(toResult(list));
     }
 
+    private int roundUP(double d) {
+        double dAbs = Math.abs(d);
+        int i = (int) dAbs;
+        double result = dAbs - (double) i;
+        if (result == 0.0) {
+            return (int) d;
+        } else {
+            return (int) d < 0 ? -(i + 1) : i + 1;
+        }
+    }
+
     @Autowired
     WithdrawRepo withdrawRepo;
 
@@ -233,7 +244,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
     public ResponseEntity<?> createInsurance(InsuranceRequest insuranceRequest) {
         logger.info("[InsuranceRequest]: " + new JSONObject(insuranceRequest).toString());
         WithdrawEntity withdraw = withdrawRepo.subtractBalance(insuranceRequest.getPv_custId(),
-                insuranceRequest.getPv_fee(), "11");
+                roundUP(insuranceRequest.getPv_fee()), "22");
 
         if (withdraw.getPStatus().equalsIgnoreCase("01")) {
             String age = String.valueOf(Utils.getAge(insuranceRequest.getPv_beneficiaryBirthDate()));
@@ -505,7 +516,8 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             }
         }
 
-        return null;
+        throw new BusinessException("01",
+                "Số dư không đủ để thực hiện giao dịch!");
         // return response(toResult(createPolicy_Partner(request,
         // insuranceRequest.getPv_custId())));
     }
