@@ -228,7 +228,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
 
     @Override
     public ResponseEntity<?> createInsurance(InsuranceRequest insuranceRequest) {
-        logger.info("[InsuranceRequest]: " +new JSONObject(insuranceRequest).toString());
+        logger.info("[InsuranceRequest]: " + new JSONObject(insuranceRequest).toString());
         String age = String.valueOf(Utils.getAge(insuranceRequest.getPv_beneficiaryBirthDate()));
         List<InsuranceAdditionPrice> listAdd = insuranceAdditionPriceRepository
                 .getInsuranceAdditionPrice(insuranceRequest.getPv_packageId(), age);
@@ -253,6 +253,17 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
         request.setHasNguoinhantien(false);
         request.setHasNguoithuhuong(false);
         request.setHasTThoadonGTG(false);
+
+        if (insuranceRequest.getContent().equals("") || insuranceRequest.getContent() != null) {
+            AttachFile attachFile = new AttachFile();
+            attachFile.setAttachmentID(insuranceRequest.getAttachmentId());
+            attachFile.setContent(insuranceRequest.getContent());
+            attachFile.setFileType(insuranceRequest.getFileType());
+            attachFile.setFilename(insuranceRequest.getFilename());
+            AttachFile[] lstFiles = new AttachFile[1];
+            lstFiles[0] = attachFile;
+            request.setAttachFiles(lstFiles);
+        }
 
         request.setIsShowDgrr(false);
         request.setInsuranceTarget("New");
@@ -411,11 +422,29 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
         // request.setGiftCodeAgencyDiscount(0);
 
         request.setTtskCheck(insuranceRequest.getPv_isSick());
-        request.setQ1("1");
-        request.setQ2("1");
-        request.setQ3("1");
-        request.setQ4("1");
+        request.setQ1(insuranceRequest.getQ1());
+        request.setQ1Question(insuranceRequest.getQ1Qestion());
+        request.setQ1QuestionDesc(insuranceRequest.getQ1Desciption());
+        request.setQ1QuestionId(insuranceRequest.getQ1QuestionId());
+        request.setQ1QuestionNote(insuranceRequest.getQ1QuestionNote());
 
+        request.setQ2(insuranceRequest.getQ2());
+        request.setQ2Question(insuranceRequest.getQ2Qestion());
+        request.setQ2QuestionDesc(insuranceRequest.getQ2Desciption());
+        request.setQ2QuestionId(insuranceRequest.getQ2QuestionId());
+        request.setQ2QuestionNote(insuranceRequest.getQ2QuestionNote());
+
+        request.setQ3(insuranceRequest.getQ3());
+        request.setQ3Question(insuranceRequest.getQ3Qestion());
+        request.setQ3QuestionDesc(insuranceRequest.getQ3Desciption());
+        request.setQ3QuestionId(insuranceRequest.getQ3QuestionId());
+        request.setQ3QuestionNote(insuranceRequest.getQ3QuestionNote());
+
+        request.setQ4(insuranceRequest.getQ4());
+        request.setQ4Question(insuranceRequest.getQ4Qestion());
+        request.setQ4QuestionDesc(insuranceRequest.getQ4Desciption());
+        request.setQ4QuestionId(insuranceRequest.getQ4QuestionId());
+        request.setQ4QuestionNote(insuranceRequest.getQ4QuestionNote());
 
         try {
             HttpHeaders headers = new HttpHeaders();
@@ -462,14 +491,10 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
                     insuranceRequest.getPv_isDentistryFee(),
                     insuranceRequest.getPv_isPregnantFee());
             return response(toResult(root));
-        } catch (JSONException err) {
-            throw new BusinessException("111", "Parse JSON fail");
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        } catch (Exception err) {
+            logger.info(insuranceRequest.getPv_custId() + " ERROR " + err.getMessage());
+            throw new BusinessException("01", "Đã có lỗi xảy ra. Quý khách vui lòng liên hệ tổng đài để được hỗ trợ.");
         }
-        return null;
 
         // return response(toResult(createPolicy_Partner(request,
         // insuranceRequest.getPv_custId())));
