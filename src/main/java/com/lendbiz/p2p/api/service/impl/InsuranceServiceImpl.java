@@ -121,10 +121,25 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
                 e.printStackTrace();
             }
         } catch (Exception e) {
-            throw new BusinessException("200", e.getMessage());
+            throw new BusinessException(ErrorCode.UNKNOWN_ERROR, getErrMessage(e.getMessage()));
         }
 
         return null;
+    }
+
+    private String getErrMessage(String s) {
+
+        // Find the start and end indexes of the message part
+        int startIndex = s.indexOf("\"message\" : ");
+        int endIndex = s.indexOf("\",", startIndex);
+
+        if (startIndex != -1 && endIndex != -1) {
+            // Extract the message string
+            String message = s.substring(startIndex + "\"message\" : \"".length(), endIndex);
+            return message;
+        } else {
+            return "Không xác định lỗi!";
+        }
     }
 
     @Override
@@ -512,7 +527,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             } catch (Exception err) {
                 logger.info(insuranceRequest.getPv_custId() + " ERROR " + err.getMessage());
                 throw new BusinessException("01",
-                        "Đã có lỗi xảy ra. Quý khách vui lòng liên hệ tổng đài để được hỗ trợ.");
+                        getErrMessage(err.getMessage()));
             }
         }
 
