@@ -405,10 +405,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             request.setNguoiycName(insuranceRequest.getPv_beneficiaryFullName());
             request.setNguoiycNgaysinh(insuranceRequest.getPv_beneficiaryBirthDate());
             request.setPromoPercent(0);
-            request.setTtskCheck("0");
-            request.setQ1("0");
-            request.setQ2("0");
-            request.setQ3("0");
+
             request.setReceiveMethod("1");
             // ReceiverUser receiverUser = new ReceiverUser();
             ReceiverUser receiverUser = new ReceiverUser();
@@ -453,6 +450,17 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             request.setTotalPremium(insuranceRequest.getPv_isTotalFee());
 
             // request.setGiftCodeAgencyDiscount(0);
+            if (insuranceRequest.getQ1().equals("0")
+                    || insuranceRequest.getQ2().equals("0")
+                    || insuranceRequest.getQ3().equals("0")
+                    || insuranceRequest.getQ4().equals("0")) {
+                request.setTtskCheck("0");
+                insuranceRequest.setPv_isSick("0");
+
+            } else {
+                request.setTtskCheck("1");
+                insuranceRequest.setPv_isSick("1");
+            }
 
             request.setTtskCheck(insuranceRequest.getPv_isSick());
             request.setQ1(insuranceRequest.getQ1());
