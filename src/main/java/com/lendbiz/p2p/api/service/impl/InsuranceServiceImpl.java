@@ -365,8 +365,8 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             // listBvgAddBaseVM.setSmcnSotienbhTemp("0");
             listBvgAddBaseVM.setTanggiamPhi(0);
             listBvgAddBaseVM.setIsShowPersonList("1");
-            listBvgAddBaseVM.setThaisanChk("0");
-            listBvgAddBaseVM.setThaisanPhi(0);
+            listBvgAddBaseVM.setThaisanChk(insuranceRequest.getPv_isPregnantFee());
+            // listBvgAddBaseVM.setThaisanPhi(0);
             listBvgAddBaseVM.setTncnChk(insuranceRequest.getPv_isAccidentFee());
             float accident = Float.parseFloat(listAdd.get(1).getPrice());
             accident = accident * sumPrice;
