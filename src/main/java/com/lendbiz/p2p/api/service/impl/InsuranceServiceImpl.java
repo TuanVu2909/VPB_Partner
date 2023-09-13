@@ -450,6 +450,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             request.setContactCif("CIF_TUNA");
             request.setCheckTtskNdbh("0");
             request.setTotalPremium(insuranceRequest.getPv_isTotalFee());
+            String status = "100";
             request.setStatusPolicy("100");
 
             // request.setGiftCodeAgencyDiscount(0);
@@ -461,6 +462,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
                 request.setTtskCheck("1");
                 insuranceRequest.setPv_isSick("1");
                 request.setStatusPolicy("93");
+                status = "93";
             } else {
 
                 request.setTtskCheck("0");
@@ -471,6 +473,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
                         || (insuranceRequest.getPv_isLifeFee().equals("1")
                                 && insuranceRequest.getPv_isLifeFeeValue() == 300000)) {
                     request.setStatusPolicy("93");
+                     status = "93";
                 }
 
             }
@@ -543,7 +546,8 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
                         insuranceRequest.getPv_isAccidentFee(),
                         insuranceRequest.getPv_isLifeFee(),
                         insuranceRequest.getPv_isDentistryFee(),
-                        insuranceRequest.getPv_isPregnantFee());
+                        insuranceRequest.getPv_isPregnantFee(),
+                        status);
                 return response(toResult(root));
             } catch (Exception err) {
                 logger.info(insuranceRequest.getPv_custId() + " ERROR " + err.getMessage());
