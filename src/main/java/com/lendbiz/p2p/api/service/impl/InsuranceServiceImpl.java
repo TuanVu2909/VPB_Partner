@@ -287,17 +287,6 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             request.setHasNguoithuhuong(false);
             request.setHasTThoadonGTG(false);
 
-            if (insuranceRequest.getContent().equals("") || insuranceRequest.getContent() != null) {
-                AttachFile attachFile = new AttachFile();
-                attachFile.setAttachmentID(insuranceRequest.getAttachmentId());
-                attachFile.setContent(insuranceRequest.getContent());
-                attachFile.setFileType(insuranceRequest.getFileType());
-                attachFile.setFilename(insuranceRequest.getFilename());
-                AttachFile[] lstFiles = new AttachFile[1];
-                lstFiles[0] = attachFile;
-                request.setAttachFiles(lstFiles);
-            }
-
             request.setIsShowDgrr(false);
             request.setInsuranceTarget("New");
             // InvoiceInfo invoiceInfo = new InvoiceInfo();
@@ -307,6 +296,19 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             request.setLineId("BVG");
             // ListBvgAddBaseVM listBvgAddBaseVM = new ListBvgAddBaseVM();
             ListBvgAddBaseVM listBvgAddBaseVM = new ListBvgAddBaseVM();
+
+            if (insuranceRequest.getContent().equals("") || insuranceRequest.getContent() != null) {
+                request.setHasGks(true);
+                AttachFile attachFile = new AttachFile();
+                attachFile.setAttachmentID(insuranceRequest.getAttachmentId());
+                attachFile.setContent(insuranceRequest.getContent());
+                attachFile.setFileType(insuranceRequest.getFileType());
+                attachFile.setFilename(insuranceRequest.getFilename());
+                AttachFile[] lstFiles = new AttachFile[1];
+                lstFiles[0] = attachFile;
+                request.setAttachFiles(lstFiles);
+                listBvgAddBaseVM.setGksFile(attachFile);
+            }
 
             listBvgAddBaseVM.setChuongTrinhBh(insuranceRequest.getPv_packageId());
             listBvgAddBaseVM.setDiscount(0);
