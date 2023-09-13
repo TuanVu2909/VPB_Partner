@@ -94,8 +94,6 @@ public interface UserService {
 
 	ResponseEntity<?> getRelation();
 
-	ResponseEntity<?> createInsurance(InsuranceRequest insuranceRequest);
-
 	ResponseEntity<?> createNavDaily(GmFundNavRequest request);
 
 	ResponseEntity<?> createFundInvest(GmFundNavRequest request);

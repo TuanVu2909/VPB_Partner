@@ -383,7 +383,7 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
                 if (loginRequest.getVersion() == null) {
                     loginRequest.setVersion("");
                 }
-                
+
                 if (!loginRequest.getVersion().equalsIgnoreCase(user.getVersion())) {
                     userOnlineRepo.updateVersion(loginRequest.getVersion(), user.getCustId());
                 }
@@ -1052,52 +1052,6 @@ public class UserServiceImpl extends BaseResponse<UserService> implements UserSe
         if (list.size() == 0)
             throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
         return response(toResult(list));
-    }
-
-    @Override
-    public ResponseEntity<?> createInsurance(InsuranceRequest insuranceRequest) {
-        NotifyEntity notify = notifyRepo.createInsurance(insuranceRequest.getPv_custId(),
-                insuranceRequest.getPv_packageId(),
-                insuranceRequest.getPv_startDate(),
-                String.valueOf(insuranceRequest.getPv_fee()),
-                insuranceRequest.getPv_beneficiaryFullName(),
-                insuranceRequest.getPv_beneficiaryBirthDate(),
-                insuranceRequest.getPv_beneficiaryIdNumber(),
-                insuranceRequest.getPv_RelationId(),
-                insuranceRequest.getPv_isSick(),
-                insuranceRequest.getPv_isTreatedIn3Years(),
-                insuranceRequest.getPv_isTreatedNext12Months(),
-                insuranceRequest.getPv_isTreatedSpecialIn3Years(),
-                insuranceRequest.getPv_isRejectInsurance(),
-                insuranceRequest.getPv_isNormal(),
-                insuranceRequest.getPv_isConfirm(),
-                insuranceRequest.getPv_requireId(),
-                insuranceRequest.getPv_insuredPersonFullName(),
-                insuranceRequest.getPv_insuredPersonBirthDate(),
-                insuranceRequest.getPv_insuredPersonGender(),
-                insuranceRequest.getPv_insuredPersonIdNumber(),
-                insuranceRequest.getPv_insuredPersonMobile(),
-                insuranceRequest.getPv_insuredPersonEmail(),
-                insuranceRequest.getPv_insuredPersonAddress(),
-                insuranceRequest.getPv_ParentInsuranceCode(),
-                insuranceRequest.getPv_InsuredRelationId(),
-                insuranceRequest.getPv_insuredPersonNationality(),
-                insuranceRequest.getPv_isOutPatientFee(),
-                insuranceRequest.getPv_isAccidentFee(),
-                insuranceRequest.getPv_isLifeFee(),
-                insuranceRequest.getPv_isDentistryFee(),
-                insuranceRequest.getPv_isPregnantFee());
-        CreatePolicyPartnerRq request = new CreatePolicyPartnerRq();
-        request.setGuaranteeCard("0");
-        request.setSoNguoiThamGia("1");
-        request.setContactAddress("71 nsl");
-        request.setContactCategoryType("PERSON");
-        request.setContactCode("15606");
-        request.setContactDob(insuranceRequest.getPv_beneficiaryBirthDate());
-        request.setContactEmail("1");
-
-        return response(toResult(notify));
-
     }
 
     @Override

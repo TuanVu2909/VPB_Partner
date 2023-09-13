@@ -556,16 +556,6 @@ public class UserController extends BaseResponse<UserService> {
         return userService.getRelation();
     }
 
-    @PostMapping("/create-ins")
-    @Transactional(readOnly = true)
-    public ResponseEntity<?> createInsurance(HttpServletRequest httpServletRequest,
-            @RequestHeader("requestId") String requestId, @RequestBody InsuranceRequest request)
-            throws BusinessException {
-        log.info("[" + requestId + "] << createInsurance >>");
-
-        return userService.createInsurance(request);
-    }
-
     @PostMapping("/cr-nav-daily")
     @Transactional(readOnly = true)
     public ResponseEntity<?> createNavDaily(HttpServletRequest httpServletRequest,
