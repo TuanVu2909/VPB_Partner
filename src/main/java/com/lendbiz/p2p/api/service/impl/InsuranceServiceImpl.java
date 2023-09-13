@@ -326,7 +326,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             listBvgAddBaseVM.setNguoidbhGioitinh(insuranceRequest.getPv_insuredPersonGender());
             listBvgAddBaseVM.setNguoidbhName(insuranceRequest.getPv_insuredPersonFullName());
             listBvgAddBaseVM.setNguoidbhNgaysinh(insuranceRequest.getPv_insuredPersonBirthDate());
-            switch (insuranceRequest.getPv_InsuredRelationId()) {
+            switch (insuranceRequest.getPv_RelationId()) {
                 case "1":
                     listBvgAddBaseVM.setNguoidbhQuanhe("31");
                     break;
