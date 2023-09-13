@@ -426,7 +426,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             // SaleToEmp saleToEmp = new SaleToEmp("", "");
             SaleToEmp saleToEmp = new SaleToEmp("", "");
             request.setSaleToEmp(saleToEmp);
-            request.setStatusPolicy("100");
+
             request.setTangGiamKhac(0);
             request.setThoihanbhTu(insuranceRequest.getPv_startDate());
             request.setThoihanbhDen(
@@ -450,6 +450,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             request.setContactCif("CIF_TUNA");
             request.setCheckTtskNdbh("0");
             request.setTotalPremium(insuranceRequest.getPv_isTotalFee());
+            request.setStatusPolicy("100");
 
             // request.setGiftCodeAgencyDiscount(0);
             if (insuranceRequest.getQ1().equals("1")
@@ -459,10 +460,18 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
 
                 request.setTtskCheck("1");
                 insuranceRequest.setPv_isSick("1");
+                request.setStatusPolicy("93");
             } else {
 
                 request.setTtskCheck("0");
                 insuranceRequest.setPv_isSick("0");
+
+                if (Utils.getAge(insuranceRequest.getPv_insuredPersonBirthDate()) < 9
+                        || !insuranceRequest.getPv_insuredPersonNationality().equals("VN")
+                        || (insuranceRequest.getPv_isLifeFee().equals("1")
+                                && insuranceRequest.getPv_isLifeFeeValue() == 300000)) {
+                    request.setStatusPolicy("93");
+                }
 
             }
 
