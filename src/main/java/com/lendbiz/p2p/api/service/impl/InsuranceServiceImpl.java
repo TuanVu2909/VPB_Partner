@@ -381,6 +381,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             // listBvgAddBaseVM.setTncnSotienbhTemp("0");
             listBvgAddBaseVM.setTongPhiBH(sumPrice);
             listBvgAddBaseVM.setTuoi(26);
+            listBvgAddBaseVM.setPolicyParent(insuranceRequest.getPv_ParentInsuranceCode());
 
             listBvgAddBaseVM.setSerial("WwhpI6Jy");
             // listBvgAddBaseVM.setInsuranceTarget("New");
@@ -502,6 +503,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             request.setQ4QuestionDesc(insuranceRequest.getQ4Desciption());
             request.setQ4QuestionId(insuranceRequest.getQ4QuestionId());
             request.setQ4QuestionNote(insuranceRequest.getQ4QuestionNote());
+
 
             try {
                 HttpHeaders headers = new HttpHeaders();
