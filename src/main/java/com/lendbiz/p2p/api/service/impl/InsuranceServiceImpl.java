@@ -472,7 +472,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
                 if (Utils.getAge(insuranceRequest.getPv_insuredPersonBirthDate()) < 9
                         || !insuranceRequest.getPv_insuredPersonNationality().equals("VN")
                         || (insuranceRequest.getPv_isLifeFee().equals("1")
-                                && insuranceRequest.getPv_isLifeFeeValue() == 300000)) {
+                                && insuranceRequest.getPv_isLifeFeeValue() == 300000000)) {
                     request.setStatusPolicy("93");
                      status = "93";
                 }
