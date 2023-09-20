@@ -18,6 +18,7 @@ public class ScheduledTasks {
     private FundService fundService;
     @Autowired
     private UserService userService;
+    
 
     // 1s executive below action with time zone VN
 //    @Scheduled(zone = "GMT+7", fixedRate = 1000)
