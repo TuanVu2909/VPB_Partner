@@ -519,7 +519,10 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
                 root = mapper.readTree(responseEntityStr.getBody());
                 insuranceRequest.setPv_requireId(root.get("gycbhNumber").asText());
 
-                notifyPayment("3Gang", insuranceRequest.getPv_requireId(), insuranceRequest.getPv_fee());
+                if (!request.getStatusPolicy().equalsIgnoreCase("100"))) {
+                    notifyPayment("3Gang", insuranceRequest.getPv_requireId(), insuranceRequest.getPv_fee());
+                }
+                
 
                 notifyRepo.createInsurance(insuranceRequest.getPv_custId(),
                         insuranceRequest.getPv_packageId(),
