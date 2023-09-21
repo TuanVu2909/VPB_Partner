@@ -48,6 +48,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
     static String BV_PREMIUM_URI = "https://agency-api-dev.baoviet.com.vn/api/agency/product/bvg/premium";
     static String BV_PARTNER_URI = "https://agency-api-dev.baoviet.com.vn/api/agency/product/bvg/createPolicy-Partner";
     static String BV_ODER_DOWNLOAD_URI = "https://agency-api-dev.baoviet.com.vn/api/agency/document/download-file-agreement";
+    static String BV_NOTIFY_PAYMENT = "https://agency-api-dev.baoviet.com.vn/api/agency/payment/notify-payment";
     static String BV_ODER_INFO_URI = "https://agency-api-dev.baoviet.com.vn/api/agency/product/agreement/get-by-gycbhNumber";
     static String BV_API_LOGIN = "https://agency-api-dev.baoviet.com.vn/api/agency/account/login";
 
@@ -474,7 +475,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
                         || (insuranceRequest.getPv_isLifeFee().equals("1")
                                 && insuranceRequest.getPv_isLifeFeeValue() == 300000000)) {
                     request.setStatusPolicy("93");
-                     status = "93";
+                    status = "93";
                 }
 
             }
@@ -504,7 +505,6 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             request.setQ4QuestionId(insuranceRequest.getQ4QuestionId());
             request.setQ4QuestionNote(insuranceRequest.getQ4QuestionNote());
 
-
             try {
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_JSON);
@@ -518,6 +518,9 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
                 JsonNode root;
                 root = mapper.readTree(responseEntityStr.getBody());
                 insuranceRequest.setPv_requireId(root.get("gycbhNumber").asText());
+
+                notifyPayment("3Gang", insuranceRequest.getPv_requireId(), insuranceRequest.getPv_fee());
+
                 notifyRepo.createInsurance(insuranceRequest.getPv_custId(),
                         insuranceRequest.getPv_packageId(),
                         insuranceRequest.getPv_startDate(),
@@ -609,6 +612,38 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
         }
 
         return response(toResult("Thông báo được gửi thành công"));
+    }
+
+    public void notifyPayment(String paymentCode, String gycbhNo, double paymentFee) {
+        try {
+            List<String> lstGycbh = new ArrayList<>();
+            lstGycbh.add(gycbhNo);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Bearer " + getToken());
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("bvTxnRef", paymentCode);
+            jsonObject.put("gycbhNumber", lstGycbh);
+            jsonObject.put("paymentFee", paymentFee);
+
+            logger.info(jsonObject.toString());
+
+            HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(), headers);
+            ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(BV_NOTIFY_PAYMENT, request,
+                    String.class);
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root;
+            root = mapper.readTree(responseEntityStr.getBody());
+
+        } catch (JSONException err) {
+            throw new BusinessException("111", "Parse JSON fail");
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        logger.info("OK");
     }
 
     @Override
