@@ -13,7 +13,7 @@ import javax.persistence.*;
 @NamedStoredProcedureQueries({ //
         @NamedStoredProcedureQuery(name = "InsuranceList.getInsuranceList", resultClasses = InsuranceList.class, procedureName = "pck_gm.getInsuranceList", parameters = { //
                 @StoredProcedureParameter(name = "pv_refcursor", mode = ParameterMode.REF_CURSOR, type = Void.class),
-                @StoredProcedureParameter(name = "pv_custId", mode = ParameterMode.IN, type = String.class)}) //
+                @StoredProcedureParameter(name = "pv_custId", mode = ParameterMode.IN, type = String.class) }) //
 })
 public class InsuranceList {
     @Id
@@ -91,5 +91,23 @@ public class InsuranceList {
 
     @Column(name = "ISPREGNANTFEE")
     private String isPregnantFee;
+
+    @Column(name = "TOTALLIMIT")
+    private String totalLimit;
+
+    @Column(name = "ISOUTPATIENTTOTAL")
+    private String isOutPatientTotal;
+
+    @Column(name = "ISACCIDENTTOTAL")
+    private String isAccidentTotal;
+
+    @Column(name = "ISLIFETOTAL")
+    private String isLifeTotal;
+
+    @Column(name = "ISDENTISTRYTOTAL")
+    private String isDentistryTotal;
+
+    @Column(name = "ISPREGNANTTOTAL")
+    private String isPregnantTotal;
 
 }

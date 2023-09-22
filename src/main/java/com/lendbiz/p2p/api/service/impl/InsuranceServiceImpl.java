@@ -67,6 +67,9 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
     @Autowired
     InsuranceListRepository insuranceListRepository;
 
+    @Autowired
+    BaoVietRepo baoVietRepo;
+
     public String getToken() {
         try {
             HttpHeaders headers = new HttpHeaders();
@@ -268,6 +271,8 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             String age = String.valueOf(Utils.getAge(insuranceRequest.getPv_beneficiaryBirthDate()));
             List<InsuranceAdditionPrice> listAdd = insuranceAdditionPriceRepository
                     .getInsuranceAdditionPrice(insuranceRequest.getPv_packageId(), age);
+            ArrayList<BaoVietEntity> listPackage = baoVietRepo.getInsurancePackage();
+
             InsurancePrice insurancePrice = insurancePriceRepository
                     .getInsurancePackagePrice(insuranceRequest.getPv_packageId(), age).get(0);
             Optional<CfMast> cfMast = cfMastRepository.findByCustid(insuranceRequest.getPv_custId());
@@ -528,6 +533,67 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
                     notifyPayment("3Gang", insuranceRequest.getPv_requireId(), insuranceRequest.getPv_fee());
                 }
 
+                String outPatientTotal = "0";
+                String dentistryTotal = "0";
+                String pregnantTotal = "0";
+                if (!insuranceRequest.getPv_isOutPatientFee().equals("0")) {
+                    if (insuranceRequest.getPv_packageId().equals("1")) {
+                        outPatientTotal = listPackage.get(0).getOutPatientFee();
+                    }
+                    if (insuranceRequest.getPv_packageId().equals("2")) {
+                        outPatientTotal = listPackage.get(1).getOutPatientFee();
+                    }
+                    if (insuranceRequest.getPv_packageId().equals("3")) {
+                        outPatientTotal = listPackage.get(2).getOutPatientFee();
+                    }
+                    if (insuranceRequest.getPv_packageId().equals("4")) {
+                        outPatientTotal = listPackage.get(3).getOutPatientFee();
+                    }
+                    if (insuranceRequest.getPv_packageId().equals("5")) {
+                        outPatientTotal = listPackage.get(4).getOutPatientFee();
+                    }
+
+                }
+
+                if (!insuranceRequest.getPv_isDentistryFee().equals("0")) {
+
+                    if (insuranceRequest.getPv_packageId().equals("1")) {
+                        dentistryTotal = listPackage.get(0).getDentistryFee();
+                    }
+                    if (insuranceRequest.getPv_packageId().equals("2")) {
+                        dentistryTotal = listPackage.get(1).getDentistryFee();
+                    }
+                    if (insuranceRequest.getPv_packageId().equals("3")) {
+                        dentistryTotal = listPackage.get(2).getDentistryFee();
+                    }
+                    if (insuranceRequest.getPv_packageId().equals("4")) {
+                        dentistryTotal = listPackage.get(3).getDentistryFee();
+                    }
+                    if (insuranceRequest.getPv_packageId().equals("5")) {
+                        dentistryTotal = listPackage.get(4).getDentistryFee();
+                    }
+                }
+
+                if (!insuranceRequest.getPv_isPregnantFee().equals("0")) {
+
+                    if (insuranceRequest.getPv_packageId().equals("1")) {
+                        pregnantTotal = listPackage.get(0).getPregnantFee();
+                    }
+                    if (insuranceRequest.getPv_packageId().equals("2")) {
+                        pregnantTotal = listPackage.get(1).getPregnantFee();
+                    }
+                    if (insuranceRequest.getPv_packageId().equals("3")) {
+                        pregnantTotal = listPackage.get(2).getPregnantFee();
+                    }
+                    if (insuranceRequest.getPv_packageId().equals("4")) {
+                        pregnantTotal = listPackage.get(3).getPregnantFee();
+                    }
+                    if (insuranceRequest.getPv_packageId().equals("5")) {
+                        pregnantTotal = listPackage.get(4).getPregnantFee();
+                    }
+
+                }
+
                 NotifyEntity notify = notifyRepo.createInsurance(insuranceRequest.getPv_custId(),
                         insuranceRequest.getPv_packageId(),
                         insuranceRequest.getPv_startDate(),
@@ -554,19 +620,24 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
                         insuranceRequest.getPv_ParentInsuranceCode(),
                         insuranceRequest.getPv_InsuredRelationId(),
                         insuranceRequest.getPv_insuredPersonNationality(),
-                        // insuranceRequest.getPv_isOutPatientFee(),
-                        String.valueOf(response.getListBvgAddBaseVM().get(0).getNgoaitruPhi()),
-                        // String.valueOf(insuranceRequest.getPv_isAccidentFeeValue()),
-                        String.valueOf(response.getListBvgAddBaseVM().get(0).getTncnPhi()),
-                        // String.valueOf(insuranceRequest.getPv_isLifeFeeValue()),
-                        String.valueOf(response.getListBvgAddBaseVM().get(0).getSmcnPhi()),
-                        // insuranceRequest.getPv_isDentistryFee(),
-                        String.valueOf(response.getListBvgAddBaseVM().get(0).getNhakhoaPhi()),
-                        // insuranceRequest.getPv_isPregnantFee(),
-                        String.valueOf(response.getListBvgAddBaseVM().get(0).getThaisanPhi()),
-                        status);
 
-                        logger.info("===>" + notify.getDes());
+                        String.valueOf(response.getListBvgAddBaseVM().get(0).getNgoaitruPhi()),
+
+                        String.valueOf(response.getListBvgAddBaseVM().get(0).getTncnPhi()),
+
+                        String.valueOf(response.getListBvgAddBaseVM().get(0).getSmcnPhi()),
+
+                        String.valueOf(response.getListBvgAddBaseVM().get(0).getNhakhoaPhi()),
+
+                        String.valueOf(response.getListBvgAddBaseVM().get(0).getThaisanPhi()),
+                        status,
+                        outPatientTotal,
+                        String.valueOf((int) insuranceRequest.getPv_isAccidentFeeValue()),
+                        String.valueOf((int) insuranceRequest.getPv_isLifeFeeValue()),
+                        dentistryTotal,
+                        pregnantTotal);
+
+                logger.info("===>" + notify.getDes());
                 return response(toResult(response));
             } catch (Exception err) {
                 logger.info(insuranceRequest.getPv_custId() + " ERROR " + err.getMessage());
@@ -575,8 +646,8 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             }
         }
 
-        throw new BusinessException("01",
-                "Số dư không đủ để thực hiện giao dịch!");
+        throw new BusinessException("01", "Số dư không đủ để thực hiện giao dịch!");
+
         // return response(toResult(createPolicy_Partner(request,
         // insuranceRequest.getPv_custId())));
     }
