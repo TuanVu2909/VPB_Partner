@@ -10,6 +10,8 @@ import com.lendbiz.p2p.api.entity.*;
 import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.model.bvpremium.PremiumConverter;
 import com.lendbiz.p2p.api.model.bvpremium.PremiumModel;
+import com.lendbiz.p2p.api.model.listbvaddbasevm.BvPartner;
+import com.lendbiz.p2p.api.model.listbvaddbasevm.Converter;
 import com.lendbiz.p2p.api.repository.*;
 import com.lendbiz.p2p.api.request.AttachFile;
 import com.lendbiz.p2p.api.request.CreatePolicyPartnerRequest;
@@ -519,12 +521,14 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
                 root = mapper.readTree(responseEntityStr.getBody());
                 insuranceRequest.setPv_requireId(root.get("gycbhNumber").asText());
 
+                BvPartner response = new BvPartner();
+                response = Converter.fromJsonString(responseEntityStr.getBody());
+
                 if (request.getStatusPolicy().equalsIgnoreCase("100")) {
                     notifyPayment("3Gang", insuranceRequest.getPv_requireId(), insuranceRequest.getPv_fee());
                 }
-                
 
-                notifyRepo.createInsurance(insuranceRequest.getPv_custId(),
+                NotifyEntity notify = notifyRepo.createInsurance(insuranceRequest.getPv_custId(),
                         insuranceRequest.getPv_packageId(),
                         insuranceRequest.getPv_startDate(),
                         String.valueOf(insuranceRequest.getPv_fee()),
@@ -550,13 +554,20 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
                         insuranceRequest.getPv_ParentInsuranceCode(),
                         insuranceRequest.getPv_InsuredRelationId(),
                         insuranceRequest.getPv_insuredPersonNationality(),
-                        insuranceRequest.getPv_isOutPatientFee(),
-                        insuranceRequest.getPv_isAccidentFee(),
-                        insuranceRequest.getPv_isLifeFee(),
-                        insuranceRequest.getPv_isDentistryFee(),
-                        insuranceRequest.getPv_isPregnantFee(),
+                        // insuranceRequest.getPv_isOutPatientFee(),
+                        String.valueOf(response.getListBvgAddBaseVM().get(0).getNgoaitruPhi()),
+                        // String.valueOf(insuranceRequest.getPv_isAccidentFeeValue()),
+                        String.valueOf(response.getListBvgAddBaseVM().get(0).getTncnPhi()),
+                        // String.valueOf(insuranceRequest.getPv_isLifeFeeValue()),
+                        String.valueOf(response.getListBvgAddBaseVM().get(0).getSmcnPhi()),
+                        // insuranceRequest.getPv_isDentistryFee(),
+                        String.valueOf(response.getListBvgAddBaseVM().get(0).getNhakhoaPhi()),
+                        // insuranceRequest.getPv_isPregnantFee(),
+                        String.valueOf(response.getListBvgAddBaseVM().get(0).getThaisanPhi()),
                         status);
-                return response(toResult(root));
+
+                        logger.info("===>" + notify.getDes());
+                return response(toResult(response));
             } catch (Exception err) {
                 logger.info(insuranceRequest.getPv_custId() + " ERROR " + err.getMessage());
                 throw new BusinessException("01",
