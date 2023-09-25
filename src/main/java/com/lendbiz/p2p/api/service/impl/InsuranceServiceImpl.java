@@ -667,7 +667,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
                         insuranceRequest.getPv_insuredPersonEmail(),
                         insuranceRequest.getPv_insuredPersonAddress(),
                         insuranceRequest.getPv_ParentInsuranceCode(),
-                        insuranceRequest.getPv_RelationId(),
+                        insuranceRequest.getPv_InsuredRelationId(),
                         insuranceRequest.getPv_insuredPersonNationality(),
 
                         String.valueOf(response.getListBvgAddBaseVM().get(0).getNgoaitruPhi()),
