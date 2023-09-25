@@ -352,6 +352,23 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
                 listBvgAddBaseVM.setNguoithName(insuranceRequest.getPv_beneficiaryFullName());
                 listBvgAddBaseVM.setNguoithCmnd(insuranceRequest.getPv_beneficiaryIdNumber());
                 listBvgAddBaseVM.setNguoithNgaysinh(insuranceRequest.getPv_beneficiaryBirthDate());
+                switch (insuranceRequest.getPv_InsuredRelationId()) {
+                    case "1":
+                        listBvgAddBaseVM.setNguoithQuanhe("31");
+                        break;
+                    case "2":
+                        listBvgAddBaseVM.setNguoithQuanhe("32");
+                        break;
+                    case "3":
+                        listBvgAddBaseVM.setNguoithQuanhe("33");
+                        break;
+                    case "4":
+                        listBvgAddBaseVM.setNguoithQuanhe("34");
+                        break;
+                    default:
+                        listBvgAddBaseVM.setNguoithQuanhe("30");
+                        break;
+                }
             }
 
             listBvgAddBaseVM.setKetqua("Sick");
@@ -444,9 +461,9 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             ListBvgAddBaseVM[] list = new ListBvgAddBaseVM[1];
             list[0] = listBvgAddBaseVM;
             request.setListBvgAddBaseVM(list);
-            request.setNguoiycCmnd(insuranceRequest.getPv_beneficiaryIdNumber());
-            request.setNguoiycName(insuranceRequest.getPv_beneficiaryFullName());
-            request.setNguoiycNgaysinh(insuranceRequest.getPv_beneficiaryBirthDate());
+            request.setNguoiycCmnd(cfMast.get().getIdCode());
+            request.setNguoiycName(cfMast.get().getFullName());
+            request.setNguoiycNgaysinh(Utils.convertDateToString(cfMast.get().getDateOfBirth()));
             request.setPromoPercent(0);
 
             request.setReceiveMethod("1");
@@ -458,7 +475,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             receiverUser.setEmailHide(cfMast.get().getEmail());
             receiverUser.setMobileHide(cfMast.get().getMobileSms());
             receiverUser.setName(cfMast.get().getFullName());
-            receiverUser.setNgaySinh(insuranceRequest.getPv_beneficiaryBirthDate());
+            receiverUser.setNgaySinh(Utils.convertDateToString(cfMast.get().getDateOfBirth()));
             // AddressDistrictData addressDistrictData = new AddressDistrictData("00000000",
             // "Địa chỉ khác, Khác", "Khác");
             AddressDistrictData addressDistrictData = new AddressDistrictData("00000000", "Địa chỉ khác, Khác", "Khác");
