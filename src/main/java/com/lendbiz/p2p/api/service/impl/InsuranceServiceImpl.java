@@ -264,18 +264,19 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
     @Override
     public ResponseEntity<?> createInsurance(InsuranceRequest insuranceRequest) {
         logger.info("[InsuranceRequest]: " + new JSONObject(insuranceRequest).toString());
+        Optional<CfMast> cfMast = cfMastRepository.findByCustid(insuranceRequest.getPv_custId());
         WithdrawEntity withdraw = withdrawRepo.subtractBalance(insuranceRequest.getPv_custId(),
                 roundUP(insuranceRequest.getPv_fee()), "22");
 
         if (withdraw.getPStatus().equalsIgnoreCase("01")) {
-            String age = String.valueOf(Utils.getAge(insuranceRequest.getPv_beneficiaryBirthDate()));
+            String age = String.valueOf(Utils.getAge(insuranceRequest.getPv_insuredPersonBirthDate()));
             List<InsuranceAdditionPrice> listAdd = insuranceAdditionPriceRepository
                     .getInsuranceAdditionPrice(insuranceRequest.getPv_packageId(), age);
             ArrayList<BaoVietEntity> listPackage = baoVietRepo.getInsurancePackage();
 
             InsurancePrice insurancePrice = insurancePriceRepository
                     .getInsurancePackagePrice(insuranceRequest.getPv_packageId(), age).get(0);
-            Optional<CfMast> cfMast = cfMastRepository.findByCustid(insuranceRequest.getPv_custId());
+
             CreatePolicyPartnerRequest request = new CreatePolicyPartnerRequest();
             long sumPrice = Long.parseLong(insurancePrice.getPrice());
             request.setGuaranteeCard(1);
@@ -283,16 +284,40 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             request.setContactAddress("71 nsl");
             request.setContactCategoryType("PERSON");
             request.setContactCode("15606");
-            request.setContactDob(insuranceRequest.getPv_beneficiaryBirthDate());
+            request.setContactDob(Utils.convertDateToString(cfMast.get().getDateOfBirth()));
             request.setContactEmail(cfMast.get().getEmail());
-            request.setContactIdNumber(insuranceRequest.getPv_beneficiaryIdNumber());
-            request.setContactName(insuranceRequest.getPv_beneficiaryFullName());
+            request.setContactIdNumber(cfMast.get().getIdCode());
+            request.setContactName(cfMast.get().getFullName());
             request.setContactPhone(cfMast.get().getPhone());
             request.setDepartmentId("A000009455");
             request.setPromoDiscount(0);
             request.setHasGks(false);
             request.setHasNguoinhantien(false);
             request.setHasNguoithuhuong(false);
+            if (!insuranceRequest.getPv_beneficiaryFullName().equals("")) {
+                request.setHasNguoithuhuong(true);
+                request.setNguoinhanName(insuranceRequest.getPv_beneficiaryFullName());
+                request.setNguoinhanCmnd(insuranceRequest.getPv_beneficiaryIdNumber());
+                request.setNguointNgaysinh(insuranceRequest.getPv_beneficiaryBirthDate());
+                switch (insuranceRequest.getPv_InsuredRelationId()) {
+                    case "1":
+                        request.setNguoinhanQuanhe("31");
+                        break;
+                    case "2":
+                        request.setNguoinhanQuanhe("32");
+                        break;
+                    case "3":
+                        request.setNguoinhanQuanhe("33");
+                        break;
+                    case "4":
+                        request.setNguoinhanQuanhe("34");
+                        break;
+                    default:
+                        request.setNguoinhanQuanhe("30");
+                        break;
+                }
+            }
+
             request.setHasTThoadonGTG(false);
 
             request.setIsShowDgrr(false);
@@ -322,6 +347,13 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             listBvgAddBaseVM.setDiscount(0);
             listBvgAddBaseVM.setHasExtracare(false);
             listBvgAddBaseVM.setHasNguoithuhuong(false);
+            if (!insuranceRequest.getPv_beneficiaryFullName().equals("")) {
+                listBvgAddBaseVM.setHasNguoithuhuong(true);
+                listBvgAddBaseVM.setNguoithName(insuranceRequest.getPv_beneficiaryFullName());
+                listBvgAddBaseVM.setNguoithCmnd(insuranceRequest.getPv_beneficiaryIdNumber());
+                listBvgAddBaseVM.setNguoithNgaysinh(insuranceRequest.getPv_beneficiaryBirthDate());
+            }
+
             listBvgAddBaseVM.setKetqua("Sick");
             // ImgGks imgGks = new ImgGks("", "", "", "");
             // ImgGks imgGks = new ImgGks();
@@ -618,7 +650,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
                         insuranceRequest.getPv_insuredPersonEmail(),
                         insuranceRequest.getPv_insuredPersonAddress(),
                         insuranceRequest.getPv_ParentInsuranceCode(),
-                        insuranceRequest.getPv_InsuredRelationId(),
+                        insuranceRequest.getPv_RelationId(),
                         insuranceRequest.getPv_insuredPersonNationality(),
 
                         String.valueOf(response.getListBvgAddBaseVM().get(0).getNgoaitruPhi()),

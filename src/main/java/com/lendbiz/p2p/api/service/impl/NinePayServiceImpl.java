@@ -200,7 +200,7 @@ public class NinePayServiceImpl extends BaseResponse<NinePayService> implements 
     public static void main(String[] args) throws UnsupportedEncodingException {
         NinePayServiceImpl n = new NinePayServiceImpl();
         n.decode9Payment(
-                "eyJhbW91bnQiOjUwMDAwLCJhbW91bnRfZm9yZWlnbiI6bnVsbCwiYW1vdW50X29yaWdpbmFsIjpudWxsLCJhbW91bnRfcmVxdWVzdCI6NTAwMDAsImJhbmsiOm51bGwsImNhcmRfYnJhbmQiOiJWSVNBIiwiY2FyZF9pbmZvIjp7InRva2VuIjoiMjFmNmJmMzE2ZjEzZjk0NjRmNDVkZTkwZWYwN2FjN2YiLCJjYXJkX25hbWUiOiJIT0FORyBUSEFOSCBUVSIsImhhc2hfY2FyZCI6ImFhZGU1YmUwNGZhNjhmMTViNmY4ODVmMGY4OWYzYzc3IiwiY2FyZF9icmFuZCI6IlZJU0EiLCJjYXJkX251bWJlciI6IjQyMjE1MHh4eHh4eDQ1OTIifSwiY3JlYXRlZF9hdCI6IjIwMjItMDktMTNUMDA6MjI6MjUuMDAwMDAwWiIsImN1cnJlbmN5IjoiVk5EIiwiZGVzY3JpcHRpb24iOiIwNDY3ODMxNzEzMDkyMDIyMDIwOTU5IiwiZXJyb3JfY29kZSI6IjQwMCIsImV4Y19yYXRlIjpudWxsLCJmYWlsdXJlX3JlYXNvbiI6bnVsbCwiZm9yZWlnbl9jdXJyZW5jeSI6bnVsbCwiaW52b2ljZV9ubyI6Ingwa0xia0kwUnciLCJsYW5nIjoidmkiLCJtZXRob2QiOiJDUkVESVRfQ0FSRCIsInBheW1lbnRfbm8iOjMxMTA1MDgzMDA4Niwic3RhdHVzIjo1LCJ0ZW5vciI6bnVsbH0");
+                "W3sicHJpY2UiOjEwMDAwLCJkaXNjb3VudCI6MCwiYW1vdW50IjoxMDAwMCwiY2FyZF9zZXJpIjoiNTkwMDAwMjMwODI3NjMiLCJjYXJkX2NvZGUiOiJOSzF4YVdFek1Iekdpa0swdXRZZzhnPT0iLCJleHBpcmVkX2F0IjoiMjAyOC0xMi0zMSAwMDowMDowMCJ9XQ==");
 
         // ObjectMapper mapper = new ObjectMapper();
         // The9PayIPNResponse result = new The9PayIPNResponse();
