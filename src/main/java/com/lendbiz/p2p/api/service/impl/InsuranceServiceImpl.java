@@ -102,6 +102,16 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
 
     @Override
     public ResponseEntity<?> premium(Premium premium) {
+
+        if (Utils.getAge(premium.getNguoidbhNgaysinh()) < 6) {
+            throw new BusinessException(ErrorCode.UNKNOWN_ERROR, "Người được bảo hiểm phải từ 6 tuổi trở lên");
+        }
+
+        if (premium.getSmcnChk().equals("1") && premium.getSmcnSotienbh() == 300000000) {
+            throw new BusinessException(ErrorCode.UNKNOWN_ERROR,
+                    "Quyền lợi sinh mạng cá nhân phải nhỏ hơn 300 triệu");
+        }
+
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -112,15 +122,6 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(), headers);
             ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(BV_PREMIUM_URI, request,
                     String.class);
-
-            if (Utils.getAge(premium.getNguoidbhNgaysinh()) < 6) {
-                throw new BusinessException(ErrorCode.UNKNOWN_ERROR, "Người được bảo hiểm phải từ 6 tuổi trở lên");
-            }
-
-            if (premium.getSmcnChk().equals("1") && premium.getSmcnSotienbh() == 300000000) {
-                throw new BusinessException(ErrorCode.UNKNOWN_ERROR,
-                        "Quyền lợi sinh mạng cá nhân phải nhỏ hơn 300 triệu");
-            }
 
             // ObjectMapper mapper = new ObjectMapper();
             // JsonNode root;
