@@ -107,6 +107,10 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             throw new BusinessException(ErrorCode.UNKNOWN_ERROR, "Người được bảo hiểm phải từ 6 tuổi trở lên");
         }
 
+        if (Utils.getAge(premium.getNguoidbhNgaysinh()) > 60) {
+            throw new BusinessException(ErrorCode.UNKNOWN_ERROR, "Người được bảo hiểm phải từ 6 đến 60 tuổi");
+        }
+
         if (premium.getSmcnChk().equals("1") && premium.getSmcnSotienbh() == 300000000) {
             throw new BusinessException(ErrorCode.UNKNOWN_ERROR,
                     "Quyền lợi sinh mạng cá nhân phải nhỏ hơn 300 triệu");
