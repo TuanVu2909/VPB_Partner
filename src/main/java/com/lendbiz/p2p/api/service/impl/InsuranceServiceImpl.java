@@ -574,6 +574,55 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
         request.setQ4QuestionId(insuranceRequest.getQ4QuestionId());
         request.setQ4QuestionNote(insuranceRequest.getQ4QuestionNote());
 
+        NotifyEntity checkDk = notifyRepo.createInsurance(insuranceRequest.getPv_custId(),
+                insuranceRequest.getPv_packageId(),
+                insuranceRequest.getPv_startDate(),
+                String.valueOf(insuranceRequest.getPv_fee()),
+                insuranceRequest.getPv_beneficiaryFullName(),
+                insuranceRequest.getPv_beneficiaryBirthDate(),
+                insuranceRequest.getPv_beneficiaryIdNumber(),
+                insuranceRequest.getPv_RelationId(),
+                insuranceRequest.getPv_isSick(),
+                insuranceRequest.getPv_isTreatedIn3Years(),
+                insuranceRequest.getPv_isTreatedNext12Months(),
+                insuranceRequest.getPv_isTreatedSpecialIn3Years(),
+                insuranceRequest.getPv_isRejectInsurance(),
+                insuranceRequest.getPv_isNormal(),
+                insuranceRequest.getPv_isConfirm(),
+                insuranceRequest.getPv_requireId(),
+                insuranceRequest.getPv_insuredPersonFullName(),
+                insuranceRequest.getPv_insuredPersonBirthDate(),
+                insuranceRequest.getPv_insuredPersonGender(),
+                insuranceRequest.getPv_insuredPersonIdNumber(),
+                insuranceRequest.getPv_insuredPersonMobile(),
+                insuranceRequest.getPv_insuredPersonEmail(),
+                insuranceRequest.getPv_insuredPersonAddress(),
+                insuranceRequest.getPv_ParentInsuranceCode(),
+                insuranceRequest.getPv_InsuredRelationId(),
+                insuranceRequest.getPv_insuredPersonNationality(),
+
+                "",
+
+                "",
+
+                "",
+
+                "",
+
+                "",
+                "111",
+                "",
+                String.valueOf((int) insuranceRequest.getPv_isAccidentFeeValue()),
+                String.valueOf((int) insuranceRequest.getPv_isLifeFeeValue()),
+                "",
+                "");
+
+        logger.info("===> check đủ điều kiện" + checkDk.getDes());
+
+        if (checkDk.getPStatus().equals("000")) {
+            throw new BusinessException("01", checkDk.getDes());
+        }
+
         if (!request.getStatusPolicy().equals("93")) {
             try {
                 if (withdraw.getPStatus().equalsIgnoreCase("01")) {
