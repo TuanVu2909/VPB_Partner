@@ -280,8 +280,6 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
     public ResponseEntity<?> createInsurance(InsuranceRequest insuranceRequest) {
         logger.info("[InsuranceRequest]: " + new JSONObject(insuranceRequest).toString());
         Optional<CfMast> cfMast = cfMastRepository.findByCustid(insuranceRequest.getPv_custId());
-        WithdrawEntity withdraw = withdrawRepo.subtractBalance(insuranceRequest.getPv_custId(),
-                roundUP(insuranceRequest.getPv_fee()), "22");
 
         String age = String.valueOf(Utils.getAge(insuranceRequest.getPv_insuredPersonBirthDate()));
         List<InsuranceAdditionPrice> listAdd = insuranceAdditionPriceRepository
@@ -625,6 +623,8 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
 
         if (!request.getStatusPolicy().equals("93")) {
             try {
+                WithdrawEntity withdraw = withdrawRepo.subtractBalance(insuranceRequest.getPv_custId(),
+                        roundUP(insuranceRequest.getPv_fee()), "22");
                 if (withdraw.getPStatus().equalsIgnoreCase("01")) {
                     HttpHeaders headers = new HttpHeaders();
                     headers.setContentType(MediaType.APPLICATION_JSON);
