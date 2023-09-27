@@ -536,8 +536,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             request.setTtskCheck("0");
             insuranceRequest.setPv_isSick("0");
 
-            if (Utils.getAge(insuranceRequest.getPv_insuredPersonBirthDate()) < 9
-                    || !insuranceRequest.getPv_insuredPersonNationality().equals("VN")
+            if (Utils.getAge(insuranceRequest.getPv_insuredPersonBirthDate()) < 6
                     || (insuranceRequest.getPv_isLifeFee().equals("1")
                             && insuranceRequest.getPv_isLifeFeeValue() == 300000000)) {
                 request.setStatusPolicy("93");
