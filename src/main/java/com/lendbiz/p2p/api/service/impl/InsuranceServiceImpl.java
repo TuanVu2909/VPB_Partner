@@ -450,7 +450,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
         // listBvgAddBaseVM.setTncnSotienbhTemp("0");
         listBvgAddBaseVM.setTongPhiBH(sumPrice);
         listBvgAddBaseVM.setTuoi(26);
-        listBvgAddBaseVM.setPolicyParent(insuranceRequest.getPv_ParentInsuranceCode());
+        listBvgAddBaseVM.setPolicyParent(insuranceRequest.getInsuranceIdNumber());
 
         listBvgAddBaseVM.setSerial("WwhpI6Jy");
         // listBvgAddBaseVM.setInsuranceTarget("New");
@@ -466,7 +466,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
         // QuocTich quocTich = new QuocTich();
         QuocTich quocTich = new QuocTich();
         quocTich.setQuocTichCode("12");
-        quocTich.setQuocTichName("Việt Nam");
+        quocTich.setQuocTichName(insuranceRequest.getPv_insuredPersonNationality());
         listBvgAddBaseVM.setQuocTich(quocTich);
         // listBvgAddBaseVM.setSex("1");
         // ListBvgAddBaseVM[] list = new ListBvgAddBaseVM[1];
