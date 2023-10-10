@@ -346,7 +346,8 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             request.setHasGks(true);
             AttachFile attachFile = new AttachFile();
             attachFile.setAttachmentID(insuranceRequest.getAttachmentId());
-            attachFile.setContent(insuranceRequest.getContent());
+            // attachFile.setContent(insuranceRequest.getContent());
+            attachFile.setContent("image/");
             attachFile.setFileType(insuranceRequest.getFileType());
             attachFile.setFilename(insuranceRequest.getFilename());
             AttachFile[] lstFiles = new AttachFile[1];
@@ -457,7 +458,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
         listBvgAddBaseVM.setLoading(0);
         listBvgAddBaseVM.setPersonOrder(1);
         listBvgAddBaseVM.setCheckReuse(0);
-        // listBvgAddBaseVM.setCanhBao(false);
+        // listBvgAddBaseVM.setCanhBao(false);3
         // listBvgAddBaseVM.setCollapse(false);
         // listBvgAddBaseVM.setLaNYCBH(true);
         // listBvgAddBaseVM.setInsuredName(insuranceRequest.getPv_insuredPersonFullName());
