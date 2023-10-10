@@ -347,9 +347,9 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             AttachFile attachFile = new AttachFile();
             attachFile.setAttachmentID(insuranceRequest.getAttachmentId());
             // attachFile.setContent(insuranceRequest.getContent());
-            attachFile.setContent("image/" +insuranceRequest.getContent());
+            attachFile.setContent(insuranceRequest.getContent());
             
-            attachFile.setFileType(insuranceRequest.getFileType());
+            attachFile.setFileType("image/" + insuranceRequest.getFileType());
             attachFile.setFilename(insuranceRequest.getFilename());
             AttachFile[] lstFiles = new AttachFile[1];
             lstFiles[0] = attachFile;
