@@ -149,6 +149,8 @@ public interface NotifyRepo extends JpaRepository<NotifyEntity, String> {
             , @Param("pv_isDentistryTotal") String pv_isDentistryTotal
             , @Param("pv_isPregnantTotal") String pv_isPregnantTotal
 
+            , @Param("gks") String gks
+
     );
 
 

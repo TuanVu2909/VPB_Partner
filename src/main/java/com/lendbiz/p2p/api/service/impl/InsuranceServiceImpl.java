@@ -615,7 +615,8 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
                 String.valueOf((int) insuranceRequest.getPv_isAccidentFeeValue()),
                 String.valueOf((int) insuranceRequest.getPv_isLifeFeeValue()),
                 "",
-                "");
+                "",
+                insuranceRequest.getContent());
 
         logger.info("===> check đủ điều kiện" + checkDk.getDes());
 
@@ -750,7 +751,8 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
                             String.valueOf((int) insuranceRequest.getPv_isAccidentFeeValue()),
                             String.valueOf((int) insuranceRequest.getPv_isLifeFeeValue()),
                             dentistryTotal,
-                            pregnantTotal);
+                            pregnantTotal,
+                            insuranceRequest.getContent());
 
                     logger.info("===>" + notify.getDes());
                     return response(toResult(response));
@@ -807,7 +809,8 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
                     String.valueOf((int) insuranceRequest.getPv_isAccidentFeeValue()),
                     String.valueOf((int) insuranceRequest.getPv_isLifeFeeValue()),
                     "",
-                    "");
+                    "",
+                    insuranceRequest.getContent());
 
             logger.info("===>" + notify.getDes());
 

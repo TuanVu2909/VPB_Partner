@@ -159,6 +159,8 @@ import lombok.ToString;
                                 @StoredProcedureParameter(name = "pv_isDentistryTotal", mode = ParameterMode.IN, type = String.class),
                                 @StoredProcedureParameter(name = "pv_isPregnantTotal", mode = ParameterMode.IN, type = String.class),
 
+                                @StoredProcedureParameter(name = "gks", mode = ParameterMode.IN, type = String.class),
+
                 }),
 })
 @Getter

@@ -110,4 +110,7 @@ public class InsuranceList {
     @Column(name = "ISPREGNANTTOTAL")
     private String isPregnantTotal;
 
+    @Column(name = "GKS")
+    private String gks;
+
 }
