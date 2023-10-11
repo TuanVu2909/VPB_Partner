@@ -348,7 +348,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
             attachFile.setAttachmentID(insuranceRequest.getAttachmentId());
             // attachFile.setContent(insuranceRequest.getContent());
             attachFile.setContent(insuranceRequest.getContent());
-            
+
             attachFile.setFileType("image/" + insuranceRequest.getFileType());
             attachFile.setFilename(insuranceRequest.getFilename());
             AttachFile[] lstFiles = new AttachFile[1];
@@ -459,7 +459,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
         listBvgAddBaseVM.setLoading(0);
         listBvgAddBaseVM.setPersonOrder(1);
         listBvgAddBaseVM.setCheckReuse(0);
-        // listBvgAddBaseVM.setCanhBao(false);3 
+        // listBvgAddBaseVM.setCanhBao(false);3
         // listBvgAddBaseVM.setCollapse(false);
         // listBvgAddBaseVM.setLaNYCBH(true);
         // listBvgAddBaseVM.setInsuredName(insuranceRequest.getPv_insuredPersonFullName());
@@ -616,11 +616,11 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
                 String.valueOf((int) insuranceRequest.getPv_isLifeFeeValue()),
                 "",
                 "",
-                insuranceRequest.getContent());
+                "insuranceRequest.getContent()");
 
         logger.info("===> check đủ điều kiện" + checkDk.getDes());
 
-        if (checkDk.getPStatus().equals("000")) {
+        if (!checkDk.getPStatus().equals("01")) {
             throw new BusinessException("01", checkDk.getDes());
         }
 
@@ -752,7 +752,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
                             String.valueOf((int) insuranceRequest.getPv_isLifeFeeValue()),
                             dentistryTotal,
                             pregnantTotal,
-                            insuranceRequest.getContent());
+                            "insuranceRequest.getContent()");
 
                     logger.info("===>" + notify.getDes());
                     return response(toResult(response));
@@ -810,7 +810,7 @@ public class InsuranceServiceImpl extends BaseResponse<InsuranceService> impleme
                     String.valueOf((int) insuranceRequest.getPv_isLifeFeeValue()),
                     "",
                     "",
-                    insuranceRequest.getContent());
+                    "insuranceRequest.getContent()");
 
             logger.info("===>" + notify.getDes());
 

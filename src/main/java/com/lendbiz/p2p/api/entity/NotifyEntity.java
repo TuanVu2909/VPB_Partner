@@ -1,5 +1,7 @@
 package com.lendbiz.p2p.api.entity;
 
+import java.sql.Clob;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -11,6 +13,7 @@ import javax.persistence.StoredProcedureParameter;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import oracle.sql.ClobDBAccess;
 
 @Entity
 @NamedStoredProcedureQueries({
