@@ -209,4 +209,5 @@ public class Constants {
 	public static final String QRCODE_NAPAS_SECOND = "5802VN62370107NPS68690822";
 
 	public static final String QRCODE_NAPAS_CRC = "6304";
+
 }

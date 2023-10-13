@@ -40,6 +40,7 @@ public class InsuranceRequest {
     private String pv_insuredPersonAddress;
     private String pv_ParentInsuranceCode;
     private String pv_InsuredRelationId;
+    private String pv_insuredPersonNationalityCode;
     private String pv_insuredPersonNationality;
 
     private String pv_isOutPatientFee;
