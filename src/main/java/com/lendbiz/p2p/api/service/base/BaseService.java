@@ -20,10 +20,13 @@ import org.springframework.web.multipart.MultipartFile;
 import com.lendbiz.p2p.api.producer.ProducerMessage;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class BaseService {
 
@@ -84,5 +87,13 @@ public class BaseService {
 			custId = lstCfmast.get(0).getCustid();
 		}
 		return custId;
+	}
+
+	public static Timestamp convertStringToTimestamp(String strDate) {
+		String pattern = "ddMMyyyy HH:mm:ss";
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+		LocalDateTime localDateTime = LocalDateTime.from(formatter.parse(strDate));
+		Timestamp timestamp = Timestamp.valueOf(localDateTime);
+		return timestamp;
 	}
 }

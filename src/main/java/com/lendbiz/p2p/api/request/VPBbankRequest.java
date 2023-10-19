@@ -2,6 +2,9 @@ package com.lendbiz.p2p.api.request;
 
 import lombok.Data;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+
 @Data
 public class VPBbankRequest {
     private String masterAccountNumber;
