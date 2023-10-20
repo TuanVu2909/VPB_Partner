@@ -1,15 +1,17 @@
 package com.lendbiz.p2p.api.controller;
 
+import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.request.VPBbankRequest;
+import com.lendbiz.p2p.api.response.VPBank.VPBResDTO;
 import com.lendbiz.p2p.api.service.VPBankService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/lendbiz/api/v1")
+@RequestMapping("/v1")
 @Log4j2
 @CrossOrigin(origins = "*")
 public class VPBankController {
@@ -18,11 +20,15 @@ public class VPBankController {
     VPBankService vpBankService;
 
     @PostMapping("/notification")
-    public ResponseEntity<?> getToken (
+    public VPBResDTO VPBankNotification (
             HttpServletRequest httpServletRequest,
-            @RequestBody VPBbankRequest request
+            @RequestBody @Valid VPBbankRequest request
     ) {
-        //String requestId = httpServletRequest.getHeader("RequestId");
-        return vpBankService.transFluctuations(request);
+
+        if(httpServletRequest.getHeader("signature") == null || "".equals(httpServletRequest.getHeader("signature"))) {
+            return new VPBResDTO("400", ErrorCode.INVALID_DATA_REQUEST, "header 'signature' is not empty !", request.getTransactionId());
+        }
+        String signature = httpServletRequest.getHeader("signature");
+        return vpBankService.transFluctuations(request, signature);
     }
 }

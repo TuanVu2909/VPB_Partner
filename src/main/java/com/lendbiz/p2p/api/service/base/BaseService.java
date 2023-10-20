@@ -89,11 +89,4 @@ public class BaseService {
 		return custId;
 	}
 
-	public static Timestamp convertStringToTimestamp(String strDate) {
-		String pattern = "ddMMyyyy HH:mm:ss";
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-		LocalDateTime localDateTime = LocalDateTime.from(formatter.parse(strDate));
-		Timestamp timestamp = Timestamp.valueOf(localDateTime);
-		return timestamp;
-	}
 }

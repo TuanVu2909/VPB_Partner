@@ -147,6 +147,8 @@ public class ErrorCode {
     public static final String EKYC_LIMIT = "41";
     public static final String EKYC_LIMIT_DESC = "Bạn đã vượt quá số lần eKYC trong ngày hôm nay (tối đa 3 lần), vui lòng thử lại vào ngày mai";
 
+    public static final String EXCEPTION_ERROR = "42";
+
     public static final String SESSION_TIMEOUT = "901";
     public static final String SESSION_TIMEOUT_DESCRIPTION = "Hết phiên đăng nhập, vui lòng đăng nhập lại!";
 

@@ -1,10 +1,8 @@
 package com.lendbiz.p2p.api.service;
 
 import com.lendbiz.p2p.api.request.VPBbankRequest;
-import org.springframework.http.ResponseEntity;
+import com.lendbiz.p2p.api.response.VPBank.VPBResDTO;
 
 public interface VPBankService {
-
-    ResponseEntity<?> transFluctuations(VPBbankRequest request);
-
+    VPBResDTO transFluctuations(VPBbankRequest request, String signature);
 }

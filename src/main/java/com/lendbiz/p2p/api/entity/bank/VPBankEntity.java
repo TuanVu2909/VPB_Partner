@@ -1,14 +1,10 @@
 package com.lendbiz.p2p.api.entity.bank;
 
 import lombok.Data;
-import oracle.sql.NUMBER;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.sql.Date;
-import java.sql.Timestamp;
 
 @Entity
 @Data
@@ -32,13 +28,13 @@ public class VPBankEntity {
     private String virtual_key;
 
     @Column(name = "AMOUNT")
-    private Double amount;
+    private String amount;
 
     @Column(name = "BOOKING_DATE")
-    private Date booking_date;
+    private String booking_date;
 
     @Column(name = "TRANSACTION_DATE")
-    private Timestamp transaction_date;
+    private String transaction_date;
 
     @Column(name = "TRANSACTION_ID")
     private String transaction_id;
@@ -51,15 +47,7 @@ public class VPBankEntity {
 
     @Column(name = "NOTE")
     private String note;
+
+    @Column(name = "SIGNATURE")
+    private String signature;
 }
-
-
-
-
-
-
-
-
-
-
-
