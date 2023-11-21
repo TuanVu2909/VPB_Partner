@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-public interface AFMHisOrderRepository extends JpaRepository<AFMHisOrderEntity, String> {
+public interface AFMHisOrderRepository extends JpaRepository<AFMHisOrderEntity, Long> {
 
     @Transactional
     @Modifying

@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.lendbiz.p2p.api.entity.GameConfigEntity;
 
-public interface GameConfigRepository extends JpaRepository<GameConfigEntity, String> {
+public interface GameConfigRepository extends JpaRepository<GameConfigEntity, Integer> {
 
         @Procedure("GameConfigEntity.getGameConfig")
         List<GameConfigEntity> getGameConfig(@Param("pv_custid") String custId, @Param("pv_groupid") int groupId,

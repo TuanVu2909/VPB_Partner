@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface RateRepo extends JpaRepository<RateEntity, Integer> {
+public interface RateRepo extends JpaRepository<RateEntity, String> {
 
     @Query(value = "   \n" +
             "            select term, rate, cdcontent paytype from gmrateInfo r, allcode a where r.paytype = a.cdval and a.cdname = 'PAYTYPE' \n" +

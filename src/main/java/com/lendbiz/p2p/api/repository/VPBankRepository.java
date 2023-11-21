@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 
 @Repository
-public interface VPBankRepository extends JpaRepository<VPBankEntity,Integer> {
+public interface VPBankRepository extends JpaRepository<VPBankEntity,String> {
 
     @Transactional
     @Modifying
