@@ -31,4 +31,9 @@ public class VPBankController {
         String signature = httpServletRequest.getHeader("signature");
         return vpBankService.transFluctuations(request, signature);
     }
+
+    @GetMapping("/testPing")
+    public String testPing () {
+        return "Ping to server successfully !";
+    }
 }
