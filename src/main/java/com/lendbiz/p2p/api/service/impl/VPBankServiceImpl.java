@@ -1,8 +1,12 @@
 package com.lendbiz.p2p.api.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.configs.RSA.CipherUtility;
+import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.KeysManageEntity;
+import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.repository.KeysManageRepository;
 import com.lendbiz.p2p.api.repository.VPBankRepository;
 import com.lendbiz.p2p.api.request.VPBbankRequest;
@@ -11,14 +15,22 @@ import com.lendbiz.p2p.api.response.VPBank.VPBResDTO;
 import com.lendbiz.p2p.api.service.VPBankService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
 import java.security.PrivateKey;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
 @Log4j2
 public class VPBankServiceImpl extends BaseResponse<VPBankService> implements VPBankService {
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Autowired
     private VPBankRepository vpBankRepository;
@@ -84,5 +96,40 @@ public class VPBankServiceImpl extends BaseResponse<VPBankService> implements VP
             e.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public ResponseEntity<?> getVPBToken() {
+
+        HttpHeaders headers = new HttpHeaders();
+        Map<String, Object> bodies = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.set("Authorization", Constants.VPB_BASIC_AUTHEN);
+
+        bodies.put("scope", "make_internal_transfer init_payments_data_read make_external_fund_transfer own_trasfer_history_read");
+        bodies.put("grant_type", "client_credentials");
+
+        HttpEntity<?> request = new HttpEntity(bodies, headers);
+        JsonNode root = null;
+
+        try {
+            ResponseEntity<String> responseEntity = restTemplate.exchange(
+                    Constants.VPB_URL + "/security/token",
+                    HttpMethod.POST,
+                    request,
+                    String.class,
+                    (Object) null);
+            root = mapper.readTree(responseEntity.getBody());
+        }
+        catch (Exception e) {
+            throw new BusinessException(Constants.FAIL, Constants.MESSAGE_FAIL);
+        }
+
+        if(root == null) {
+            throw new BusinessException(ErrorCode.UNKNOWN_ERROR, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
+        }
+        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, root));
     }
 }

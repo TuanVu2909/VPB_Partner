@@ -118,6 +118,10 @@ public class Constants {
 	public static final String MB_CONVERT_ID_CARD = "https://mbcardtest.mbbank.com.vn:8446/mbcardgw/internet/cardinfo/v1_0/generatetoken";
 	public static final String MBBANK_BASIC_AUTHEN_STRING = "CNyagnuEbAZuUiI6qNFmFDYGPK14cNdt:iWpKiQT787zW2TMq";
 
+	// VPBANK
+	public static final String VPB_URL = "https://uat-ob-gatewaylb-int.vpbank.com.vn:443";
+	public static final String VPB_BASIC_AUTHEN = "Basic eEhabWFJV0tmWkNrU2ZWV0huaGNRV0VINm84YTpNcWVtaHQyaDM0V3RhOVdiSEFYUmF2OGxmWTBh";
+
 	public interface KAFKA {
 		public static final String TOPIC_LOGS_MB = "topic_mb_logs_test";
 		public static final String GROUP_MB_ID = "group_mb_id_test";

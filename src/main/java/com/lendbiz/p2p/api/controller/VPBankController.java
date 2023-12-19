@@ -6,6 +6,7 @@ import com.lendbiz.p2p.api.response.VPBank.VPBResDTO;
 import com.lendbiz.p2p.api.service.VPBankService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -36,4 +37,8 @@ public class VPBankController {
     public String testPing () {
         return "Ping to server successfully !";
     }
+    //-----------------------------------------------------
+
+    @GetMapping("/tokenVPB")
+    public ResponseEntity<?> getVPBToken () { return vpBankService.getVPBToken(); }
 }
