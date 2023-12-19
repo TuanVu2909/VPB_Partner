@@ -14,7 +14,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AccountNotificationsRepository extends JpaRepository<NotificationsEntity, Integer> {
+public interface AccountNotificationsRepository extends JpaRepository<NotificationsEntity, String> {
     @Procedure("NotificationsEntity.getNotifications")
     List<NotificationsEntity> getNotifications(@Param("pv_custId") String cif);
 

@@ -6,7 +6,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.lendbiz.p2p.api.entity.GameEntity;
 
-public interface GameRepository extends JpaRepository<GameEntity, String> {
+public interface GameRepository extends JpaRepository<GameEntity, Integer> {
 
         @Procedure("GameEntity.updateGameConfig")
         GameEntity updateGameConfig(@Param("pv_id") int id,

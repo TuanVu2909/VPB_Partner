@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface StatementsRepository extends JpaRepository<StatementsEntity, Integer> {
+public interface StatementsRepository extends JpaRepository<StatementsEntity, String> {
     @Procedure("StatementsEntity.getStatements")
     List<StatementsEntity> getStatements(@Param("pv_custId") String cif);
 }

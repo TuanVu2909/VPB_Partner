@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.lendbiz.p2p.api.entity.GmAccPackacgeEntity;
 
 @Repository("gmAccPackageRepository")
-public interface GmAccPackageRepository extends CrudRepository<GmAccPackacgeEntity, String> {
+public interface GmAccPackageRepository extends CrudRepository<GmAccPackacgeEntity, Integer> {
 
 }

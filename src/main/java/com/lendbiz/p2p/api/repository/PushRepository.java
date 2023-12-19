@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import com.lendbiz.p2p.api.entity.NotificationsPushEntity;
 
 @Repository
-public interface PushRepository extends JpaRepository<NotificationsPushEntity, Integer> {
+public interface PushRepository extends JpaRepository<NotificationsPushEntity, String> {
     @Procedure("NotificationsPushEntity.getOsNotifications")
     List<NotificationsPushEntity> getOsNotifications();
 
