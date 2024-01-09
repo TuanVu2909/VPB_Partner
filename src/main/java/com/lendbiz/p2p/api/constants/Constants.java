@@ -119,7 +119,7 @@ public class Constants {
 	public static final String MBBANK_BASIC_AUTHEN_STRING = "CNyagnuEbAZuUiI6qNFmFDYGPK14cNdt:iWpKiQT787zW2TMq";
 
 	// VPBANK
-	public static final String VPB_URL = "https://uat-ob-gatewaylb-int.vpbank.com.vn:443";
+	public static final String VPB_URL = "https://uat-ob-gatewaylb-int.vpbank.com.vn";
 	public static final String VPB_BASIC_AUTHEN = "Basic eEhabWFJV0tmWkNrU2ZWV0huaGNRV0VINm84YTpNcWVtaHQyaDM0V3RhOVdiSEFYUmF2OGxmWTBh";
 
 	public interface KAFKA {

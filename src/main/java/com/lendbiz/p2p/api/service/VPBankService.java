@@ -7,4 +7,5 @@ import org.springframework.http.ResponseEntity;
 public interface VPBankService {
     VPBResDTO transFluctuations(VPBbankRequest request, String signature);
     ResponseEntity<?> getVPBToken();
+    String sign(String plainText);
 }

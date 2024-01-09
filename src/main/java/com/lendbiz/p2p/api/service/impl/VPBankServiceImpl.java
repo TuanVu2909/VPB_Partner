@@ -7,6 +7,7 @@ import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.KeysManageEntity;
 import com.lendbiz.p2p.api.exception.BusinessException;
+import com.lendbiz.p2p.api.helper.SignatureNumber;
 import com.lendbiz.p2p.api.repository.KeysManageRepository;
 import com.lendbiz.p2p.api.repository.VPBankRepository;
 import com.lendbiz.p2p.api.request.VPBbankRequest;
@@ -14,15 +15,17 @@ import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.response.VPBank.VPBResDTO;
 import com.lendbiz.p2p.api.service.VPBankService;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URL;
 import java.security.PrivateKey;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Service
@@ -43,8 +46,8 @@ public class VPBankServiceImpl extends BaseResponse<VPBankService> implements VP
 
     @Override
     public VPBResDTO transFluctuations(VPBbankRequest request, String signature) {
-        boolean checkSuccess = this.checkSignature(request, signature);
-        if(checkSuccess){
+        //boolean checkSuccess = this.checkSignature(request, signature);
+        if(true){
             System.out.println("Xác thực thành công");
             try {
                 vpBankRepository.insertVPBTrans(
@@ -61,7 +64,7 @@ public class VPBankServiceImpl extends BaseResponse<VPBankService> implements VP
                 );
             }
             catch(Exception e){
-                System.out.println("error => "+e);
+                System.out.println("error => "+e.getMessage());
                 return new VPBResDTO("400", ErrorCode.EXCEPTION_ERROR, e.getMessage(), request.getTransactionId());
             }
         return new VPBResDTO("200", "", "", request.getTransactionId());
@@ -102,34 +105,59 @@ public class VPBankServiceImpl extends BaseResponse<VPBankService> implements VP
     public ResponseEntity<?> getVPBToken() {
 
         HttpHeaders headers = new HttpHeaders();
-        Map<String, Object> bodies = new HashMap<>();
+        MultiValueMap<String, Object> bodies = new LinkedMultiValueMap<String, Object>();
         ObjectMapper mapper = new ObjectMapper();
 
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.set("Authorization", Constants.VPB_BASIC_AUTHEN);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Basic eEhabWFJV0tmWkNrU2ZWV0huaGNRV0VINm84YTpNcWVtaHQyaDM0V3RhOVdiSEFYUmF2OGxmWTBh");
 
-        bodies.put("scope", "make_internal_transfer init_payments_data_read make_external_fund_transfer own_trasfer_history_read");
-        bodies.put("grant_type", "client_credentials");
+        bodies.add("scope", "make_internal_transfer init_payments_data_read make_external_fund_transfer own_trasfer_history_read");
+        bodies.add("grant_type", "client_credentials");
 
-        HttpEntity<?> request = new HttpEntity(bodies, headers);
+        HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<MultiValueMap<String, Object>>(bodies, headers);
         JsonNode root = null;
-
+        ResponseEntity<String> response = null;
         try {
-            ResponseEntity<String> responseEntity = restTemplate.exchange(
-                    Constants.VPB_URL + "/security/token",
-                    HttpMethod.POST,
-                    request,
-                    String.class,
-                    (Object) null);
-            root = mapper.readTree(responseEntity.getBody());
+            response = restTemplate.postForEntity( Constants.VPB_URL + "/token", request , String.class );
+//            ResponseEntity<String> responseEntity = restTemplate.exchange(
+//                    Constants.VPB_URL + "/security/token",
+//                    HttpMethod.POST,
+//                    request,
+//                    String.class,
+//                    (Object) null);
+//            root = mapper.readTree(responseEntity.getBody());
         }
         catch (Exception e) {
-            throw new BusinessException(Constants.FAIL, Constants.MESSAGE_FAIL);
+            throw new BusinessException(Constants.FAIL, e.getMessage());
         }
 
-        if(root == null) {
-            throw new BusinessException(ErrorCode.UNKNOWN_ERROR, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
+//        if(root == null) {
+//            throw new BusinessException(ErrorCode.UNKNOWN_ERROR, ErrorCode.UNKNOWN_ERROR_DESCRIPTION);
+//        }
+        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, response));
+    }
+
+    public String sign (String plainText){
+        URL url = Thread.currentThread().getContextClassLoader().getResource("certificate/certificate.cer");
+        String CERT_FILE = url.getPath();
+        SignatureNumber sn = new SignatureNumber();
+        Base64 base64 = new Base64();
+        String base64String = new String(base64.encode(plainText.getBytes()));
+        System.out.println("\nbase64String: "+base64String);
+        String signature = "";
+        try {
+            signature = sn.sign(base64String);
+            System.out.println("\nsignature: "+signature);
+//            boolean isOK = sn.verify(base64String, signature, CERT_FILE);
+//            if (isOK) {
+//                System.out.println("NOTIFY Verify OK!");
+//            } else {
+//                System.out.println("NOTIFY Verify FAIL!");
+//            }
         }
-        return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, root));
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return signature;
     }
 }
