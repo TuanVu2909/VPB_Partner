@@ -6,14 +6,13 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import java.sql.Timestamp;
 
 @Repository
 public interface VPBankRepository extends JpaRepository<VPBankEntity,String> {
 
     @Transactional
     @Modifying
-    @Query(value = "insert into vpb_transactions values (vpb_trans_seq.nextval, ?1,?2,?3,?4,?5,to_date(?6, 'yyyyMMdd'),to_date(?7, 'yyyyMMdd hh24:mi:ss'),?8,?9,null,null,?10)", nativeQuery = true)
+    @Query(value = "insert into vpb_transactions values (vpb_trans_seq.nextval, ?1,?2,?3,?4,?5,to_date(?6, 'yyyyMMdd'),to_date(?7, 'yyyy-MM-dd hh24:mi:ss'),?8,?9,null,null,?10)", nativeQuery = true)
     void insertVPBTrans(
             String master_acc_num,
             String virtual_acc_num,
