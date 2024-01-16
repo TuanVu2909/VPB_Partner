@@ -40,8 +40,10 @@ public class VPBankController {
     }
     //-----------------------------------------------------
 
-    @GetMapping("/tokenVPB")
-    public ResponseEntity<?> getVPBToken () { return vpBankService.getVPBToken(); }
+    @GetMapping("/getVPBToken")
+    public ResponseEntity<?> getVPBToken () {
+        return vpBankService.getVPBToken();
+    }
 
     @GetMapping("/getSign")
     public ResponseEntity<?> getSign (@RequestHeader("plainText") String plainText) {
