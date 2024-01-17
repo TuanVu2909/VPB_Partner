@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Map;
+import java.util.Objects;
 
 import com.lendbiz.p2p.api.response.VPBank.VPBResAPI;
 import org.json.JSONObject;
@@ -11,22 +12,33 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CurlService {
-    public VPBResAPI executeCurlCommand(String url, String method, Map<String, String> requestHeaders, String requestBody) {
+    public VPBResAPI executeCurlCommand (
+            String url, String method,
+            Map<String, String> requestHeaders,
+            Map<String, Object> requestBodies,
+            String dataType ) {
         VPBResAPI response = new VPBResAPI(-1, "Unknown");
         try {
             // Build the curl command
-            StringBuilder curlCommand = new StringBuilder("curl -k --location --request " + method + " " + "'" + url + "'");
+            StringBuilder curlCommand = new StringBuilder("curl -k \\--location --request " + method + " " + "'" + url + "' \\");
 
             // Add headers
             if (requestHeaders != null && !requestHeaders.isEmpty()) {
                 requestHeaders.forEach((key, value) -> {
-                    curlCommand.append(" --header '" + key +": " + value + "'");
+                    curlCommand.append("--header '" + key +": " + value + "' \\");
                 });
             }
 
             // Add request body
-            if (requestBody != null && !requestBody.isEmpty()) {
-                curlCommand.append(" --data-raw '" + requestBody + "'");
+            if (requestBodies != null && !requestBodies.isEmpty()) {
+                if("data-urlencode".equals(dataType)){
+                    requestBodies.forEach((key, value) -> {
+                        curlCommand.append("--data-urlencode '" + key +"= " + value + "' \\");
+                    });
+                }
+                else if ("data-raw".equals(dataType)){
+                    curlCommand.append("--data-raw '" + new JSONObject(requestBodies) + "'");
+                }
             }
 
             System.out.println("Curl Input: "+curlCommand.toString());

@@ -115,19 +115,19 @@ public class VPBankServiceImpl extends BaseResponse<VPBankService> implements VP
 
     @Override
     public ResponseEntity<?> getVPBToken() {
-        Map<String, String> requestHeaders = new HashMap<>();
-        String url = "https://postman-rest-api-learner.glitch.me/info";
-        requestHeaders.put("Content-Type", "application/json");
-        requestHeaders.put("Connection", "keep-alive");
 
+        String dataType = "data-urlencode";
+        String url = "https://uat-ob-gatewaylb-int.vpbank.com.vn/token";
+
+        Map<String, String> requestHeaders = new HashMap<>();
+        requestHeaders.put("Content-Type", "application/x-www-form-urlencoded");
+        requestHeaders.put("Authorization", "Basic eEhabWFJV0tmWkNrU2ZWV0huaGNRV0VINm84YTpNcWVtaHQyaDM0V3RhOVdiSEFYUmF2OGxmWTBh");
 
         Map<String, Object> bodies = new HashMap<>();
-        bodies.put("name", "le cao son");
-        bodies.put("age", 30);
+        bodies.put("scope", "make_internal_transfer init_payments_data_read make_external_fund_transfer own_trasfer_history_read");
+        bodies.put("grant_type", "client_credentials");
 
-        JSONObject requestBody = new JSONObject(bodies);
-
-        VPBResAPI resAPI = curlService.executeCurlCommand(url, "POST", requestHeaders, requestBody.toString());
+        VPBResAPI resAPI = curlService.executeCurlCommand(url, "POST", requestHeaders, bodies, dataType);
 
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> res = null;
