@@ -17,7 +17,7 @@ public class ScheduledTasks {
     @Autowired
     private FundService fundService;
     @Autowired
-    private UserService userService;
+    //private UserService userService;
 
     // 1s executive below action with time zone VN
 //    @Scheduled(zone = "GMT+7", fixedRate = 1000)
@@ -27,9 +27,9 @@ public class ScheduledTasks {
 //    }
 
     //@Scheduled(initialDelay = 1 * 60, fixedDelay = 2 * 5000)
-    public void autoSign() throws BusinessException {
-        userService.autoSignContract();
-    }
+//    public void autoSign() throws BusinessException {
+//        userService.autoSignContract();
+//    }
 
     // 5 phút một lần
     //@Scheduled(zone = "GMT+7", cron = "0 */5 * ? * *")
@@ -39,10 +39,10 @@ public class ScheduledTasks {
 
     // 15p một lần
     //@Scheduled(zone = "GMT+7", fixedRate = (1000*60)*15)
-    public void jobAffiliate() {
-        userService.jobHandleAffiliate0();
-        userService.jobHandleAffiliate1();
-        userService.jobHandleAffiliate2();
-        userService.jobHandleAffiliate3();
-    }
+//    public void jobAffiliate() {
+//        userService.jobHandleAffiliate0();
+//        userService.jobHandleAffiliate1();
+//        userService.jobHandleAffiliate2();
+//        userService.jobHandleAffiliate3();
+//    }
 }

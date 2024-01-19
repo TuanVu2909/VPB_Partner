@@ -1,13 +1,10 @@
 package com.lendbiz.p2p.api.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.configs.RSA.CipherUtility;
-import com.lendbiz.p2p.api.constants.Constants;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.KeysManageEntity;
-import com.lendbiz.p2p.api.exception.BusinessException;
 import com.lendbiz.p2p.api.helper.SignatureNumber;
 import com.lendbiz.p2p.api.repository.KeysManageRepository;
 import com.lendbiz.p2p.api.repository.VPBankRepository;
@@ -19,12 +16,11 @@ import com.lendbiz.p2p.api.service.VPBankService;
 import com.lendbiz.p2p.api.service.base.CurlService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.codec.binary.Base64;
-import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
@@ -34,12 +30,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.boot.CommandLineRunner;
-
 
 @Service
 @Log4j2
-public class VPBankServiceImpl extends BaseResponse<VPBankService> implements VPBankService, CommandLineRunner{
+public class VPBankServiceImpl extends BaseResponse<VPBankService> implements VPBankService {
 
     @Autowired
     private RestTemplate restTemplate;
@@ -55,6 +49,8 @@ public class VPBankServiceImpl extends BaseResponse<VPBankService> implements VP
 
     @Autowired
     private CurlService curlService;
+
+    protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public VPBResDTO transFluctuations(VPBbankRequest request, String signature) {
@@ -119,13 +115,42 @@ public class VPBankServiceImpl extends BaseResponse<VPBankService> implements VP
         String dataType = "data-urlencode";
         String url = "https://uat-ob-gatewaylb-int.vpbank.com.vn/token";
 
-        Map<String, String> requestHeaders = new HashMap<>();
+        Map<String, Object> requestHeaders = new HashMap<>();
         requestHeaders.put("Content-Type", "application/x-www-form-urlencoded");
         requestHeaders.put("Authorization", "Basic eEhabWFJV0tmWkNrU2ZWV0huaGNRV0VINm84YTpNcWVtaHQyaDM0V3RhOVdiSEFYUmF2OGxmWTBh");
+
 
         Map<String, Object> bodies = new HashMap<>();
         bodies.put("scope", "make_internal_transfer init_payments_data_read make_external_fund_transfer own_trasfer_history_read");
         bodies.put("grant_type", "client_credentials");
+
+//        ObjectMapper mapper = new ObjectMapper();
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+//        headers.set("Authorization", "Basic eEhabWFJV0tmWkNrU2ZWV0huaGNRV0VINm84YTpNcWVtaHQyaDM0V3RhOVdiSEFYUmF2OGxmWTBh");
+
+//        MultiValueMap<String, Object> bodies = new LinkedMultiValueMap<>();
+//        bodies.add("scope", "make_internal_transfer init_payments_data_read make_external_fund_transfer own_trasfer_history_read");
+//        bodies.add("grant_type", "client_credentials");
+
+//        HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity(bodies, headers);
+//        try {
+//            ResponseEntity<String> responseEntity = restTemplate.exchange(
+//                    url,
+//                    HttpMethod.POST,
+//                    request,
+//                    String.class,
+//                    (Object) null);
+//
+//            if(responseEntity.getStatusCodeValue() == 200){
+//                JsonNode root = mapper.readTree(responseEntity.getBody());
+//                return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, root));
+//            }
+//        }
+//        catch (Exception e) {
+//            throw new BusinessException("111", e.getMessage());
+//        }
+//        return null;
 
         VPBResAPI resAPI = curlService.executeCurlCommand(url, "POST", requestHeaders, bodies, dataType);
 
@@ -139,7 +164,7 @@ public class VPBankServiceImpl extends BaseResponse<VPBankService> implements VP
             e.printStackTrace();
         }
 
-        if(resAPI.getCode() == 0 && res != null) {
+        if(resAPI.getCode() == 0 && resAPI.getData() != null) {
             return new ResponseEntity<>(res, HttpStatus.OK);
         }
         else {
@@ -169,10 +194,5 @@ public class VPBankServiceImpl extends BaseResponse<VPBankService> implements VP
             System.out.println(ex.getMessage());
         }
         return signature;
-    }
-
-    @Override
-    public void run(String... args) throws Exception {
-
     }
 }
