@@ -114,6 +114,7 @@ public class VPBankServiceImpl extends BaseResponse<VPBankService> implements VP
 
         String dataType = "data-urlencode";
         String url = "https://uat-ob-gatewaylb-int.vpbank.com.vn/token";
+        String method = "POST";
 
         Map<String, Object> requestHeaders = new HashMap<>();
         requestHeaders.put("Content-Type", "application/x-www-form-urlencoded");
@@ -124,35 +125,7 @@ public class VPBankServiceImpl extends BaseResponse<VPBankService> implements VP
         bodies.put("scope", "make_internal_transfer init_payments_data_read make_external_fund_transfer own_trasfer_history_read");
         bodies.put("grant_type", "client_credentials");
 
-//        ObjectMapper mapper = new ObjectMapper();
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-//        headers.set("Authorization", "Basic eEhabWFJV0tmWkNrU2ZWV0huaGNRV0VINm84YTpNcWVtaHQyaDM0V3RhOVdiSEFYUmF2OGxmWTBh");
-
-//        MultiValueMap<String, Object> bodies = new LinkedMultiValueMap<>();
-//        bodies.add("scope", "make_internal_transfer init_payments_data_read make_external_fund_transfer own_trasfer_history_read");
-//        bodies.add("grant_type", "client_credentials");
-
-//        HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity(bodies, headers);
-//        try {
-//            ResponseEntity<String> responseEntity = restTemplate.exchange(
-//                    url,
-//                    HttpMethod.POST,
-//                    request,
-//                    String.class,
-//                    (Object) null);
-//
-//            if(responseEntity.getStatusCodeValue() == 200){
-//                JsonNode root = mapper.readTree(responseEntity.getBody());
-//                return response(toResult(Constants.SUCCESS, Constants.MESSAGE_SUCCESS, root));
-//            }
-//        }
-//        catch (Exception e) {
-//            throw new BusinessException("111", e.getMessage());
-//        }
-//        return null;
-
-        VPBResAPI resAPI = curlService.executeCurlCommand(url, "POST", requestHeaders, bodies, dataType);
+        VPBResAPI resAPI = curlService.executeCurlCommand(url, method, requestHeaders, bodies, dataType);
 
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> res = null;
