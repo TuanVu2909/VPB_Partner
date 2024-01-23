@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class VPBResAPI {
-    int code;
-    String data;
+public class CurlResponse {
+    private String type;
+    private String data;
 }

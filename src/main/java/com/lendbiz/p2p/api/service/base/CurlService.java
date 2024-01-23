@@ -4,13 +4,12 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
-import com.lendbiz.p2p.api.response.VPBank.VPBResAPI;
+import com.lendbiz.p2p.api.response.VPBank.CurlResponse;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 
 @Service
 @Log4j2
@@ -18,16 +17,15 @@ public class CurlService {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public VPBResAPI executeCurlCommand (
+    public CurlResponse executeCurlCommand (
             String url, String method,
             Map<String, Object> requestHeaders,
             Map<String, Object> requestBodies,
             String dataType ) {
 
-        VPBResAPI response = new VPBResAPI(-1, "Unknown");
         String filePathCer = "\"/home/api_mobile/src/main/resources/certificate/vpbuat.pem\"";
-        try {
 
+        try {
             // Add headers
             StringBuilder headers = new StringBuilder();
             if (requestHeaders != null && !requestHeaders.isEmpty()) {
@@ -45,7 +43,7 @@ public class CurlService {
                     });
                 }
                 else if ("data-raw".equals(dataType)){
-                    body.append(" --data-raw \"" + new JSONObject(requestBodies) + "\"");
+                    body.append(" --data-raw '" + new JSONObject(requestBodies) + "'");
                 }
             }
 
@@ -56,7 +54,7 @@ public class CurlService {
 
             // Execute the curl command using ProcessBuilder
             Process process = new ProcessBuilder("bash", "-c", curlCommand)
-                    .redirectErrorStream(true)
+                    //.redirectErrorStream(true)
                     .start();
 
             // Get input stream to read the response
@@ -71,32 +69,37 @@ public class CurlService {
             }
 
             // Wait for the process to finish
-            int exitCode = process.waitFor();
+            int exitCode = process.waitFor(); // success = 0
 
             // Print the output of the command
             logger.info("Curl Output:\n" + responseAPI.toString());
 
             // Extract JSON data from the output
-            String jsonStringResult = extractJsonFromCurlOutput(responseAPI.toString());
-            logger.info("=======================\nExtracted Output: =======================\n" + jsonStringResult + "\n=======================");
+            CurlResponse curlResponse = extractDataFromResponseAPI(responseAPI.toString());
 
-            response.setCode(exitCode);
-            response.setData(jsonStringResult);
+            logger.info("=======================\nExtracted Output: =======================\n" + curlResponse.getData() + "\n=======================");
 
-            return response;
+            return curlResponse;
+
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    private static String extractJsonFromCurlOutput(String output) {
-        int start = output.indexOf("{");
-        int end = output.lastIndexOf("}");
+    private CurlResponse extractDataFromResponseAPI(String responseAPI) {
+        int start = responseAPI.indexOf("{");
+        int end = responseAPI.lastIndexOf("}");
         if (start >= 0 && end >= 0) {
-            return output.substring(start, end + 1);
-        } else {
-            return "";
+            return new CurlResponse("json", responseAPI.substring(start, end + 1));
+        }
+        else {
+            int startTag = responseAPI.indexOf("<");
+            int endTag = responseAPI.lastIndexOf(">");
+            if (startTag >= 0 && endTag >= 0) {
+                return new CurlResponse("xml", responseAPI.substring(startTag, endTag + 1));
+            }
+            return new CurlResponse("unknow", "");
         }
     }
 }
