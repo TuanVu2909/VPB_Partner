@@ -34,4 +34,6 @@ public interface VPBankService {
     ResponseEntity<?> externalTransfer(String headerAuthorization, String headerIdn_app, String headerX_request_id, ExternalTransferDTO data);
 
     String sign(String plainText);
+
+    VPBResDTO testConnectDatabase(String ft);
 }

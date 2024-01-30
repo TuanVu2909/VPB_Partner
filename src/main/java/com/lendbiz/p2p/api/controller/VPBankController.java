@@ -7,6 +7,8 @@ import com.lendbiz.p2p.api.response.VPBank.TranferDTO;
 import com.lendbiz.p2p.api.response.VPBank.VPBResDTO;
 import com.lendbiz.p2p.api.service.VPBankService;
 import lombok.extern.log4j.Log4j2;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +25,16 @@ public class VPBankController {
 
     @Autowired
     VPBankService vpBankService;
+    protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @PostMapping("/notification")
     public VPBResDTO VPBankNotification (
             HttpServletRequest httpServletRequest,
             @RequestBody @Valid VPBbankRequest request
     ) {
+
+        logger.info("REQUEST FROM VPBANK [API_NOTIFICATION]\n"+request.toString());
+        // TODO insert vao table
 
         if(httpServletRequest.getHeader("signature") == null || "".equals(httpServletRequest.getHeader("signature"))) {
             return new VPBResDTO("400", ErrorCode.INVALID_DATA_REQUEST, "header 'signature' is not empty !", request.getTransactionId());
@@ -40,6 +46,11 @@ public class VPBankController {
     @GetMapping("/testPing")
     public String testPing () {
         return "Ping to server getVPBToken_3 !";
+    }
+
+    @GetMapping("/testPingDB")
+    public VPBResDTO testPingDB (@RequestHeader("ft") String ft) {
+        return vpBankService.testConnectDatabase(ft);
     }
     //-----------------------------------------------------
 

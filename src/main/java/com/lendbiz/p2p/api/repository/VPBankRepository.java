@@ -2,27 +2,25 @@ package com.lendbiz.p2p.api.repository;
 
 import com.lendbiz.p2p.api.entity.bank.VPBankEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface VPBankRepository extends JpaRepository<VPBankEntity,String> {
 
+    @Procedure("VPBankEntity.insertNotify")
     @Transactional
-    @Modifying
-    @Query(value = "insert into vpb_transactions values (vpb_trans_seq.nextval, ?1,?2,?3,?4,?5,to_date(?6, 'yyyyMMdd'),to_date(?7, 'yyyy-MM-dd hh24:mi:ss'),?8,?9,null,null,?10)", nativeQuery = true)
-    void insertVPBTrans(
-            String master_acc_num,
-            String virtual_acc_num,
-            String virtual_name,
-            String virtual_key,
-            String amount,
-            String booking_date,
-            String transaction_date,
-            String transaction_id,
-            String remark,
-            String signature
+    VPBankEntity insertNotify (
+            @Param("pv_source_num") String source_num,
+            @Param("pv_amount") String amount,
+            @Param("pv_transaction_date") String transaction_date,
+            @Param("pv_transaction_id") String transaction_id,
+            @Param("pv_remark") String remark,
+            @Param("pv_signature") String signature
     );
+
+    @Procedure("VPBankEntity.selectNoti")
+    VPBankEntity selectNoti(@Param("pv_ft") String ft);
 }

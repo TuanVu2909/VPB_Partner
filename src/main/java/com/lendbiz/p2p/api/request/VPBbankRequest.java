@@ -2,7 +2,6 @@ package com.lendbiz.p2p.api.request;
 
 import lombok.Data;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 
 @Data
 public class VPBbankRequest {

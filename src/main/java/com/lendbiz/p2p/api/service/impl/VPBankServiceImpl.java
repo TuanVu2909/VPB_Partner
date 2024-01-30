@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lendbiz.p2p.api.configs.RSA.CipherUtility;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.KeysManageEntity;
+import com.lendbiz.p2p.api.entity.bank.VPBankEntity;
 import com.lendbiz.p2p.api.helper.SignatureNumber;
 import com.lendbiz.p2p.api.repository.KeysManageRepository;
 import com.lendbiz.p2p.api.repository.VPBankRepository;
@@ -23,8 +24,10 @@ import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 
 import java.net.URL;
@@ -52,29 +55,30 @@ public class VPBankServiceImpl extends BaseResponse<VPBankService> implements VP
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
+    @Transactional
     public VPBResDTO transFluctuations(VPBbankRequest request, String signature) {
         //boolean checkSuccess = this.checkSignature(request, signature);
         if(true){
-            System.out.println("Xác thực thành công");
+            VPBankEntity vpBankEntity = null;
             try {
-                vpBankRepository.insertVPBTrans(
+                vpBankEntity = vpBankRepository.insertNotify(
                         request.getMasterAccountNumber(),
-                        request.getVirtualAccountNumber(),
-                        request.getVirtualName(),
-                        request.getVirtualAlkey(),
                         request.getAmount(),
-                        request.getBookingDate(),
                         request.getTransactionDate(),
                         request.getTransactionId(),
                         request.getRemark(),
-                        signature
-                );
+                        signature);
             }
             catch(Exception e){
-                System.out.println("error => "+e.getMessage());
+                logger.error("error => "+e.getMessage());
                 return new VPBResDTO("400", ErrorCode.EXCEPTION_ERROR, e.getMessage(), request.getTransactionId());
             }
-        return new VPBResDTO("200", "", "", request.getTransactionId());
+            if (vpBankEntity != null && "00".equals(vpBankEntity.getStatus())){
+                return new VPBResDTO("200", "", "", request.getTransactionId());
+            }
+            logger.error("error => No data");
+            return new VPBResDTO("500", "-1", "No data", request.getTransactionId());
+
         }
         else {
             System.out.println("Xác thực không thành công");
@@ -287,6 +291,24 @@ public class VPBankServiceImpl extends BaseResponse<VPBankService> implements VP
             System.out.println(ex.getMessage());
         }
         return signature;
+    }
+
+    @Override
+    @Transactional
+    public VPBResDTO testConnectDatabase(String ft) {
+        VPBankEntity vpBankEntity = null;
+        try {
+            vpBankEntity = vpBankRepository.selectNoti(ft);
+        }
+        catch(Exception e){
+            logger.error("error => "+e.getMessage());
+            return new VPBResDTO("400", ErrorCode.EXCEPTION_ERROR, e.getMessage(), "");
+        }
+        if (vpBankEntity != null && "00".equals(vpBankEntity.getStatus())){
+            return new VPBResDTO("200", vpBankEntity.getStatus(), vpBankEntity.getDes(), "");
+        }
+        logger.error("error => No data");
+        return new VPBResDTO("500", "-1", "No data", "");
     }
 
     public boolean checkSignature(VPBbankRequest request, String signature) {
