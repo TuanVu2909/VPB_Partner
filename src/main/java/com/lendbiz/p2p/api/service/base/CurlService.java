@@ -4,11 +4,15 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
+
+import com.lendbiz.p2p.api.entity.bank.VPBankEntity;
+import com.lendbiz.p2p.api.repository.VPBankRepository;
 import com.lendbiz.p2p.api.response.VPBank.CurlResponse;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,6 +20,8 @@ import org.springframework.stereotype.Service;
 public class CurlService {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    private VPBankRepository vpBankRepository;
 
     public CurlResponse executeCurlCommand (
             String url, String method,
@@ -52,6 +58,17 @@ public class CurlService {
 
             logger.info("Curl Input: \n" + curlCommand);
 
+            if("data-raw".equals(dataType)) {
+                logger.info("REQUEST FROM 3GANG [API_TRANSFER]\n"+curlCommand);
+                try {
+                    VPBankEntity vpBankEntity = vpBankRepository.insertLogs(curlCommand, null, "42.112.38.103 REQUEST FROM 3GANG [API_TRANSFER]");
+                    logger.info(vpBankEntity.getDes());
+                }
+                catch(Exception e) {
+                    logger.info("EXCEPTION FROM 3GANG [API_TRANSFER]\n"+e.getMessage());
+                }
+            }
+
             // Execute the curl command using ProcessBuilder
             Process process = new ProcessBuilder("bash", "-c", curlCommand)
                     //.redirectErrorStream(true)
@@ -74,6 +91,16 @@ public class CurlService {
             // Print the output of the command
             logger.info("Curl Output:\n" + responseAPI.toString());
 
+            if("data-raw".equals(dataType)){
+                logger.info("RESPONSE FROM VPBANK [API_TRANSFER]\n"+curlCommand);
+                try{
+                    VPBankEntity vpBankEntity = vpBankRepository.insertLogs(responseAPI.toString(), null, "42.112.38.103 RESPONSE FROM VPBANK [API_TRANSFER]");
+                    logger.info(vpBankEntity.getDes());
+                }catch(Exception e){
+                    logger.info("EXCEPTION FROM VPBANK [API_TRANSFER]\n"+e.getMessage());
+                }
+
+            }
             // Extract JSON data from the output
             CurlResponse curlResponse = extractDataFromResponseAPI(responseAPI.toString());
 

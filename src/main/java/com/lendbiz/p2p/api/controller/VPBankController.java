@@ -1,6 +1,8 @@
 package com.lendbiz.p2p.api.controller;
 
 import com.lendbiz.p2p.api.constants.ErrorCode;
+import com.lendbiz.p2p.api.entity.bank.VPBankEntity;
+import com.lendbiz.p2p.api.repository.VPBankRepository;
 import com.lendbiz.p2p.api.request.VPBbankRequest;
 import com.lendbiz.p2p.api.response.VPBank.ExternalTransferDTO;
 import com.lendbiz.p2p.api.response.VPBank.TranferDTO;
@@ -27,21 +29,8 @@ public class VPBankController {
     VPBankService vpBankService;
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @PostMapping("/notification")
-    public VPBResDTO VPBankNotification (
-            HttpServletRequest httpServletRequest,
-            @RequestBody @Valid VPBbankRequest request
-    ) {
-
-        logger.info("REQUEST FROM VPBANK [API_NOTIFICATION]\n"+request.toString());
-        // TODO insert vao table
-
-        if(httpServletRequest.getHeader("signature") == null || "".equals(httpServletRequest.getHeader("signature"))) {
-            return new VPBResDTO("400", ErrorCode.INVALID_DATA_REQUEST, "header 'signature' is not empty !", request.getTransactionId());
-        }
-        String signature = httpServletRequest.getHeader("signature");
-        return vpBankService.transFluctuations(request, signature);
-    }
+    @Autowired
+    private VPBankRepository vpBankRepository;
 
     @GetMapping("/testPing")
     public String testPing () {
@@ -52,7 +41,28 @@ public class VPBankController {
     public VPBResDTO testPingDB (@RequestHeader("ft") String ft) {
         return vpBankService.testConnectDatabase(ft);
     }
-    //-----------------------------------------------------
+
+    //================================================
+
+    @PostMapping("/notification")
+    public VPBResDTO VPBankNotification (
+            HttpServletRequest httpServletRequest,
+            @RequestBody @Valid VPBbankRequest request
+    ) {
+        logger.info("REQUEST FROM VPBANK [API_NOTIFICATION]\n"+request.toString());
+        try {
+            VPBankEntity vpBankEntity = vpBankRepository.insertLogs(request.toString(), null, "42.112.38.103 REQUEST FROM VPBANK [API_NOTIFICATION]");
+            logger.info(vpBankEntity.getDes());
+        } catch(Exception e) {
+            logger.info("EXCEPTION FROM VPBANK [API_NOTIFICATION]\n"+e.getMessage());
+        }
+
+        if(httpServletRequest.getHeader("signature") == null || "".equals(httpServletRequest.getHeader("signature"))) {
+            return new VPBResDTO("400", ErrorCode.INVALID_DATA_REQUEST, "header 'signature' is not empty !", request.getTransactionId());
+        }
+        String signature = httpServletRequest.getHeader("signature");
+        return vpBankService.transFluctuations(request, signature);
+    }
 
     @PostMapping("/getVPBToken")
     public ResponseEntity<?> getVPBToken (
