@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface VPBankRepository extends JpaRepository<VPBankEntity,String> {
 
-    @Procedure("VPBankEntity.insertNotify")
     @Transactional
+    @Procedure("VPBankEntity.insertNotify")
     VPBankEntity insertNotify (
             @Param("pv_source_num") String source_num,
             @Param("pv_amount") String amount,
@@ -24,16 +24,16 @@ public interface VPBankRepository extends JpaRepository<VPBankEntity,String> {
     @Procedure("VPBankEntity.selectNoti")
     VPBankEntity selectNoti(@Param("pv_ft") String ft);
 
-    @Procedure("VPBankEntity.insertLogs")
     @Transactional
+    @Procedure("VPBankEntity.insertLogs")
     VPBankEntity insertLogs (
             @Param("pv_msg") String msg,
             @Param("pv_status") String status,
             @Param("pv_note") String note
     );
 
-    @Procedure("VPBankEntity.insertChiHo")
     @Transactional
+    @Procedure("VPBankEntity.insertChiHo")
     VPBankEntity insertChiHo (
             @Param("pv_referenceNumber") String referenceNumber,
             @Param("pv_transactionId") String transactionId,

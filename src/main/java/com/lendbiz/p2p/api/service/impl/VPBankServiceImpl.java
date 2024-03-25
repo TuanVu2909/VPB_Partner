@@ -339,7 +339,7 @@ public class VPBankServiceImpl extends BaseResponse<VPBankService> implements VP
     }
 
     private ResponseEntity<?> resAPI_42_112_38_103 (CurlResponse resAPI){
-        if("json".equals(resAPI.getType())){
+        if(resAPI != null && "json".equals(resAPI.getType())){
             try {
                 Object jsonRes = new ObjectMapper().readValue(resAPI.getData(), Object.class);
                 if(jsonRes != null) {
@@ -354,7 +354,7 @@ public class VPBankServiceImpl extends BaseResponse<VPBankService> implements VP
                 return new ResponseEntity<>("data is not converted", HttpStatus.BAD_REQUEST);
             }
         }
-        else if ("xml".equals(resAPI.getType())){
+        else if (resAPI != null && "xml".equals(resAPI.getType())){
             return new ResponseEntity<>(resAPI.getData(), HttpStatus.GATEWAY_TIMEOUT);
         }
         return null;

@@ -14,15 +14,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Log4j2
+
 public class CurlService {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private VPBankRepository vpBankRepository;
 
+    @Transactional
     public CurlResponse executeCurlCommand (
             String url, String method,
             Map<String, Object> requestHeaders,
@@ -107,7 +110,6 @@ public class CurlService {
             logger.info("=======================\nExtracted Output: =======================\n" + curlResponse.getData() + "\n=======================");
 
             return curlResponse;
-
         } catch (Exception e) {
             e.printStackTrace();
             return null;
