@@ -48,4 +48,10 @@ public class ConfigController {
         return configService.getHolidayDate();
     }
 
+    @Transactional(readOnly = true)
+    @GetMapping("/get-vpb-holiday-date")
+    public ResponseEntity<?> getVpbHolidayDate() {
+        return configService.getVpbHolidayDate();
+    }
+
 }

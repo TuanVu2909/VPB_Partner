@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -25,6 +26,8 @@ public class ApiApplication {
 		FirebaseApp.initializeApp(options);
 
 		SpringApplication.run(ApiApplication.class, args);
+
+
 
 	}
 }

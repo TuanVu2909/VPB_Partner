@@ -1,11 +1,14 @@
 package com.lendbiz.p2p.api.service;
 
+import com.lendbiz.p2p.api.entity.bank.VPBControlEntity;
 import com.lendbiz.p2p.api.request.VPBbankRequest;
 import com.lendbiz.p2p.api.response.VPBank.ExternalTransferDTO;
 import com.lendbiz.p2p.api.response.VPBank.TranferDTO;
 import com.lendbiz.p2p.api.response.VPBank.VPBResDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
+
+import java.util.List;
 
 public interface VPBankService {
     // BD so du
@@ -34,6 +37,12 @@ public interface VPBankService {
     ResponseEntity<?> externalTransfer(String headerAuthorization, String headerIdn_app, String headerX_request_id, ExternalTransferDTO data);
 
     String sign(String plainText);
+
+    List<VPBControlEntity> getLogs();
+
+    String writeFile();
+
+    ResponseEntity<?> sendFileSFTP();
 
     VPBResDTO testConnectDatabase(String ft);
 }

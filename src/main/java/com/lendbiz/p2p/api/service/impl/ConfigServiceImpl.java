@@ -23,12 +23,9 @@ import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.BgConfigEntity;
 import com.lendbiz.p2p.api.entity.HolidayDateEntity;
 import com.lendbiz.p2p.api.entity.ProductConfigEntity;
+import com.lendbiz.p2p.api.entity.bank.VpbHoliday;
 import com.lendbiz.p2p.api.model.exception.BusinessException;
-import com.lendbiz.p2p.api.repository.BgConfigRepository;
-import com.lendbiz.p2p.api.repository.CurrentDateRepo;
-import com.lendbiz.p2p.api.repository.PackageFilterRepository;
-import com.lendbiz.p2p.api.repository.ProductConfigRepo;
-import com.lendbiz.p2p.api.repository.UserOnlineRepository;
+import com.lendbiz.p2p.api.repository.*;
 import com.lendbiz.p2p.api.response.BaseResponse;
 import com.lendbiz.p2p.api.service.ConfigService;
 
@@ -62,6 +59,9 @@ public class ConfigServiceImpl extends BaseResponse<ConfigService> implements Co
 
 	@Autowired
 	CurrentDateRepo currentDateRepo;
+
+	@Autowired
+	HolidayDateRepo holidayDateRepo;
 
 	@Override
 	public ResponseEntity<?> getHolidayDate() {
@@ -99,5 +99,18 @@ public class ConfigServiceImpl extends BaseResponse<ConfigService> implements Co
 		return response(toResult(list));
 
 	}
+
+	@Override
+	public ResponseEntity<?> getVpbHolidayDate() {
+		// return response(toResult(bgConfigRepository.findViaProcedure()));
+		try {
+			List<VpbHoliday> vpbHolidayDate = holidayDateRepo.getVpbHolidayDate();
+			return response(toResult(vpbHolidayDate));
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			throw new BusinessException(Constants.FAIL, ErrorCode.NO_DATA_DESCRIPTION);
+		}
+	}
+
 
 }

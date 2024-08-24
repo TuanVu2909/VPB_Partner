@@ -26,4 +26,5 @@ public interface ConfigService {
 
 	public ResponseEntity<?> getProductConfig();
 
+	public ResponseEntity<?> getVpbHolidayDate();
 }

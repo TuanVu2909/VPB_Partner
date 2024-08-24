@@ -1,11 +1,13 @@
 package com.lendbiz.p2p.api.controller;
 
 import com.lendbiz.p2p.api.constants.ErrorCode;
+import com.lendbiz.p2p.api.entity.bank.VPBControlEntity;
 import com.lendbiz.p2p.api.entity.bank.VPBankEntity;
 import com.lendbiz.p2p.api.repository.VPBankRepository;
 import com.lendbiz.p2p.api.request.VPBbankRequest;
 import com.lendbiz.p2p.api.response.VPBank.ExternalTransferDTO;
 import com.lendbiz.p2p.api.response.VPBank.TranferDTO;
+import com.lendbiz.p2p.api.response.VPBank.VPBLogsDTO;
 import com.lendbiz.p2p.api.response.VPBank.VPBResDTO;
 import com.lendbiz.p2p.api.service.VPBankService;
 import lombok.extern.log4j.Log4j2;
@@ -14,15 +16,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1")
 @Log4j2
 @CrossOrigin(origins = "*")
+@Transactional
 public class VPBankController {
 
     @Autowired
@@ -40,6 +45,16 @@ public class VPBankController {
     @GetMapping("/testPingDB")
     public VPBResDTO testPingDB (@RequestHeader("ft") String ft) {
         return vpBankService.testConnectDatabase(ft);
+    }
+
+    @GetMapping("/getLogs")
+    public List<VPBControlEntity> getLogs() {
+        return  vpBankService.getLogs();
+    }
+
+    @GetMapping("/fileWriter")
+    public String fileWriter() {
+        return  vpBankService.writeFile();
     }
 
     //================================================

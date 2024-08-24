@@ -61,7 +61,7 @@ import javax.persistence.*;
             @StoredProcedureParameter(name = "pv_add_info",         mode = ParameterMode.IN,         type = String.class),
             @StoredProcedureParameter(name = "pv_custid",           mode = ParameterMode.IN,         type = String.class),
         }
-    )
+    ),
 })
 public class VPBankEntity {
     @Id

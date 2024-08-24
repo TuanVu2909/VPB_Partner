@@ -2,40 +2,44 @@ package com.lendbiz.p2p.api.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
 import com.lendbiz.p2p.api.configs.RSA.CipherUtility;
 import com.lendbiz.p2p.api.constants.ErrorCode;
 import com.lendbiz.p2p.api.entity.KeysManageEntity;
+import com.lendbiz.p2p.api.entity.bank.VPBControlEntity;
 import com.lendbiz.p2p.api.entity.bank.VPBankEntity;
 import com.lendbiz.p2p.api.helper.SignatureNumber;
 import com.lendbiz.p2p.api.repository.KeysManageRepository;
+import com.lendbiz.p2p.api.repository.VBPControlRepository;
 import com.lendbiz.p2p.api.repository.VPBankRepository;
 import com.lendbiz.p2p.api.request.VPBbankRequest;
 import com.lendbiz.p2p.api.response.BaseResponse;
-import com.lendbiz.p2p.api.response.VPBank.CurlResponse;
-import com.lendbiz.p2p.api.response.VPBank.ExternalTransferDTO;
-import com.lendbiz.p2p.api.response.VPBank.TranferDTO;
-import com.lendbiz.p2p.api.response.VPBank.VPBResDTO;
+import com.lendbiz.p2p.api.response.VPBank.*;
 import com.lendbiz.p2p.api.service.VPBankService;
 import com.lendbiz.p2p.api.service.base.CurlService;
 
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 import java.security.PrivateKey;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
 @Log4j2
@@ -43,6 +47,9 @@ public class VPBankServiceImpl extends BaseResponse<VPBankService> implements VP
 
     @Autowired
     private VPBankRepository vpBankRepository;
+
+    @Autowired
+    private VBPControlRepository vbpControlRepository;
 
     @Autowired
     private CipherUtility cipherUtility;
@@ -53,7 +60,7 @@ public class VPBankServiceImpl extends BaseResponse<VPBankService> implements VP
     @Autowired
     private CurlService curlService;
 
-    protected Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(VPBankService.class);
 
     @Override
     @Transactional
@@ -293,6 +300,164 @@ public class VPBankServiceImpl extends BaseResponse<VPBankService> implements VP
         }
         return signature;
     }
+
+    @Override
+    public List<VPBControlEntity> getLogs(){
+
+        List<VPBControlEntity> vpbControlEntity = null;
+        try {
+            vpbControlEntity = vbpControlRepository.selectLogs();
+        }
+        catch(Exception e){
+            logger.error("error => "+e.getMessage());
+        }
+            return vpbControlEntity ;
+    }
+
+    @Override
+    public String writeFile(){
+        List<VPBControlEntity> vpbControlEntities = getLogs();
+
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        String createTime = now.format(formatter);
+
+        String date = vpbControlEntities.get(0).getTRANS_DATE();
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateTime = LocalDateTime.parse(date, inputFormatter);
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String formattedDate = dateTime.format(outputFormatter);
+
+        long amount = 0L;
+        String COMMA_DELIMITER = ",";
+        String NEW_LINE_SEPARATOR = "\n";
+        String FILE_HEADER = "RecordType,RefNum,BankId,TransferType,DebitAccount,BenAccount,BenName,BenBankName,BenBankCode,Amount,BankTime,Checksum";
+        String fileName = "D:\\lendbiz\\api_mobile\\api_mobile\\file\\dst8.csv";
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter(fileName);
+
+            // Write the CSV file header
+            fileWriter.append(FILE_HEADER);
+
+            // Add a new line separator after the header
+            fileWriter.append(NEW_LINE_SEPARATOR);
+
+            // Write a new list to the CSV file
+            for (VPBControlEntity vpbLogsDTO : vpbControlEntities) {
+                fileWriter.append("0002");
+                fileWriter.append(COMMA_DELIMITER);
+                fileWriter.append(vpbLogsDTO.getREFERENCE_NUMBER());
+                fileWriter.append(COMMA_DELIMITER);
+                String[] words = vpbLogsDTO.getFT().split("\\\\");
+                fileWriter.append(words[0]);
+                fileWriter.append(COMMA_DELIMITER);
+                fileWriter.append(vpbLogsDTO.getTRAN_TYPE());
+                fileWriter.append(COMMA_DELIMITER);
+                fileWriter.append(vpbLogsDTO.getDEBIT_SOURCE_ACCOUNT());
+                fileWriter.append(COMMA_DELIMITER);
+                fileWriter.append(vpbLogsDTO.getBANK_ACCOUNT_NUMBER());
+                fileWriter.append(COMMA_DELIMITER);
+                fileWriter.append(vpbLogsDTO.getBANK_ACCOUNT_NAME());
+                fileWriter.append(COMMA_DELIMITER);
+                fileWriter.append(vpbLogsDTO.getBANK_NAME());
+                fileWriter.append(COMMA_DELIMITER);
+                fileWriter.append(vpbLogsDTO.getBANK_CODE());
+                fileWriter.append(COMMA_DELIMITER);
+                fileWriter.append(NEW_LINE_SEPARATOR);
+                amount += Long.valueOf(vpbLogsDTO.getAMOUNT());
+                fileWriter.append(String.valueOf(amount));
+                fileWriter.append(COMMA_DELIMITER);
+                fileWriter.append(formattedDate);
+                fileWriter.append(COMMA_DELIMITER);
+                fileWriter.append(vpbLogsDTO.getCHECK_SUM());
+                fileWriter.append("\n");
+                fileWriter.append("\n");
+            }
+            String FILE_FOOTER = "0009"+","+ vpbControlEntities.size() + ","+
+                    + amount + ","+
+                    "3GANG"+ ","+ createTime;
+            // Write the CSV file footer
+            fileWriter.append(FILE_FOOTER);
+
+            System.out.println("CSV file was created successfully !!!");
+
+        } catch (Exception e) {
+            System.out.println("Error in CsvFileWriter !!!");
+            e.printStackTrace();
+
+        }finally {
+            try {
+                fileWriter.flush();
+                fileWriter.close();
+            } catch (IOException e) {
+                System.out.println("Error while flushing/closing fileWriter !!!");
+                e.printStackTrace();
+
+            }
+        }
+        return "file writer success!";
+    }
+
+    @SneakyThrows
+    @Override
+    public ResponseEntity<String> sendFileSFTP() {
+        String sftpHost = "42.112.38.103";
+        int sftpPort = 2222;
+        String sftpUser = "root";
+        String sftpPassword = "Lendbiz@101017";
+        String localFilePath = "D:\\lendbiz\\api_mobile_vp (2)\\api_mobile\\file\\dst8.csv";
+        String remoteDir = "/remote/directory/"; // Thay bằng thư mục đích trên server
+
+        Session session = null;
+        ChannelSftp channelSftp = null;
+
+        try {
+            JSch jsch = new JSch();
+
+            // Tạo một phiên kết nối tới SFTP server
+            session = jsch.getSession(sftpUser, sftpHost, sftpPort);
+            session.setPassword(sftpPassword);
+
+            // Cấu hình các properties cho phiên
+            Properties config = new Properties();
+            config.put("StrictHostKeyChecking", "yes");
+            session.setConfig(config);
+
+            // Kết nối tới SFTP server
+            session.connect();
+            System.out.println("Session connected to SFTP server.");
+
+            // Mở kênh SFTP từ phiên đã kết nối
+            channelSftp = (ChannelSftp) session.openChannel("sftp");
+            channelSftp.connect();
+            System.out.println("Channel SFTP opened and connected.");
+
+            // Thực hiện các hoạt động với SFTP tại đây
+            channelSftp.put(localFilePath, remoteDir); //  upload file
+            channelSftp.get(remoteDir, localFilePath); //  download file
+            // Đóng kết nối
+            channelSftp.disconnect();
+            session.disconnect();
+
+            return new ResponseEntity<>("File sent successfully", HttpStatus.OK);
+
+        } catch (Exception e) {
+            logger.error("Error sending file via SFTP", e);
+            return new ResponseEntity<>("Error sending file via SFTP: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } finally {
+            // Đảm bảo ngắt kết nối kênh và phiên
+            if (channelSftp != null && channelSftp.isConnected()) {
+                channelSftp.disconnect();
+                logger.info("SFTP Channel disconnected.");
+            }
+            if (session != null && session.isConnected()) {
+                session.disconnect();
+                logger.info("Session disconnected.");
+            }
+        }
+    }
+
 
     @Override
     @Transactional
